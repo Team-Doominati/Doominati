@@ -18,8 +18,8 @@
 
 #include <iostream>
 
-#include <GL/gl.h>
-#include <SDL2/SDL.h>
+#include "SDL.h"
+#include "SDL_opengl.h"
 
 
 //----------------------------------------------------------------------------|
@@ -130,7 +130,7 @@ static int Main()
 //
 // main
 //
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
    auto &opts = GDCC::Core::GetOptions();
 
@@ -162,6 +162,8 @@ int main(int argc, char *argv[])
    {
       return e;
    }
+   
+   return 0;
 }
 
 // EOF
