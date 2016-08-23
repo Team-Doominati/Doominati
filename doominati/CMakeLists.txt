@@ -18,7 +18,7 @@
 ##
 ## doominati
 ##
-add_executable(doominati
+add_executable(doominati WIN32
    main_doominati.cpp
 
    ${CMAKE_SOURCE_DIR}/Core/Coord.hpp
@@ -35,7 +35,15 @@ add_executable(doominati
    ${CMAKE_SOURCE_DIR}/Game/Input.hpp
 )
 
-target_link_libraries(doominati gdcc-option-lib gdcc-core-lib SDL2 GL)
+target_link_libraries(doominati
+   ${GDCC_LIBRARIES}
+   ${SDL2_LIBRARIES}
+   ${OPENGL_LIBRARIES})
+
+target_include_directories(doominati PRIVATE
+   ${GDCC_INCLUDE_DIRS}
+   ${SDL2_INCLUDE_DIRS}
+   ${OPENGL_INCLUDE_DIR})
 
 ## EOF
 

@@ -13,7 +13,7 @@
 #ifndef Doom__GL__Window_H__
 #define Doom__GL__Window_H__
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 
 //----------------------------------------------------------------------------|
