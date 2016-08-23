@@ -40,7 +40,7 @@ target_link_libraries(doominati
    ${SDL2_LIBRARIES}
    ${OPENGL_LIBRARIES})
 
-target_include_directories(doominati PRIVATE
+target_include_directories(doominati SYSTEM PRIVATE
    ${GDCC_INCLUDE_DIRS}
    ${SDL2_INCLUDE_DIRS}
    ${OPENGL_INCLUDE_DIR})
