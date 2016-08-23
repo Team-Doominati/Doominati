@@ -17,6 +17,8 @@
 #include <GDCC/Core/String.hpp>
 
 #include <vector>
+#include <tuple>
+#include <cctype>
 
 
 //----------------------------------------------------------------------------|

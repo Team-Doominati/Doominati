@@ -37,13 +37,14 @@ add_executable(doominati WIN32
 
 target_link_libraries(doominati
    ${GDCC_LIBRARIES}
+   ${OPENGL_LIBRARIES}
    ${SDL2_LIBRARIES}
-   ${OPENGL_LIBRARIES})
+   ${SDL2_MAIN_LIBRARIES})
 
 target_include_directories(doominati SYSTEM PRIVATE
    ${GDCC_INCLUDE_DIRS}
-   ${SDL2_INCLUDE_DIRS}
-   ${OPENGL_INCLUDE_DIR})
+   ${OPENGL_INCLUDE_DIR}
+   ${SDL2_INCLUDE_DIRS})
 
 ## EOF
 

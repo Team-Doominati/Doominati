@@ -137,6 +137,7 @@ static int Main()
 //
 // main
 //
+
 int main(int argc, char **argv)
 {
    auto &opts = GDCC::Core::GetOptions();
@@ -169,8 +170,6 @@ int main(int argc, char **argv)
    {
       return e;
    }
-   
-   return 0;
 }
 
 // EOF
