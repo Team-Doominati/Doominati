@@ -18,10 +18,18 @@
 
 #include <GDCC/Core/Option.hpp>
 
+#include <chrono>
 #include <iostream>
 
 #include "SDL.h"
 #include "SDL_opengl.h"
+
+
+//----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+using PlayTick = std::chrono::duration<std::size_t, std::ratio<1, 50>>;
 
 
 //----------------------------------------------------------------------------|
@@ -83,6 +91,19 @@ static void DrawTest()
 }
 
 //
+// GetTicks
+//
+template<typename T> static auto GetTicks() -> decltype(T().count())
+{
+   static std::chrono::time_point<std::chrono::steady_clock> base;
+
+   if(base == std::chrono::time_point<std::chrono::steady_clock>())
+      base = std::chrono::steady_clock::now();
+
+   return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
+}
+
+//
 // Main
 //
 static int Main()
@@ -103,27 +124,38 @@ static int Main()
    if(auto file = Doom::FS::Dir::FindFile("startmsg"))
       std::cout << file->data << std::endl;
 
-   while(!input.getNext().menuClose)
+   for(std::size_t timeLast = GetTicks<PlayTick>(), timeNext;; timeLast = timeNext)
    {
-      input.poll();
-      auto const &inputNext = input.getNext();
-      auto const &inputLast = input.getLast();
+      timeNext = GetTicks<PlayTick>();
 
-      if(inputNext.use1 && !inputLast.use1)
+      for(std::size_t timePass = timeNext - timeLast; timePass--;)
       {
-         auto rx = inputNext.pos.x;
-         auto ry = inputNext.pos.y;
+         // Playsim actions.
 
-         std::cout << "rx: " << rx << " ry: " << ry << std::endl;
+         input.poll();
+
+         auto const &inputNext = input.getNext();
+         auto const &inputLast = input.getLast();
+
+         if(inputNext.menuClose)
+            return EXIT_SUCCESS;
+
+         if(inputNext.use1 && !inputLast.use1)
+         {
+            auto rx = inputNext.pos.x;
+            auto ry = inputNext.pos.y;
+
+            std::cout << "rx: " << rx << " ry: " << ry << std::endl;
+         }
       }
+
+      // Rendering actions.
 
       window.renderBegin();
 
       DrawTest();
 
       window.renderEnd();
-
-      SDL_Delay(1);
    }
 
    return EXIT_SUCCESS;
