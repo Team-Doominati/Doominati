@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "FS/Dir.hpp"
+
 #include "GL/Window.hpp"
 
 #include "Game/Input.hpp"
@@ -95,6 +97,11 @@ static int Main()
    WindowCurrent = &window;
 
    Doom::Game::InputSource_Local input;
+
+   Doom::FS::Dir::AddRoot(".");
+
+   if(auto file = Doom::FS::Dir::FindFile("startmsg"))
+      std::cout << file->data << std::endl;
 
    while(!input.getNext().menuClose)
    {
