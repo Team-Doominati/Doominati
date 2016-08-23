@@ -137,7 +137,6 @@ static int Main()
 //
 // main
 //
-
 int main(int argc, char **argv)
 {
    auto &opts = GDCC::Core::GetOptions();
@@ -158,6 +157,10 @@ int main(int argc, char **argv)
    {
       if(argc > 1)
          GDCC::Core::ProcessOptions(opts, argc, argv, false);
+
+      std::cout <<
+         "Doominati v0.0.0 -- Copyright (C) Team Doominati 2016\n"
+         "See COPYING for license information.\n\n";
 
       return Main();
    }
