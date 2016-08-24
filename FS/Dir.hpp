@@ -89,10 +89,23 @@ namespace Doom
       class File
       {
       public:
-         File() : data{nullptr}, name{""}, refs{0}, size{0}, format{Format::None} {}
+         File() :
+            data{nullptr},
+            name{""},
+            refs{0},
+            size{0},
+            format{Format::None}
+         {
+         }
 
          File(char const *data_, std::size_t size_) :
-            data{data_}, name{""}, refs{0}, size{size_}, format{Format::None} {}
+            data{data_},
+            name{""},
+            refs{0},
+            size{size_},
+            format{Format::None}
+         {
+         }
 
          Dir *findDir();
 

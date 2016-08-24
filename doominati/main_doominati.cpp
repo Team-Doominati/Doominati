@@ -20,6 +20,8 @@
 
 #include <chrono>
 #include <iostream>
+#include <cstdlib>
+#include <cmath>
 
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -30,6 +32,7 @@
 //
 
 using PlayTick = std::chrono::duration<std::size_t, std::ratio<1, 50>>;
+using Millisecond = std::chrono::duration<double, std::ratio<1, 1000>>;
 
 
 //----------------------------------------------------------------------------|
@@ -44,10 +47,27 @@ static Doom::GL::Window *WindowCurrent;
 //
 
 //
+// GetTicks
+//
+
+template<typename T>
+static
+decltype(T().count()) GetTicks()
+{
+   static std::chrono::time_point<std::chrono::steady_clock> base;
+
+   if(base == std::chrono::time_point<std::chrono::steady_clock>())
+      base = std::chrono::steady_clock::now();
+
+   return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
+}
+
+//
 // DrawTest
 //
 // Draws test pattern.
 //
+
 static void DrawTest()
 {
    auto xl = WindowCurrent->xl;
@@ -80,55 +100,60 @@ static void DrawTest()
    glVertex2f(xh / 3.0f, yl / 3.0f);
 
    glColor3f(0.0f, 1.0f, 0.0f);
+   
+   double s = std::sin(GetTicks<Millisecond>() / 1000.0) * 40.0;
+   double c = std::cos(GetTicks<Millisecond>() / 1000.0) * 40.0;
 
-   glVertex2f(-100.0f, -100.0f);
-   glVertex2f(+100.0f, +100.0f);
+   glVertex2f(-100.0f + s, -100.0f + c);
+   glVertex2f(+100.0f + s, +100.0f + c);
 
-   glVertex2f(-100.0f, +100.0f);
-   glVertex2f(+100.0f, -100.0f);
+   glVertex2f(-100.0f + s, +100.0f + c);
+   glVertex2f(+100.0f + s, -100.0f + c);
 
    glEnd();
 }
 
 //
-// GetTicks
-//
-template<typename T> static auto GetTicks() -> decltype(T().count())
-{
-   static std::chrono::time_point<std::chrono::steady_clock> base;
-
-   if(base == std::chrono::time_point<std::chrono::steady_clock>())
-      base = std::chrono::steady_clock::now();
-
-   return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
-}
-
-//
 // Main
 //
-static int Main()
+
+static
+int Main()
 {
-   struct CoreEnv
+   if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
    {
-      CoreEnv() {if(SDL_Init(0)) {std::cerr << "SDL_Init:" << SDL_GetError() << '\n'; throw EXIT_FAILURE;}}
-      ~CoreEnv() {SDL_Quit();}
-   } envCore;
+      std::cerr << "SDL_Init: " << SDL_GetError() << '\n';
+      throw EXIT_FAILURE;
+   }
+
+   std::atexit(SDL_Quit);
 
    Doom::GL::Window window{640, 480};
    WindowCurrent = &window;
 
    Doom::Game::InputSource_Local input;
+   
+   input.addListener_Button("Exit", Doom::Game::KC_ESCAPE);
 
-   Doom::FS::Dir::AddRoot(".");
+   Doom::FS::Dir::AddRoot("."); // HACK
 
    if(auto file = Doom::FS::Dir::FindFile("startmsg"))
-      std::cout << file->data << std::endl;
+      std::cout << file->data << std::endl; // HACK
 
-   for(std::size_t timeLast = GetTicks<PlayTick>(), timeNext;; timeLast = timeNext)
+   std::size_t timeLast = GetTicks<PlayTick>();
+   std::size_t timeNext;
+
+   for(;;)
    {
-      timeNext = GetTicks<PlayTick>();
+      std::size_t timeDelta;
 
-      for(std::size_t timePass = timeNext - timeLast; timePass--;)
+      timeNext  = GetTicks<PlayTick>();
+      timeDelta = timeNext - timeLast;
+      timeLast  = timeNext;
+      
+      if(!timeDelta)
+         SDL_Delay(1);
+      else while(timeDelta--)
       {
          // Playsim actions.
 
@@ -137,16 +162,8 @@ static int Main()
          auto const &inputNext = input.getNext();
          auto const &inputLast = input.getLast();
 
-         if(inputNext.menuClose)
+         if(inputNext.input_btn.at("Exit").button)
             return EXIT_SUCCESS;
-
-         if(inputNext.use1 && !inputLast.use1)
-         {
-            auto rx = inputNext.pos.x;
-            auto ry = inputNext.pos.y;
-
-            std::cout << "rx: " << rx << " ry: " << ry << std::endl;
-         }
       }
 
       // Rendering actions.
