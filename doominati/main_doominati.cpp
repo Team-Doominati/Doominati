@@ -51,8 +51,7 @@ static Doom::GL::Window *WindowCurrent;
 //
 
 template<typename T>
-static
-decltype(T().count()) GetTicks()
+static decltype(T().count()) GetTicks()
 {
    static std::chrono::time_point<std::chrono::steady_clock> base;
 
@@ -61,6 +60,8 @@ decltype(T().count()) GetTicks()
 
    return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
 }
+
+
 
 //
 // DrawTest
@@ -117,8 +118,7 @@ static void DrawTest()
 // Main
 //
 
-static
-int Main()
+static int Main()
 {
    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
    {
@@ -140,6 +140,14 @@ int Main()
 
    std::size_t timeLast = GetTicks<PlayTick>();
    std::size_t timeNext;
+
+	{
+
+		GLuint vsp = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource();
+
+		GLuint fsp = glCreateShader(GL_FRAGMENT_SHADER);
+	}
 
    for(;;)
    {

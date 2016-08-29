@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Window.hpp"
+#include "GL/Shader.hpp"
 
 #include <iostream>
 
@@ -42,6 +43,7 @@ namespace Doom
       //
       // Window constructor
       //
+
       Window::Window(int w_, int h_) :
          w{w_}, h{h_}
       {
@@ -88,6 +90,7 @@ namespace Doom
       //
       // Window destructor
       //
+
       Window::~Window()
       {
          SDL_GL_DeleteContext(gl);
@@ -98,6 +101,7 @@ namespace Doom
       //
       // Window::renderBegin
       //
+
       void Window::renderBegin()
       {
          // Check if window has been resized.
@@ -118,14 +122,34 @@ namespace Doom
       //
       // Window::renderEnd
       //
+
       void Window::renderEnd()
       {
          SDL_GL_SwapWindow(window);
       }
 
       //
+      // Window::shaderSwap
+      //
+
+		void Window::shaderSwap(Shader *sp)
+		{
+			glUseProgram(sp->program);
+		}
+
+		//
+		// Window::shaderDrop
+		//
+
+		void Window::shaderDrop()
+		{
+			glUseProgram(0);
+		}
+
+      //
       // Window::resize
       //
+
       void Window::resize(int w_, int h_)
       {
          w = w_;

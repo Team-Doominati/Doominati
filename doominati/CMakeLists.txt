@@ -18,6 +18,7 @@
 ##
 ## doominati
 ##
+
 add_executable(doominati WIN32
    main_doominati.cpp
 
@@ -28,6 +29,8 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/FS/Dir.cpp
    ${CMAKE_SOURCE_DIR}/FS/Dir.hpp
 
+   ${CMAKE_SOURCE_DIR}/GL/Shader.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Shader.hpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
 

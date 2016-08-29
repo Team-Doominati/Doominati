@@ -24,9 +24,12 @@ namespace Doom
 {
    namespace GL
    {
+		class Shader;
+
       //
       // Window
       //
+
       class Window
       {
       public:
@@ -36,9 +39,11 @@ namespace Doom
          void renderBegin();
          void renderEnd();
 
+			void shaderSwap(Shader *sp);
+			void shaderDrop();
+
          int w, h;
          float xl, yl, xh, yh;
-
 
          static int W, H;
 
