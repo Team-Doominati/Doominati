@@ -15,6 +15,7 @@
 #include "GL/Window.hpp"
 
 #include <iostream>
+#include <climits>
 
 #include "SDL.h"
 
