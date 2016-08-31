@@ -31,7 +31,7 @@ namespace Doom
       //
       // InputSink_Null::sink
       //
-      
+
       void InputSink_Null::sink(InputFrame const &)
       {
       }
@@ -39,7 +39,7 @@ namespace Doom
       //
       // InputSource_Local constructor
       //
-      
+
       InputSource_Local::InputSource_Local() :
          frameLast{},
          frameNext{}
@@ -49,7 +49,7 @@ namespace Doom
       //
       // InputSource_Local destructor
       //
-      
+
       InputSource_Local::~InputSource_Local()
       {
       }
@@ -57,7 +57,7 @@ namespace Doom
       //
       // InputSource_Local::canPoll
       //
-      
+
       bool InputSource_Local::canPoll() const
       {
          return true;
@@ -66,7 +66,7 @@ namespace Doom
       //
       // InputSource_Local::getLast
       //
-      
+
       InputFrame const &InputSource_Local::getLast() const
       {
          return frameLast;
@@ -75,7 +75,7 @@ namespace Doom
       //
       // InputSource_Local::getNext
       //
-      
+
       InputFrame const &InputSource_Local::getNext() const
       {
          return frameNext;
@@ -84,11 +84,11 @@ namespace Doom
       //
       // InputSource_Local::poll
       //
-      
+
       void InputSource_Local::poll()
       {
          frameLast = frameNext;
-         
+
          frameNext = InputFrame{};
 
          // Poll events.
@@ -98,8 +98,8 @@ namespace Doom
             if(event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
             {
                bool down = (event.type == SDL_KEYDOWN);
-               std::int16_t delta = down ? INT_MAX : 0;
-               
+               std::int16_t delta = down ? INT16_MAX : 0;
+
                switch(event.key.keysym.sym)
                {
                case SDLK_w: frameNext.movefwd  =  delta; break;
@@ -114,7 +114,7 @@ namespace Doom
                     event.type == SDL_MOUSEBUTTONUP)
             {
                bool down = (event.type == SDL_MOUSEBUTTONDOWN);
-               
+
                switch(event.button.button)
                {
                case SDL_BUTTON_LEFT:

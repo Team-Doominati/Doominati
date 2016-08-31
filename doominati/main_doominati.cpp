@@ -10,6 +10,9 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "Code/Codedefs.hpp"
+#include "Code/Program.hpp"
+
 #include "FS/Dir.hpp"
 
 #include "GL/Window.hpp"
@@ -101,7 +104,7 @@ static void DrawTest()
    glVertex2f(xh / 3.0f, yl / 3.0f);
 
    glColor3f(0.0f, 1.0f, 0.0f);
-   
+
    double s = std::sin(GetTicks<Millisecond>() / 1000.0) * 40.0;
    double c = std::cos(GetTicks<Millisecond>() / 1000.0) * 40.0;
 
@@ -138,6 +141,25 @@ static int Main()
    if(auto file = Doom::FS::Dir::FindFile("startmsg"))
       std::cout << file->data << std::endl; // HACK
 
+   // Load CODEDEFS.
+   // Needless to say, this should go somewhere else at some point.
+   {
+      Doom::Code::Loader loader;
+      Doom::FS::Dir::ForFile("codedefs",
+         std::bind(&Doom::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
+
+      std::cerr << "Loaded " << loader.loadPASS << " codedefs.\n";
+
+      if(loader.loadFAIL)
+      {
+         std::cerr << "Encountered " << loader.loadFAIL << " codedefs errors.\n";
+         throw EXIT_FAILURE;
+      }
+
+      Doom::Code::Program prog;
+      loader.gen(&prog);
+   }
+
    std::size_t timeLast = GetTicks<PlayTick>();
    std::size_t timeNext;
 
@@ -156,9 +178,10 @@ static int Main()
       timeNext  = GetTicks<PlayTick>();
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
-      
+
       if(!timeDelta)
          SDL_Delay(1);
+
       else while(timeDelta--)
       {
          // Playsim actions.

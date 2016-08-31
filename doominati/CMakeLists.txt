@@ -22,12 +22,26 @@
 add_executable(doominati WIN32
    main_doominati.cpp
 
+   ${CMAKE_SOURCE_DIR}/Code/Codedefs.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Codedefs.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Function.hpp
+   ${CMAKE_SOURCE_DIR}/Code/OpCode.cpp
+   ${CMAKE_SOURCE_DIR}/Code/OpCode.hpp
+   ${CMAKE_SOURCE_DIR}/Code/OpList.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Program.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Types.hpp
+
    ${CMAKE_SOURCE_DIR}/Core/Coord.hpp
+   ${CMAKE_SOURCE_DIR}/Core/NTS.cpp
+   ${CMAKE_SOURCE_DIR}/Core/NTS.hpp
    ${CMAKE_SOURCE_DIR}/Core/Search.hpp
+   ${CMAKE_SOURCE_DIR}/Core/String.hpp
 
    ${CMAKE_SOURCE_DIR}/FS/Dir/Directory.cpp
    ${CMAKE_SOURCE_DIR}/FS/Dir.cpp
    ${CMAKE_SOURCE_DIR}/FS/Dir.hpp
+   ${CMAKE_SOURCE_DIR}/FS/File.cpp
+   ${CMAKE_SOURCE_DIR}/FS/File.hpp
 
    ${CMAKE_SOURCE_DIR}/GL/Shader.cpp
    ${CMAKE_SOURCE_DIR}/GL/Shader.hpp

@@ -13,8 +13,9 @@
 #ifndef Doom__FS__Dir_H__
 #define Doom__FS__Dir_H__
 
-#include <cstddef>
-#include <memory>
+#include "File.hpp"
+
+#include <functional>
 
 
 //----------------------------------------------------------------------------|
@@ -33,30 +34,15 @@ namespace Doom
 {
    namespace FS
    {
-      class File;
-
-      enum class Format
-      {
-         None,
-
-         DGE_NTS, // Doominati Game Engine Null-Terminated Strings
-         PAM,     // Portable Arbitrary Map
-         Pak,     // PAK archive
-         PBM,     // Portable Bit Map
-         PGM,     // Portable Gray Map
-         PPM,     // Portable Pixel Map
-         Wad,     // WAD archive
-         WAVE,    // Waveform Audio File Format
-
-         Unknown
-      };
-
       //
       // Dir
       //
       class Dir
       {
       public:
+         using ForFunc = std::function<void(File *)>;
+
+
          Dir() : name{""} {}
          Dir(Dir const &) = delete;
          Dir(Dir &&) = default;
@@ -68,6 +54,8 @@ namespace Doom
          virtual Dir *findDir(char const *name);
 
          virtual File *findFile(char const *name) = 0;
+
+         virtual void forFile(ForFunc const &fn) = 0;
 
          // Frees unused file allocations.
          virtual void prune();
@@ -81,40 +69,9 @@ namespace Doom
 
          static File *FindFile(char       *path);
          static File *FindFile(char const *path);
-      };
 
-      //
-      // File
-      //
-      class File
-      {
-      public:
-         File() :
-            data{nullptr},
-            name{""},
-            refs{0},
-            size{0},
-            format{Format::None}
-         {
-         }
-
-         File(char const *data_, std::size_t size_) :
-            data{data_},
-            name{""},
-            refs{0},
-            size{size_},
-            format{Format::None}
-         {
-         }
-
-         Dir *findDir();
-
-         std::unique_ptr<Dir> dir;
-         char const          *data;
-         char const          *name;
-         std::size_t          refs;
-         std::size_t          size;
-         Format               format;
+         static void ForFile(char       *path, ForFunc const &fn);
+         static void ForFile(char const *path, ForFunc const &fn);
       };
    }
 }
@@ -133,8 +90,6 @@ namespace Doom
       std::unique_ptr<Dir> CreateDir_Pak(std::unique_ptr<GDCC::Core::FileBlock> &&file);
       std::unique_ptr<Dir> CreateDir_Wad(File *file);
       std::unique_ptr<Dir> CreateDir_Wad(std::unique_ptr<GDCC::Core::FileBlock> &&file);
-
-      Format DetectFormat(char const *data, std::size_t size);
    }
 }
 

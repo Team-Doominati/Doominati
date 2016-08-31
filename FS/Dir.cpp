@@ -22,7 +22,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
 namespace Doom
@@ -78,6 +78,21 @@ namespace Doom
          std::tie(dir, path) = WalkPath(dir, path);
 
          return path ? dir->findFile(path) : nullptr;
+      }
+
+      //
+      // ForFile
+      //
+      static void ForFile(Dir *dir, char *path, Dir::ForFunc const &func)
+      {
+         std::tie(dir, path) = WalkPath(dir, path);
+
+         if(!path) return;
+
+         if(Dir *searchDir = dir->findDir(path))
+            searchDir->forFile(func);
+         else if(File *file = dir->findFile(path))
+            func(file);
       }
    }
 }
@@ -172,67 +187,20 @@ namespace Doom
       }
 
       //
-      // File::findDir
+      // Dir::ForFile
       //
-      Dir *File::findDir()
+      void Dir::ForFile(char *path, ForFunc const &fn)
       {
-         if(!dir) switch(format)
-         {
-         case Format::Pak:
-          //dir = DirCreate_Pak(this);
-            if(!dir) format = Format::Unknown;
-            break;
-
-         case Format::Wad:
-          //dir = DirCreate_Wad(this));
-            if(!dir) format = Format::Unknown;
-            break;
-
-         default: break;
-         }
-
-         return dir.get();
+         for(auto itr = Roots.rbegin(), end = Roots.rend(); itr != end; ++itr)
+            FS::ForFile(itr->get(), path, fn);
       }
 
       //
-      // DetectFormat
+      // Dir::ForFile
       //
-      Format DetectFormat(char const *data, std::size_t size)
+      void Dir::ForFile(char const *path, ForFunc const &fn)
       {
-         if(size < 3) return Format::Unknown;
-
-         // Portable * Map
-         if(data[0] == 'P' && std::isspace(data[2])) switch(data[1])
-         {
-         case '1': case '4': return Format::PBM;
-         case '2': case '5': return Format::PGM;
-         case '3': case '6': return Format::PPM;
-         case '7':           return Format::PAM;
-         }
-
-         if(size < 8) return Format::Unknown;
-
-         // Doominati Game Engine Null-Terminated Strings
-         if(data[0] == 'D' && data[1] == 'G' && data[2] == 'E' && data[3] == '_' &&
-            data[4] == 'N' && data[5] == 'T' && data[6] == 'S' && data[7] == '\0')
-            return Format::DGE_NTS;
-
-         if(size < 12) return Format::Unknown;
-
-         // PAK archive
-         if(data[0] == 'P' && data[1] == 'A' && data[2] == 'C' && data[3] == 'K')
-            return Format::Pak;
-
-         // WAD Archive
-         if((data[0] == 'I' || data[0] == 'P') && data[1] == 'W' && data[2] == 'A' && data[3] == 'D')
-            return Format::Wad;
-
-         // Waveform Audio File Format
-         if(data[0] == 'R' && data[1] == 'I' && data[ 2] == 'F' && data[ 3] == 'F' &&
-            data[8] == 'W' && data[9] == 'A' && data[10] == 'V' && data[11] == 'E')
-            return Format::WAVE;
-
-         return Format::Unknown;
+         return ForFile(GDCC::Core::StrDup(path).get(), fn);
       }
    }
 }
