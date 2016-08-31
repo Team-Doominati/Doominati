@@ -135,8 +135,6 @@ static int Main()
 
    Doom::Game::InputSource_Local input;
 
-   input.addListener_Button("Exit", Doom::Game::KC_ESCAPE);
-
    Doom::FS::Dir::AddRoot("."); // HACK
 
    if(auto file = Doom::FS::Dir::FindFile("startmsg"))
@@ -183,9 +181,6 @@ static int Main()
 
          auto const &inputNext = input.getNext();
          auto const &inputLast = input.getLast();
-
-         if(inputNext.input_btn.at("Exit").button)
-            return EXIT_SUCCESS;
       }
 
       // Rendering actions.
