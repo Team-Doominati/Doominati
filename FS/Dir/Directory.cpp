@@ -14,6 +14,7 @@
 
 #include "Core/Search.hpp"
 
+#include <GDCC/Core/Array.hpp>
 #include <GDCC/Core/Dir.hpp>
 #include <GDCC/Core/File.hpp>
 #include <GDCC/Core/String.hpp>
@@ -39,23 +40,21 @@ namespace Doom
 
          virtual File *findFile(char const *name);
 
+         virtual void forFile(ForFunc const &fn);
+
 
          friend std::unique_ptr<Dir> CreateDir_Directory(char const *name);
 
       protected:
-         Dir_Directory() : dirC{0}, fileC{0} {}
-
          void buildTables(char const *dirname);
 
          bool loadLump(File_Directory *file);
 
          std::unique_ptr<char[]> dirName;
 
-         std::unique_ptr<Dir_Directory[]> dirs;
-         std::size_t dirC;
+         GDCC::Core::Array<Dir_Directory> dirs;
 
-         std::unique_ptr<File_Directory[]> files;
-         std::size_t fileC;
+         GDCC::Core::Array<File_Directory> files;
       };
 
       //
@@ -87,6 +86,7 @@ namespace Doom
       void Dir_Directory::buildTables(char const *dirname)
       {
          // Count files and dirs.
+         std::size_t dirC = 0, fileC = 0;
          for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
          {
             if(GDCC::Core::IsDir(dir->getFull()))
@@ -95,11 +95,11 @@ namespace Doom
                ++fileC;
          }
 
-         if(dirC) dirs.reset(new Dir_Directory[dirC]);
-         if(fileC) files.reset(new File_Directory[fileC]);
+         dirs  = GDCC::Core::Array<Dir_Directory>{dirC};
+         files = GDCC::Core::Array<File_Directory>{fileC};
 
-         Dir_Directory *dirItr = dirs.get();
-         File_Directory *fileItr = files.get();
+         Dir_Directory *dirItr = dirs.begin();
+         File_Directory *fileItr = files.begin();
 
          // Set names. Load them as-needed.
          for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
@@ -123,11 +123,11 @@ namespace Doom
          }
 
          // Sort the lists for binary search.
-         std::sort(&files[0], &files[fileC],
+         std::sort(files.begin(), files.end(),
             [](File_Directory const &l, File_Directory const &r)
                {return std::strcmp(l.name, r.name) < 0;});
 
-         std::sort(&dirs[0], &dirs[dirC],
+         std::sort(dirs.begin(), dirs.end(),
             [](Dir_Directory const &l, Dir_Directory const &r)
                {return std::strcmp(l.name, r.name) < 0;});
       }
@@ -137,9 +137,9 @@ namespace Doom
       //
       Dir *Dir_Directory::findDir(char const *dirname)
       {
-         if(auto dir = Core::BSearchStr(&dirs[0], &dirs[dirC], dirname))
+         if(auto dir = Core::BSearchStr(dirs.begin(), dirs.end(), dirname))
          {
-            if(!dir->files && ! dir->dirs)
+            if(dir->files.empty() && dir->dirs.empty())
                dir->buildTables(dir->dirName.get());
 
             return dir;
@@ -153,10 +153,22 @@ namespace Doom
       //
       File *Dir_Directory::findFile(char const *filename)
       {
-         if(auto file = Core::BSearchStr(&files[0], &files[fileC], filename))
+         if(auto file = Core::BSearchStr(files.begin(), files.end(), filename))
             return file->readFile() ? file : nullptr;
 
          return nullptr;
+      }
+
+      //
+      // Dir_Directory::forFile
+      //
+      void Dir_Directory::forFile(ForFunc const &fn)
+      {
+         for(auto &dir : dirs)
+            dir.forFile(fn);
+
+         for(auto &file : files)
+            if(file.readFile()) fn(&file);
       }
 
       //
