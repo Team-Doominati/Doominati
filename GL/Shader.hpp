@@ -40,10 +40,10 @@ namespace Doom
 			friend class Window;
 
 		public:
-			Shader() = delete;
+			Shader();
 			Shader(Doom::FS::File *ffp, Doom::FS::File *vfp);
-			Shader(Shader &other) = delete;
-			Shader(Shader const &&other);
+			Shader(Shader const &brother) = delete; // [Yholl]
+			Shader(Shader &&other);
 
 			void openFrag(Doom::FS::File *fp);
 			void openVert(Doom::FS::File *fp);

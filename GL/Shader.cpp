@@ -22,6 +22,17 @@ namespace Doom
 {
 	namespace GL
 	{
+      //
+      // Shader constructor
+      //
+      
+      Shader::Shader() :
+         handlef{},
+         handlev{},
+         program{}
+      {
+      }
+      
 		//
 		// Shader constructor
 		//
@@ -33,13 +44,14 @@ namespace Doom
 		{
 			openFrag(ffp);
 			openVert(vfp);
+         compile();
 		}
 
 		//
-		// Shader move constructor
+		// Shader constructor
 		//
 
-		Shader::Shader(Shader const &&other) :
+		Shader::Shader(Shader &&other) :
 			handlef{other.handlef},
 			handlev{other.handlev}
 		{
