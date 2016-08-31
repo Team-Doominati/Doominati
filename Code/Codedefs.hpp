@@ -95,10 +95,10 @@ namespace Doom
 
          Word *findLabel(Core::HashedStr glyph);
 
-         void genCode(OpCode *out, RawExp const &in);
-
          void genCodes(Program *prog);
          void genFuncs(Program *prog);
+
+         Word getLabel(Core::HashedStr glyph);
 
          RawExp loadExp(Core::NTSStream &in);
 

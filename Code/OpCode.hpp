@@ -42,7 +42,7 @@ namespace Doom
          };
 
 
-         std::uint16_t                 op;
+         Op                            op;
          union H {HWord h; Byte b[2];} h;
          union W {Word  w; H    h[2];} w;
       };

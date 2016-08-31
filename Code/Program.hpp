@@ -17,6 +17,8 @@
 #include "Code/OpCode.hpp"
 #include "Code/Types.hpp"
 
+#include "Core/HashMapFixed.hpp"
+
 #include <GDCC/Core/Array.hpp>
 #include <GDCC/Core/String.hpp>
 
@@ -35,8 +37,8 @@ namespace Doom
       class Program
       {
       public:
-         GDCC::Core::Array<OpCode>   codes;
-         GDCC::Core::Array<Function> funcByIdx;
+         GDCC::Core::Array<OpCode>                        codes;
+         Core::HashMapFixed<GDCC::Core::String, Function> funcs;
       };
    }
 }

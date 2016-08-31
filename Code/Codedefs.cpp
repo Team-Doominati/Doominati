@@ -38,7 +38,7 @@ namespace Doom
       class CodeTrans
       {
       public:
-         void       (*gen)(Loader *, OpCode *, Loader::RawExpA const &);
+         void      (*gen)(Loader *, OpCode *, Loader::RawExpA const &);
          std::size_t argc;
          std::size_t count;
          OpCode::Op  op;
@@ -55,8 +55,9 @@ namespace Doom
 {
    namespace Code
    {
-      static void GenCode(Loader *loader, OpCode *out, Loader::RawExpA const &in);
-      static void GenCodeW(Loader *loader, OpCode *out, Loader::RawExpA const &in);
+      static void GenCode(Loader *loader, OpCode *code, Loader::RawExpA const &args);
+      static void GenCodeHW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
+      static void GenCodeW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    }
 }
 
@@ -71,12 +72,16 @@ namespace Doom
    {
       static std::unordered_map<GDCC::Core::String, CodeTrans> CodeTransTab
       {
-         {"Drop_Nul", {GenCode,  0, 1, OpCode::Drop_Nul}},
-         {"Drop_Ptr", {GenCode,  0, 1, OpCode::Drop_Ptr}},
-         {"Drop_Reg", {GenCodeW, 1, 1, OpCode::Drop_Reg}},
-         {"Push_Lit", {GenCodeW, 1, 1, OpCode::Push_Lit}},
-         {"Push_Ptr", {GenCode,  0, 1, OpCode::Push_Ptr}},
-         {"Push_Reg", {GenCodeW, 1, 1, OpCode::Push_Reg}},
+         {"Kill",     {GenCodeHW, 2, 1, OpCode::Kill}},
+
+         {"Call",     {GenCodeW,  1, 1, OpCode::Call}},
+         {"Drop_Nul", {GenCode,   0, 1, OpCode::Drop_Nul}},
+         {"Drop_Ptr", {GenCode,   0, 1, OpCode::Drop_Ptr}},
+         {"Drop_Reg", {GenCodeW,  1, 1, OpCode::Drop_Reg}},
+         {"Push_Lit", {GenCodeW,  1, 1, OpCode::Push_Lit}},
+         {"Push_Ptr", {GenCode,   0, 1, OpCode::Push_Ptr}},
+         {"Push_Reg", {GenCodeW,  1, 1, OpCode::Push_Reg}},
+         {"Retn",     {GenCode,   0, 1, OpCode::Retn}},
       };
    }
 }
@@ -91,22 +96,44 @@ namespace Doom
    namespace Code
    {
       //
+      // GenCode_Kill
+      //
+      static void GenCode_Kill(OpCode *code, HWord type, Word data)
+      {
+         code->op  = OpCode::Kill;
+         code->h.h = type;
+         code->w.w = data;
+
+         std::cerr << "OpCode: " << code->op << '(' << code->h.h << ',' << code->w.w << ")\n";
+      }
+
+      //
       // GenCode
       //
-      static void GenCode(Loader *, OpCode *out, Loader::RawExpA const &)
+      static void GenCode(Loader *, OpCode *code, Loader::RawExpA const &)
       {
-         std::cerr << "OpCode: " << static_cast<OpCode::Op>(out->op) << '\n';
+         std::cerr << "OpCode: " << code->op << "()\n";
+      }
+
+      //
+      // GenCodeHW
+      //
+      static void GenCodeHW(Loader *loader, OpCode *code, Loader::RawExpA const &args)
+      {
+         code->h.h = loader->evalExp(args[0]);
+         code->w.w = loader->evalExp(args[1]);
+
+         std::cerr << "OpCode: " << code->op << '(' << code->h.h << ',' << code->w.w << ")\n";
       }
 
       //
       // GenCodeW
       //
-      static void GenCodeW(Loader *loader, OpCode *out, Loader::RawExpA const &in)
+      static void GenCodeW(Loader *loader, OpCode *code, Loader::RawExpA const &args)
       {
-         out->w.w = loader->evalExp(in[0]);
+         code->w.w = loader->evalExp(args[0]);
 
-         std::cerr << "OpCode: " << static_cast<OpCode::Op>(out->op)
-            << '(' << out->w.w << ")\n";
+         std::cerr << "OpCode: " << code->op << '(' << code->w.w << ")\n";
       }
    }
 }
@@ -127,7 +154,7 @@ namespace Doom
          loadFAIL{0},
          loadPASS{0},
 
-         codeCount{0},
+         codeCount{1},
          globalCount{0}
       {
       }
@@ -267,11 +294,12 @@ namespace Doom
       //
       void Loader::gen(Program *prog)
       {
-         prog->codes = GDCC::Core::Array<OpCode>{codeCount};
-
+         prog->codes = GDCC::Core::Array<OpCode>{codeCount + 1};
          genCodes(prog);
 
-         // TODO: Functions.
+         prog->funcs.alloc(funcs.size());
+         genFuncs(prog);
+         prog->funcs.build();
       }
 
       //
@@ -281,6 +309,8 @@ namespace Doom
       {
          auto codeItr = prog->codes.begin();
 
+         GenCode_Kill(codeItr++, 0, 0);
+
          for(auto &code : codes)
          {
             auto const &trans = CodeTransTab[code.first];
@@ -288,6 +318,43 @@ namespace Doom
             trans.gen(this, codeItr, code.second);
             codeItr += trans.count;
          }
+
+         GenCode_Kill(codeItr++, 0, 1);
+      }
+
+      //
+      // Loader::genFuncs
+      //
+      void Loader::genFuncs(Program *prog)
+      {
+         auto funcItr = prog->funcs.begin();
+
+         for(auto &func : funcs)
+         {
+            OpCode *entry = &prog->codes[getLabel(func.label)];
+
+            funcItr->key = func.glyph;
+            funcItr->val = {entry, func.local, func.param};
+
+            std::cerr << "Function: " << funcItr->key << '('
+               << funcItr->val.param << ") @"
+               << funcItr->val.entry - prog->codes.data() << " {"
+               << funcItr->val.local << "}\n";
+
+            ++funcItr;
+         }
+      }
+
+      //
+      // Loader::getLabel
+      //
+      Word Loader::getLabel(Core::HashedStr glyph)
+      {
+         if(auto label = findLabel(glyph))
+            return *label;
+
+         // TODO: Throw parse exception.
+         return 0;
       }
 
       //
@@ -399,7 +466,7 @@ namespace Doom
             if(std::strcmp(code, "label") == 0)
                addLabel(in.get());
 
-            else if(in.drop(")"))
+            else if(in.peek(")"))
                addCode(code, {});
 
             else
