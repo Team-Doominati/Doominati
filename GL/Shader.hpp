@@ -22,39 +22,39 @@
 
 namespace Doom
 {
-	namespace FS
-	{
-		class File;
-	}
+   namespace FS
+   {
+      class File;
+   }
 
-	namespace GL
-	{
-		class Window;
-		
-		//
-		// Shader
-		//
+   namespace GL
+   {
+      class Window;
+      
+      //
+      // Shader
+      //
 
-		class Shader
-		{
-			friend class Window;
+      class Shader
+      {
+         friend class Window;
 
-		public:
-			Shader();
-			Shader(Doom::FS::File *ffp, Doom::FS::File *vfp);
-			Shader(Shader const &brother) = delete; // [Yholl]
-			Shader(Shader &&other);
+      public:
+         Shader();
+         Shader(Doom::FS::File *ffp, Doom::FS::File *vfp);
+         Shader(Shader const &brother) = delete; // [Yholl]
+         Shader(Shader &&other);
 
-			void openFrag(Doom::FS::File *fp);
-			void openVert(Doom::FS::File *fp);
-			void compile();
+         void openFrag(Doom::FS::File *fp);
+         void openVert(Doom::FS::File *fp);
+         void compile();
 
-		protected:
-			GLuint handlef;
-			GLuint handlev;
-			GLuint program;
-		};
-	}
+      protected:
+         GLuint handlef;
+         GLuint handlev;
+         GLuint program;
+      };
+   }
 }
 
 #endif//Doom__GL__Shader_H__

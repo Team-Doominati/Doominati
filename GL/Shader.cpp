@@ -20,8 +20,8 @@
 
 namespace Doom
 {
-	namespace GL
-	{
+   namespace GL
+   {
       //
       // Shader constructor
       //
@@ -33,131 +33,131 @@ namespace Doom
       {
       }
       
-		//
-		// Shader constructor
-		//
+      //
+      // Shader constructor
+      //
 
-		Shader::Shader(Doom::FS::File *ffp, Doom::FS::File *vfp) :
-			handlef{},
-			handlev{},
-			program{}
-		{
-			openFrag(ffp);
-			openVert(vfp);
+      Shader::Shader(Doom::FS::File *ffp, Doom::FS::File *vfp) :
+         handlef{},
+         handlev{},
+         program{}
+      {
+         openFrag(ffp);
+         openVert(vfp);
          compile();
-		}
+      }
 
-		//
-		// Shader constructor
-		//
+      //
+      // Shader constructor
+      //
 
-		Shader::Shader(Shader &&other) :
-			handlef{other.handlef},
-			handlev{other.handlev}
-		{
-			other.handlef = 0;
-			other.handlev = 0;
-		}
+      Shader::Shader(Shader &&other) :
+         handlef{other.handlef},
+         handlev{other.handlev}
+      {
+         other.handlef = 0;
+         other.handlev = 0;
+      }
 
-		//
-		// OpenShader
-		//
+      //
+      // OpenShader
+      //
 
-		template<GLenum Type>
-		GLuint OpenShader(Doom::FS::File *fp)
-		{
-			GLuint handle = glCreateShader(Type);
+      template<GLenum Type>
+      GLuint OpenShader(Doom::FS::File *fp)
+      {
+         GLuint handle = glCreateShader(Type);
 
-			glShaderSource(handle, 1, fp->data, nullptr);
-			glCompileShader(handle);
+         glShaderSource(handle, 1, fp->data, nullptr);
+         glCompileShader(handle);
 
-			GLint compiled;
-			glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
+         GLint compiled;
+         glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
 
-			if(compiled != GL_TRUE)
-			{
-				GLsizei errlen = 0;
-				GLchar err[1024];
+         if(compiled != GL_TRUE)
+         {
+            GLsizei errlen = 0;
+            GLchar err[1024];
 
-				glGetShaderInfoLog(handlev, 1024, &errlen, err);
-				std::cerr << "OpenShader: " << err << '\n';
+            glGetShaderInfoLog(handlev, 1024, &errlen, err);
+            std::cerr << "OpenShader: " << err << '\n';
 
-				return 0;
-			}
+            return 0;
+         }
 
-			return handle;
-		}
+         return handle;
+      }
 
-		//
-		// Shader::openFrag
-		//
+      //
+      // Shader::openFrag
+      //
 
-		void Shader::openFrag(Doom::FS::File *fp)
-		{
-			if(handlef)
-			{
-				std::cerr << "Shader::openFrag: already open\n";
-				return;
-			}
+      void Shader::openFrag(Doom::FS::File *fp)
+      {
+         if(handlef)
+         {
+            std::cerr << "Shader::openFrag: already open\n";
+            return;
+         }
 
-			handlef = OpenShader<GL_FRAGMENT_SHADER>(fp);
-		}
+         handlef = OpenShader<GL_FRAGMENT_SHADER>(fp);
+      }
 
-		//
-		// Shader::openVert
-		//
+      //
+      // Shader::openVert
+      //
 
-		void Shader::openVert(Doom::FS::File *fp)
-		{
-			if(handlev)
-			{
-				std::cerr << "Shader::openVert: already open\n";
-				return;
-			}
+      void Shader::openVert(Doom::FS::File *fp)
+      {
+         if(handlev)
+         {
+            std::cerr << "Shader::openVert: already open\n";
+            return;
+         }
 
-			handlev = OpenShader<GL_VERTEX_SHADER>(fp);
-		}
+         handlev = OpenShader<GL_VERTEX_SHADER>(fp);
+      }
 
-		//
-		// Shader::compile
-		//
+      //
+      // Shader::compile
+      //
 
-		void Shader::compile()
-		{
-			if(!handlef || !handlev)
-			{
-				std::cerr << "Shader::compile: fragment or vertex handle is 0\n";
-				return;
-			}
+      void Shader::compile()
+      {
+         if(!handlef || !handlev)
+         {
+            std::cerr << "Shader::compile: fragment or vertex handle is 0\n";
+            return;
+         }
 
-			if(program)
-			{
-				std::cerr << "Shader::compile: already open";
-				return;
-			}
+         if(program)
+         {
+            std::cerr << "Shader::compile: already open";
+            return;
+         }
 
-			program = glCreateProgram();
+         program = glCreateProgram();
 
-			glAttachShader(program, handlef);
-			glAttachShader(program, handlev);
+         glAttachShader(program, handlef);
+         glAttachShader(program, handlev);
 
-			glLinkProgram(program);
+         glLinkProgram(program);
 
-			GLint linked;
-			glGetProgramiv(program, GL_LINK_STATUS, &linked);
+         GLint linked;
+         glGetProgramiv(program, GL_LINK_STATUS, &linked);
 
-			if(linked != GL_TRUE)
-			{
-				GLsizei errlen = 0;
-				GLchar err[1024];
+         if(linked != GL_TRUE)
+         {
+            GLsizei errlen = 0;
+            GLchar err[1024];
 
-				glGetProgramInfoLog(program, 1024, &errlen, err);
+            glGetProgramInfoLog(program, 1024, &errlen, err);
 
-				std::cerr << "Shader::compile: " << err << '\n';
-				program = 0;
-			}
-		}
-	}
+            std::cerr << "Shader::compile: " << err << '\n';
+            program = 0;
+         }
+      }
+   }
 }
 
 // EOF

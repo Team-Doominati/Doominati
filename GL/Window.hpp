@@ -24,7 +24,7 @@ namespace Doom
 {
    namespace GL
    {
-		class Shader;
+      class Shader;
 
       //
       // Window
@@ -39,8 +39,8 @@ namespace Doom
          void renderBegin();
          void renderEnd();
 
-			void shaderSwap(Shader *sp);
-			void shaderDrop();
+         void shaderSwap(Shader *sp);
+         void shaderDrop();
 
          int w, h;
          float xl, yl, xh, yh;

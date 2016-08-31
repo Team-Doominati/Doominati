@@ -125,19 +125,19 @@ namespace Doom
       // Window::shaderSwap
       //
 
-		void Window::shaderSwap(Shader *sp)
-		{
-			glUseProgram(sp->program);
-		}
+      void Window::shaderSwap(Shader *sp)
+      {
+         glUseProgram(sp->program);
+      }
 
-		//
-		// Window::shaderDrop
-		//
+      //
+      // Window::shaderDrop
+      //
 
-		void Window::shaderDrop()
-		{
-			glUseProgram(0);
-		}
+      void Window::shaderDrop()
+      {
+         glUseProgram(0);
+      }
 
       //
       // Window::resize
