@@ -163,14 +163,6 @@ static int Main()
    std::size_t timeLast = GetTicks<PlayTick>();
    std::size_t timeNext;
 
-   {
-
-      GLuint vsp = glCreateShader(GL_VERTEX_SHADER);
-      glShaderSource();
-
-      GLuint fsp = glCreateShader(GL_FRAGMENT_SHADER);
-   }
-
    for(;;)
    {
       std::size_t timeDelta;

@@ -136,6 +136,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
+         // TODO: set to base shader program
          glUseProgram(0);
       }
 
