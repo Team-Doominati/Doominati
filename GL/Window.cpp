@@ -45,12 +45,6 @@ namespace Doom
       Window::Window(int w_, int h_) :
          w{w_}, h{h_}
       {
-         if(SDL_InitSubSystem(SDL_INIT_VIDEO))
-         {
-            std::cerr << "SDL_InitSubSystem: " << SDL_GetError() << '\n';
-            throw EXIT_FAILURE;
-         }
-
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
 
@@ -92,7 +86,6 @@ namespace Doom
       {
          SDL_GL_DeleteContext(gl);
          SDL_DestroyWindow(window);
-         SDL_QuitSubSystem(SDL_INIT_VIDEO);
       }
 
       //
