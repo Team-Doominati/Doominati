@@ -13,6 +13,7 @@
 #include "Code/Task.hpp"
 
 #include "Code/OpCode.hpp"
+#include "Code/Program.hpp"
 
 #include <iostream>
 
@@ -54,6 +55,15 @@
 #define NextCase() ++codePtr; goto next_case
 #endif
 
+//
+// ThisCase
+//
+#if Doom_Code_DynamicGoto
+#define ThisCase() goto *cases[codePtr->op]
+#else
+#define ThisCase() goto next_case
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -83,7 +93,7 @@ namespace Doom
          #endif
 
          #if Doom_Code_DynamicGoto
-         goto *cases[codePtr->op];
+         ThisCase();
          #else
          next_case: switch(codePtr->op)
          #endif
@@ -93,8 +103,42 @@ namespace Doom
             goto task_stop;
 
          DeclCase(Call):
-            // TODO
-            goto task_stop;
+         {
+            Function *func = &prog->funcs[dataStk[1]];
+            dataStk.drop();
+
+            // Reserve stack space.
+            callStk.reserve(CallStkSize);
+            dataStk.reserve(DataStkSize);
+
+            // Push call frame.
+            callStk.push({codePtr, (Word)locReg.size(), vaaRegC});
+
+            // Process arguments.
+            Word argC = codePtr->w.w;
+            auto argV = &dataStk[argC];
+            Word vaaC = argC > func->param ? argC - func->param : 0;
+            auto vaaV = argV + argC - vaaC;
+
+            // Copy variadic arguments.
+            locReg.alloc(vaaC);
+            std::copy(vaaV, vaaV + vaaC, &locReg[0]);
+
+            // Copy normal arguments.
+            locReg.alloc(std::max(func->local, func->param));
+            std::copy(argV, vaaV, &locReg[0]);
+
+            // Fill missing arguments.
+            if(argC < func->param)
+               std::fill(&locReg[argC], &locReg[func->param], 0);
+
+            dataStk.drop(argC);
+
+            // Apply function data.
+            codePtr = func->entry;
+            vaaRegC = vaaC;
+         }
+            ThisCase();
 
          DeclCase(Drop_Nul):
             dataStk.drop();
@@ -129,8 +173,10 @@ namespace Doom
 
             // Apply call frame.
             codePtr   = callStk[1].codePtr;
+            vaaRegC   = callStk[1].vaaRegC;
             locReg.free(callStk[1].locRegC);
             locReg.free(callStk[1].vaaRegC);
+
 
             // Drop call frame.
             callStk.drop();

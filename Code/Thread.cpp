@@ -62,7 +62,7 @@ namespace Doom
       {
          Task *task = Task::Create(this);
 
-         Word vaaC = argC > func->param ? func->param - argC : 0;
+         Word vaaC = argC > func->param ? argC - func->param : 0;
          auto vaaV = argV + argC - vaaC;
 
          // Copy variadic arguments.

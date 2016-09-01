@@ -133,10 +133,10 @@ namespace Doom
          //
          void free(std::size_t count)
          {
-         while(activeEnd != active)
-            (--activeEnd)->~T();
+            while(activeEnd != active)
+               (--activeEnd)->~T();
 
-         active -= count;
+            active -= count;
          }
 
          // size
