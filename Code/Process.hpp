@@ -6,14 +6,16 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Common typedefs.
+// Script VM processes.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Types_H__
-#define Doom__Code__Types_H__
+#ifndef Doom__Code__Process_H__
+#define Doom__Code__Process_H__
 
-#include <cstdint>
+#include "Code/Types.hpp"
+
+#include "Core/List.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -24,18 +26,23 @@ namespace Doom
 {
    namespace Code
    {
-      class Function;
-      class OpCode;
-      class Process;
-      class Program;
-      class Task;
-      class Thread;
+      //
+      // Process
+      //
+      class Process
+      {
+      public:
+         Process(Program *prog);
+         ~Process();
 
-      using Byte  = std::uint8_t;
-      using HWord = std::uint16_t;
-      using Word  = std::uint32_t;
+         void exec();
+
+         Core::ListLink<Thread> threads;
+
+         Program *const prog;
+      };
    }
 }
 
-#endif//Doom__Code__Types_H__
+#endif//Doom__Code__Process_H__
 
