@@ -52,7 +52,7 @@ namespace Doom
          SDL_GLContext gl;
          SDL_Window   *window;
          
-         Shader baseShader;
+         Shader *baseShader;
       };
    }
 }

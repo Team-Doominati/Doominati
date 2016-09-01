@@ -13,7 +13,7 @@
 #ifndef Doom__GL__Shader_H__
 #define Doom__GL__Shader_H__
 
-#include "SDL_opengl.h"
+#include "GL/gl_2_1.h"
 
 #include <exception>
 

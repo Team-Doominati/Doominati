@@ -11,6 +11,9 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Shader.hpp"
+#include "FS/File.hpp"
+
+#include "GL/gl_2_1.h"
 
 
 //----------------------------------------------------------------------------|
@@ -39,8 +42,8 @@ namespace Doom
       Shader::Shader(char const *f, char const *v) :
          Shader{}
       {
-         openFrag(f);
-         openVert(v);
+         compileFrag(f);
+         compileVert(v);
          link();
       }
       
@@ -51,8 +54,8 @@ namespace Doom
       Shader::Shader(Doom::FS::File *ffp, Doom::FS::File *vfp) :
          Shader{}
       {
-         openFragFile(ffp);
-         openVertFile(vfp);
+         compileFragFile(ffp);
+         compileVertFile(vfp);
          link();
       }
 
@@ -79,7 +82,7 @@ namespace Doom
       {
          GLuint handle = glCreateShader(Type);
 
-         glShaderSource(handle, 1, data, nullptr);
+         glShaderSource(handle, 1, &data, nullptr);
          glCompileShader(handle);
 
          GLint compiled;
@@ -90,7 +93,7 @@ namespace Doom
             static GLchar err[1024];
             GLsizei errlen = 0;
 
-            glGetShaderInfoLog(handlev, 1024, &errlen, err);
+            glGetShaderInfoLog(handle, 1024, &errlen, err);
             
             throw new ShaderError(err);
          }
@@ -165,7 +168,7 @@ namespace Doom
          if(!fp)
             throw new ShaderError("Shader::compileFragFile: bad file\n");
          
-         openFrag(fp->data);
+         compileFrag(fp->data);
       }
 
       //
@@ -177,7 +180,7 @@ namespace Doom
          if(!fp)
             throw new ShaderError("Shader::compileVertFile: bad file\n");
          
-         openVert(fp->data);
+         compileVert(fp->data);
       }
    }
 }

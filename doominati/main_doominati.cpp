@@ -29,7 +29,7 @@
 #include <cmath>
 
 #include "SDL.h"
-#include "SDL_opengl.h"
+#include "GL/gl_2_1.h"
 
 
 //----------------------------------------------------------------------------|

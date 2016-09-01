@@ -50,8 +50,8 @@ if(   CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
 endif()
 
 if(MSVC)
-   add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast
-                   /wd4996 /wd4800 /wd4244 /wd4800 /wd4146)
+   add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast)
+   add_definitions(/wd4996 /wd4800 /wd4244 /wd4800 /wd4146 /wd4055 /wd4054)
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")

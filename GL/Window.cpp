@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "SDL_opengl.h"
+#include "GL/gl_2_1.h"
 
 
 //----------------------------------------------------------------------------|
@@ -104,7 +104,7 @@ namespace Doom
 
          resize(w, h);
          
-         baseShader = Shader{baseFragShader, baseVertShader};
+         baseShader = new Shader{baseFragShader, baseVertShader};
          shaderDrop();
       }
 
@@ -163,7 +163,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
-         shaderSwap(baseShader);
+         shaderSwap(*baseShader);
       }
 
       //
