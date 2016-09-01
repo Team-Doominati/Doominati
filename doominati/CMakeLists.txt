@@ -27,13 +27,24 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Code/OpCode.cpp
    ${CMAKE_SOURCE_DIR}/Code/OpCode.hpp
    ${CMAKE_SOURCE_DIR}/Code/OpList.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Process.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Process.hpp
    ${CMAKE_SOURCE_DIR}/Code/Program.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Task.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Task.hpp
+   ${CMAKE_SOURCE_DIR}/Code/TaskExec.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Thread.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Thread.hpp
    ${CMAKE_SOURCE_DIR}/Code/Types.hpp
 
    ${CMAKE_SOURCE_DIR}/Core/Coord.hpp
+   ${CMAKE_SOURCE_DIR}/Core/HashMapFixed.hpp
+   ${CMAKE_SOURCE_DIR}/Core/List.hpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.cpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.hpp
    ${CMAKE_SOURCE_DIR}/Core/Search.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Stack.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Store.hpp
    ${CMAKE_SOURCE_DIR}/Core/String.hpp
 
    ${CMAKE_SOURCE_DIR}/FS/Dir/Directory.cpp

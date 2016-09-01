@@ -11,7 +11,9 @@
 //-----------------------------------------------------------------------------
 
 #include "Code/Codedefs.hpp"
+#include "Code/Process.hpp"
 #include "Code/Program.hpp"
+#include "Code/Thread.hpp"
 
 #include "FS/Dir.hpp"
 
@@ -117,6 +119,26 @@ static void DrawTest()
 }
 
 //
+// LoadCodedefs
+//
+static void LoadCodedefs(Doom::Code::Program *prog)
+{
+   Doom::Code::Loader loader;
+   Doom::FS::Dir::ForFile("codedefs",
+      std::bind(&Doom::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
+
+   std::cerr << "Loaded " << loader.loadPASS << " codedefs.\n";
+
+   if(loader.loadFAIL)
+   {
+      std::cerr << "Encountered " << loader.loadFAIL << " codedefs errors.\n";
+      throw EXIT_FAILURE;
+   }
+
+   loader.gen(prog);
+}
+
+//
 // Main
 //
 
@@ -140,24 +162,13 @@ static int Main()
    if(auto file = Doom::FS::Dir::FindFile("startmsg"))
       std::cout << file->data << std::endl; // HACK
 
-   // Load CODEDEFS.
-   // Needless to say, this should go somewhere else at some point.
-   {
-      Doom::Code::Loader loader;
-      Doom::FS::Dir::ForFile("codedefs",
-         std::bind(&Doom::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
+   // Initialize scripting and call main.
+   Doom::Code::Program prog;
+   LoadCodedefs(&prog);
+   Doom::Code::Process proc{&prog};
 
-      std::cerr << "Loaded " << loader.loadPASS << " codedefs.\n";
-
-      if(loader.loadFAIL)
-      {
-         std::cerr << "Encountered " << loader.loadFAIL << " codedefs errors.\n";
-         throw EXIT_FAILURE;
-      }
-
-      Doom::Code::Program prog;
-      loader.gen(&prog);
-   }
+   if(auto func = prog.funcs.find("main"))
+      proc.threads.next->obj->startTask(func, nullptr, 0);
 
    std::size_t timeLast = GetTicks<PlayTick>();
    std::size_t timeNext;
@@ -176,11 +187,8 @@ static int Main()
       else while(timeDelta--)
       {
          // Playsim actions.
-
          input.poll();
-
-         auto const &inputNext = input.getNext();
-         auto const &inputLast = input.getLast();
+         proc.exec();
       }
 
       // Rendering actions.
