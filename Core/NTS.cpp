@@ -13,6 +13,7 @@
 #include "Core/NTS.hpp"
 
 #include <GDCC/Core/Exception.hpp>
+#include <GDCC/Core/Token.hpp>
 
 #include <cstring>
 

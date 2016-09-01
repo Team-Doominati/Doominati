@@ -20,6 +20,7 @@
 
 #include <GDCC/Core/Exception.hpp>
 #include <GDCC/Core/String.hpp>
+#include <GDCC/Core/Token.hpp>
 
 #include <iostream>
 
