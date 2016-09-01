@@ -14,6 +14,7 @@
 #define Doom__GL__Window_H__
 
 #include "SDL.h"
+#include "GL/Shader.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -24,8 +25,6 @@ namespace Doom
 {
    namespace GL
    {
-      class Shader;
-
       //
       // Window
       //
@@ -39,7 +38,7 @@ namespace Doom
          void renderBegin();
          void renderEnd();
 
-         void shaderSwap(Shader *sp);
+         void shaderSwap(Shader &sp);
          void shaderDrop();
 
          int w, h;
@@ -52,6 +51,8 @@ namespace Doom
 
          SDL_GLContext gl;
          SDL_Window   *window;
+         
+         Shader baseShader;
       };
    }
 }

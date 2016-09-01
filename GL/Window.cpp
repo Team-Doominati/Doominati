@@ -19,6 +19,30 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Objects                                                             |
+//
+
+static char const baseFragShader[] = R"(
+   #version 120
+   
+   void main(void)
+   {
+      gl_FragColor = vec4(0.94, 0.0, 0.56, 1.0);
+   }
+)";
+
+// TODO: Reimplement vertex shader with custom pipeline.
+static char const baseVertShader[] = R"(
+   #version 120
+   
+   void main(void)
+   {
+      gl_Position = ftransform();
+   }
+)";
+
+
+//----------------------------------------------------------------------------|
 // Extern Objects                                                             |
 //
 
@@ -79,6 +103,9 @@ namespace Doom
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
          resize(w, h);
+         
+         baseShader = Shader{baseFragShader, baseVertShader};
+         shaderDrop();
       }
 
       //
@@ -125,9 +152,9 @@ namespace Doom
       // Window::shaderSwap
       //
 
-      void Window::shaderSwap(Shader *sp)
+      void Window::shaderSwap(Shader &sp)
       {
-         glUseProgram(sp->program);
+         glUseProgram(sp.program);
       }
 
       //
@@ -136,8 +163,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
-         // TODO: set to base shader program
-         glUseProgram(0);
+         shaderSwap(baseShader);
       }
 
       //
