@@ -170,7 +170,7 @@ namespace Doom
       // Window::drawColorSet
       //
       
-      void Window::drawColorSet(Color &col)
+      void Window::drawColorSet(Color const &col)
       {
          drawColorSet(float(col.r), float(col.g), float(col.b), float(col.a));
       }

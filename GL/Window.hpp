@@ -41,7 +41,7 @@ namespace Doom
          void renderEnd();
          
          void drawColorSet(float r, float g, float b, float a = 1.0f);
-         void drawColorSet(Color &col);
+         void drawColorSet(Color const &col);
          Color drawColorGet();
          
          void drawLine(int x1, int y1, int x2, int y2);
