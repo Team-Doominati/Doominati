@@ -58,6 +58,9 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/GL/Shader.hpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Color.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Color.hpp
+   ${CMAKE_SOURCE_DIR}/GL/DynamicBuffer.hpp
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.c
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.h
 

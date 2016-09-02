@@ -25,7 +25,7 @@
 static char const baseFragShader[] = R"(
    #version 120
    
-   uniform vec4 color;
+   varying vec4 color;
    
    void main(void)
    {
@@ -33,13 +33,15 @@ static char const baseFragShader[] = R"(
    }
 )";
 
-// TODO: Reimplement vertex shader with custom pipeline.
 static char const baseVertShader[] = R"(
    #version 120
+   
+   varying vec4 color;
    
    void main(void)
    {
       gl_Position = ftransform();
+      color = gl_Color;
    }
 )";
 
@@ -106,9 +108,9 @@ namespace Doom
 
          resize(w, h);
          
-         baseShader = new Shader{baseFragShader, baseVertShader};
+         shaderBase = new Shader{baseFragShader, baseVertShader};
          shaderDrop();
-         setDrawColor(1.0, 1.0, 1.0);
+         drawColorSet(1.0, 1.0, 1.0);
       }
 
       //
@@ -152,13 +154,48 @@ namespace Doom
       }
       
       //
-      // Window::setDrawColor
+      // Window::drawColorSet
       //
       
-      void Window::setDrawColor(float r, float g, float b, float a)
+      void Window::drawColorSet(float r, float g, float b, float a)
       {
-         GLint location = glGetUniformLocation(shaderCurrent->program, "color");
-         glUniform4f(location, r, g, b, a);
+         glColor4f(r, g, b, a);
+         cr = r;
+         cg = g;
+         cb = b;
+         ca = a;
+      }
+      
+      //
+      // Window::drawColorSet
+      //
+      
+      void Window::drawColorSet(Color &col)
+      {
+         drawColorSet(float(col.r), float(col.g), float(col.b), float(col.a));
+      }
+      
+      //
+      // Window::drawColorGet
+      //
+      
+      Color Window::drawColorGet()
+      {
+         return { cr, cg, cb, ca };
+      }
+      
+      //
+      // Window::drawLine
+      //
+      
+      void Window::drawLine(int x1, int y1, int x2, int y2)
+      {
+         glBegin(GL_LINES);
+         
+         glVertex2f(x1, y1);
+         glVertex2f(x2, y2);
+         
+         glEnd();
       }
 
       //
@@ -177,7 +214,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
-         shaderSwap(baseShader);
+         shaderSwap(shaderBase);
       }
 
       //

@@ -29,7 +29,6 @@
 #include <cmath>
 
 #include "SDL.h"
-#include "GL/gl_2_1.h"
 
 
 //----------------------------------------------------------------------------|
@@ -79,42 +78,25 @@ static void DrawTest()
    auto yl = WindowCurrent->yl;
    auto yh = WindowCurrent->yh;
 
-   glBegin(GL_LINES);
+   WindowCurrent->drawColorSet(0.0f, 0.0f, 1.0f);
 
-   WindowCurrent->setDrawColor(0.0f, 0.0f, 1.0f);
+   WindowCurrent->drawLine(xl / 2.0f, yl / 2.0f, xl / 2.0f, yh / 2.0f);
+   WindowCurrent->drawLine(xl / 2.0f, yh / 2.0f, xh / 2.0f, yh / 2.0f);
+   WindowCurrent->drawLine(xh / 2.0f, yh / 2.0f, xh / 2.0f, yl / 2.0f);
+   WindowCurrent->drawLine(xh / 2.0f, yl / 2.0f, xl / 2.0f, yl / 2.0f);
 
-   glVertex2f(xl / 2.0f, yl / 2.0f);
-   glVertex2f(xl / 2.0f, yh / 2.0f);
+   WindowCurrent->drawColorSet(1.0f, 0.0f, 0.0f);
 
-   glVertex2f(xl / 2.0f, yh / 2.0f);
-   glVertex2f(xh / 2.0f, yh / 2.0f);
+   WindowCurrent->drawLine(xl / 3.0f, yl / 3.0f, xh / 3.0f, yh / 3.0f);
+   WindowCurrent->drawLine(xl / 3.0f, yh / 3.0f, xh / 3.0f, yl / 3.0f);
 
-   glVertex2f(xh / 2.0f, yh / 2.0f);
-   glVertex2f(xh / 2.0f, yl / 2.0f);
-
-   glVertex2f(xh / 2.0f, yl / 2.0f);
-   glVertex2f(xl / 2.0f, yl / 2.0f);
-
-   WindowCurrent->setDrawColor(1.0f, 0.0f, 0.0f);
-
-   glVertex2f(xl / 3.0f, yl / 3.0f);
-   glVertex2f(xh / 3.0f, yh / 3.0f);
-
-   glVertex2f(xl / 3.0f, yh / 3.0f);
-   glVertex2f(xh / 3.0f, yl / 3.0f);
-
-   WindowCurrent->setDrawColor(0.0f, 1.0f, 0.0f);
+   WindowCurrent->drawColorSet(0.0f, 1.0f, 0.0f);
 
    double s = std::sin(GetTicks<Millisecond>() / 1000.0) * 40.0;
    double c = std::cos(GetTicks<Millisecond>() / 1000.0) * 40.0;
 
-   glVertex2f(-100.0f + s, -100.0f + c);
-   glVertex2f(+100.0f + s, +100.0f + c);
-
-   glVertex2f(-100.0f + s, +100.0f + c);
-   glVertex2f(+100.0f + s, -100.0f + c);
-
-   glEnd();
+   WindowCurrent->drawLine(-100.0f + s, -100.0f + c, +100.0f + s, +100.0f + c);
+   WindowCurrent->drawLine(-100.0f + s, +100.0f + c, +100.0f + s, -100.0f + c);
 }
 
 //
