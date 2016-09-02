@@ -44,7 +44,7 @@ namespace Doom
       {
       public:
          std::int16_t movefwd,    moveside;
-         std::int16_t deltapitch, deltayaw;
+         std::int32_t deltapitch, deltayaw;
          InputButtons buttons;
       };
 

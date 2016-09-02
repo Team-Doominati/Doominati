@@ -131,6 +131,18 @@ namespace Doom
                frameNext.deltayaw   = event.motion.xrel;
                frameNext.deltapitch = event.motion.yrel;
             }
+            else if(event.type == SDL_CONTROLLERAXISMOTION)
+            {
+               if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
+                  frameNext.moveside = event.caxis.value;
+               else if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+                  frameNext.movefwd = -event.caxis.value;
+               // TODO: this should create a real fixed point angle
+               else if(event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX)
+                  frameNext.deltayaw = event.caxis.value;
+               else if(event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
+                  frameNext.deltapitch = event.caxis.value;
+            }
             else if(event.type == SDL_QUIT)
                throw EXIT_SUCCESS;
          }
