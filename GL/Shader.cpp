@@ -95,7 +95,7 @@ namespace Doom
 
             glGetShaderInfoLog(handle, 1024, &errlen, err);
             
-            throw new ShaderError(err);
+            throw ShaderError(err);
          }
 
          return handle;
@@ -108,10 +108,10 @@ namespace Doom
       void Shader::link()
       {
          if(!handlef || !handlev)
-            throw new ShaderError("Shader::link: fragment or vertex handle is 0\n");
+            throw ShaderError("Shader::link: fragment or vertex handle is 0\n");
 
          if(program)
-            throw new ShaderError("Shader::link: already open");
+            throw ShaderError("Shader::link: already open");
 
          program = glCreateProgram();
 
@@ -131,7 +131,7 @@ namespace Doom
             program = 0;
             
             glGetProgramInfoLog(program, 1024, &errlen, err);
-            throw new ShaderError(err);
+            throw ShaderError(err);
          }
       }
       
@@ -142,7 +142,7 @@ namespace Doom
       void Shader::compileVert(char const *data)
       {
          if(handlev)
-            throw new ShaderError("Shader::compileVert: already open\n");
+            throw ShaderError("Shader::compileVert: already open\n");
          
          handlev = CompileShader<GL_VERTEX_SHADER>(data);
       }
@@ -154,7 +154,7 @@ namespace Doom
       void Shader::compileFrag(char const *data)
       {
          if(handlef)
-            throw new ShaderError("Shader::compileFrag: already open\n");
+            throw ShaderError("Shader::compileFrag: already open\n");
          
          handlef = CompileShader<GL_FRAGMENT_SHADER>(data);
       }
@@ -166,7 +166,7 @@ namespace Doom
       void Shader::compileFragFile(Doom::FS::File *fp)
       {
          if(!fp)
-            throw new ShaderError("Shader::compileFragFile: bad file\n");
+            throw ShaderError("Shader::compileFragFile: bad file\n");
          
          compileFrag(fp->data);
       }
@@ -178,7 +178,7 @@ namespace Doom
       void Shader::compileVertFile(Doom::FS::File *fp)
       {
          if(!fp)
-            throw new ShaderError("Shader::compileVertFile: bad file\n");
+            throw ShaderError("Shader::compileVertFile: bad file\n");
          
          compileVert(fp->data);
       }
