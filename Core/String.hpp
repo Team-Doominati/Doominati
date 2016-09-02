@@ -16,6 +16,8 @@
 #include <GDCC/Core/String.hpp>
 
 #include <cstring>
+#include <utility>
+#include <tuple>
 
 
 //----------------------------------------------------------------------------|

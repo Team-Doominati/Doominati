@@ -23,6 +23,7 @@
 #include <GDCC/Core/Token.hpp>
 
 #include <iostream>
+#include <cctype>
 
 
 //----------------------------------------------------------------------------|
