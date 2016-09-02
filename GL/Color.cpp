@@ -27,14 +27,14 @@ namespace Doom
       // Color::FromHSV
       //
       
-      Color Color::FromHSV(double h, double s, double v, double a)
+      Color Color::FromHSV(float h, float s, float v, float a)
       {
-         h *= 360.0;
+         h *= 360.0f;
          
-         double chroma = v * s;
-         double hp = h / 60.0;
-         double x = chroma * (1 - std::abs(std::fmod(hp, 2) - 1));
-         double r1 = 0, g1 = 0, b1 = 0;
+         float chroma = v * s;
+         float hp = h / 60.0f;
+         float x = chroma * (1 - std::abs(std::fmod(hp, 2) - 1));
+         float r1 = 0, g1 = 0, b1 = 0;
          
               if(0 <= hp && hp < 1) r1 = chroma, g1 = x,      b1 = 0;
          else if(1 <= hp && hp < 2) r1 = x,      g1 = chroma, b1 = 0;
@@ -43,7 +43,7 @@ namespace Doom
          else if(4 <= hp && hp < 5) r1 = x,      g1 = 0,      b1 = chroma;
          else if(5 <= hp && hp < 6) r1 = chroma, g1 = 0,      b1 = x;
          
-         double m = v - chroma;
+         float m = v - chroma;
          return { r1 + m, g1 + m, b1 + m, a };
       }
       
@@ -51,13 +51,13 @@ namespace Doom
       // Color::Interpolate
       //
       
-      Color Color::Interpolate(Color const &a, Color const &b, double amt)
+      Color Color::Interpolate(Color const &a, Color const &b, float amt)
       {
          return {
-            ((1.0 - amt) * a.r) + (amt * b.r),
-            ((1.0 - amt) * a.g) + (amt * b.g),
-            ((1.0 - amt) * a.b) + (amt * b.b),
-            ((1.0 - amt) * a.a) + (amt * b.a)
+            ((1.0f - amt) * a.r) + (amt * b.r),
+            ((1.0f - amt) * a.g) + (amt * b.g),
+            ((1.0f - amt) * a.b) + (amt * b.b),
+            ((1.0f - amt) * a.a) + (amt * b.a)
          };
       }
    }
