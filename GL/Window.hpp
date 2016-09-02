@@ -37,8 +37,10 @@ namespace Doom
 
          void renderBegin();
          void renderEnd();
+         
+         void setDrawColor(float r, float g, float b, float a = 1.0f);
 
-         void shaderSwap(Shader &sp);
+         void shaderSwap(Shader *sp);
          void shaderDrop();
 
          int w, h;
@@ -53,6 +55,7 @@ namespace Doom
          SDL_Window   *window;
          
          Shader *baseShader;
+         Shader *shaderCurrent;
       };
    }
 }

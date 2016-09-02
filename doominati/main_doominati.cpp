@@ -66,8 +66,6 @@ static decltype(T().count()) GetTicks()
    return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
 }
 
-
-
 //
 // DrawTest
 //
@@ -83,7 +81,7 @@ static void DrawTest()
 
    glBegin(GL_LINES);
 
-   glColor3f(1.0f, 1.0f, 1.0f);
+   WindowCurrent->setDrawColor(0.0f, 0.0f, 1.0f);
 
    glVertex2f(xl / 2.0f, yl / 2.0f);
    glVertex2f(xl / 2.0f, yh / 2.0f);
@@ -97,7 +95,7 @@ static void DrawTest()
    glVertex2f(xh / 2.0f, yl / 2.0f);
    glVertex2f(xl / 2.0f, yl / 2.0f);
 
-   glColor3f(1.0f, 0.0f, 0.0f);
+   WindowCurrent->setDrawColor(1.0f, 0.0f, 0.0f);
 
    glVertex2f(xl / 3.0f, yl / 3.0f);
    glVertex2f(xh / 3.0f, yh / 3.0f);
@@ -105,7 +103,7 @@ static void DrawTest()
    glVertex2f(xl / 3.0f, yh / 3.0f);
    glVertex2f(xh / 3.0f, yl / 3.0f);
 
-   glColor3f(0.0f, 1.0f, 0.0f);
+   WindowCurrent->setDrawColor(0.0f, 1.0f, 0.0f);
 
    double s = std::sin(GetTicks<Millisecond>() / 1000.0) * 40.0;
    double c = std::cos(GetTicks<Millisecond>() / 1000.0) * 40.0;

@@ -25,9 +25,11 @@
 static char const baseFragShader[] = R"(
    #version 120
    
+   uniform vec4 color;
+   
    void main(void)
    {
-      gl_FragColor = vec4(0.94, 0.0, 0.56, 1.0);
+      gl_FragColor = color;
    }
 )";
 
@@ -106,6 +108,7 @@ namespace Doom
          
          baseShader = new Shader{baseFragShader, baseVertShader};
          shaderDrop();
+         setDrawColor(1.0, 1.0, 1.0);
       }
 
       //
@@ -147,14 +150,25 @@ namespace Doom
       {
          SDL_GL_SwapWindow(window);
       }
+      
+      //
+      // Window::setDrawColor
+      //
+      
+      void Window::setDrawColor(float r, float g, float b, float a)
+      {
+         GLint location = glGetUniformLocation(shaderCurrent->program, "color");
+         glUniform4f(location, r, g, b, a);
+      }
 
       //
       // Window::shaderSwap
       //
 
-      void Window::shaderSwap(Shader &sp)
+      void Window::shaderSwap(Shader *sp)
       {
-         glUseProgram(sp.program);
+         shaderCurrent = sp;
+         glUseProgram(shaderCurrent->program);
       }
 
       //
@@ -163,7 +177,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
-         shaderSwap(*baseShader);
+         shaderSwap(baseShader);
       }
 
       //
