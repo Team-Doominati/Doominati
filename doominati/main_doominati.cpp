@@ -82,10 +82,8 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
 
-   WindowCurrent->drawLine(xl / 2.0f, yl / 2.0f, xl / 2.0f, yh / 2.0f);
-   WindowCurrent->drawLine(xl / 2.0f, yh / 2.0f, xh / 2.0f, yh / 2.0f);
-   WindowCurrent->drawLine(xh / 2.0f, yh / 2.0f, xh / 2.0f, yl / 2.0f);
-   WindowCurrent->drawLine(xh / 2.0f, yl / 2.0f, xl / 2.0f, yl / 2.0f);
+   WindowCurrent->drawRectangle(xl / 2.0f, yl / 2.0f, xh / 2.0f, yh / 2.0f, true);
+   WindowCurrent->drawRectangle(0, 0, 100, 100);
 
    WindowCurrent->drawColorSet(1.0f, 0.0f, 0.0f);
 
