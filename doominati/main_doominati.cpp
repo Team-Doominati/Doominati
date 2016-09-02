@@ -77,8 +77,10 @@ static void DrawTest()
    auto xh = WindowCurrent->xh;
    auto yl = WindowCurrent->yl;
    auto yh = WindowCurrent->yh;
+   
+   double seconds = GetTicks<Millisecond>() / 1000.0;
 
-   WindowCurrent->drawColorSet(0.0f, 0.0f, 1.0f);
+   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
 
    WindowCurrent->drawLine(xl / 2.0f, yl / 2.0f, xl / 2.0f, yh / 2.0f);
    WindowCurrent->drawLine(xl / 2.0f, yh / 2.0f, xh / 2.0f, yh / 2.0f);
@@ -92,8 +94,8 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(0.0f, 1.0f, 0.0f);
 
-   double s = std::sin(GetTicks<Millisecond>() / 1000.0) * 40.0;
-   double c = std::cos(GetTicks<Millisecond>() / 1000.0) * 40.0;
+   double s = std::sin(seconds) * 40.0;
+   double c = std::cos(seconds) * 40.0;
 
    WindowCurrent->drawLine(-100.0f + s, -100.0f + c, +100.0f + s, +100.0f + c);
    WindowCurrent->drawLine(-100.0f + s, +100.0f + c, +100.0f + s, -100.0f + c);
