@@ -55,10 +55,6 @@ namespace Doom
       //
       void Task::stop()
       {
-         std::cerr << "Task::stop\n";
-         for(auto &w : dataStk)
-            std::cerr << "  " << w << '\n';
-
          // Release execution resources.
          callStk.clear();
          dataStk.clear();

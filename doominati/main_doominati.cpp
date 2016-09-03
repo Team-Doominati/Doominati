@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "Code/Codedefs.hpp"
+#include "Code/Native.hpp"
 #include "Code/Process.hpp"
 #include "Code/Program.hpp"
 #include "Code/Thread.hpp"
@@ -77,7 +78,7 @@ static void DrawTest()
    auto xh = WindowCurrent->xh;
    auto yl = WindowCurrent->yl;
    auto yh = WindowCurrent->yh;
-   
+
    double seconds = GetTicks<Millisecond>() / 1000.0;
 
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
@@ -144,6 +145,7 @@ static int Main()
       std::cout << file->data << std::endl; // HACK
 
    // Initialize scripting and call main.
+   Doom::Code::NativeAdder::Finish();
    Doom::Code::Program prog;
    LoadCodedefs(&prog);
    Doom::Code::Process proc{&prog};

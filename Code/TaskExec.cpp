@@ -12,6 +12,7 @@
 
 #include "Code/Task.hpp"
 
+#include "Code/Native.hpp"
 #include "Code/OpCode.hpp"
 #include "Code/Program.hpp"
 
@@ -139,6 +140,12 @@ namespace Doom
             vaaRegC = vaaC;
          }
             ThisCase();
+
+         DeclCase(Cnat):
+            dataStk.drop(codePtr->h.h);
+            if(Natives[codePtr->w.w](this, &dataStk[0], codePtr->h.h))
+               goto exec_intr;
+            NextCase();
 
          DeclCase(Drop_Nul):
             dataStk.drop();

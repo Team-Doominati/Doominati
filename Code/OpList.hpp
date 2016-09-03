@@ -13,6 +13,7 @@
 Doom_Code_OpList(Kill)
 
 Doom_Code_OpList(Call)
+Doom_Code_OpList(Cnat)
 Doom_Code_OpList(Drop_Nul)
 Doom_Code_OpList(Drop_Ptr)
 Doom_Code_OpList(Drop_Reg)

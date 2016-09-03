@@ -57,11 +57,11 @@ namespace Doom
          //
          struct RawFunc
          {
-            GDCC::Core::String glyph;
-            char const        *label;
-            Word               param;
-            Word               local;
-            std::size_t        index;
+            Core::HashedStr glyph;
+            char const     *label;
+            Word            param;
+            Word            local;
+            std::size_t     index;
          };
 
 
@@ -81,7 +81,7 @@ namespace Doom
 
          void addGlobal(Core::HashedStr glyph, Word words, RawExpA &&inits);
 
-         Word addFunction(GDCC::Core::String glyph, char const *label, Word param, Word local);
+         Word addFunction(Core::HashedStr glyph, char const *label, Word param, Word local);
 
          bool addLabel(Core::HashedStr label);
 
@@ -91,7 +91,7 @@ namespace Doom
 
          RawExp *findDefine(Core::HashedStr glyph);
 
-         RawFunc *findFunction(GDCC::Core::String glyph);
+         RawFunc *findFunction(Core::HashedStr glyph);
 
          Word *findLabel(Core::HashedStr glyph);
 

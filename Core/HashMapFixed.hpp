@@ -106,12 +106,23 @@ namespace Doom
          //
          T *find(Key const &key)
          {
+            if(auto elem = findItr(key))
+               return &elem->val;
+
+            return nullptr;
+         }
+
+         //
+         // findItr
+         //
+         Elem *findItr(Key const &key)
+         {
             if(!table) return nullptr;
 
             for(Elem *elem = table[hasher(key) % elemC]; elem; elem = elem->next)
             {
                if(elem->key == key)
-                  return &elem->val;
+                  return elem;
             }
 
             return nullptr;

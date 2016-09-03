@@ -12,6 +12,7 @@
 
 #include "Code/Codedefs.hpp"
 
+#include "Code/Native.hpp"
 #include "Code/Program.hpp"
 
 #include "Core/NTS.hpp"
@@ -77,6 +78,7 @@ namespace Doom
          {"Kill",     {GenCodeHW, 2, 1, OpCode::Kill}},
 
          {"Call",     {GenCodeW,  1, 1, OpCode::Call}},
+         {"Cnat",     {GenCodeHW, 2, 1, OpCode::Cnat}},
          {"Drop_Nul", {GenCode,   0, 1, OpCode::Drop_Nul}},
          {"Drop_Ptr", {GenCode,   0, 1, OpCode::Drop_Ptr}},
          {"Drop_Reg", {GenCodeW,  1, 1, OpCode::Drop_Reg}},
@@ -181,7 +183,7 @@ namespace Doom
       //
       // Loader::addFunction
       //
-      Word Loader::addFunction(GDCC::Core::String glyph, char const *label,
+      Word Loader::addFunction(Core::HashedStr glyph, char const *label,
          Word param, Word local)
       {
          if(auto func = findFunction(glyph))
@@ -274,21 +276,57 @@ namespace Doom
          // Glyph.
          if(std::isalpha(val[0]) || val[0] == '_')
          {
-            if(auto label = findLabel(val))
+            Core::HashedStr glyph = val;
+
+            if(auto label = findLabel(glyph))
                return *label;
 
-            if(auto define = findDefine(val))
+            if(auto define = findDefine(glyph))
                return evalExp(*define);
 
-            if(auto fn = findFunction(GDCC::Core::String::Find(val)))
+            if(auto native = Natives.findItr(glyph))
+               return static_cast<Word>(native - Natives.begin());
+
+            if(auto fn = findFunction(glyph))
                return fn->index;
 
             // TODO: Throw parse exception.
+            std::cerr << "unrecognized glyph: '" << val << "'\n";
             return 0;
          }
 
          // TODO: Throw parse exception.
+         std::cerr << "unrecognized val: '" << val << "'\n";
          return 0;
+      }
+
+      //
+      // Loader::findDefine
+      //
+      Loader::RawExp *Loader::findDefine(Core::HashedStr glyph)
+      {
+         auto itr = defines.find(glyph);
+         return itr != defines.end() ? &itr->second : nullptr;
+      }
+
+      //
+      // Loader::findFunction
+      //
+      Loader::RawFunc *Loader::findFunction(Core::HashedStr glyph)
+      {
+         for(auto &func : funcs)
+            if(func.glyph == glyph) return &func;
+
+         return nullptr;
+      }
+
+      //
+      // Loader::findLabel
+      //
+      Word *Loader::findLabel(Core::HashedStr glyph)
+      {
+         auto itr = labels.find(glyph);
+         return itr != labels.end() ? &itr->second : nullptr;
       }
 
       //
@@ -335,7 +373,7 @@ namespace Doom
          {
             OpCode *entry = &prog->codes[getLabel(func.label)];
 
-            funcItr->key = func.glyph;
+            funcItr->key = {func.glyph.str, func.glyph.len, func.glyph.hash};
             funcItr->val = {entry, func.local, func.param};
 
             std::cerr << "Function: " << funcItr->key << '('
@@ -380,35 +418,6 @@ namespace Doom
             std::cerr << "parse error in '" << file->name << "': " << e.what() << '\n';
             ++loadFAIL;
          }
-      }
-
-      //
-      // Loader::findDefine
-      //
-      Loader::RawExp *Loader::findDefine(Core::HashedStr glyph)
-      {
-         auto itr = defines.find(glyph);
-         return itr != defines.end() ? &itr->second : nullptr;
-      }
-
-      //
-      // Loader::findFunction
-      //
-      Loader::RawFunc *Loader::findFunction(GDCC::Core::String glyph)
-      {
-         for(auto &func : funcs)
-            if(func.glyph == glyph) return &func;
-
-         return nullptr;
-      }
-
-      //
-      // Loader::findLabel
-      //
-      Word *Loader::findLabel(Core::HashedStr glyph)
-      {
-         auto itr = labels.find(glyph);
-         return itr != labels.end() ? &itr->second : nullptr;
       }
 
       //
