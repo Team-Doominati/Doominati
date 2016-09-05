@@ -44,12 +44,17 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Core/Coord.hpp
    ${CMAKE_SOURCE_DIR}/Core/HashMapFixed.hpp
    ${CMAKE_SOURCE_DIR}/Core/List.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Matrix4.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Math.hpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.cpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.hpp
    ${CMAKE_SOURCE_DIR}/Core/Search.hpp
    ${CMAKE_SOURCE_DIR}/Core/Stack.hpp
    ${CMAKE_SOURCE_DIR}/Core/Store.hpp
    ${CMAKE_SOURCE_DIR}/Core/String.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Time.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Vector2.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Vector4.hpp
 
    ${CMAKE_SOURCE_DIR}/FS/Dir/Directory.cpp
    ${CMAKE_SOURCE_DIR}/FS/Dir.cpp
@@ -57,13 +62,15 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/FS/File.cpp
    ${CMAKE_SOURCE_DIR}/FS/File.hpp
 
+   ${CMAKE_SOURCE_DIR}/GL/Color.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Color.hpp
+   ${CMAKE_SOURCE_DIR}/GL/DynamicBuffer.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Particle.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Particle.cpp
    ${CMAKE_SOURCE_DIR}/GL/Shader.cpp
    ${CMAKE_SOURCE_DIR}/GL/Shader.hpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
-   ${CMAKE_SOURCE_DIR}/GL/Color.cpp
-   ${CMAKE_SOURCE_DIR}/GL/Color.hpp
-   ${CMAKE_SOURCE_DIR}/GL/DynamicBuffer.hpp
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.c
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.h
 

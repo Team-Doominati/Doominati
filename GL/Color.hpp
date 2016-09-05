@@ -32,6 +32,7 @@ namespace Doom
       class Color
       {
       public:
+         Color() = default;
          Color(float r_, float g_, float b_, float a_ = 1.0f) : r{r_}, g{g_}, b{b_}, a{a_} {}
 
          static Color FromHSV(float h, float s, float v, float a = 1.0f);

@@ -12,6 +12,8 @@
 
 #include "GL/Window.hpp"
 #include "GL/Shader.hpp"
+#include "Core/Matrix4.hpp"
+#include "Core/Time.hpp"
 
 #include <iostream>
 
@@ -47,20 +49,6 @@ static char const baseVertShader[] = R"(
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
-//
-
-namespace Doom
-{
-   namespace GL
-   {
-      int Window::W = 0;
-      int Window::H = 0;
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -73,12 +61,14 @@ namespace Doom
       //
 
       Window::Window(int w_, int h_) :
-         w{w_}, h{h_}
+         realw{w_}, realh{h_},
+         w{1280}, h{720}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
 
-         if(!(window = SDL_CreateWindow("Doominati", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
+         // Set up window and OpenGL context.
+         if(!(window = SDL_CreateWindow("Doominati", x, y, realw, realh, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
          {
             SDL_QuitSubSystem(SDL_INIT_VIDEO);
             std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
@@ -93,24 +83,30 @@ namespace Doom
             throw EXIT_FAILURE;
          }
 
-         glClearColor(0, 0, 0, 1);
+         // Set up OpenGL server (device).
+         glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
          glEnable(GL_TEXTURE_2D);
          glEnable(GL_BLEND);
+         glEnable(GL_CULL_FACE); // Cull CCW-sided back facing triangles.
 
          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+         // Set up OpenGL client.
          glEnableClientState(GL_COLOR_ARRAY);
          glEnableClientState(GL_TEXTURE_COORD_ARRAY);
          glEnableClientState(GL_VERTEX_ARRAY);
 
-         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
+         // Set up matrices and shaders.
          resize(w, h);
          
          shaderBase = new Shader{baseFragShader, baseVertShader};
          shaderDrop();
          drawColorSet(1.0, 1.0, 1.0);
+         
+         glMatrixMode(GL_MODELVIEW);
+         glLoadIdentity();
       }
 
       //
@@ -137,9 +133,6 @@ namespace Doom
             if(w != newW || h != newH)
                resize(newW, newH);
          }
-
-         W = w;
-         H = h;
 
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       }
@@ -239,6 +232,31 @@ namespace Doom
             glEnd();
          }
       }
+      
+      //
+      // Window::drawParticleSystem
+      //
+      
+      void Window::drawParticleSystem(ParticleSystem &ps)
+      {
+         glPushMatrix();
+         
+         glLoadMatrixf(Core::Matrix4{}.translate(ps.position.x, ps.position.y).getPointer());
+         
+         double frac = Core::GetTickFract<Core::PlayTickFloat>();
+         
+         for(auto &p : ps.particles)
+         {
+            float x = 100 + Core::Lerp(p.oldposition.x, p.position.x, frac);
+            float y = 100 + Core::Lerp(p.oldposition.y, p.position.y, frac);
+            
+            // TODO: scaling, rotation
+            drawColorSet(p.color);
+            drawRectangle(x - 10, y - 10, x + 10, y + 10);
+         }
+         
+         glPopMatrix();
+      }
 
       //
       // Window::shaderSwap
@@ -265,23 +283,17 @@ namespace Doom
 
       void Window::resize(int w_, int h_)
       {
-         w = w_;
-         h = h_;
+         realw = w_;
+         realh = h_;
 
-         xl = -(w / 2.0f);
-         yl = -(h / 2.0f);
-         xh = +(w / 2.0f);
-         yh = +(h / 2.0f);
+         glViewport(0, 0, realw, realh);
 
-         if(w & 1) --xh;
-         if(h & 1) --yh;
-
-         glViewport(0,0, w,h);
-
-         // Set up GL_PROJECTION matrix for 2D.
+         // Reset the projection matrix with
+         // orthogonal perspective and device coordinates.
          glMatrixMode(GL_PROJECTION);
          glLoadIdentity();
-         glOrtho(xl, xh, yl, yh, 0, 1);
+         glOrtho(0, w, h, 0, 0, 1);
+         
          glMatrixMode(GL_MODELVIEW);
       }
    }

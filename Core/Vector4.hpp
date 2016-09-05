@@ -6,12 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Floating-point 2-dimensional vector.
+// Floating-point 4-dimensional vector.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__Vector2_H__
-#define Doom__Core__Vector2_H__
+#ifndef Doom__Core__Vector4_H__
+#define Doom__Core__Vector4_H__
 
 #include <cmath>
 #include "Core/Math.hpp"
@@ -25,110 +25,116 @@ namespace Doom
 {
    namespace Core
    {
-      class Vector2
+      class Vector4
       {
       public:
-         float x, y;
+         float x, y, z, w;
          
          //
-         // Vector2::add
+         // Vector4::add
          //
          
-         Vector2 &add(Vector2 const &other)
+         Vector4 &add(Vector4 const &other)
          {
             x += other.x;
             y += other.y;
+            z += other.z;
+            w += other.w;
             
             return *this;
          }
          
          //
-         // Vector2::sub
+         // Vector4::sub
          //
          
-         Vector2 &sub(Vector2 const &other)
+         Vector4 &sub(Vector4 const &other)
          {
             x -= other.x;
             y -= other.y;
+            z -= other.z;
+            w -= other.w;
             
             return *this;
          }
          
          //
-         // Vector2::length
+         // Vector4::length
          //
          // Magnitude of vector.
          //
          
          float length() const
          {
-            return std::sqrt((x * x) + (y * y));
+            return std::sqrt((x * x) + (y * y) + (z * z) + (w * w));
          }
          
          //
-         // Vector2::dot
+         // Vector4::dot
          //
          // Dot product of this and other.
          //
          
-         float dot(Vector2 const &other) const
+         float dot(Vector4 const &other) const
          {
-            return (x * other.x) + (y * other.y);
+            return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
          }
 
          //
          // interpolate
          //
 
-         Vector2 &interpolate(Vector2 const &other, float amt)
+         Vector4 &interpolate(Vector4 const &other, float amt)
          {
             x = Core::Lerp(x, other.x, amt);
             y = Core::Lerp(y, other.y, amt);
+            z = Core::Lerp(z, other.z, amt);
+            w = Core::Lerp(w, other.w, amt);
 
             return *this;
          }
          
          //
-         // Vector2 Unary operators
+         // Vector4 Unary operators
          //
          
-         Vector2 operator-() const { return { -x, -y }; }
-         bool operator!() const { return !(x && y); }
+         Vector4 operator-() const { return { -x, -y, -z, -w }; }
+         bool operator!() const { return !(x && y && z && w); }
          
          //
-         // Vector2 Conversion operators
+         // Vector4 Conversion operators
          //
          
-         explicit operator bool() const { return x && y; }
+         explicit operator bool() const { return x && y && z && w; }
          
          //
-         // Vector2 Infix operators
+         // Vector4 Infix operators
          //
          
-         Vector2 operator+(Vector2 const &other) const
+         Vector4 operator+(Vector4 const &other) const
          {
-            return { x + other.x, y + other.y };
+            return { x + other.x, y + other.y, z + other.z, w + other.w };
          }
          
-         Vector2 operator-(Vector2 const &other) const
+         Vector4 operator-(Vector4 const &other) const
          {
-            return { x - other.x, y - other.y };
+            return { x - other.x, y - other.y, z - other.z, w - other.w };
          }
          
-         float operator*(Vector2 const &other) const
+         float operator*(Vector4 const &other) const
          {
             return dot(other);
          }
          
          //
-         // Vector2 Assignment operators
+         // Vector4 Assignment operators
          //
          
-         Vector2 &operator+=(Vector2 const &other) { return add(other); }
-         Vector2 &operator-=(Vector2 const &other) { return sub(other); }
+         Vector4 &operator+=(Vector4 const &other) { return add(other); }
+         Vector4 &operator-=(Vector4 const &other) { return sub(other); }
       };
    }
 }
 
-#endif//Doom__Core__Vector2_H__
+#endif//Doom__Core__Vector4_H__
 
