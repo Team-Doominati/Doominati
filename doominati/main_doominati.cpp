@@ -58,14 +58,14 @@ static void DrawTest()
 
    auto xo = w / 3.0f;
    auto yo = h / 3.0f;
-   
+
    auto xp = w - xo;
    auto yp = h - yo;
-   
-   double seconds = Doom::Core::GetTicks<Doom::Core::Second>();
-   
+
+   double seconds = Doom::Core::GetTicks<Doom::Core::Second<double>>();
+
    WindowCurrent->drawParticleSystem(ParticleSystem);
-   
+
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
 
    WindowCurrent->drawRectangle(xp, yp, xo, yo, true);
@@ -73,7 +73,7 @@ static void DrawTest()
    WindowCurrent->drawRectangle(2, 2, 102, 102);
 
    WindowCurrent->drawColorSet(Doom::GL::Color::Red);
-   
+
    WindowCurrent->drawLine(xp, yp, xo, yo);
    WindowCurrent->drawLine(xp, yo, xo, yp);
 
@@ -140,14 +140,14 @@ static int Main()
    if(auto func = prog.funcs.find("main"))
       proc.threads.next->obj->startTask(func, nullptr, 0);
 
-   std::size_t timeLast = Doom::Core::GetTicks<Doom::Core::PlayTick>();
+   std::size_t timeLast = Doom::Core::GetTicks<Doom::Core::PlayTick<>>();
    std::size_t timeNext;
 
    for(;;)
    {
       std::size_t timeDelta;
 
-      timeNext  = Doom::Core::GetTicks<Doom::Core::PlayTick>();
+      timeNext  = Doom::Core::GetTicks<Doom::Core::PlayTick<>>();
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
 
@@ -158,14 +158,14 @@ static int Main()
          while(timeDelta--)
          {
             // Playsim actions.
-            
+
             for(int i = 0; i < 120; i++)
             {
                float fuck3 = (rand() % 200) - 100;
                float fuck4 = (rand() % 200) - 100;
-               
+
                Doom::GL::Particle test{};
-               
+
                test.life = 50;
                test.oldposition = test.position = Doom::Core::Vector2{-30.f + fuck3, -30.f + fuck4};
                test.velocity = Doom::Core::Vector2{(1.f/4096)*((rand()%255)-128),(1.f/4096)*((rand()%255)-128)};
@@ -174,10 +174,10 @@ static int Main()
                test.colordest = Doom::GL::Color::Red;
                test.colordest.a = 0.5f;
                test.colorspeed = 0.04f;
-               
+
                ParticleSystem.particles.emplace_back(std::move(test));
             }
-            
+
             input.poll();
             proc.exec();
             ParticleSystem.update();

@@ -26,9 +26,9 @@
 
 static char const baseFragShader[] = R"(
    #version 120
-   
+
    varying vec4 color;
-   
+
    void main(void)
    {
       gl_FragColor = color;
@@ -37,9 +37,9 @@ static char const baseFragShader[] = R"(
 
 static char const baseVertShader[] = R"(
    #version 120
-   
+
    varying vec4 color;
-   
+
    void main(void)
    {
       gl_Position = ftransform();
@@ -100,11 +100,11 @@ namespace Doom
 
          // Set up matrices and shaders.
          resize(w, h);
-         
+
          shaderBase = new Shader{baseFragShader, baseVertShader};
          shaderDrop();
          drawColorSet(1.0, 1.0, 1.0);
-         
+
          glMatrixMode(GL_MODELVIEW);
          glLoadIdentity();
       }
@@ -145,11 +145,11 @@ namespace Doom
       {
          SDL_GL_SwapWindow(window);
       }
-      
+
       //
       // Window::drawColorSet
       //
-      
+
       void Window::drawColorSet(float r, float g, float b, float a)
       {
          glColor4f(r, g, b, a);
@@ -158,20 +158,20 @@ namespace Doom
          cb = b;
          ca = a;
       }
-      
+
       //
       // Window::drawColorSet
       //
-      
+
       void Window::drawColorSet(Color const &col)
       {
          drawColorSet(float(col.r), float(col.g), float(col.b), float(col.a));
       }
-      
+
       //
       // Window::drawColorGet
       //
-      
+
       Color Window::drawColorGet()
       {
          return { cr, cg, cb, ca };
@@ -232,29 +232,29 @@ namespace Doom
             glEnd();
          }
       }
-      
+
       //
       // Window::drawParticleSystem
       //
-      
+
       void Window::drawParticleSystem(ParticleSystem &ps)
       {
          glPushMatrix();
-         
+
          glLoadMatrixf(Core::Matrix4{}.translate(ps.position.x, ps.position.y).getPointer());
-         
-         double frac = Core::GetTickFract<Core::PlayTickFloat>();
-         
+
+         float frac = Core::GetTickFract<Core::PlayTick<float>>();
+
          for(auto &p : ps.particles)
          {
             float x = 100 + Core::Lerp(p.oldposition.x, p.position.x, frac);
             float y = 100 + Core::Lerp(p.oldposition.y, p.position.y, frac);
-            
+
             // TODO: scaling, rotation
             drawColorSet(p.color);
             drawRectangle(x - 10, y - 10, x + 10, y + 10);
          }
-         
+
          glPopMatrix();
       }
 
@@ -293,7 +293,7 @@ namespace Doom
          glMatrixMode(GL_PROJECTION);
          glLoadIdentity();
          glOrtho(0, w, h, 0, 0, 1);
-         
+
          glMatrixMode(GL_MODELVIEW);
       }
    }

@@ -25,16 +25,17 @@ namespace Doom
 {
    namespace Core
    {
-      using PlayTick = std::chrono::duration<std::size_t, std::ratio<1, 50>>;
-      using PlayTickFloat = std::chrono::duration<double, std::ratio<1, 50>>;
-      using Millisecond = std::chrono::duration<double, std::ratio<1, 1000>>;
-      using Second = std::chrono::duration<double, std::ratio<1>>;
+      template<typename T = std::size_t>
+      using PlayTick = std::chrono::duration<T, std::ratio<1, 50>>;
+
+      template<typename T>
+      using Second = std::chrono::duration<T, std::ratio<1>>;
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace Doom
@@ -42,30 +43,37 @@ namespace Doom
    namespace Core
    {
       //
+      // GetTime
+      //
+      // Returns duration since epoch.
+      //
+      inline std::chrono::steady_clock::duration GetTime()
+      {
+         static std::chrono::steady_clock::time_point epoch;
+         if(epoch == std::chrono::steady_clock::time_point())
+            epoch = std::chrono::steady_clock::now();
+         return std::chrono::steady_clock::now() - epoch;
+      }
+
+      //
       // GetTicks
       //
-
       template<typename T>
-      static decltype(T().count()) GetTicks()
+      typename T::rep GetTicks()
       {
-         static std::chrono::time_point<std::chrono::steady_clock> base;
-
-         if(base == std::chrono::time_point<std::chrono::steady_clock>())
-            base = std::chrono::steady_clock::now();
-
-         return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
+         return std::chrono::duration_cast<T>(GetTime()).count();
       }
 
       //
       // GetTickFract
       //
-
       template<typename T>
-      static double GetTickFract()
+      double GetTickFract()
       {
-         return std::fmod(GetTicks<T>(), 1.0);
+         return std::fmod(static_cast<double>(GetTicks<T>()), 1.0);
       }
    }
 }
 
 #endif//Doom__Core__Time_H__
+
