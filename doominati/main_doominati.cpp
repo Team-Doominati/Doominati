@@ -16,28 +16,21 @@
 #include "Code/Program.hpp"
 #include "Code/Thread.hpp"
 
+#include "Core/Time.hpp"
+
 #include "FS/Dir.hpp"
 
 #include "GL/Window.hpp"
+#include "GL/Particle.hpp"
 
 #include "Game/Input.hpp"
 
 #include <GDCC/Core/Option.hpp>
 
-#include <chrono>
 #include <iostream>
 #include <cstdlib>
-#include <cmath>
 
 #include "SDL.h"
-
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-using PlayTick = std::chrono::duration<std::size_t, std::ratio<1, 50>>;
-using Millisecond = std::chrono::duration<double, std::ratio<1, 1000>>;
 
 
 //----------------------------------------------------------------------------|
@@ -45,26 +38,12 @@ using Millisecond = std::chrono::duration<double, std::ratio<1, 1000>>;
 //
 
 static Doom::GL::Window *WindowCurrent;
+static Doom::GL::ParticleSystem ParticleSystem{100, 100};
 
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
-
-//
-// GetTicks
-//
-
-template<typename T>
-static decltype(T().count()) GetTicks()
-{
-   static std::chrono::time_point<std::chrono::steady_clock> base;
-
-   if(base == std::chrono::time_point<std::chrono::steady_clock>())
-      base = std::chrono::steady_clock::now();
-
-   return std::chrono::duration_cast<T>(std::chrono::steady_clock::now() - base).count();
-}
 
 //
 // DrawTest
@@ -74,35 +53,43 @@ static decltype(T().count()) GetTicks()
 
 static void DrawTest()
 {
-   auto xl = WindowCurrent->xl;
-   auto xh = WindowCurrent->xh;
-   auto yl = WindowCurrent->yl;
-   auto yh = WindowCurrent->yh;
+   auto w = WindowCurrent->w;
+   auto h = WindowCurrent->h;
 
-   double seconds = GetTicks<Millisecond>() / 1000.0;
-
+   auto xo = w / 3.0f;
+   auto yo = h / 3.0f;
+   
+   auto xp = w - xo;
+   auto yp = h - yo;
+   
+   double seconds = Doom::Core::GetTicks<Doom::Core::Second>();
+   
+   WindowCurrent->drawParticleSystem(ParticleSystem);
+   
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
 
-   WindowCurrent->drawRectangle(xl / 2.0f, yl / 2.0f, xh / 2.0f, yh / 2.0f, true);
-   WindowCurrent->drawRectangle(0, 0, 100, 100);
+   WindowCurrent->drawRectangle(xp, yp, xo, yo, true);
+   WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
+   WindowCurrent->drawRectangle(2, 2, 102, 102);
 
-   WindowCurrent->drawColorSet(1.0f, 0.0f, 0.0f);
+   WindowCurrent->drawColorSet(Doom::GL::Color::Red);
+   
+   WindowCurrent->drawLine(xp, yp, xo, yo);
+   WindowCurrent->drawLine(xp, yo, xo, yp);
 
-   WindowCurrent->drawLine(xl / 3.0f, yl / 3.0f, xh / 3.0f, yh / 3.0f);
-   WindowCurrent->drawLine(xl / 3.0f, yh / 3.0f, xh / 3.0f, yl / 3.0f);
+   WindowCurrent->drawColorSet(Doom::GL::Color::Green);
 
-   WindowCurrent->drawColorSet(0.0f, 1.0f, 0.0f);
+   double s = std::sin(seconds * 4.0) * 40.0;
+   double c = std::cos(seconds * 4.0) * 40.0;
 
-   double s = std::sin(seconds) * 40.0;
-   double c = std::cos(seconds) * 40.0;
-
-   WindowCurrent->drawLine(-100.0f + s, -100.0f + c, +100.0f + s, +100.0f + c);
-   WindowCurrent->drawLine(-100.0f + s, +100.0f + c, +100.0f + s, -100.0f + c);
+   WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
+   WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 }
 
 //
 // LoadCodedefs
 //
+
 static void LoadCodedefs(Doom::Code::Program *prog)
 {
    Doom::Code::Loader loader;
@@ -153,25 +140,48 @@ static int Main()
    if(auto func = prog.funcs.find("main"))
       proc.threads.next->obj->startTask(func, nullptr, 0);
 
-   std::size_t timeLast = GetTicks<PlayTick>();
+   std::size_t timeLast = Doom::Core::GetTicks<Doom::Core::PlayTick>();
    std::size_t timeNext;
 
    for(;;)
    {
       std::size_t timeDelta;
 
-      timeNext  = GetTicks<PlayTick>();
+      timeNext  = Doom::Core::GetTicks<Doom::Core::PlayTick>();
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
 
       if(!timeDelta)
          SDL_Delay(1);
-
-      else while(timeDelta--)
+      else
       {
-         // Playsim actions.
-         input.poll();
-         proc.exec();
+         while(timeDelta--)
+         {
+            // Playsim actions.
+            
+            for(int i = 0; i < 120; i++)
+            {
+               float fuck3 = (rand() % 200) - 100;
+               float fuck4 = (rand() % 200) - 100;
+               
+               Doom::GL::Particle test{};
+               
+               test.life = 50;
+               test.oldposition = test.position = Doom::Core::Vector2{-30.f + fuck3, -30.f + fuck4};
+               test.velocity = Doom::Core::Vector2{(1.f/4096)*((rand()%255)-128),(1.f/4096)*((rand()%255)-128)};
+               test.acceleration = Doom::Core::Vector2{(1.f/16384)*((rand()%255)-128),(1.f/16384)*((rand()%255)-128)};
+               test.color = Doom::GL::Color::Pink;
+               test.colordest = Doom::GL::Color::Red;
+               test.colordest.a = 0.5f;
+               test.colorspeed = 0.04f;
+               
+               ParticleSystem.particles.emplace_back(std::move(test));
+            }
+            
+            input.poll();
+            proc.exec();
+            ParticleSystem.update();
+         }
       }
 
       // Rendering actions.

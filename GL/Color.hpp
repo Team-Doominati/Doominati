@@ -14,6 +14,7 @@
 #define Doom__GL__Color_H__
 
 #include <utility>
+#include "Core/Math.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,6 +32,7 @@ namespace Doom
       class Color
       {
       public:
+         Color() = default;
          Color(float r_, float g_, float b_, float a_ = 1.0f) : r{r_}, g{g_}, b{b_}, a{a_} {}
 
          static Color FromHSV(float h, float s, float v, float a = 1.0f);
@@ -43,10 +45,10 @@ namespace Doom
 
          Color &interpolate(Color const &other, float amt)
          {
-            r = ((1.0f - amt) * r) + (amt * other.r);
-            g = ((1.0f - amt) * g) + (amt * other.g);
-            b = ((1.0f - amt) * b) + (amt * other.b);
-            a = ((1.0f - amt) * a) + (amt * other.a);
+            r = Core::Lerp(r, other.r, amt);
+            g = Core::Lerp(g, other.g, amt);
+            b = Core::Lerp(b, other.b, amt);
+            a = Core::Lerp(a, other.a, amt);
 
             return *this;
          }

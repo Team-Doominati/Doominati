@@ -15,6 +15,7 @@
 
 #include "SDL.h"
 #include "GL/Color.hpp"
+#include "GL/Particle.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -46,14 +47,13 @@ namespace Doom
          
          void drawLine(int x1, int y1, int x2, int y2);
          void drawRectangle(int x1, int y1, int x2, int y2, bool line = false);
+         void drawParticleSystem(ParticleSystem &ps);
 
          void shaderSwap(Shader *sp);
          void shaderDrop();
 
+         int realw, realh;
          int w, h;
-         float xl, yl, xh, yh;
-
-         static int W, H;
 
       private:
          void resize(int w, int h);
