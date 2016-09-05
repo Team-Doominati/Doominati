@@ -25,6 +25,8 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Code/Codedefs.cpp
    ${CMAKE_SOURCE_DIR}/Code/Codedefs.hpp
    ${CMAKE_SOURCE_DIR}/Code/Function.hpp
+   ${CMAKE_SOURCE_DIR}/Code/Memory.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Memory.hpp
    ${CMAKE_SOURCE_DIR}/Code/Native.cpp
    ${CMAKE_SOURCE_DIR}/Code/Native.hpp
    ${CMAKE_SOURCE_DIR}/Code/Native/Print.cpp

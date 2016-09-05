@@ -14,6 +14,7 @@
 #define Doom__Code__Program_H__
 
 #include "Code/Function.hpp"
+#include "Code/Memory.hpp"
 #include "Code/OpCode.hpp"
 #include "Code/Types.hpp"
 
@@ -39,6 +40,12 @@ namespace Doom
       public:
          GDCC::Core::Array<OpCode>                        codes;
          Core::HashMapFixed<GDCC::Core::String, Function> funcs;
+
+         // This belongs in Process some day.
+         Memory memory;
+
+         Word freestoreBegin;
+         Word freestoreEnd;
       };
    }
 }

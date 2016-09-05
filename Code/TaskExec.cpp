@@ -152,7 +152,7 @@ namespace Doom
             NextCase();
 
          DeclCase(Drop_Ptr):
-            // TODO
+            prog->memory.setW(dataStk[1], dataStk[2]);
             dataStk.drop(2);
             NextCase();
 
@@ -166,7 +166,7 @@ namespace Doom
             NextCase();
 
          DeclCase(Push_Ptr):
-            // TODO
+            dataStk[1] = prog->memory.getW(dataStk[1]);
             NextCase();
 
          DeclCase(Push_Reg):
@@ -183,7 +183,6 @@ namespace Doom
             vaaRegC   = callStk[1].vaaRegC;
             locReg.free(callStk[1].locRegC);
             locReg.free(callStk[1].vaaRegC);
-
 
             // Drop call frame.
             callStk.drop();

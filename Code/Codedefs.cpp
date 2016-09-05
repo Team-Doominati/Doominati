@@ -159,7 +159,7 @@ namespace Doom
          loadPASS{0},
 
          codeCount{1},
-         globalCount{0}
+         globalCount{MemBlock::SizeW}
       {
       }
 
@@ -278,6 +278,9 @@ namespace Doom
          {
             Core::HashedStr glyph = val;
 
+            if(auto global = findGlobal(glyph))
+               return *global;
+
             if(auto label = findLabel(glyph))
                return *label;
 
@@ -321,6 +324,15 @@ namespace Doom
       }
 
       //
+      // Loader::findGlobal
+      //
+      Word *Loader::findGlobal(Core::HashedStr glyph)
+      {
+         auto itr = globals.find(glyph);
+         return itr != globals.end() ? &itr->second : nullptr;
+      }
+
+      //
       // Loader::findLabel
       //
       Word *Loader::findLabel(Core::HashedStr glyph)
@@ -340,6 +352,8 @@ namespace Doom
          prog->funcs.alloc(funcs.size());
          genFuncs(prog);
          prog->funcs.build();
+
+         genGlobals(prog);
       }
 
       //
@@ -382,6 +396,45 @@ namespace Doom
                << funcItr->val.local << "}\n";
 
             ++funcItr;
+         }
+      }
+
+      //
+      // Loader::genGlobals
+      //
+      void Loader::genGlobals(Program *prog)
+      {
+         MemBlock **block    = prog->memory.blocks;
+         MemBlock **blockMid = block + Memory::BlockC / 2;
+         MemBlock **blockEnd = block + Memory::BlockC;
+
+         // Block 0 is special.
+         *block++ = MemBlock::Create_Nul();
+
+         // Allocate memory for statics.
+         Word globalWords = globalCount - MemBlock::SizeW;
+         for(; globalWords >= MemBlock::SizeW; globalWords -= MemBlock::SizeW)
+            *block++ = MemBlock::Create_Sta(MemBlock::SizeW);
+
+         if(globalWords)
+            *block++ = MemBlock::Create_Sta(globalWords);
+
+         // Fill remaining first half of memory with dynamic blocks.
+         prog->freestoreBegin = (block - prog->memory.blocks) * MemBlock::SizeW;
+         while(block != blockMid)
+            *block++ = MemBlock::Create_Dyn();
+
+         // Upper half is reserved for future use.
+         prog->freestoreEnd = (block - prog->memory.blocks) * MemBlock::SizeW;
+         while(block != blockEnd)
+            *block++ = MemBlock::Create_Nul();
+
+         // Apply initializers.
+         for(auto const &init : inits)
+         {
+            Word idx = init.first;
+            for(auto const &exp : init.second)
+               prog->memory.setW(idx++, evalExp(exp));
          }
       }
 

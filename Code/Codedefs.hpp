@@ -89,14 +89,14 @@ namespace Doom
 
          Word evalVal(char const *val);
 
-         RawExp *findDefine(Core::HashedStr glyph);
-
+         RawExp  *findDefine(Core::HashedStr glyph);
          RawFunc *findFunction(Core::HashedStr glyph);
-
-         Word *findLabel(Core::HashedStr glyph);
+         Word    *findGlobal(Core::HashedStr glyph);
+         Word    *findLabel(Core::HashedStr glyph);
 
          void genCodes(Program *prog);
          void genFuncs(Program *prog);
+         void genGlobals(Program *prog);
 
          Word getLabel(Core::HashedStr glyph);
 
