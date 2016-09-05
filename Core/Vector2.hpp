@@ -14,6 +14,7 @@
 #define Doom__Core__Vector2_H__
 
 #include <cmath>
+#include "Core/Math.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -57,7 +58,7 @@ namespace Doom
          // Magnitude of vector.
          //
          
-         float length()
+         float length() const
          {
             return std::sqrt((x * x) + (y * y));
          }
@@ -68,21 +69,33 @@ namespace Doom
          // Dot product of this and other.
          //
          
-         float dot(Vector2 const &other)
+         float dot(Vector2 const &other) const
          {
             return (x * other.x) + (y * other.y);
+         }
+
+         //
+         // interpolate
+         //
+
+         Vector2 &interpolate(Vector2 const &other, float amt)
+         {
+            x = Core::Lerp(x, other.x, amt);
+            y = Core::Lerp(y, other.y, amt);
+
+            return *this;
          }
          
          //
          // Vector2 Unary operators
          //
          
-         Vector2 operator-()
+         Vector2 operator-() const
          {
             return { -x, -y };
          }
          
-         bool operator!()
+         bool operator!() const
          {
             return x && y;
          }
@@ -91,17 +104,17 @@ namespace Doom
          // Vector2 Infix operators
          //
          
-         Vector2 operator+(Vector2 const &other)
+         Vector2 operator+(Vector2 const &other) const
          {
             return { x + other.x, y + other.y };
          }
          
-         Vector2 operator-(Vector2 const &other)
+         Vector2 operator-(Vector2 const &other) const
          {
             return { x - other.x, y - other.y };
          }
          
-         float operator*(Vector2 const &other)
+         float operator*(Vector2 const &other) const
          {
             return dot(other);
          }
