@@ -15,6 +15,8 @@
 
 #include "Core/Vector4.hpp"
 
+#include <cmath>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -58,6 +60,20 @@ namespace Doom
             c3.x += x;
             c3.y += y;
             c3.z += z;
+            
+            return *this;
+         }
+         
+         //
+         // Matrix4::rotate2d
+         //
+         
+         Matrix4 &rotate2d(float ang)
+         {
+            c0.x +=  std::cos(ang);
+            c0.y +=  std::sin(ang);
+            c1.x += -std::sin(ang);
+            c1.y +=  std::cos(ang);
             
             return *this;
          }

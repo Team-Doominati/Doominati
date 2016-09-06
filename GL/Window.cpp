@@ -239,20 +239,32 @@ namespace Doom
 
       void Window::drawParticleSystem(ParticleSystem &ps)
       {
+         Core::Matrix4 mtx{};
+         
          glPushMatrix();
 
-         glLoadMatrixf(Core::Matrix4{}.translate(ps.position.x, ps.position.y).getPointer());
+         glLoadMatrixf(mtx.translate(ps.position.x, ps.position.y).getPointer());
 
          float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
          for(auto &p : ps.particles)
          {
+            Core::Matrix4 mtx2{mtx};
+            
             float x = 100 + Core::Lerp(p.oldposition.x, p.position.x, frac);
             float y = 100 + Core::Lerp(p.oldposition.y, p.position.y, frac);
+            
+            float sx = 8 * p.scale.x;
+            float sy = 8 * p.scale.y;
+            
+            glPushMatrix();
+            
+            glLoadMatrixf(mtx2.translate(x, y).rotate2d(p.rot).getPointer());
 
-            // TODO: scaling, rotation
             drawColorSet(p.color);
-            drawRectangle(x - 10, y - 10, x + 10, y + 10);
+            drawRectangle(-sx, -sy, sx, sy);
+            
+            glPopMatrix();
          }
 
          glPopMatrix();

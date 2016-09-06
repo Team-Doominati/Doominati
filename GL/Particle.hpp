@@ -29,7 +29,7 @@ namespace Doom
       class Particle
       {
       public:
-         unsigned char life;
+         int life;
          
          Core::Vector2 oldposition;
          Core::Vector2 position;

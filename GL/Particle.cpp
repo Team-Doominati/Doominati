@@ -12,7 +12,7 @@
 
 #include "GL/Particle.hpp"
 
-#include <stdio.h>
+#include <algorithm>
 
 
 //----------------------------------------------------------------------------|
@@ -45,16 +45,20 @@ namespace Doom
       
       void ParticleSystem::update()
       {
-         for(auto it = particles.begin(); it != particles.end(); ++it)
+         int n = particles.size();
+         
+         for(int i = 0; i < n; i++)
          {
-            auto &p = *it;
+            auto &p = particles[i];
             
             if(p.colorspeed)
                p.color.interpolate(p.colordest, p.colorspeed);
             
             if(--p.life <= 0 || p.color.a <= 0.01f)
             {
-               it = particles.erase(it);
+               std::swap(particles[i], particles.back());
+               particles.pop_back();
+               --i, --n;
                continue;
             }
             

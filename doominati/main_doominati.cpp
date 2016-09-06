@@ -159,23 +159,31 @@ static int Main()
          {
             // Playsim actions.
 
-            for(int i = 0; i < 120; i++)
+            if((timeNext % 30) == 0)
             {
-               float fuck3 = (rand() % 200) - 100;
-               float fuck4 = (rand() % 200) - 100;
+               for(int i = 0; i < 40; i++)
+               {
+                  float fuck3 = (rand() % 200) - 100;
+                  float fuck4 = (rand() % 200) - 100;
 
-               Doom::GL::Particle test{};
+                  Doom::GL::Particle test{};
 
-               test.life = 50;
-               test.oldposition = test.position = Doom::Core::Vector2{-30.f + fuck3, -30.f + fuck4};
-               test.velocity = Doom::Core::Vector2{(1.f/4096)*((rand()%255)-128),(1.f/4096)*((rand()%255)-128)};
-               test.acceleration = Doom::Core::Vector2{(1.f/16384)*((rand()%255)-128),(1.f/16384)*((rand()%255)-128)};
-               test.color = Doom::GL::Color::Pink;
-               test.colordest = Doom::GL::Color::Red;
-               test.colordest.a = 0.5f;
-               test.colorspeed = 0.04f;
+                  test.life = (rand() % 30) + 10;
+                  test.oldposition.x = test.position.x = -30.0f + fuck3;
+                  test.oldposition.y = test.position.y = -30.0f + fuck4;
+                  test.velocity.x = (1.0f/4096)*((rand()%255)-128);
+                  test.velocity.y = (1.0f/4096)*((rand()%255)-128);
+                  test.acceleration.x = (1.0f/16384)*((rand()%255)-128);
+                  test.acceleration.y = (1.0f/16384)*((rand()%255)-128);
+                  test.scale.x = test.scale.y = (1.0f/4096)*((rand()%255)-128)*40;
+                  test.color = Doom::GL::Color::Pink;
+                  test.colordest = Doom::GL::Color::Red;
+                  test.colordest.a = 0.0f;
+                  test.colorspeed = 0.04f;
+                  test.rotspeed = (1.0f/4096)*((rand()%255)-128);
 
-               ParticleSystem.particles.emplace_back(std::move(test));
+                  ParticleSystem.particles.emplace_back(std::move(test));
+               }
             }
 
             input.poll();
