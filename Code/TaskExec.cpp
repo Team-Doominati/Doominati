@@ -48,12 +48,17 @@
 #endif
 
 //
+// IntrCase
+//
+#define IntrCase() do {++codePtr; goto exec_intr;} while(0)
+
+//
 // NextCase
 //
 #if Doom_Code_DynamicGoto
 #define NextCase() goto *cases[(++codePtr)->op]
 #else
-#define NextCase() ++codePtr; goto next_case
+#define NextCase() do {++codePtr; goto next_case;} while(0)
 #endif
 
 //
@@ -260,7 +265,7 @@ namespace Doom
          DeclCase(Cnat):
             dataStk.drop(codePtr->h.h);
             if(Natives[codePtr->w.w](this, &dataStk[0], codePtr->h.h))
-               goto exec_intr;
+               IntrCase();
             NextCase();
 
          DeclCase(Drop_Nul):
@@ -313,7 +318,7 @@ namespace Doom
       exec_intr:
          // Execution interrupted, check execution state.
          if(!delay)
-            NextCase();
+            ThisCase();
 
       exec_stop:;
       }

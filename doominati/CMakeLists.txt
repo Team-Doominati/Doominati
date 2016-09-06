@@ -30,6 +30,7 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Code/Native.cpp
    ${CMAKE_SOURCE_DIR}/Code/Native.hpp
    ${CMAKE_SOURCE_DIR}/Code/Native/Print.cpp
+   ${CMAKE_SOURCE_DIR}/Code/Native/State.cpp
    ${CMAKE_SOURCE_DIR}/Code/OpCode.cpp
    ${CMAKE_SOURCE_DIR}/Code/OpCode.hpp
    ${CMAKE_SOURCE_DIR}/Code/OpList.hpp
