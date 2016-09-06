@@ -33,6 +33,7 @@ namespace Doom
 
       using Byte  = std::uint8_t;
       using HWord = std::uint16_t;
+      using SWord = std::int32_t;
       using Word  = std::uint32_t;
 
       using Native = bool (*)(Task *, Word const *, Word);

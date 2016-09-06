@@ -65,6 +65,97 @@
 #define ThisCase() goto next_case
 #endif
 
+//
+// DefnCase_OpStk
+//
+#define DefnCase_OpStk(op) \
+   DeclCase(op): op(dataStk[2], dataStk[1]); dataStk.drop(); NextCase()
+
+//
+// Ops
+//
+#define AddU(l, r) ((l) += (r))
+#define AndU(l, r) ((l) &= (r))
+#define MulU(l, r) ((l) *= (r))
+#define OrIU(l, r) ((l) |= (r))
+#define OrXU(l, r) ((l) ^= (r))
+#define ShLU(l, r) ((l) <<= (r))
+#define ShRU(l, r) ((l) >>= (r))
+#define SubU(l, r) ((l) -= (r))
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace Doom
+{
+   namespace Code
+   {
+      //
+      // CmpI_*
+      //
+      static inline void CmpI_LE(Word &l, Word r)
+         {l = static_cast<SWord>(l) <= static_cast<SWord>(r);}
+      static inline void CmpI_LT(Word &l, Word r)
+         {l = static_cast<SWord>(l) <  static_cast<SWord>(r);}
+      static inline void CmpI_GE(Word &l, Word r)
+         {l = static_cast<SWord>(l) >= static_cast<SWord>(r);}
+      static inline void CmpI_GT(Word &l, Word r)
+         {l = static_cast<SWord>(l) >  static_cast<SWord>(r);}
+
+      //
+      // CmpU_*
+      //
+      static inline void CmpU_EQ(Word &l, Word r) {l = l == r;}
+      static inline void CmpU_LE(Word &l, Word r) {l = l <= r;}
+      static inline void CmpU_LT(Word &l, Word r) {l = l <  r;}
+      static inline void CmpU_GE(Word &l, Word r) {l = l >= r;}
+      static inline void CmpU_GT(Word &l, Word r) {l = l >  r;}
+      static inline void CmpU_NE(Word &l, Word r) {l = l != r;}
+
+      //
+      // DivI
+      //
+      static inline void DivI(Word &l, Word r)
+      {
+         if(r) l = static_cast<SWord>(l) / static_cast<SWord>(r);
+      }
+
+      //
+      // DivU
+      //
+      static inline void DivU(Word &l, Word r)
+      {
+         if(r) l /= r;
+      }
+
+      //
+      // ModI
+      //
+      static inline void ModI(Word &l, Word r)
+      {
+         if(r) l = static_cast<SWord>(l) % static_cast<SWord>(r);
+      }
+
+      //
+      // ModU
+      //
+      static inline void ModU(Word &l, Word r)
+      {
+         if(r) l %= r;
+      }
+
+      //
+      // ShRI
+      //
+      static inline void ShRI(Word &l, Word r)
+      {
+         l = static_cast<SWord>(l) >> r;
+      }
+   }
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -102,6 +193,31 @@ namespace Doom
          DeclCase(Kill):
             std::cerr << "Kill: " << codePtr->h.h << '-' << codePtr->w.w << '\n';
             goto task_stop;
+
+            DefnCase_OpStk(AddU);
+            DefnCase_OpStk(AndU);
+            DefnCase_OpStk(DivI);
+            DefnCase_OpStk(DivU);
+            DefnCase_OpStk(ModI);
+            DefnCase_OpStk(ModU);
+            DefnCase_OpStk(MulU);
+            DefnCase_OpStk(OrIU);
+            DefnCase_OpStk(OrXU);
+            DefnCase_OpStk(ShLU);
+            DefnCase_OpStk(ShRI);
+            DefnCase_OpStk(ShRU);
+            DefnCase_OpStk(SubU);
+
+            DefnCase_OpStk(CmpI_LE);
+            DefnCase_OpStk(CmpI_LT);
+            DefnCase_OpStk(CmpI_GE);
+            DefnCase_OpStk(CmpI_GT);
+            DefnCase_OpStk(CmpU_EQ);
+            DefnCase_OpStk(CmpU_LE);
+            DefnCase_OpStk(CmpU_LT);
+            DefnCase_OpStk(CmpU_GE);
+            DefnCase_OpStk(CmpU_GT);
+            DefnCase_OpStk(CmpU_NE);
 
          DeclCase(Call):
          {
