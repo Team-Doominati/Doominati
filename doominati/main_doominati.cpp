@@ -233,31 +233,29 @@ static int Main()
          {
             // Playsim actions.
 
-            if((timeNext % 30) == 0)
+            for(int i = 0; i < 40; i++)
             {
-               for(int i = 0; i < 40; i++)
-               {
-                  float fuck3 = (rand() % 200) - 100;
-                  float fuck4 = (rand() % 200) - 100;
+               float fuck3 = (rand() % 200) - 100;
+               float fuck4 = (rand() % 200) - 100;
 
-                  Doom::GL::Particle test{};
+               Doom::GL::Particle *test = ParticleSystem.create();
 
-                  test.life = (rand() % 30) + 10;
-                  test.oldposition.x = test.position.x = -30.0f + fuck3;
-                  test.oldposition.y = test.position.y = -30.0f + fuck4;
-                  test.velocity.x = (1.0f/4096)*((rand()%255)-128);
-                  test.velocity.y = (1.0f/4096)*((rand()%255)-128);
-                  test.acceleration.x = (1.0f/16384)*((rand()%255)-128);
-                  test.acceleration.y = (1.0f/16384)*((rand()%255)-128);
-                  test.scale.x = test.scale.y = (1.0f/4096)*((rand()%255)-128)*40;
-                  test.color = Doom::GL::Color::Pink;
-                  test.colordest = Doom::GL::Color::Red;
-                  test.colordest.a = 0.0f;
-                  test.colorspeed = 0.04f;
-                  test.rotspeed = (1.0f/4096)*((rand()%255)-128);
+               if(test == nullptr)
+                  break;
 
-                  ParticleSystem.particles.emplace_back(std::move(test));
-               }
+               test->life = (rand() % 30) + 10;
+               test->oldposition.x = test->position.x = -30.0f + fuck3;
+               test->oldposition.y = test->position.y = -30.0f + fuck4;
+               test->velocity.x = (1.0f/4096)*((rand()%255)-128);
+               test->velocity.y = (1.0f/4096)*((rand()%255)-128);
+               test->acceleration.x = (1.0f/16384)*((rand()%255)-128);
+               test->acceleration.y = (1.0f/16384)*((rand()%255)-128);
+               test->scale.x = test->scale.y = (1.0f/4096)*((rand()%255)-128)*40;
+               test->color = Doom::GL::Color::Pink;
+               test->colordest = Doom::GL::Color::Red;
+               test->colordest.a = 0.0f;
+               test->colorspeed = 0.04f;
+               test->rotspeed = (1.0f/4096)*((rand()%255)-128);
             }
 
             input.poll();

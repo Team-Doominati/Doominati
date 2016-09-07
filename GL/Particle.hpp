@@ -29,35 +29,49 @@ namespace Doom
       class Particle
       {
       public:
+         Particle() = default;
+         Particle(std::ptrdiff_t next_) : next{next_} {}
+
          int life;
-         
+
          Core::Vector2 oldposition;
          Core::Vector2 position;
          Core::Vector2 velocity;
          Core::Vector2 acceleration;
-         
+
          Core::Vector2 scale;
          Core::Vector2 scaledest;
          float scalespeed;
-         
+
          float rot;
          float rotspeed;
-         
+
          Color color;
          Color colordest;
          float colorspeed;
+
+         std::ptrdiff_t next = -1;
       };
-      
+
       class ParticleSystem
       {
+         friend class Window;
+
       public:
          Core::Vector2 position;
-         std::vector<Particle> particles;
-         
+
          ParticleSystem();
-         ParticleSystem(float x, float y, std::size_t nparticles = 128);
-         
+         ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128);
+
+         void expand();
+         Particle *create();
          void update();
+
+      protected:
+         std::vector<Particle> particles;
+
+      private:
+         std::ptrdiff_t pinactive, pactive;
       };
    }
 }
