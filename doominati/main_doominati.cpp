@@ -153,6 +153,8 @@ static void DrawFPS()
    int x = WindowCurrent->w - 65;
    int y = 35;
 
+   if(fps > 999) fps = 999;
+
    DrawDigit(fps / 100 % 10, x +  0, y, x + 15, y - 25);
    DrawDigit(fps /  10 % 10, x + 20, y, x + 35, y - 25);
    DrawDigit(fps /   1 % 10, x + 40, y, x + 55, y - 25);

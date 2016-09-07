@@ -4,3 +4,4 @@ bin/**
 Bin/**
 .kdev4/
 doominati.kdev4
+*.swp
