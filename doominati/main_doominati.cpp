@@ -17,6 +17,7 @@
 #include "Code/Thread.hpp"
 
 #include "Core/Time.hpp"
+#include "Core/Math.hpp"
 
 #include "FS/Dir.hpp"
 
@@ -38,7 +39,7 @@
 //
 
 static Doom::GL::Window *WindowCurrent;
-static Doom::GL::ParticleSystem ParticleSystem{100, 100};
+static Doom::GL::ParticleSystem ParticleSystem{200, 200};
 
 
 //----------------------------------------------------------------------------|
@@ -68,7 +69,7 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
 
-   WindowCurrent->drawRectangle(xp, yp, xo, yo, true);
+   WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
    WindowCurrent->drawRectangle(2, 2, 102, 102);
 

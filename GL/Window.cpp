@@ -195,8 +195,35 @@ namespace Doom
       // Window::drawRectangle
       //
 
-      void Window::drawRectangle(int x1, int y1, int x2, int y2, bool line)
+      void Window::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line)
       {
+         if(x1 > x2) std::swap(x1, x2);
+         if(y1 > y2) std::swap(y1, y2);
+
+         Core::Vector2 v[4] = {
+            {float(x1), float(y1)},
+            {float(x2), float(y1)},
+            {float(x2), float(y2)},
+            {float(x1), float(y2)}
+         };
+
+         if(rot)
+         {
+            float c = std::cos(rot);
+            float s = std::sin(rot);
+
+            float sx = x1 + ((x2 - x1) / 2.0f);
+            float sy = y1 + ((y2 - y1) / 2.0f);
+
+            for(int i = 0; i < 4; i++)
+            {
+               float x = v[i].x - sx;
+               float y = v[i].y - sy;
+               v[i].x = ((x * c) - (y * s)) + sx;
+               v[i].y = ((x * s) + (y * c)) + sy;
+            }
+         }
+
          if(line)
          {
             glBegin(GL_LINE_LOOP);
@@ -204,10 +231,9 @@ namespace Doom
             // A--B
             // |  |
             // D--C
-            glVertex2f(x1, y1);
-            glVertex2f(x2, y1);
-            glVertex2f(x2, y2);
-            glVertex2f(x1, y2);
+
+            for(int i = 0; i < 4; i++)
+               glVertex2f(v[i].x, v[i].y);
 
             glEnd();
          }
@@ -218,16 +244,16 @@ namespace Doom
             // B--A
             // | /
             // C
-            glVertex2f(x2, y1);
-            glVertex2f(x1, y1);
-            glVertex2f(x1, y2);
+            glVertex2f(v[1].x, v[1].y);
+            glVertex2f(v[0].x, v[0].y);
+            glVertex2f(v[3].x, v[3].y);
 
             //    A
             //  / |
             // B--C
-            glVertex2f(x2, y1);
-            glVertex2f(x1, y2);
-            glVertex2f(x2, y2);
+            glVertex2f(v[1].x, v[1].y);
+            glVertex2f(v[3].x, v[3].y);
+            glVertex2f(v[2].x, v[2].y);
 
             glEnd();
          }
@@ -243,28 +269,20 @@ namespace Doom
          
          glPushMatrix();
 
-         glLoadMatrixf(mtx.translate(ps.position.x, ps.position.y).getPointer());
+         glLoadMatrixf(ps.mat.getConstPointer());
 
          float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
          for(auto &p : ps.particles)
          {
-            Core::Matrix4 mtx2{mtx};
-            
-            float x = 100 + Core::Lerp(p.oldposition.x, p.position.x, frac);
-            float y = 100 + Core::Lerp(p.oldposition.y, p.position.y, frac);
+            float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
+            float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
             
             float sx = 8 * p.scale.x;
             float sy = 8 * p.scale.y;
             
-            glPushMatrix();
-            
-            glLoadMatrixf(mtx2.translate(x, y).rotate2d(p.rot).getPointer());
-
             drawColorSet(p.color);
-            drawRectangle(-sx, -sy, sx, sy);
-            
-            glPopMatrix();
+            drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
          }
 
          glPopMatrix();

@@ -46,7 +46,7 @@ namespace Doom
          Color drawColorGet();
          
          void drawLine(int x1, int y1, int x2, int y2);
-         void drawRectangle(int x1, int y1, int x2, int y2, bool line = false);
+         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false);
          void drawParticleSystem(ParticleSystem &ps);
 
          void shaderSwap(Shader *sp);

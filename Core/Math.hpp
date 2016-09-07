@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Inline math functions.
+// Inline math.
 //
 //-----------------------------------------------------------------------------
 
@@ -26,6 +26,21 @@ namespace Doom
       {
          return ((1.0f - amt) * x) + (amt * y);
       }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Objects                                                             |
+//
+
+namespace Doom
+{
+   namespace Core
+   {
+      constexpr float pi = 3.14159265359f;
+      constexpr float pi2 = pi / 2.0f;
+      constexpr float pi4 = pi / 4.0f;
    }
 }
 

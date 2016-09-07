@@ -88,8 +88,7 @@ namespace Doom
       void InputSource_Local::poll()
       {
          frameLast = frameNext;
-
-         frameNext = InputFrame{};
+         frameNext.deltapitch = frameNext.deltayaw = 0;
 
          // Poll events.
          SDL_Event event;

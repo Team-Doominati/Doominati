@@ -15,6 +15,8 @@
 
 #include "GL/Color.hpp"
 #include "Core/Vector2.hpp"
+#include "Core/Matrix4.hpp"
+
 #include <vector>
 
 
@@ -58,15 +60,15 @@ namespace Doom
          friend class Window;
 
       public:
-         Core::Vector2 position;
-
          ParticleSystem();
          ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128);
 
+         void setPosition(float x, float y);
          Particle *create();
          void update();
 
       protected:
+         Core::Matrix4 mat;
          std::vector<Particle> particles;
 
       private:

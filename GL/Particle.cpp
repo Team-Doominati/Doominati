@@ -34,16 +34,27 @@ namespace Doom
       }
 
       ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum) :
-         position{x, y},
+         mat{},
          particles{},
          pinactive{0}, pactive{-1}
       {
+         setPosition(x, y);
+
          particles.reserve(particles.capacity() + pnum);
 
          for(std::ptrdiff_t i = 0; i < pnum - 1; i++)
             particles.emplace_back(i + 1);
 
          particles.emplace_back(-1);
+      }
+
+      //
+      // ParticleSystem::setPosition
+      //
+
+      void ParticleSystem::setPosition(float x, float y)
+      {
+         mat.translate(x, y);
       }
 
       //
