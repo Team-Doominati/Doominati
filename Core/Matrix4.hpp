@@ -57,9 +57,9 @@ namespace Doom
          
          Matrix4 &translate(float x, float y, float z = 0.0f)
          {
-            c3.x += x;
-            c3.y += y;
-            c3.z += z;
+            c3.x = x;
+            c3.y = y;
+            c3.z = z;
             
             return *this;
          }
@@ -70,10 +70,10 @@ namespace Doom
          
          Matrix4 &rotate2d(float ang)
          {
-            c0.x +=  std::cos(ang);
-            c0.y +=  std::sin(ang);
-            c1.x += -std::sin(ang);
-            c1.y +=  std::cos(ang);
+            c0.x =  std::cos(ang);
+            c0.y =  std::sin(ang);
+            c1.x = -std::sin(ang);
+            c1.y =  std::cos(ang);
             
             return *this;
          }
