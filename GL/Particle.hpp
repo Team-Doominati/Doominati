@@ -63,7 +63,6 @@ namespace Doom
          ParticleSystem();
          ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128);
 
-         void expand();
          Particle *create();
          void update();
 
