@@ -39,7 +39,7 @@
 //
 
 static Doom::GL::Window *WindowCurrent;
-static Doom::GL::ParticleSystem ParticleSystem{200, 200};
+static Doom::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000};
 
 
 //----------------------------------------------------------------------------|
@@ -234,10 +234,10 @@ static int Main()
          {
             // Playsim actions.
 
-            for(int i = 0; i < 40; i++)
+            for(;;)
             {
-               float fuck3 = (rand() % 200) - 100;
-               float fuck4 = (rand() % 200) - 100;
+               float fuck3 = (rand() % 1280) - (1280/2);
+               float fuck4 = (rand() % 720 ) - (720/2);
 
                Doom::GL::Particle *test = ParticleSystem.create();
 
