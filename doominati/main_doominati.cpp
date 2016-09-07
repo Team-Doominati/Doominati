@@ -87,6 +87,78 @@ static void DrawTest()
 }
 
 //
+// DrawDigit
+//
+static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
+{
+   int ym = (yl + yh) / 2;
+
+   static struct
+   {
+      bool seg0 : 1, seg1 : 1, seg2 : 1, seg3 : 1, seg4 : 1, seg5 : 1, seg6 : 1;
+   }
+   const digtab[10]
+   {
+      {1,1,1,0,1,1,1},
+      {0,0,1,0,0,1,0},
+      {1,0,1,1,1,0,1},
+      {1,0,1,1,0,1,1},
+      {0,1,1,1,0,1,0},
+      {1,1,0,1,0,1,1},
+      {1,1,0,1,1,1,1},
+      {1,0,1,0,0,1,0},
+      {1,1,1,1,1,1,1},
+      {1,1,1,1,0,1,1},
+   };
+
+   auto &digit = digtab[dig];
+
+   //  -0-
+   // |   |
+   // 1   2
+   // |   |
+   //  -3-
+   // |   |
+   // 4   5
+   // |   |
+   //  -6-
+
+   if(digit.seg0) WindowCurrent->drawLine(xl, yh, xh, yh);
+   if(digit.seg1) WindowCurrent->drawLine(xl, ym, xl, yh);
+   if(digit.seg2) WindowCurrent->drawLine(xh, ym, xh, yh);
+   if(digit.seg3) WindowCurrent->drawLine(xl, ym, xh, ym);
+   if(digit.seg4) WindowCurrent->drawLine(xl, yl, xl, ym);
+   if(digit.seg5) WindowCurrent->drawLine(xh, yl, xh, ym);
+   if(digit.seg6) WindowCurrent->drawLine(xl, yl, xh, yl);
+}
+
+//
+// DrawFPS
+//
+static void DrawFPS()
+{
+   static double timeLast = 0;
+   static double timeMean = 1/50.0;
+   double timeThis, timePass;
+
+   timeThis = Doom::Core::GetTicks<Doom::Core::Second<double>>();
+   timePass = timeThis - timeLast;
+   timeLast = timeThis;
+   timeMean = (timeMean * 19 + timePass) / 20;
+
+   unsigned int fps = std::round(1 / timeMean);
+
+   WindowCurrent->drawColorSet(Doom::GL::Color::White);
+
+   int x = WindowCurrent->w - 65;
+   int y = 35;
+
+   DrawDigit(fps / 100 % 10, x +  0, y, x + 15, y - 25);
+   DrawDigit(fps /  10 % 10, x + 20, y, x + 35, y - 25);
+   DrawDigit(fps /   1 % 10, x + 40, y, x + 55, y - 25);
+}
+
+//
 // LoadCodedefs
 //
 
@@ -197,6 +269,8 @@ static int Main()
       window.renderBegin();
 
       DrawTest();
+
+      DrawFPS();
 
       window.renderEnd();
    }
