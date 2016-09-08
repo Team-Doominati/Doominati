@@ -271,6 +271,10 @@ namespace Doom
                IntrCase();
             NextCase();
 
+         DeclCase(Copy):
+            dataStk.push(dataStk[1]);
+            NextCase();
+
          DeclCase(Drop_Nul):
             dataStk.drop();
             NextCase();
@@ -283,6 +287,10 @@ namespace Doom
          DeclCase(Drop_Reg):
             locReg[codePtr->w.w] = dataStk[1];
             dataStk.drop();
+            NextCase();
+
+         DeclCase(InvU):
+            dataStk[1] = ~dataStk[1];
             NextCase();
 
          DeclCase(Jcnd_Lit):
@@ -320,6 +328,14 @@ namespace Doom
             codePtr = &prog->codes[codePtr->w.w];
             ThisCase();
 
+         DeclCase(LNot):
+            dataStk[1] = !dataStk[1];
+            NextCase();
+
+         DeclCase(NegI):
+            dataStk[1] = ~dataStk[1] + 1;
+            NextCase();
+
          DeclCase(Push_Lit):
             dataStk.push(codePtr->w.w);
             NextCase();
@@ -346,6 +362,10 @@ namespace Doom
             // Drop call frame.
             callStk.drop();
 
+            NextCase();
+
+         DeclCase(Swap):
+            std::swap(dataStk[1], dataStk[2]);
             NextCase();
          }
 
