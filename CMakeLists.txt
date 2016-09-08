@@ -18,6 +18,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 set(OUT_DIR ${CMAKE_BINARY_DIR}/Bin)
 include(CheckCXXCompilerFlag)
 
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE "Release")
+endif()
+
 
 ##----------------------------------------------------------------------------|
 ## Functions                                                                  |
@@ -39,8 +43,8 @@ endfunction()
 ## Environment Detection                                                      |
 ##
 
-if(   CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-   OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+   CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
    TRY_CXX_COMPILER_FLAG(-Wall       FLAG_CXX_Wall   )
    TRY_CXX_COMPILER_FLAG(-Wextra     FLAG_CXX_Wextra )
    TRY_CXX_COMPILER_FLAG(-Wshadow    FLAG_CXX_Wshadow)

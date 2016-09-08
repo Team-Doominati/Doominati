@@ -182,7 +182,7 @@ namespace Doom
          }
 
          #if Doom_Code_DynamicGoto
-         static void const *const cases[] =
+         static decltype(&&case_OpCodeNop) const cases[] =
          {
             #define Doom_Code_OpList(name, ...) &&case_OpCode##name,
             #include "Code/OpList.hpp"
