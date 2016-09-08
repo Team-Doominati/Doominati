@@ -666,7 +666,7 @@ namespace Doom
             {
                std::vector<RawExp> initi; initi.reserve(words);
 
-               do initi.emplace_back(loadExp(in)); while(in.peek(","));
+               do initi.emplace_back(loadExp(in)); while(in.drop(","));
 
                addGlobal(glyph, words, {GDCC::Core::Move, initi.begin(), initi.end()});
             }

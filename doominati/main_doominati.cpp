@@ -203,9 +203,6 @@ static int Main()
 
    Doom::FS::Dir::AddRoot("."); // HACK
 
-   if(auto file = Doom::FS::Dir::FindFile("startmsg"))
-      std::cout << file->data << std::endl; // HACK
-
    // Initialize scripting and call main.
    Doom::Code::NativeAdder::Finish();
    Doom::Code::Program prog;
