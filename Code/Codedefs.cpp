@@ -375,7 +375,7 @@ namespace Doom
             Core::HashedStr glyph = val;
 
             if(auto global = findGlobal(glyph))
-               return *global;
+               return *global << 2;
 
             if(auto label = findLabel(glyph))
                return *label;

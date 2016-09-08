@@ -28,29 +28,56 @@ namespace Doom
       // MemFuncs
       //
       template<typename T>
-      class MemFuncs;
+      struct MemFuncs;
+
+      //
+      // MemFuncs<Byte>
+      //
+      template<>
+      struct MemFuncs<Byte const>
+      {
+         constexpr static Byte (Memory::*Get)(Word) = &Memory::getB;
+
+         constexpr static unsigned int Shift = 0;
+      };
 
       template<>
-      class MemFuncs<Byte>
+      struct MemFuncs<Byte> : MemFuncs<Byte const>
       {
-      public:
-         constexpr static Byte (Memory::*Get)(Word)       = &Memory::getB;
          constexpr static void (Memory::*Set)(Word, Byte) = &Memory::setB;
       };
 
+      //
+      // MemFuncs<HWord>
+      //
       template<>
-      class MemFuncs<HWord>
+      struct MemFuncs<HWord const>
       {
-      public:
-         constexpr static HWord (Memory::*Get)(Word)        = &Memory::getH;
-         constexpr static void  (Memory::*Set)(Word, HWord) = &Memory::setH;
+         constexpr static HWord (Memory::*Get)(Word) = &Memory::getH;
+
+         constexpr static unsigned int Shift = 1;
       };
 
       template<>
-      class MemFuncs<Word>
+      struct MemFuncs<HWord> : MemFuncs<HWord const>
       {
-      public:
-         constexpr static Word (Memory::*Get)(Word)       = &Memory::getW;
+         constexpr static void (Memory::*Set)(Word, HWord) = &Memory::setH;
+      };
+
+      //
+      // MemFuncs<Word>
+      //
+      template<>
+      struct MemFuncs<Word const>
+      {
+         constexpr static Word (Memory::*Get)(Word) = &Memory::getW;
+
+         constexpr static unsigned int Shift = 2;
+      };
+
+      template<>
+      struct MemFuncs<Word> : MemFuncs<Word const>
+      {
          constexpr static void (Memory::*Set)(Word, Word) = &Memory::setW;
       };
 
@@ -75,32 +102,14 @@ namespace Doom
       };
 
       //
-      // MemRef<T const>
-      //
-      template<typename T>
-      class MemRef<T const>
-      {
-      public:
-         MemRef(Memory *mem_, Word idx_) : mem{mem_}, idx{idx_} {}
-
-         operator T () const {return (mem->*MemFuncs<T>::Get)(idx);}
-
-         MemRef &operator = (MemRef const &) = delete;
-         MemRef const &operator = (T val) const = delete;
-
-      private:
-         Memory *const mem;
-         Word    const idx;
-      };
-
-      //
       // MemPtr
       //
       template<typename T>
       class MemPtr
       {
       public:
-         MemPtr(Memory *mem_, Word idx_ = 0) : mem{mem_}, idx{idx_} {}
+         MemPtr(Memory *mem_, Word idx_ = 0) :
+            mem{mem_}, idx{idx_ >> MemFuncs<T>::Shift} {}
 
          explicit operator bool () const {return idx != 0;}
 
@@ -118,7 +127,8 @@ namespace Doom
          bool operator == (MemPtr const &r) {return idx == r.idx;}
 
          MemPtr &operator = (MemPtr const &) = default;
-         MemPtr &operator = (Word idx_) {idx = idx_; return *this;}
+         MemPtr &operator = (Word idx_)
+            {idx = idx_ >> MemFuncs<T>::Shift; return *this;}
 
          MemPtr &operator += (Word off) {idx += off; return *this;}
          MemPtr *operator -= (Word off) {idx -= off; return *this;}

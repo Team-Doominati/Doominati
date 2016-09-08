@@ -280,7 +280,7 @@ namespace Doom
             NextCase();
 
          DeclCase(Drop_Ptr):
-            prog->memory.setW(dataStk[1], dataStk[2]);
+            prog->memory.setW(dataStk[1] >> 2, dataStk[2]);
             dataStk.drop(2);
             NextCase();
 
@@ -341,7 +341,7 @@ namespace Doom
             NextCase();
 
          DeclCase(Push_Ptr):
-            dataStk[1] = prog->memory.getW(dataStk[1]);
+            dataStk[1] = prog->memory.getW(dataStk[1] >> 2);
             NextCase();
 
          DeclCase(Push_Reg):
