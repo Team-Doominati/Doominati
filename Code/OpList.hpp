@@ -10,6 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
+Doom_Code_OpList(Nop)
 Doom_Code_OpList(Kill)
 
 Doom_Code_OpList(AddU)
@@ -31,6 +32,11 @@ Doom_Code_OpList(DivU)
 Doom_Code_OpList(Drop_Nul)
 Doom_Code_OpList(Drop_Ptr)
 Doom_Code_OpList(Drop_Reg)
+Doom_Code_OpList(Jcnd_Lit)
+Doom_Code_OpList(Jcnd_Nil)
+Doom_Code_OpList(Jcnd_Tru)
+Doom_Code_OpList(Jump)
+Doom_Code_OpList(Jump_Lit)
 Doom_Code_OpList(ModI)
 Doom_Code_OpList(ModU)
 Doom_Code_OpList(MulU)

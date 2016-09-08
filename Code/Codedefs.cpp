@@ -61,6 +61,7 @@ namespace Doom
       static void GenCode(Loader *loader, OpCode *code, Loader::RawExpA const &args);
       static void GenCodeHW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
       static void GenCodeW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
+      static void GenCodeWW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    }
 }
 
@@ -75,6 +76,7 @@ namespace Doom
    {
       static std::unordered_map<GDCC::Core::String, CodeTrans> CodeTransTab
       {
+         {"Nop",      {GenCode,   0, 1, OpCode::Nop}},
          {"Kill",     {GenCodeHW, 2, 1, OpCode::Kill}},
 
          {"AddU",     {GenCode,   0, 1, OpCode::AddU}},
@@ -96,6 +98,11 @@ namespace Doom
          {"Drop_Nul", {GenCode,   0, 1, OpCode::Drop_Nul}},
          {"Drop_Ptr", {GenCode,   0, 1, OpCode::Drop_Ptr}},
          {"Drop_Reg", {GenCodeW,  1, 1, OpCode::Drop_Reg}},
+         {"Jcnd_Lit", {GenCodeWW, 2, 2, OpCode::Jcnd_Lit}},
+         {"Jcnd_Nil", {GenCodeW,  1, 1, OpCode::Jcnd_Nil}},
+         {"Jcnd_Tru", {GenCodeW,  1, 1, OpCode::Jcnd_Tru}},
+         {"Jump",     {GenCode,   0, 1, OpCode::Jump}},
+         {"Jump_Lit", {GenCodeW,  1, 1, OpCode::Jump_Lit}},
          {"ModI",     {GenCode,   0, 1, OpCode::ModI}},
          {"ModU",     {GenCode,   0, 1, OpCode::ModU}},
          {"MulU",     {GenCode,   0, 1, OpCode::MulU}},
@@ -161,6 +168,20 @@ namespace Doom
          code->w.w = loader->evalExp(args[0]);
 
          std::cerr << "OpCode: " << code->op << '(' << code->w.w << ")\n";
+      }
+
+      //
+      // GenCodeWW
+      //
+      static void GenCodeWW(Loader *loader, OpCode *code, Loader::RawExpA const &args)
+      {
+         code[0].w.w = loader->evalExp(args[0]);
+         code[1].w.w = loader->evalExp(args[1]);
+
+         code[1].op = OpCode::Nop;
+
+         std::cerr << "OpCode: " << code->op
+            << '(' << code[0].w.w << ',' << code[1].w.w << ")\n";
       }
    }
 }

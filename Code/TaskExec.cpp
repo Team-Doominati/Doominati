@@ -195,6 +195,9 @@ namespace Doom
          next_case: switch(codePtr->op)
          #endif
          {
+         DeclCase(Nop):
+            NextCase();
+
          DeclCase(Kill):
             std::cerr << "Kill: " << codePtr->h.h << '-' << codePtr->w.w << '\n';
             goto task_stop;
@@ -281,6 +284,41 @@ namespace Doom
             locReg[codePtr->w.w] = dataStk[1];
             dataStk.drop();
             NextCase();
+
+         DeclCase(Jcnd_Lit):
+            if(dataStk[1] == codePtr++->w.w)
+            {
+               dataStk.drop();
+               codePtr = &prog->codes[codePtr->w.w];
+            }
+            else
+               ++codePtr;
+            ThisCase();
+
+         DeclCase(Jcnd_Nil):
+            if(dataStk[1])
+               ++codePtr;
+            else
+               codePtr = &prog->codes[codePtr->w.w];
+            dataStk.drop();
+            ThisCase();
+
+         DeclCase(Jcnd_Tru):
+            if(dataStk[1])
+               codePtr = &prog->codes[codePtr->w.w];
+            else
+               ++codePtr;
+            dataStk.drop();
+            ThisCase();
+
+         DeclCase(Jump):
+            codePtr = &prog->codes[dataStk[1]];
+            dataStk.drop();
+            ThisCase();
+
+         DeclCase(Jump_Lit):
+            codePtr = &prog->codes[codePtr->w.w];
+            ThisCase();
 
          DeclCase(Push_Lit):
             dataStk.push(codePtr->w.w);
