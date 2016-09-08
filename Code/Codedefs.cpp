@@ -20,11 +20,51 @@
 #include "FS/Dir.hpp"
 
 #include <GDCC/Core/Exception.hpp>
+#include <GDCC/Core/Option.hpp>
 #include <GDCC/Core/String.hpp>
 #include <GDCC/Core/Token.hpp>
 
+#include <GDCC/Option/Bool.hpp>
+
 #include <iostream>
 #include <cctype>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace Doom
+{
+   namespace Code
+   {
+      //
+      // --codedefs-debug-code
+      //
+      static bool DebugOpCode = false;
+      static GDCC::Option::Bool CodedefsDebugOpCodeOpt
+      {
+         &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+            .setName("codedefs-debug-opcode")
+            .setDescS("Enables OpCode debug output."),
+
+         &DebugOpCode
+      };
+
+      //
+      // --codedefs-debug-function
+      //
+      static bool DebugFunction = false;
+      static GDCC::Option::Bool CodedesfDebugFunctionOpt
+      {
+         &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+            .setName("codedefs-debug-function")
+            .setDescS("Enables Function debug output."),
+
+         &DebugFunction
+      };
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -143,7 +183,9 @@ namespace Doom
          code->h.h = type;
          code->w.w = data;
 
-         std::cerr << "OpCode: " << code->op << '(' << code->h.h << ',' << code->w.w << ")\n";
+         if(DebugOpCode)
+            std::cerr << "OpCode: " << code->op
+               << '(' << code->h.h << ',' << code->w.w << ")\n";
       }
 
       //
@@ -151,7 +193,8 @@ namespace Doom
       //
       static void GenCode(Loader *, OpCode *code, Loader::RawExpA const &)
       {
-         std::cerr << "OpCode: " << code->op << "()\n";
+         if(DebugOpCode)
+            std::cerr << "OpCode: " << code->op << "()\n";
       }
 
       //
@@ -162,7 +205,9 @@ namespace Doom
          code->h.h = loader->evalExp(args[0]);
          code->w.w = loader->evalExp(args[1]);
 
-         std::cerr << "OpCode: " << code->op << '(' << code->h.h << ',' << code->w.w << ")\n";
+         if(DebugOpCode)
+            std::cerr << "OpCode: " << code->op
+               << '(' << code->h.h << ',' << code->w.w << ")\n";
       }
 
       //
@@ -172,7 +217,8 @@ namespace Doom
       {
          code->w.w = loader->evalExp(args[0]);
 
-         std::cerr << "OpCode: " << code->op << '(' << code->w.w << ")\n";
+         if(DebugOpCode)
+            std::cerr << "OpCode: " << code->op << '(' << code->w.w << ")\n";
       }
 
       //
@@ -185,8 +231,9 @@ namespace Doom
 
          code[1].op = OpCode::Nop;
 
-         std::cerr << "OpCode: " << code->op
-            << '(' << code[0].w.w << ',' << code[1].w.w << ")\n";
+         if(DebugOpCode)
+            std::cerr << "OpCode: " << code->op
+               << '(' << code[0].w.w << ',' << code[1].w.w << ")\n";
       }
    }
 }
@@ -439,10 +486,11 @@ namespace Doom
             funcItr->key = {func.glyph.str, func.glyph.len, func.glyph.hash};
             funcItr->val = {entry, func.local, func.param};
 
-            std::cerr << "Function: " << funcItr->key << '('
-               << funcItr->val.param << ") @"
-               << funcItr->val.entry - prog->codes.data() << " {"
-               << funcItr->val.local << "}\n";
+            if(DebugFunction)
+               std::cerr << "Function: " << funcItr->key << '('
+                  << funcItr->val.param << ") @"
+                  << funcItr->val.entry - prog->codes.data() << " {"
+                  << funcItr->val.local << "}\n";
 
             ++funcItr;
          }
