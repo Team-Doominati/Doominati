@@ -80,9 +80,8 @@ static void DrawTest()
          v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
 
          gl_FragColor.r  = sin(v * pi) * 0.5 + 0.5;
-         gl_FragColor.g  = cos(v * pi) * 0.5 + 0.5;
-         gl_FragColor.g *= 0.6;
-         gl_FragColor.b  = abs(sin(t / 48.0) * 0.25);
+         gl_FragColor.g  = sin(v * pi + 2.0 * pi / 3.0) * 0.5 + 0.5;
+         gl_FragColor.b  = sin(v * pi + 4.0 * pi / 3.0) * 0.5 + 0.5;
          gl_FragColor.a  = 1.0;
       }
    )";
