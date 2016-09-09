@@ -11,9 +11,11 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Shader.hpp"
-#include "FS/File.hpp"
-
 #include "GL/gl_2_1.h"
+
+#include "Core/Time.hpp"
+
+#include "FS/File.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,10 +37,6 @@ namespace Doom
       {
       }
       
-      //
-      // Shader constructor
-      //
-      
       Shader::Shader(char const *f, char const *v) :
          Shader{}
       {
@@ -47,10 +45,6 @@ namespace Doom
          link();
       }
       
-      //
-      // Guess what, another Shader constructor
-      //
-
       Shader::Shader(Doom::FS::File *ffp, Doom::FS::File *vfp) :
          Shader{}
       {
@@ -58,10 +52,6 @@ namespace Doom
          compileVertFile(vfp);
          link();
       }
-
-      //
-      // Still a Shader constructor
-      //
 
       Shader::Shader(Shader &&other) :
          handlef{other.handlef},
@@ -133,6 +123,7 @@ namespace Doom
             glGetProgramInfoLog(program, 1024, &errlen, err);
             throw ShaderError(err);
          }
+
       }
       
       //
@@ -181,6 +172,19 @@ namespace Doom
             throw ShaderError("Shader::compileVertFile: bad file\n");
          
          compileVert(fp->data);
+      }
+
+      //
+      // Shader::update
+      //
+
+      void Shader::update()
+      {
+         #define SetUniform(n, x) (glUniform1i(glGetUniformLocation(program, n), x))
+         SetUniform("dge_ticks",    Core::GetTicks<Core::PlayTick<GLint>>());
+         SetUniform("dge_mseconds", static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
+         SetUniform("dge_seconds",  Core::GetTicks<Core::Second<GLint>>());
+         #undef SetUniform
       }
    }
 }

@@ -294,8 +294,11 @@ namespace Doom
 
       void Window::shaderSwap(Shader *sp)
       {
-         shaderCurrent = sp;
-         glUseProgram(shaderCurrent->program);
+         if(sp)
+         {
+            shaderCurrent = sp;
+            glUseProgram(shaderCurrent->program);
+         }
       }
 
       //
@@ -305,6 +308,15 @@ namespace Doom
       void Window::shaderDrop()
       {
          shaderSwap(shaderBase);
+      }
+
+      //
+      // Window::shaderUpdate
+      //
+
+      void Window::shaderUpdate()
+      {
+         shaderCurrent->update();
       }
 
       //

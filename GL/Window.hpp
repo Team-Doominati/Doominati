@@ -51,6 +51,7 @@ namespace Doom
 
          void shaderSwap(Shader *sp);
          void shaderDrop();
+         void shaderUpdate();
 
          int realw, realh;
          int w, h;

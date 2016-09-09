@@ -73,6 +73,8 @@ namespace Doom
          GLuint handlef;
          GLuint handlev;
          GLuint program;
+
+         void update();
       };
    }
 }

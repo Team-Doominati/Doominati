@@ -21,8 +21,9 @@
 
 #include "FS/Dir.hpp"
 
-#include "GL/Window.hpp"
 #include "GL/Particle.hpp"
+#include "GL/Shader.hpp"
+#include "GL/Window.hpp"
 
 #include "Game/Input.hpp"
 
@@ -54,6 +55,53 @@ static Doom::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000};
 
 static void DrawTest()
 {
+   static char const *shaderFragment = R"(
+      #version 120
+
+      uniform int dge_ticks;
+      uniform int dge_mseconds;
+      uniform int dge_seconds;
+
+      void main(void)
+      {
+         const float pi = 3.1415926535897932384626433832795;
+
+         float t = float(dge_mseconds) / 32.0;
+         vec2 uv = (gl_FragCoord.xy / vec2(640.0, 480.0)) * vec2(256.0, 224.0);
+
+         float bx = uv.x + 0.5 * sin(t / 8.0);
+         float by = uv.y + 0.5 * cos(t / 8.0);
+
+         float v;
+
+         v  = sin((-bx + t) / 32.0);
+         v += cos((by + t) / 32.0);
+         v += sin((bx + by + t) / 32.0);
+         v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
+
+         gl_FragColor.r  = sin(v * pi) * 0.5 + 0.5;
+         gl_FragColor.g  = cos(v * pi) * 0.5 + 0.5;
+         gl_FragColor.g *= 0.6;
+         gl_FragColor.b  = abs(sin(t / 48.0) * 0.25);
+         gl_FragColor.a  = 1.0;
+      }
+   )";
+
+   static char const *shaderVertex = R"(
+      #version 120
+
+      void main(void)
+      {
+         gl_Position = ftransform();
+      }
+   )";
+
+
+   static Doom::GL::Shader *shader;
+
+   if(!shader)
+      shader = new Doom::GL::Shader{shaderFragment, shaderVertex};
+
    auto w = WindowCurrent->w;
    auto h = WindowCurrent->h;
 
@@ -71,7 +119,11 @@ static void DrawTest()
 
    WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
-   WindowCurrent->drawRectangle(2, 2, 102, 102);
+
+   WindowCurrent->shaderSwap(shader);
+   WindowCurrent->shaderUpdate();
+   WindowCurrent->drawRectangle(2, 2, 302, 302);
+   WindowCurrent->shaderDrop();
 
    WindowCurrent->drawColorSet(Doom::GL::Color::Red);
 
