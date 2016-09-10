@@ -45,11 +45,11 @@ namespace Doom
          link();
       }
       
-      Shader::Shader(Doom::FS::File *ffp, Doom::FS::File *vfp) :
+      Shader::Shader(FS::File *ffp, FS::File *vfp) :
          Shader{}
       {
-         compileFragFile(ffp);
-         compileVertFile(vfp);
+         compileFrag(ffp);
+         compileVert(vfp);
          link();
       }
 
@@ -125,19 +125,7 @@ namespace Doom
          }
 
       }
-      
-      //
-      // Shader::compileVert
-      //
-      
-      void Shader::compileVert(char const *data)
-      {
-         if(handlev)
-            throw ShaderError("Shader::compileVert: already open\n");
-         
-         handlev = CompileShader<GL_VERTEX_SHADER>(data);
-      }
-      
+
       //
       // Shader::compileFrag
       //
@@ -151,10 +139,22 @@ namespace Doom
       }
 
       //
-      // Shader::compileFragFile
+      // Shader::compileVert
+      //
+      
+      void Shader::compileVert(char const *data)
+      {
+         if(handlev)
+            throw ShaderError("Shader::compileVert: already open\n");
+         
+         handlev = CompileShader<GL_VERTEX_SHADER>(data);
+      }
+      
+      //
+      // Shader::compileFrag (file overload)
       //
 
-      void Shader::compileFragFile(Doom::FS::File *fp)
+      void Shader::compileFrag(FS::File *fp)
       {
          if(!fp)
             throw ShaderError("Shader::compileFragFile: bad file\n");
@@ -163,10 +163,10 @@ namespace Doom
       }
 
       //
-      // Shader::compileVertFile
+      // Shader::compileVert (file overload)
       //
 
-      void Shader::compileVertFile(Doom::FS::File *fp)
+      void Shader::compileVert(FS::File *fp)
       {
          if(!fp)
             throw ShaderError("Shader::compileVertFile: bad file\n");
