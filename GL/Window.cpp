@@ -21,6 +21,8 @@
 
 #include "SDL.h"
 
+#include <iostream>
+
 
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
@@ -81,7 +83,7 @@ namespace Doom
       // Window::PrivData constructor
       //
 
-      Window::PrivData::PrivData :
+      Window::PrivData::PrivData(int w, int h) :
          window{}, gl{}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
