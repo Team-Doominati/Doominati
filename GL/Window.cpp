@@ -12,12 +12,14 @@
 
 #include "GL/Window.hpp"
 #include "GL/Shader.hpp"
+#include "GL/gl_2_1.h"
+
 #include "Core/Matrix4.hpp"
 #include "Core/Time.hpp"
 
-#include <iostream>
+#include "FS/File.hpp"
 
-#include "GL/gl_2_1.h"
+#include "SDL.h"
 
 
 //----------------------------------------------------------------------------|
@@ -57,24 +59,43 @@ namespace Doom
    namespace GL
    {
       //
-      // Window constructor
+      // Window::PrivData
+      //
+      // Private instance data.
       //
 
-      Window::Window(int w_, int h_) :
-         realw{w_}, realh{h_},
-         w{1280}, h{720}
+      class Window::PrivData
+      {
+      public:
+         PrivData() = delete;
+         PrivData(PrivData const &other) = delete;
+         PrivData(int w, int h);
+
+         ~PrivData();
+
+         SDL_Window    *window;
+         SDL_GLContext  gl;
+      };
+
+      //
+      // Window::PrivData constructor
+      //
+
+      Window::PrivData::PrivData :
+         window{}, gl{}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
 
-         // Set up window and OpenGL context.
-         if(!(window = SDL_CreateWindow("Doominati", x, y, realw, realh, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
+         // Set up window.
+         if(!(window = SDL_CreateWindow("Doominati", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
          {
             SDL_QuitSubSystem(SDL_INIT_VIDEO);
             std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
             throw EXIT_FAILURE;
          }
 
+         // Set up OpenGL context.
          if(!(gl = SDL_GL_CreateContext(window)))
          {
             SDL_DestroyWindow(window);
@@ -82,7 +103,27 @@ namespace Doom
             std::cerr << "SDL_GL_CreateContext: " << SDL_GetError() << '\n';
             throw EXIT_FAILURE;
          }
+      }
 
+      //
+      // Window::PrivData destructor
+      //
+
+      Window::PrivData::~PrivData()
+      {
+         SDL_GL_DeleteContext(gl);
+         SDL_DestroyWindow(window);
+      }
+
+      //
+      // Window constructor
+      //
+
+      Window::Window(int w_, int h_) :
+         realw{w_}, realh{h_},
+         w{1280}, h{720},
+         privdata{new PrivData{w_, h_}}
+      {
          // Set up OpenGL server (device).
          glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
 
@@ -98,15 +139,16 @@ namespace Doom
          glEnableClientState(GL_TEXTURE_COORD_ARRAY);
          glEnableClientState(GL_VERTEX_ARRAY);
 
-         // Set up matrices and shaders.
+         // Set up matrices.
          resize(w, h);
-
-         shaderBase = new Shader{baseFragShader, baseVertShader};
-         shaderDrop();
-         drawColorSet(1.0, 1.0, 1.0);
 
          glMatrixMode(GL_MODELVIEW);
          glLoadIdentity();
+
+         // Set up base shader.
+         shaderBase.reset(new Shader{baseFragShader, baseVertShader});
+         shaderDrop();
+         drawColorSet(1.0, 1.0, 1.0);
       }
 
       //
@@ -115,8 +157,7 @@ namespace Doom
 
       Window::~Window()
       {
-         SDL_GL_DeleteContext(gl);
-         SDL_DestroyWindow(window);
+         // Needs to exist for very specific reasons.
       }
 
       //
@@ -128,7 +169,7 @@ namespace Doom
          // Check if window has been resized.
          {
             int newW, newH;
-            SDL_GetWindowSize(window, &newW, &newH);
+            SDL_GetWindowSize(privdata->window, &newW, &newH);
 
             if(w != newW || h != newH)
                resize(newW, newH);
@@ -143,7 +184,7 @@ namespace Doom
 
       void Window::renderEnd()
       {
-         SDL_GL_SwapWindow(window);
+         SDL_GL_SwapWindow(privdata->window);
       }
 
       //
@@ -263,10 +304,8 @@ namespace Doom
       // Window::drawParticleSystem
       //
 
-      void Window::drawParticleSystem(ParticleSystem &ps)
+      void Window::drawParticleSystem(ParticleSystem const &ps)
       {
-         Core::Matrix4 mtx{};
-         
          glPushMatrix();
 
          glLoadMatrixf(ps.mat.getConstPointer());
@@ -307,7 +346,7 @@ namespace Doom
 
       void Window::shaderDrop()
       {
-         shaderSwap(shaderBase);
+         shaderSwap(shaderBase.get());
       }
 
       //

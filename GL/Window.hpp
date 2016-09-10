@@ -13,9 +13,10 @@
 #ifndef Doom__GL__Window_H__
 #define Doom__GL__Window_H__
 
-#include "SDL.h"
 #include "GL/Color.hpp"
 #include "GL/Particle.hpp"
+
+#include <memory>
 
 
 //----------------------------------------------------------------------------|
@@ -27,7 +28,7 @@ namespace Doom
    namespace GL
    {
       class Shader;
-      
+
       //
       // Window
       //
@@ -47,7 +48,7 @@ namespace Doom
          
          void drawLine(int x1, int y1, int x2, int y2);
          void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false);
-         void drawParticleSystem(ParticleSystem &ps);
+         void drawParticleSystem(ParticleSystem const &ps);
 
          void shaderSwap(Shader *sp);
          void shaderDrop();
@@ -57,14 +58,15 @@ namespace Doom
          int w, h;
 
       private:
+         class PrivData;
+
          void resize(int w, int h);
-         
+
          float cr, cg, cb, ca;
 
-         SDL_GLContext gl;
-         SDL_Window   *window;
-         
-         Shader *shaderBase;
+         std::unique_ptr<PrivData> privdata;
+
+         std::unique_ptr<Shader> shaderBase;
          Shader *shaderCurrent;
       };
    }
