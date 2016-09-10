@@ -114,7 +114,7 @@ static void DrawTest()
 
    WindowCurrent->drawParticleSystem(ParticleSystem);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::abs(std::sin(seconds)), 1.0, 1.0));
+   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
 
    WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
