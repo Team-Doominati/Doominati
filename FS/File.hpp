@@ -32,10 +32,11 @@ namespace Doom
          None,
 
          DGE_NTS, // Doominati Game Engine Null-Terminated Strings
-         PAM,     // Portable Arbitrary Map
          Pak,     // PAK archive
+         PAM,     // Portable Arbitrary Map
          PBM,     // Portable Bit Map
          PGM,     // Portable Gray Map
+         PNG,     // Portable Network Graphics
          PPM,     // Portable Pixel Map
          Wad,     // WAD archive
          WAVE,    // Waveform Audio File Format

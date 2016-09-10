@@ -82,6 +82,7 @@ namespace Doom
       //
       // DetectFormat
       //
+
       Format DetectFormat(char const *data, std::size_t size)
       {
          if(size < 3) return Format::Unknown;
@@ -101,6 +102,11 @@ namespace Doom
          if(data[0] == 'D' && data[1] == 'G' && data[2] == 'E' && data[3] == '_' &&
             data[4] == 'N' && data[5] == 'T' && data[6] == 'S' && data[7] == '\0')
             return Format::DGE_NTS;
+
+         // Portable Network Graphics
+         if(data[0] == '\x89' && data[1] == 'P'  && data[2] == 'N'    && data[3] == 'G' &&
+            data[4] == '\r'   && data[5] == '\n' && data[6] == '\x1a' && data[7] == '\n')
+            return Format::PNG;
 
          if(size < 12) return Format::Unknown;
 
