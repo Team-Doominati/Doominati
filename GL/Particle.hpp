@@ -34,23 +34,23 @@ namespace Doom
          Particle() = default;
          Particle(std::ptrdiff_t next_) : next{next_} {}
 
-         int life;
+         int life = 0;
 
-         Core::Vector2 oldposition;
-         Core::Vector2 position;
-         Core::Vector2 velocity;
-         Core::Vector2 acceleration;
+         Core::Vector2 oldposition{};
+         Core::Vector2 position{};
+         Core::Vector2 velocity{};
+         Core::Vector2 acceleration{};
 
-         Core::Vector2 scale;
-         Core::Vector2 scaledest;
-         float scalespeed;
+         Core::Vector2 scale{};
+         Core::Vector2 scaledest{};
+         float scalespeed = 0.0f;
 
-         float rot;
-         float rotspeed;
+         float rot = 0.0f;
+         float rotspeed = 0.0f;
 
-         Color color;
-         Color colordest;
-         float colorspeed;
+         Color color{};
+         Color colordest{};
+         float colorspeed = 0.0f;
 
          std::ptrdiff_t next = -1;
       };

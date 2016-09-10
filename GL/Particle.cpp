@@ -99,7 +99,7 @@ namespace Doom
 
             if(--p.life <= 0 || p.color.a <= 0.01f)
             {
-               std::memset(&p, 0, sizeof(p));
+               std::memset(&p, 0, sizeof(Particle));
 
                if(prev != -1)
                   particles[prev].next = i;
