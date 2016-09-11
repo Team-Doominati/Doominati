@@ -62,6 +62,26 @@ static void DrawTest()
       uniform int dge_mseconds;
       uniform int dge_seconds;
 
+      vec4 HSVToRGB(float h, float s, float v, float a)
+      {
+         h *= 360.0;
+
+         float chroma = v * s;
+         float hp = h / 60.0;
+         float x = chroma * (1 - abs(mod(hp, 2) - 1));
+         float r1 = 0, g1 = 0, b1 = 0;
+
+              if(0 <= hp && hp < 1) r1 = chroma, g1 = x,      b1 = 0;
+         else if(1 <= hp && hp < 2) r1 = x,      g1 = chroma, b1 = 0;
+         else if(2 <= hp && hp < 3) r1 = 0,      g1 = chroma, b1 = x;
+         else if(3 <= hp && hp < 4) r1 = 0,      g1 = x,      b1 = chroma;
+         else if(4 <= hp && hp < 5) r1 = x,      g1 = 0,      b1 = chroma;
+         else if(5 <= hp && hp < 6) r1 = chroma, g1 = 0,      b1 = x;
+
+         float m = v - chroma;
+         return vec4(r1 + m, g1 + m, b1 + m, a);
+      }
+
       void main(void)
       {
          const float pi = 3.1415926535897932384626433832795;
@@ -79,10 +99,11 @@ static void DrawTest()
          v += sin((bx + by + t) / 32.0);
          v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
 
-         gl_FragColor.r  = sin(v * pi) * 0.5 + 0.5;
-         gl_FragColor.g  = sin(v * pi + 2.0 * pi / 3.0) * 0.5 + 0.5;
-         gl_FragColor.b  = sin(v * pi + 4.0 * pi / 3.0) * 0.5 + 0.5;
-         gl_FragColor.a  = 1.0;
+         gl_FragColor = HSVToRGB(
+            sin(v * pi) * 0.5 + 0.5,
+            sin(v * pi/2.0) * 0.5 + 0.5,
+            sin(v * pi/4.0) * 0.5 + 0.5,
+            1.0);
       }
    )";
 
