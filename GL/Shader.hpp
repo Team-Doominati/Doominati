@@ -48,27 +48,27 @@ namespace Doom
 
       class Shader
       {
-         friend class Window;
-
       public:
          Shader();
          Shader(char const *f, char const *v);
          Shader(FS::File *ffp, FS::File *vfp);
          Shader(Shader const &brother) = delete; // [Yholl]
-         Shader(Shader &&other);
+         Shader(Shader &&other) = default;
 
          void compileFrag(char const *data);
          void compileVert(char const *data);
          void compileFrag(FS::File *fp);
          void compileVert(FS::File *fp);
          void link();
+         void update();
 
-      protected:
          GLuint handlef;
          GLuint handlev;
          GLuint program;
 
-         void update();
+         GLint u_ticks;
+         GLint u_mseconds;
+         GLint u_seconds;
       };
    }
 }

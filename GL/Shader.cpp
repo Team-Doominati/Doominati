@@ -53,16 +53,6 @@ namespace Doom
          link();
       }
 
-      Shader::Shader(Shader &&other) :
-         handlef{other.handlef},
-         handlev{other.handlev},
-         program{other.program}
-      {
-         other.handlef = 0;
-         other.handlev = 0;
-         other.program = 0;
-      }
-
       //
       // CompileShader
       //
@@ -124,6 +114,16 @@ namespace Doom
             throw ShaderError(err);
          }
 
+         GLint idprev;
+         glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
+
+         glUseProgram(program);
+         glUniform1i(glGetUniformLocation(program, "dge_texture"), 0);
+         u_ticks    = glGetUniformLocation(program, "dge_ticks");
+         u_mseconds = glGetUniformLocation(program, "dge_mseconds");
+         u_seconds  = glGetUniformLocation(program, "dge_seconds");
+
+         glUseProgram(idprev);
       }
 
       //
@@ -180,11 +180,9 @@ namespace Doom
 
       void Shader::update()
       {
-         #define SetUniform(n, x) (glUniform1i(glGetUniformLocation(program, n), x))
-         SetUniform("dge_ticks",    Core::GetTicks<Core::PlayTick<GLint>>());
-         SetUniform("dge_mseconds", static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
-         SetUniform("dge_seconds",  Core::GetTicks<Core::Second<GLint>>());
-         #undef SetUniform
+         glUniform1i(u_ticks,    Core::GetTicks<Core::PlayTick<GLint>>());
+         glUniform1i(u_mseconds, static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
+         glUniform1i(u_seconds,  Core::GetTicks<Core::Second<GLint>>());
       }
    }
 }

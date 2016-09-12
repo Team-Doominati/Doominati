@@ -39,20 +39,28 @@ namespace Doom
          Window(int w, int h);
          ~Window();
 
+         // render
          void renderBegin();
          void renderEnd();
-         
+
+         // drawColor
          void drawColorSet(float r, float g, float b, float a = 1.0f);
          void drawColorSet(Color const &col);
-         Color drawColorGet();
-         
-         void drawLine(int x1, int y1, int x2, int y2);
-         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false);
+         Color drawColorGet() const;
+
+         // draw
+         void drawLine(int x1, int y1, int x2, int y2) const;
+         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
          void drawParticleSystem(ParticleSystem const &ps);
 
+         // shader
          void shaderSwap(Shader *sp);
          void shaderDrop();
          void shaderUpdate();
+
+         // texture
+         void textureSet(char const *name);
+         void textureUnbind();
 
          int realw, realh;
          int w, h;
@@ -68,6 +76,8 @@ namespace Doom
 
          std::unique_ptr<Shader> shaderBase;
          Shader *shaderCurrent;
+
+         Core::Vector4 textureMinMax;
       };
    }
 }

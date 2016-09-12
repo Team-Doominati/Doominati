@@ -14,14 +14,20 @@
 #include "GL/Shader.hpp"
 #include "GL/gl_2_1.h"
 
-#include "Core/Matrix4.hpp"
+#include "Core/Vector4.hpp"
 #include "Core/Time.hpp"
 
-#include "FS/File.hpp"
+#include "FS/Dir.hpp"
 
 #include "SDL.h"
 
+#include <GL/glu.h>
+
 #include <iostream>
+#include <stdexcept>
+#include <cctype>
+#include <cstdlib>
+#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -31,11 +37,15 @@
 static char const baseFragShader[] = R"(
    #version 120
 
+   uniform sampler2D dge_texture;
+
    varying vec4 color;
+   varying vec4 texcoord;
 
    void main(void)
    {
-      gl_FragColor = color;
+      gl_FragColor = texture2D(dge_texture, texcoord.xy) * color;
+//    gl_FragColor = vec4(texcoord.xy, 0.0, 1.0);
    }
 )";
 
@@ -43,10 +53,13 @@ static char const baseVertShader[] = R"(
    #version 120
 
    varying vec4 color;
+   varying vec4 texcoord;
 
    void main(void)
    {
       gl_Position = ftransform();
+
+      texcoord = gl_MultiTexCoord0;
       color = gl_Color;
    }
 )";
@@ -61,6 +74,165 @@ namespace Doom
    namespace GL
    {
       //
+      // TextureLoadError
+      //
+
+      class TextureLoadError : public std::runtime_error
+      {
+         using std::runtime_error::runtime_error;
+      };
+
+      //
+      // Texture
+      //
+
+      class Texture
+      {
+      public:
+         Texture() = delete;
+         Texture(Texture const &other) = delete;
+         Texture(Texture &&other) = default;
+         Texture(GLsizei width, GLsizei height, float *texdata);
+         Texture(char const *name);
+         ~Texture();
+
+//       void loadPBM(FS::File *fp);
+//       void loadPGM(FS::File *fp);
+//       void loadPNG(FS::File *fp);
+         void loadPPM(FS::File *fp);
+
+         void genTexture(GLsizei width, GLsizei height, float *texdata);
+
+         GLuint        textureid;
+         Core::Vector4 minmax;
+      };
+
+      //
+      // Texture constructor
+      //
+
+      Texture::Texture(char const *name)
+      {
+         std::cout << "constructing texture\n";
+
+         FS::File *fp = FS::Dir::FindFile(name);
+
+         switch(fp->format)
+         {
+//       case FS::Format::PBM: loadPBM(fp); break;
+//       case FS::Format::PGM: loadPGM(fp); break;
+//       case FS::Format::PNG: loadPNG(fp); break;
+         case FS::Format::PPM: loadPPM(fp); break;
+         default:
+            throw TextureLoadError("invalid file format");
+         }
+      }
+
+      Texture::Texture(GLsizei width, GLsizei height, float *texdata)
+      {
+         genTexture(width, height, texdata);
+      }
+
+      //
+      // Texture destructor
+      //
+
+      Texture::~Texture()
+      {
+         std::cout << "destructing texture\n";
+      }
+
+      //
+      // Texture::loadPPM
+      //
+
+      void Texture::loadPPM(FS::File *fp)
+      {
+         char const *data = fp->data;
+
+         if(data[1] == '6')
+            throw TextureLoadError("P6 binary PPM format not supported");
+
+         // skip header
+         data += 2;
+
+         std::unique_ptr<float[]> texdata;
+
+         long width  = 0;
+         long height = 0;
+         long range  = 255;
+
+         for(std::size_t i = 0, itnum = 3; i < itnum;)
+         {
+            // skip whitespace
+            while(std::isspace(*data)) ++data;
+
+            // skip comments
+            if(*data == '#')
+            {
+               ++data;
+               while(*data != '\n') ++data;
+               continue;
+            }
+
+            // parse number
+            char *end;
+            long num = std::strtol(data, &end, 10);
+
+            // what the hell did you DO even
+            if(!std::isspace(*end) && !std::isdigit(*end) && *end != '#')
+               throw TextureLoadError("invalid character in PPM file");
+
+            switch(i)
+            {
+            case 0:
+               width  = num; // first number is width
+               break;
+
+            case 1:
+               height = num;                // second is height
+               itnum += width * height * 3; // now we know how much to process
+               texdata.reset(new float[width * height * 3]);
+               break;
+
+            case 2:
+               range = num; // and finally the maximum value.
+               break;
+
+            default:
+               texdata[i - 3] = num / float(range);
+               break;
+            }
+
+            // carry on here.
+            data = end;
+            ++i;
+         }
+
+         genTexture(width, height, texdata.get());
+      }
+
+      //
+      // Texture::genTexture
+      //
+
+      void Texture::genTexture(GLsizei width, GLsizei height, float *texdata)
+      {
+         glGenTextures(1, &textureid);
+         glBindTexture(GL_TEXTURE_2D, textureid);
+
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, texdata);
+
+         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_FLOAT, texdata);
+      }
+
+      //
       // Window::PrivData
       //
       // Private instance data.
@@ -69,6 +241,8 @@ namespace Doom
       class Window::PrivData
       {
       public:
+         using TextureHashmap = std::unordered_map<std::string, Texture>;
+
          PrivData() = delete;
          PrivData(PrivData const &other) = delete;
          PrivData(int w, int h);
@@ -77,6 +251,8 @@ namespace Doom
 
          SDL_Window    *window;
          SDL_GLContext  gl;
+         GLuint         textureCurrent;
+         TextureHashmap textures;
       };
 
       //
@@ -84,7 +260,8 @@ namespace Doom
       //
 
       Window::PrivData::PrivData(int w, int h) :
-         window{}, gl{}
+         window{}, gl{},
+         textureCurrent{}, textures{}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
@@ -135,6 +312,7 @@ namespace Doom
 
          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+         glActiveTexture(GL_TEXTURE0);
 
          // Set up OpenGL client.
          glEnableClientState(GL_COLOR_ARRAY);
@@ -151,6 +329,14 @@ namespace Doom
          shaderBase.reset(new Shader{baseFragShader, baseVertShader});
          shaderDrop();
          drawColorSet(1.0, 1.0, 1.0);
+
+         // Set up basic no-texture.
+         {
+            float buff[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            privdata->textures.emplace(std::piecewise_construct,
+               std::forward_as_tuple("#NOTEXTURE"),
+               std::forward_as_tuple(2, 2, buff));
+         }
       }
 
       //
@@ -208,14 +394,14 @@ namespace Doom
 
       void Window::drawColorSet(Color const &col)
       {
-         drawColorSet(float(col.r), float(col.g), float(col.b), float(col.a));
+         drawColorSet(col.r, col.g, col.b, col.a);
       }
 
       //
       // Window::drawColorGet
       //
 
-      Color Window::drawColorGet()
+      Color Window::drawColorGet() const
       {
          return { cr, cg, cb, ca };
       }
@@ -224,7 +410,7 @@ namespace Doom
       // Window::drawLine
       //
 
-      void Window::drawLine(int x1, int y1, int x2, int y2)
+      void Window::drawLine(int x1, int y1, int x2, int y2) const
       {
          glBegin(GL_LINES);
 
@@ -238,7 +424,7 @@ namespace Doom
       // Window::drawRectangle
       //
 
-      void Window::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line)
+      void Window::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line) const
       {
          if(x1 > x2) std::swap(x1, x2);
          if(y1 > y2) std::swap(y1, y2);
@@ -287,15 +473,21 @@ namespace Doom
             // B--A
             // | /
             // C
+            glTexCoord2f(1, 0);
             glVertex2f(v[1].x, v[1].y);
+            glTexCoord2f(0, 0);
             glVertex2f(v[0].x, v[0].y);
+            glTexCoord2f(0, 1);
             glVertex2f(v[3].x, v[3].y);
 
             //    A
             //  / |
             // B--C
+            glTexCoord2f(1, 0);
             glVertex2f(v[1].x, v[1].y);
+            glTexCoord2f(0, 1);
             glVertex2f(v[3].x, v[3].y);
+            glTexCoord2f(1, 1);
             glVertex2f(v[2].x, v[2].y);
 
             glEnd();
@@ -318,10 +510,10 @@ namespace Doom
          {
             float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
             float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
-            
+
             float sx = 8 * p.scale.x;
             float sy = 8 * p.scale.y;
-            
+
             drawColorSet(p.color);
             drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
          }
@@ -358,6 +550,43 @@ namespace Doom
       void Window::shaderUpdate()
       {
          shaderCurrent->update();
+      }
+
+      //
+      // Window::textureSet
+      //
+
+      void Window::textureSet(char const *name)
+      {
+         auto it = privdata->textures.find(name);
+         Texture *tex;
+
+         if(it == privdata->textures.end())
+            it = privdata->textures.emplace(name, name).first;
+
+         tex = &it->second;
+
+         if(privdata->textureCurrent != tex->textureid)
+         {
+            glBindTexture(GL_TEXTURE_2D, tex->textureid);
+            privdata->textureCurrent = tex->textureid;
+         }
+
+         textureMinMax = tex->minmax;
+      }
+
+      //
+      // Window::textureUnbind
+      //
+
+      void Window::textureUnbind()
+      {
+         Texture const &tex = privdata->textures.at("#NOTEXTURE");
+         if(privdata->textureCurrent != tex.textureid)
+         {
+            glBindTexture(GL_TEXTURE_2D, tex.textureid);
+            privdata->textureCurrent = tex.textureid;
+         }
       }
 
       //
