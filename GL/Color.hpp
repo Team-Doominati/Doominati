@@ -203,6 +203,8 @@ namespace Doom
          static Color const WhiteSmoke;
          static Color const Yellow;
          static Color const YellowGreen;
+         static Color const Zero;
+         static Color const ZeroWhite;
       };
    }
 }

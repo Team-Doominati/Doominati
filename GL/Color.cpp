@@ -210,6 +210,8 @@ namespace Doom
       Color const Color::WhiteSmoke{0.961, 0.961, 0.961};
       Color const Color::Yellow{1.000, 1.000, 0.000};
       Color const Color::YellowGreen{0.604, 0.804, 0.196};
+      Color const Color::Zero{0.0, 0.0, 0.0, 0.0};
+      Color const Color::ZeroWhite{1.0, 1.0, 1.0, 0.0};
    }
 }
 
