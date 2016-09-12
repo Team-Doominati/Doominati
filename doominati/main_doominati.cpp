@@ -144,10 +144,10 @@ static void DrawTest()
    WindowCurrent->drawRectangle(2, 2, 302, 302);
    WindowCurrent->shaderDrop();
 
-   WindowCurrent->textureSet("Bin/test.ppm");
+   WindowCurrent->textureSet("test.ppm");
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
 
-   WindowCurrent->textureSet("Bin/test3.ppm");
+   WindowCurrent->textureSet("test3.ppm");
 
    WindowCurrent->drawColorSet(Doom::GL::Color::White);
    WindowCurrent->drawRectangle(303, 2, 603, 302);
