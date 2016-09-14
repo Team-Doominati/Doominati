@@ -40,7 +40,7 @@ namespace Doom
       {
          setPosition(x, y);
 
-         particles.reserve(particles.capacity() + pnum);
+         particles.reserve(pnum);
 
          for(std::ptrdiff_t i = 0; i < pnum - 1; i++)
             particles.emplace_back(i + 1);
