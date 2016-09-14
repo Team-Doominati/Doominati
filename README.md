@@ -7,3 +7,4 @@ die die die
 * Kyle873 - Project Lead/Slave Driver
 * DavidPH - Lead Programmer/Catgirl
 * Marrub - OpenGL Wizard
+* Marrub's Cat - OpenGL Sorcerer Apprentice
