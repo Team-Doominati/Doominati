@@ -339,26 +339,26 @@ namespace Doom
          }
          else
          {
-            value = *pixelItr++;
+            value = static_cast<unsigned char>(*pixelItr++);
 
             if(maxval <= 255.0f)
                return value / maxval;
 
             if(pixelItr == pixelEnd) return 0.0f;
 
-            value = (value << 8) + *pixelItr++;
+            value = (value << 8) + static_cast<unsigned char>(*pixelItr++);
 
             if(maxval <= 65535.0f)
                return value / maxval;
 
             if(pixelItr == pixelEnd) return 0.0f;
 
-            value = (value << 8) + *pixelItr++;
+            value = (value << 8) + static_cast<unsigned char>(*pixelItr++);
 
             if(maxval <= 16777215.0f)
                return value / maxval;
 
-            return ((value << 8) + *pixelItr++) / maxval;
+            return ((value << 8) + static_cast<unsigned char>(*pixelItr++)) / maxval;
          }
       }
 
