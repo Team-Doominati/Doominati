@@ -43,10 +43,10 @@ namespace Doom
          
          Matrix4 &identity()
          {
-            c0 = Vector4{1.0f, 0.0f, 0.0f, 0.0f};
-            c1 = Vector4{0.0f, 1.0f, 0.0f, 0.0f};
-            c2 = Vector4{0.0f, 0.0f, 1.0f, 0.0f};
-            c3 = Vector4{0.0f, 0.0f, 0.0f, 1.0f};
+            c0 = {1.0f, 0.0f, 0.0f, 0.0f};
+            c1 = {0.0f, 1.0f, 0.0f, 0.0f};
+            c2 = {0.0f, 0.0f, 1.0f, 0.0f};
+            c3 = {0.0f, 0.0f, 0.0f, 1.0f};
             
             return *this;
          }
@@ -75,6 +75,19 @@ namespace Doom
             c1.x = -std::sin(ang);
             c1.y =  std::cos(ang);
             
+            return *this;
+         }
+
+         //
+         // Matrix4::scale
+         //
+
+         Matrix4 &scale(float x, float y, float z = 0.0f)
+         {
+            c0.x = x;
+            c1.y = y;
+            c3.z = z;
+
             return *this;
          }
       };
