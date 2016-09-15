@@ -39,19 +39,23 @@ namespace Doom
          Window(int w, int h);
          ~Window();
 
-         // render
-         void renderBegin();
-         void renderEnd();
+         // circle
+         void circlePrecision(int subdivisions);
+
+         // draw
+         void drawCircle(int x, int y, int radius);
+         void drawLine(int x1, int y1, int x2, int y2) const;
+         void drawParticleSystem(ParticleSystem const &ps);
+         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
 
          // drawColor
          void drawColorSet(float r, float g, float b, float a = 1.0f);
          void drawColorSet(Color const &col);
          Color drawColorGet() const;
 
-         // draw
-         void drawLine(int x1, int y1, int x2, int y2) const;
-         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
-         void drawParticleSystem(ParticleSystem const &ps);
+         // render
+         void renderBegin();
+         void renderEnd();
 
          // shader
          void shaderSwap(Shader *sp);

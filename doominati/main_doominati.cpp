@@ -99,11 +99,7 @@ static void DrawTest()
          v += sin((bx + by + t) / 32.0);
          v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
 
-         gl_FragColor = HSVToRGB(
-            sin(v * pi) * 0.5 + 0.5,
-            sin(v * pi/2.0) * 0.5 + 0.5,
-            sin(v * pi/4.0) * 0.5 + 0.5,
-            1.0);
+         gl_FragColor = HSVToRGB(sin(v * pi) * 0.5 + 0.5, 1.0, 1.0, 1.0);
       }
    )";
 
@@ -135,24 +131,23 @@ static void DrawTest()
 
    WindowCurrent->drawParticleSystem(ParticleSystem);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
+   WindowCurrent->drawColorSet(Doom::GL::Color::White);
 
-   WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
+   WindowCurrent->textureSet("test3.ppm");
+   WindowCurrent->drawRectangle(303, 2, 603, 302);
 
    WindowCurrent->shaderSwap(shader);
    WindowCurrent->shaderUpdate();
    WindowCurrent->drawRectangle(2, 2, 302, 302);
    WindowCurrent->shaderDrop();
 
+   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
+
    WindowCurrent->textureSet("test.ppm");
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
-
-   WindowCurrent->textureSet("test3.ppm");
-
-   WindowCurrent->drawColorSet(Doom::GL::Color::White);
-   WindowCurrent->drawRectangle(303, 2, 603, 302);
-
    WindowCurrent->textureUnbind();
+
+   WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
 
    WindowCurrent->drawColorSet(Doom::GL::Color::Red);
 
@@ -166,6 +161,14 @@ static void DrawTest()
 
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
+
+   auto col = Doom::GL::Color::Red;
+   for(int i = 0; i < 20; i++)
+   {
+      WindowCurrent->drawColorSet(col);
+      WindowCurrent->drawCircle(16 + (i * 33), 550, 16);
+      col.interpolate(Doom::GL::Color::Blue, 1.0f / 20.0f);
+   }
 }
 
 //

@@ -118,7 +118,10 @@ namespace Doom
          glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
 
          glUseProgram(program);
+
          glUniform1i(glGetUniformLocation(program, "dge_texture"), 0);
+
+         // Get device data locations.
          u_ticks    = glGetUniformLocation(program, "dge_ticks");
          u_mseconds = glGetUniformLocation(program, "dge_mseconds");
          u_seconds  = glGetUniformLocation(program, "dge_seconds");

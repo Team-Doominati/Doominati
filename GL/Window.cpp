@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Window.hpp"
+#include "GL/DynamicBuffer.hpp"
 #include "GL/Shader.hpp"
 #include "GL/gl_2_1.h"
 
@@ -18,6 +19,8 @@
 #include "Core/Time.hpp"
 
 #include "FS/Dir.hpp"
+
+#include <GDCC/Core/Array.hpp>
 
 #include "SDL.h"
 
@@ -94,7 +97,6 @@ namespace Doom
          Texture(Texture &&other) = default;
          Texture(GLsizei width, GLsizei height, float *texdata);
          Texture(char const *name);
-         ~Texture();
 
 //       void loadPBM(FS::File *fp);
 //       void loadPGM(FS::File *fp);
@@ -113,9 +115,10 @@ namespace Doom
 
       Texture::Texture(char const *name)
       {
-         std::cout << "constructing texture\n";
-
          FS::File *fp = FS::Dir::FindFile(name);
+
+         if(!fp)
+            throw TextureLoadError("no file");
 
          switch(fp->format)
          {
@@ -131,15 +134,6 @@ namespace Doom
       Texture::Texture(GLsizei width, GLsizei height, float *texdata)
       {
          genTexture(width, height, texdata);
-      }
-
-      //
-      // Texture destructor
-      //
-
-      Texture::~Texture()
-      {
-         std::cout << "destructing texture\n";
       }
 
       //
@@ -249,10 +243,11 @@ namespace Doom
 
          ~PrivData();
 
-         SDL_Window    *window;
-         SDL_GLContext  gl;
-         GLuint         textureCurrent;
-         TextureHashmap textures;
+         SDL_Window     *window;
+         SDL_GLContext   gl;
+         GLuint          textureCurrent;
+         TextureHashmap  textures;
+         DynamicBuffer   circleBuff;
       };
 
       //
@@ -261,7 +256,8 @@ namespace Doom
 
       Window::PrivData::PrivData(int w, int h) :
          window{}, gl{},
-         textureCurrent{}, textures{}
+         textureCurrent{}, textures{},
+         circleBuff{}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
@@ -337,6 +333,9 @@ namespace Doom
                std::forward_as_tuple("#NOTEXTURE"),
                std::forward_as_tuple(2, 2, buff));
          }
+
+         // Set up VBOs.
+         circlePrecision(4);
       }
 
       //
@@ -349,61 +348,99 @@ namespace Doom
       }
 
       //
-      // Window::renderBegin
+      // CalcPoint
       //
 
-      void Window::renderBegin()
+      static void CalcPoint(float angl, Vertex *&buf)
       {
-         // Check if window has been resized.
-         {
-            int newW, newH;
-            SDL_GetWindowSize(privdata->window, &newW, &newH);
+         float s = std::sin(angl);
+         float c = std::cos(angl);
+         *buf++ = { s, c, 0 };
+      }
 
-            if(w != newW || h != newH)
-               resize(newW, newH);
+      //
+      // CalcFaces
+      //
+
+      static void CalcFaces(int subdivisions, float anglA, float anglC, Vertex *&buf)
+      {
+         if(!subdivisions) return;
+
+         float anglB = Core::Lerp(anglA, anglC, 0.5f);
+
+         CalcPoint(anglA, buf);
+         CalcPoint(anglB, buf);
+         CalcPoint(anglC, buf);
+
+         CalcFaces(subdivisions - 1, anglA, anglB, buf);
+         CalcFaces(subdivisions - 1, anglB, anglC, buf);
+      }
+
+      //
+      // Window::circlePrecision
+      //
+
+      void Window::circlePrecision(int subdivisions)
+      {
+         std::size_t bufsize = 0;
+
+         std::function<void(int)> calcBufSizeFaces;
+         calcBufSizeFaces = [&] (int mysubdivisions)
+         {
+            if(!mysubdivisions) return;
+
+            bufsize += 3;
+
+            for(int i = 0; i < 2; i++)
+               calcBufSizeFaces(mysubdivisions - 1);
+         };
+
+         for(int i = 0; i < 4; i++)
+         {
+            bufsize += 3;
+            calcBufSizeFaces(subdivisions);
          }
 
-         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+         GDCC::Core::Array<Vertex> bufarray{bufsize};
+         Vertex *buf = bufarray.data();
+         float angl = 0.0f;
+
+         for(int i = 0; i < 4; i++)
+         {
+            *buf++ = { 0, 0, 0 };
+            CalcPoint(              angl,                   buf);
+            CalcPoint(                    angl + Core::pi2, buf);
+            CalcFaces(subdivisions, angl, angl + Core::pi2, buf);
+            angl += Core::pi2;
+         }
+
+         auto &vbo = privdata->circleBuff.buffer;
+
+         if(!vbo)
+            glGenBuffers(1, &vbo);
+
+         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
+         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+
+         privdata->circleBuff.size = bufsize;
       }
 
       //
-      // Window::renderEnd
+      // Window::drawCircle
       //
 
-      void Window::renderEnd()
+      void Window::drawCircle(int x, int y, int radius)
       {
-         SDL_GL_SwapWindow(privdata->window);
-      }
+         glPushMatrix();
 
-      //
-      // Window::drawColorSet
-      //
+         glLoadMatrixf(Core::Matrix4{}.scale(radius, radius).translate(x, y).getConstPointer());
 
-      void Window::drawColorSet(float r, float g, float b, float a)
-      {
-         glColor4f(r, g, b, a);
-         cr = r;
-         cg = g;
-         cb = b;
-         ca = a;
-      }
+         glVertexPointer(3, GL_FLOAT, 0, nullptr);
+         glEnableClientState(GL_VERTEX_ARRAY);
+         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
-      //
-      // Window::drawColorSet
-      //
-
-      void Window::drawColorSet(Color const &col)
-      {
-         drawColorSet(col.r, col.g, col.b, col.a);
-      }
-
-      //
-      // Window::drawColorGet
-      //
-
-      Color Window::drawColorGet() const
-      {
-         return { cr, cg, cb, ca };
+         glPopMatrix();
       }
 
       //
@@ -421,6 +458,33 @@ namespace Doom
       }
 
       //
+      // Window::drawParticleSystem
+      //
+
+      void Window::drawParticleSystem(ParticleSystem const &ps)
+      {
+         glPushMatrix();
+
+         glLoadMatrixf(ps.mat.getConstPointer());
+
+         float frac = Core::GetTickFract<Core::PlayTick<float>>();
+
+         for(auto &p : ps.particles)
+         {
+            float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
+            float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
+
+            float sx = 8 * p.scale.x;
+            float sy = 8 * p.scale.y;
+
+            drawColorSet(p.color);
+            drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
+         }
+
+         glPopMatrix();
+      }
+
+      //
       // Window::drawRectangle
       //
 
@@ -430,10 +494,10 @@ namespace Doom
          if(y1 > y2) std::swap(y1, y2);
 
          Core::Vector2 v[4] = {
-            {float(x1), float(y1)},
-            {float(x2), float(y1)},
-            {float(x2), float(y2)},
-            {float(x1), float(y2)}
+            { float(x1), float(y1) },
+            { float(x2), float(y1) },
+            { float(x2), float(y2) },
+            { float(x1), float(y2) }
          };
 
          if(rot)
@@ -495,30 +559,34 @@ namespace Doom
       }
 
       //
-      // Window::drawParticleSystem
+      // Window::drawColorSet
       //
 
-      void Window::drawParticleSystem(ParticleSystem const &ps)
+      void Window::drawColorSet(float r, float g, float b, float a)
       {
-         glPushMatrix();
+         glColor4f(r, g, b, a);
+         cr = r;
+         cg = g;
+         cb = b;
+         ca = a;
+      }
 
-         glLoadMatrixf(ps.mat.getConstPointer());
+      //
+      // Window::drawColorSet
+      //
 
-         float frac = Core::GetTickFract<Core::PlayTick<float>>();
+      void Window::drawColorSet(Color const &col)
+      {
+         drawColorSet(col.r, col.g, col.b, col.a);
+      }
 
-         for(auto &p : ps.particles)
-         {
-            float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
-            float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
+      //
+      // Window::drawColorGet
+      //
 
-            float sx = 8 * p.scale.x;
-            float sy = 8 * p.scale.y;
-
-            drawColorSet(p.color);
-            drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
-         }
-
-         glPopMatrix();
+      Color Window::drawColorGet() const
+      {
+         return { cr, cg, cb, ca };
       }
 
       //
@@ -587,6 +655,33 @@ namespace Doom
             glBindTexture(GL_TEXTURE_2D, tex.textureid);
             privdata->textureCurrent = tex.textureid;
          }
+      }
+
+      //
+      // Window::renderBegin
+      //
+
+      void Window::renderBegin()
+      {
+         // Check if window has been resized.
+         {
+            int newW, newH;
+            SDL_GetWindowSize(privdata->window, &newW, &newH);
+
+            if(w != newW || h != newH)
+               resize(newW, newH);
+         }
+
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      }
+
+      //
+      // Window::renderEnd
+      //
+
+      void Window::renderEnd()
+      {
+         SDL_GL_SwapWindow(privdata->window);
       }
 
       //
