@@ -93,7 +93,7 @@ namespace Doom
       {
       public:
          Texture() = delete;
-         Texture(Texture const &other) = delete;
+         Texture(Texture const &other) = default;
          Texture(Texture &&other) = default;
          Texture(GLsizei width, GLsizei height, float *texdata);
          Texture(char const *name);
@@ -630,7 +630,17 @@ namespace Doom
          Texture *tex;
 
          if(it == privdata->textures.end())
-            it = privdata->textures.emplace(name, name).first;
+         {
+            try
+            {
+               it = privdata->textures.emplace(name, name).first;
+            }
+            catch(TextureLoadError err)
+            {
+               std::cerr << "TextureLoadError: " << err.what() << '\n';
+               it = privdata->textures.emplace(name, privdata->textures.at("#NOTEXTURE")).first;
+            }
+         }
 
          tex = &it->second;
 
