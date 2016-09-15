@@ -49,7 +49,6 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Code/Thread.hpp
    ${CMAKE_SOURCE_DIR}/Code/Types.hpp
 
-   ${CMAKE_SOURCE_DIR}/Core/Coord.hpp
    ${CMAKE_SOURCE_DIR}/Core/HashMapFixed.hpp
    ${CMAKE_SOURCE_DIR}/Core/List.hpp
    ${CMAKE_SOURCE_DIR}/Core/Matrix4.hpp
