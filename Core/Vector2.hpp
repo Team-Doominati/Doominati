@@ -36,7 +36,7 @@ namespace Doom
          // Vector2 constructor
          //
 
-         Vector2(float x_, float y_) :
+         constexpr Vector2(float x_, float y_) :
             x{x_}, y{y_}
          {
          }
