@@ -311,8 +311,6 @@ namespace Doom
          glActiveTexture(GL_TEXTURE0);
 
          // Set up OpenGL client.
-         glEnableClientState(GL_COLOR_ARRAY);
-         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
          glEnableClientState(GL_VERTEX_ARRAY);
 
          // Set up matrices.
@@ -437,7 +435,6 @@ namespace Doom
          glLoadMatrixf(Core::Matrix4{}.scale(radius, radius).translate(x, y).getConstPointer());
 
          glVertexPointer(3, GL_FLOAT, 0, nullptr);
-         glEnableClientState(GL_VERTEX_ARRAY);
          glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
          glPopMatrix();
