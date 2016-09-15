@@ -175,6 +175,7 @@ namespace Doom
 
          // Set up OpenGL client.
          glEnableClientState(GL_VERTEX_ARRAY);
+         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
          // Set up matrices.
          resize(w, h);
@@ -216,7 +217,7 @@ namespace Doom
       {
          float s = std::sin(angl);
          float c = std::cos(angl);
-         *buf++ = { s, c, 0 };
+         *buf++ = { s, c, s * 0.5f + 0.5f, c * 0.5f + 0.5f };
       }
 
       //
@@ -256,21 +257,24 @@ namespace Doom
                calcBufSizeFaces(mysubdivisions - 1);
          };
 
+         bufsize += 3 * 2;
          for(int i = 0; i < 4; i++)
-         {
-            bufsize += 3;
             calcBufSizeFaces(subdivisions);
-         }
 
          GDCC::Core::Array<Vertex> bufarray{bufsize};
          Vertex *buf = bufarray.data();
          float angl = 0.0f;
 
+         CalcPoint(Core::pi + Core::pi2, buf);
+         CalcPoint(0, buf);
+         CalcPoint(Core::pi2, buf);
+
+         CalcPoint(Core::pi + Core::pi2, buf);
+         CalcPoint(Core::pi2, buf);
+         CalcPoint(Core::pi, buf);
+
          for(int i = 0; i < 4; i++)
          {
-            *buf++ = { 0, 0, 0 };
-            CalcPoint(              angl,                   buf);
-            CalcPoint(                    angl + Core::pi2, buf);
             CalcFaces(subdivisions, angl, angl + Core::pi2, buf);
             angl += Core::pi2;
          }
@@ -283,6 +287,8 @@ namespace Doom
          glBindBuffer(GL_ARRAY_BUFFER, vbo);
          glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
          glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+
+         DynamicBuffer::SetupPointers();
 
          privdata->circleBuff.size = bufsize;
       }
@@ -297,7 +303,6 @@ namespace Doom
 
          glLoadMatrixf(Core::Matrix4{}.scale(radius, radius).translate(x, y).getConstPointer());
 
-         glVertexPointer(3, GL_FLOAT, 0, nullptr);
          glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
          glPopMatrix();

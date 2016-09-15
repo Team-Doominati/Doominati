@@ -162,13 +162,13 @@ static void DrawTest()
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   auto col = Doom::GL::Color::Red;
-   for(int i = 0; i < 20; i++)
-   {
-      WindowCurrent->drawColorSet(col);
-      WindowCurrent->drawCircle(16 + (i * 33), 550, 16);
-      col.interpolate(Doom::GL::Color::Blue, 1.0f / 20.0f);
-   }
+   WindowCurrent->textureSet("test.ppm");
+   WindowCurrent->drawColorSet(Doom::GL::Color::White);
+
+   for(int i = 0; i < 3; i++)
+      WindowCurrent->drawCircle(64 + (i * 128), 550, 64);
+
+   WindowCurrent->textureUnbind();
 }
 
 //
