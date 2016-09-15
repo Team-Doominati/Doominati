@@ -17,6 +17,7 @@
 
 #include "Core/Vector4.hpp"
 
+#include <exception>
 #include <memory>
 
 
