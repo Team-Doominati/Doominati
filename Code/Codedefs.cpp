@@ -517,12 +517,12 @@ namespace Doom
             *block++ = MemBlock::Create_Sta(globalWords);
 
          // Fill remaining first half of memory with dynamic blocks.
-         prog->freestoreBegin = (block - prog->memory.blocks) * MemBlock::SizeW;
+         prog->freestoreBegin = (block - prog->memory.blocks) * MemBlock::SizeW * 4;
          while(block != blockMid)
             *block++ = MemBlock::Create_Dyn();
 
          // Upper half is reserved for future use.
-         prog->freestoreEnd = (block - prog->memory.blocks) * MemBlock::SizeW;
+         prog->freestoreEnd = (block - prog->memory.blocks) * MemBlock::SizeW * 4;
          while(block != blockEnd)
             *block++ = MemBlock::Create_Nul();
 
