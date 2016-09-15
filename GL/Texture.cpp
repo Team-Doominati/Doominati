@@ -43,6 +43,14 @@ namespace Doom
 
          gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_FLOAT, texdata);
       }
+
+      //
+      // TextureData destructor
+      //
+      TextureData::~TextureData()
+      {
+         glDeleteTextures(1, &tex);
+      }
    }
 }
 
