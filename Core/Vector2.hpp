@@ -29,6 +29,17 @@ namespace Doom
       {
       public:
          float x, y;
+
+         Vector2() = default;
+
+         //
+         // Vector2 constructor
+         //
+
+         Vector2(float x_, float y_) :
+            x{x_}, y{y_}
+         {
+         }
          
          //
          // Vector2::add
