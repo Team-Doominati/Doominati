@@ -11,9 +11,10 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Window.hpp"
+
 #include "GL/DynamicBuffer.hpp"
 #include "GL/Shader.hpp"
-#include "GL/gl_2_1.h"
+#include "GL/Texture.hpp"
 
 #include "Core/Vector4.hpp"
 #include "Core/Time.hpp"
@@ -67,6 +68,18 @@ static char const baseVertShader[] = R"(
    }
 )";
 
+namespace Doom
+{
+   namespace GL
+   {
+      //
+      // TextureNoneData
+      //
+      static TexturePixel const TextureNoneData[4] =
+         {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
+   }
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -77,156 +90,6 @@ namespace Doom
    namespace GL
    {
       //
-      // TextureLoadError
-      //
-
-      class TextureLoadError : public std::runtime_error
-      {
-         using std::runtime_error::runtime_error;
-      };
-
-      //
-      // Texture
-      //
-
-      class Texture
-      {
-      public:
-         Texture() = delete;
-         Texture(Texture const &other) = default;
-         Texture(Texture &&other) = default;
-         Texture(GLsizei width, GLsizei height, float *texdata);
-         Texture(char const *name);
-
-//       void loadPBM(FS::File *fp);
-//       void loadPGM(FS::File *fp);
-//       void loadPNG(FS::File *fp);
-         void loadPPM(FS::File *fp);
-
-         void genTexture(GLsizei width, GLsizei height, float *texdata);
-
-         GLuint        textureid;
-         Core::Vector4 minmax;
-      };
-
-      //
-      // Texture constructor
-      //
-
-      Texture::Texture(char const *name)
-      {
-         FS::File *fp = FS::Dir::FindFile(name);
-
-         if(!fp)
-            throw TextureLoadError("no file");
-
-         switch(fp->format)
-         {
-//       case FS::Format::PBM: loadPBM(fp); break;
-//       case FS::Format::PGM: loadPGM(fp); break;
-//       case FS::Format::PNG: loadPNG(fp); break;
-         case FS::Format::PPM: loadPPM(fp); break;
-         default:
-            throw TextureLoadError("invalid file format");
-         }
-      }
-
-      Texture::Texture(GLsizei width, GLsizei height, float *texdata)
-      {
-         genTexture(width, height, texdata);
-      }
-
-      //
-      // Texture::loadPPM
-      //
-
-      void Texture::loadPPM(FS::File *fp)
-      {
-         char const *data = fp->data;
-
-         if(data[1] == '6')
-            throw TextureLoadError("P6 binary PPM format not supported");
-
-         // skip header
-         data += 2;
-
-         std::unique_ptr<float[]> texdata;
-
-         long width  = 0;
-         long height = 0;
-         long range  = 255;
-
-         for(std::size_t i = 0, itnum = 3; i < itnum;)
-         {
-            // skip whitespace
-            while(std::isspace(*data)) ++data;
-
-            // skip comments
-            if(*data == '#')
-            {
-               ++data;
-               while(*data != '\n') ++data;
-               continue;
-            }
-
-            // parse number
-            char *end;
-            long num = std::strtol(data, &end, 10);
-
-            // what the hell did you DO even
-            if(!std::isspace(*end) && !std::isdigit(*end) && *end != '#')
-               throw TextureLoadError("invalid character in PPM file");
-
-            switch(i)
-            {
-            case 0:
-               width  = num; // first number is width
-               break;
-
-            case 1:
-               height = num;                // second is height
-               itnum += width * height * 3; // now we know how much to process
-               texdata.reset(new float[width * height * 3]);
-               break;
-
-            case 2:
-               range = num; // and finally the maximum value.
-               break;
-
-            default:
-               texdata[i - 3] = num / float(range);
-               break;
-            }
-
-            // carry on here.
-            data = end;
-            ++i;
-         }
-
-         genTexture(width, height, texdata.get());
-      }
-
-      //
-      // Texture::genTexture
-      //
-
-      void Texture::genTexture(GLsizei width, GLsizei height, float *texdata)
-      {
-         glGenTextures(1, &textureid);
-         glBindTexture(GL_TEXTURE_2D, textureid);
-
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, texdata);
-
-         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_FLOAT, texdata);
-      }
-
-      //
       // Window::PrivData
       //
       // Private instance data.
@@ -235,7 +98,7 @@ namespace Doom
       class Window::PrivData
       {
       public:
-         using TextureHashmap = std::unordered_map<std::string, Texture>;
+         using TextureHashmap = std::unordered_map<std::string, TextureData>;
 
          PrivData() = delete;
          PrivData(PrivData const &other) = delete;
@@ -326,10 +189,10 @@ namespace Doom
 
          // Set up basic no-texture.
          {
-            float buff[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            privdata->textures.emplace(std::piecewise_construct,
-               std::forward_as_tuple("#NOTEXTURE"),
-               std::forward_as_tuple(2, 2, buff));
+            textureNone =
+               &privdata->textures.emplace(std::piecewise_construct,
+                  std::forward_as_tuple("NOTEXTURE"),
+                  std::forward_as_tuple(2, 2, TextureNoneData)).first->second;
          }
 
          // Set up VBOs.
@@ -618,36 +481,77 @@ namespace Doom
       }
 
       //
-      // Window::textureSet
+      // Window::textureBind
       //
 
-      void Window::textureSet(char const *name)
+      void Window::textureBind(TextureData *tex)
       {
-         auto it = privdata->textures.find(name);
-         Texture *tex;
-
-         if(it == privdata->textures.end())
+         if(privdata->textureCurrent != tex->tex)
          {
-            try
-            {
-               it = privdata->textures.emplace(name, name).first;
-            }
-            catch(TextureLoadError err)
-            {
-               std::cerr << "TextureLoadError: " << err.what() << '\n';
-               it = privdata->textures.emplace(name, privdata->textures.at("#NOTEXTURE")).first;
-            }
-         }
-
-         tex = &it->second;
-
-         if(privdata->textureCurrent != tex->textureid)
-         {
-            glBindTexture(GL_TEXTURE_2D, tex->textureid);
-            privdata->textureCurrent = tex->textureid;
+            glBindTexture(GL_TEXTURE_2D, tex->tex);
+            privdata->textureCurrent = tex->tex;
          }
 
          textureMinMax = tex->minmax;
+      }
+
+      //
+      // Window::textureGet
+      //
+      TextureData *Window::textureGet(char const *name)
+      {
+         auto itr = privdata->textures.find(name);
+         if(itr != privdata->textures.end())
+            return &itr->second;
+
+         if(*name == '@')
+            return textureGet_File(name + 1);
+
+         std::cerr << "unkown texture: " << name << '\n';
+         return textureGet_None(name);
+      }
+
+      //
+      // Window::textureGet_File
+      //
+      TextureData *Window::textureGet_File(char const *name)
+      {
+         FS::File *file = FS::Dir::FindFile(name);
+
+         if(!file)
+         {
+            std::cerr << "texture file not found: " << name << '\n';
+            return textureGet_None(name - 1);
+         }
+
+         try
+         {
+            auto loader = CreateTextureLoader(file);
+            GLsizei width, height;
+            std::tie(width, height) = loader->size();
+            std::unique_ptr<TexturePixel[]> buf{new TexturePixel[width * height]};
+            loader->data(buf.get());
+
+            return &privdata->textures.emplace(std::piecewise_construct,
+               std::forward_as_tuple(name - 1),
+               std::forward_as_tuple(width, height, buf.get())).first->second;
+         }
+         catch(TextureLoaderError const &err)
+         {
+            std::cerr << "TextureLoaderError: " << name
+               << ": " << err.what() << '\n';
+            return textureGet_None(name - 1);
+         }
+      }
+
+      //
+      // Window::textureGet_None
+      //
+      TextureData *Window::textureGet_None(char const *name)
+      {
+         return &privdata->textures.emplace(std::piecewise_construct,
+            std::forward_as_tuple(name),
+            std::forward_as_tuple(2, 2, TextureNoneData)).first->second;
       }
 
       //
@@ -656,11 +560,11 @@ namespace Doom
 
       void Window::textureUnbind()
       {
-         Texture const &tex = privdata->textures.at("#NOTEXTURE");
-         if(privdata->textureCurrent != tex.textureid)
+         TextureData const *tex = textureNone;
+         if(privdata->textureCurrent != tex->tex)
          {
-            glBindTexture(GL_TEXTURE_2D, tex.textureid);
-            privdata->textureCurrent = tex.textureid;
+            glBindTexture(GL_TEXTURE_2D, tex->tex);
+            privdata->textureCurrent = tex->tex;
          }
       }
 

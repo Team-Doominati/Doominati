@@ -28,6 +28,7 @@ namespace Doom
    namespace GL
    {
       class Shader;
+      class TextureData;
 
       //
       // Window
@@ -63,7 +64,9 @@ namespace Doom
          void shaderUpdate();
 
          // texture
-         void textureSet(char const *name);
+         void textureBind(char const *name) {textureBind(textureGet(name));}
+         void textureBind(TextureData *tex);
+         TextureData *textureGet(char const *name);
          void textureUnbind();
 
          int realw, realh;
@@ -74,6 +77,9 @@ namespace Doom
 
          void resize(int w, int h);
 
+         TextureData *textureGet_File(char const *name);
+         TextureData *textureGet_None(char const *name);
+
          float cr, cg, cb, ca;
 
          std::unique_ptr<PrivData> privdata;
@@ -82,6 +88,8 @@ namespace Doom
          Shader *shaderCurrent;
 
          Core::Vector4 textureMinMax;
+
+         TextureData *textureNone;
       };
    }
 }

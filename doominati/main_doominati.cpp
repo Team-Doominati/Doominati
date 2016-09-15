@@ -133,7 +133,7 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::White);
 
-   WindowCurrent->textureSet("test3.ppm");
+   WindowCurrent->textureBind("@test3.ppm");
    WindowCurrent->drawRectangle(303, 2, 603, 302);
 
    WindowCurrent->shaderSwap(shader);
@@ -143,7 +143,7 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
 
-   WindowCurrent->textureSet("test.ppm");
+   WindowCurrent->textureBind("@test.ppm");
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
    WindowCurrent->textureUnbind();
 

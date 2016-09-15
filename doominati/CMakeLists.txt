@@ -77,6 +77,9 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/GL/Particle.cpp
    ${CMAKE_SOURCE_DIR}/GL/Shader.cpp
    ${CMAKE_SOURCE_DIR}/GL/Shader.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Texture.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Texture.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Texture/PAM.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.c
