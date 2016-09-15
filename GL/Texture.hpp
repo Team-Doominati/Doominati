@@ -43,7 +43,7 @@ namespace Doom
       public:
          TextureData(TextureData const &other) = delete;
          TextureData(TextureData &&other) = default;
-         TextureData(GLsizei width, GLsizei height, TexturePixel *texdata);
+         TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
 
          GLuint        tex;
          Core::Vector4 minmax;

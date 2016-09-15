@@ -162,7 +162,7 @@ static void DrawTest()
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   WindowCurrent->textureSet("test.ppm");
+   WindowCurrent->textureBind("@test.ppm");
    WindowCurrent->drawColorSet(Doom::GL::Color::White);
 
    for(int i = 0; i < 3; i++)

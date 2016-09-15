@@ -28,7 +28,7 @@ namespace Doom
       //
       // TextureData constructor
       //
-      TextureData::TextureData(GLsizei width, GLsizei height, TexturePixel *texdata)
+      TextureData::TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata)
       {
          glGenTextures(1, &tex);
          glBindTexture(GL_TEXTURE_2D, tex);
