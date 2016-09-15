@@ -31,7 +31,7 @@ namespace Doom
       class Vertex
       {
       public:
-         float x, y, z;
+         float x, y, u, v;
       };
 
       //
@@ -46,6 +46,16 @@ namespace Doom
       public:
          GLuint      buffer{};
          std::size_t size{};
+
+         //
+         // DynamicBuffer::SetupPointers
+         //
+
+         static void SetupPointers()
+         {
+            glVertexPointer(2, GL_FLOAT, 4 * sizeof(float), nullptr);
+            glTexCoordPointer(2, GL_FLOAT, 4 * sizeof(float), reinterpret_cast<GLvoid *>(2 * sizeof(float)));
+         }
       };
    }
 }
