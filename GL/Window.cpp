@@ -307,6 +307,28 @@ namespace Doom
       }
 
       //
+      // Window::drawEllipse
+      //
+
+      void Window::drawEllipse(int x1, int y1, int x2, int y2) const
+      {
+         if(x1 > x2) std::swap(x1, x2);
+         if(y1 > y2) std::swap(y1, y2);
+
+         float rx = (x2 - x1) * 0.5f;
+         float ry = (y2 - y1) * 0.5f;
+
+         glPushMatrix();
+
+         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 1.0f)}.data());
+
+         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
+         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+
+         glPopMatrix();
+      }
+
+      //
       // Window::drawLine
       //
 
@@ -634,7 +656,7 @@ namespace Doom
          // orthogonal perspective and device coordinates.
          glMatrixMode(GL_PROJECTION);
          glLoadIdentity();
-         glOrtho(0, w, h, 0, 0, 1);
+         glOrtho(0, w, h, 0, -1, 1);
 
          glMatrixMode(GL_MODELVIEW);
       }

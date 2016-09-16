@@ -165,12 +165,6 @@ static void DrawTest()
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Purple);
-   WindowCurrent->drawTriangle(450/2, 614, 0, h, 450, h);
-
-   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
-   WindowCurrent->drawTriangle(450/2, 614, 0, h, 450, h, true);
-
    WindowCurrent->textureBind("@test.ppm");
 
    Doom::GL::Color drawc{Doom::GL::Color::Pink};
@@ -183,6 +177,15 @@ static void DrawTest()
    }
 
    WindowCurrent->textureUnbind();
+
+   WindowCurrent->drawColorSet(Doom::GL::Color::Pink);
+   WindowCurrent->drawEllipse(0, 614, 900, h);
+
+   WindowCurrent->drawColorSet(Doom::GL::Color::Purple);
+   WindowCurrent->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
+
+   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
+   WindowCurrent->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
 }
 
 //
