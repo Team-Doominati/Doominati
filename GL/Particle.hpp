@@ -17,7 +17,7 @@
 #include "Core/Vector2.hpp"
 #include "Core/Math.hpp"
 
-#include <vector>
+#include <GDCC/Core/Array.hpp>
 
 
 //----------------------------------------------------------------------------|
@@ -30,14 +30,16 @@ namespace Doom
    {
       class Particle
       {
+         friend class ParticleSystem;
+
       public:
          Particle() = default;
-         Particle(std::ptrdiff_t next_) : next{next_} {}
 
          int life = 0;
 
          Core::Vector2 oldposition{};
          Core::Vector2 position{};
+
          Core::Vector2 velocity{};
          Core::Vector2 acceleration{};
 
@@ -52,6 +54,7 @@ namespace Doom
          Color colordest{};
          float colorspeed = 0.0f;
 
+      protected:
          std::ptrdiff_t next = -1;
       };
 
@@ -60,6 +63,8 @@ namespace Doom
          friend class Window;
 
       public:
+         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
          ParticleSystem();
          ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128);
 
@@ -69,7 +74,7 @@ namespace Doom
 
       protected:
          Core::Matrix4 mat;
-         std::vector<Particle> particles;
+         GDCC::Core::Array<Particle> particles;
 
       private:
          std::ptrdiff_t pinactive, pactive;

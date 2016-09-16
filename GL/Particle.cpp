@@ -12,9 +12,6 @@
 
 #include "GL/Particle.hpp"
 
-#include <algorithm>
-#include <cstring>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -35,17 +32,16 @@ namespace Doom
 
       ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum) :
          mat{},
-         particles{},
+         particles{static_cast<decltype(particles)::size_type>(pnum)},
          pinactive{0}, pactive{-1}
       {
          setPosition(x, y);
 
-         particles.reserve(pnum);
+         std::ptrdiff_t i = 0;
+         for(auto it = particles.begin(); it != particles.end(); ++it)
+            it->next = ++i;
 
-         for(std::ptrdiff_t i = 0; i < pnum - 1; i++)
-            particles.emplace_back(i + 1);
-
-         particles.emplace_back(-1);
+         particles.back().next = -1;
       }
 
       //
@@ -67,7 +63,7 @@ namespace Doom
 
          if(i != -1)
          {
-            auto &pp = particles[i];
+            auto &pp = particles.at(i);
 
             pinactive = pp.next;
             pp.next   = pactive;
@@ -90,7 +86,7 @@ namespace Doom
          for(std::ptrdiff_t i = pactive; i != -1;)
          {
             auto cur = i;
-            auto &p = particles[i];
+            auto &p = particles.at(i);
 
             i = p.next;
 
@@ -102,7 +98,7 @@ namespace Doom
                std::memset(&p, 0, sizeof(Particle));
 
                if(prev != -1)
-                  particles[prev].next = i;
+                  particles.at(prev).next = i;
                else
                   pactive = i;
 
