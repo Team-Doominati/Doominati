@@ -15,7 +15,7 @@
 
 #include "GL/Color.hpp"
 #include "Core/Vector2.hpp"
-#include "Core/Matrix4.hpp"
+#include "Core/Math.hpp"
 
 #include <vector>
 

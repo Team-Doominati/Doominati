@@ -14,7 +14,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(doominati)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake)
 set(OUT_DIR ${CMAKE_BINARY_DIR}/Bin)
 include(CheckCXXCompilerFlag)
 
@@ -54,6 +54,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
 endif()
 
 if(MSVC)
+   # Fucking MSVC.
+
    add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast)
    add_definitions(/wd4996 /wd4800 /wd4244 /wd4800 /wd4146 /wd4055 /wd4054)
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
@@ -72,6 +74,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 find_package(GDCC   REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SDL2   REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUT_DIR})

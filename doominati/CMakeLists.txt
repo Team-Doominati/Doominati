@@ -51,7 +51,6 @@ add_executable(doominati WIN32
 
    ${CMAKE_SOURCE_DIR}/Core/HashMapFixed.hpp
    ${CMAKE_SOURCE_DIR}/Core/List.hpp
-   ${CMAKE_SOURCE_DIR}/Core/Matrix4.hpp
    ${CMAKE_SOURCE_DIR}/Core/Math.hpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.cpp
    ${CMAKE_SOURCE_DIR}/Core/NTS.hpp
@@ -97,7 +96,8 @@ target_link_libraries(doominati
 target_include_directories(doominati SYSTEM PRIVATE
    ${GDCC_INCLUDE_DIRS}
    ${OPENGL_INCLUDE_DIR}
-   ${SDL2_INCLUDE_DIRS})
+   ${SDL2_INCLUDE_DIRS}
+   ${EIGEN3_INCLUDE_DIRS})
 
 ## EOF
 

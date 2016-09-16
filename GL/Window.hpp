@@ -15,6 +15,7 @@
 
 #include "GL/Color.hpp"
 #include "GL/Particle.hpp"
+#include "Core/Vector4.hpp"
 
 #include <memory>
 
@@ -44,7 +45,8 @@ namespace Doom
          void circlePrecision(int subdivisions);
 
          // draw
-         void drawCircle(int x, int y, int radius);
+         void drawCircle(int x, int y, int radius) const;
+         void drawEllipse(int x1, int y1, int x2, int y2) const;
          void drawLine(int x1, int y1, int x2, int y2) const;
          void drawParticleSystem(ParticleSystem const &ps);
          void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;

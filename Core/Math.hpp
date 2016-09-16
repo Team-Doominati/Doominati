@@ -13,6 +13,21 @@
 #ifndef Doom__Core__Math_H__
 #define Doom__Core__Math_H__
 
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+//----------------------------------------------------------------------------|
+// Type Definitions                                                           |
+//
+
+namespace Doom
+{
+   namespace Core
+   {
+      using Matrix4 = Eigen::Matrix4f;
+   }
+}
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |

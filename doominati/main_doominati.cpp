@@ -66,6 +66,9 @@ static void DrawTest()
       {
          h *= 360.0;
 
+              if(h < 0)   h = 0;
+         else if(h > 360) h = 360;
+
          float chroma = v * s;
          float hp = h / 60.0;
          float x = chroma * (1 - abs(mod(hp, 2) - 1));
@@ -161,6 +164,10 @@ static void DrawTest()
 
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
+
+   // TODO: this fucking explodes when you set the color here
+   //       somehow???????????? ? ?? ?? ?? ? ?¿ ?? ??
+   WindowCurrent->drawEllipse(0, 614, 900, h);
 
    WindowCurrent->textureBind("@test.ppm");
    WindowCurrent->drawColorSet(Doom::GL::Color::White);

@@ -28,9 +28,6 @@
 #include <GL/glu.h>
 
 #include <iostream>
-#include <stdexcept>
-#include <cctype>
-#include <cstdlib>
 #include <unordered_map>
 
 
@@ -192,7 +189,7 @@ namespace Doom
          {
             textureNone =
                &privdata->textures.emplace(std::piecewise_construct,
-                  std::forward_as_tuple("NOTEXTURE"),
+                  std::forward_as_tuple("TEXNULL"),
                   std::forward_as_tuple(2, 2, TextureNoneData)).first->second;
          }
 
@@ -297,11 +294,32 @@ namespace Doom
       // Window::drawCircle
       //
 
-      void Window::drawCircle(int x, int y, int radius)
+      void Window::drawCircle(int x, int y, int radius) const
       {
          glPushMatrix();
 
-         glLoadMatrixf(Core::Matrix4{}.scale(radius, radius).translate(x, y).getConstPointer());
+         glLoadMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y) * Eigen::Scaling(float(radius))}.data());
+
+         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+
+         glPopMatrix();
+      }
+
+      //
+      // Window::drawEllipse
+      //
+
+      void Window::drawEllipse(int x1, int y1, int x2, int y2) const
+      {
+         if(x1 > x2) std::swap(x1, x2);
+         if(y1 > y2) std::swap(y1, y2);
+
+         float rx = (x2 - x1) * 0.5f;
+         float ry = (y2 - y1) * 0.5f;
+
+         glPushMatrix();
+
+         glLoadMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 0.0f)}.data());
 
          glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
@@ -330,7 +348,7 @@ namespace Doom
       {
          glPushMatrix();
 
-         glLoadMatrixf(ps.mat.getConstPointer());
+         glLoadMatrixf(ps.mat.data());
 
          float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
@@ -512,7 +530,7 @@ namespace Doom
          if(*name == '@')
             return textureGet_File(name + 1);
 
-         std::cerr << "unkown texture: " << name << '\n';
+         std::cerr << "unknown texture: " << name << '\n';
          return textureGet_None(name);
       }
 

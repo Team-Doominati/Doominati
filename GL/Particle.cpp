@@ -54,7 +54,7 @@ namespace Doom
 
       void ParticleSystem::setPosition(float x, float y)
       {
-         mat.translate(x, y);
+         mat = Eigen::Affine3f{Eigen::Translation3f(x, y)}.matrix();
       }
 
       //
