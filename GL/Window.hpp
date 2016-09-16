@@ -45,8 +45,8 @@ namespace Doom
          void circlePrecision(int subdivisions);
 
          // draw
-         void drawCircle(int x, int y, int radius) const;
-         void drawEllipse(int x1, int y1, int x2, int y2) const;
+         void drawCircle(int x, int y, int radius, bool line = false) const;
+         void drawEllipse(int x1, int y1, int x2, int y2, bool line = false) const;
          void drawLine(int x1, int y1, int x2, int y2) const;
          void drawParticleSystem(ParticleSystem const &ps);
          void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
@@ -77,6 +77,9 @@ namespace Doom
 
       private:
          class PrivData;
+
+         void circleCreateLines(int subdivisions);
+         void circleCreateTris(int subdivisions);
 
          void resize(int w, int h);
 

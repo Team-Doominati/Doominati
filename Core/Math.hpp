@@ -56,6 +56,7 @@ namespace Doom
       constexpr float pi = 3.14159265359f;
       constexpr float pi2 = pi / 2.0f;
       constexpr float pi4 = pi / 4.0f;
+      constexpr float tau = pi * 2.0f;
    }
 }
 

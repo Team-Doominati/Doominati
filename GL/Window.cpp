@@ -107,7 +107,7 @@ namespace Doom
          SDL_GLContext   gl;
          GLuint          textureCurrent;
          TextureHashmap  textures;
-         DynamicBuffer   circleBuff;
+         DynamicBuffer   circleBuff, circleLineBuff;
       };
 
       //
@@ -117,7 +117,7 @@ namespace Doom
       Window::PrivData::PrivData(int w, int h) :
          window{}, gl{},
          textureCurrent{}, textures{},
-         circleBuff{}
+         circleBuff{}, circleLineBuff{}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
@@ -236,32 +236,63 @@ namespace Doom
       }
 
       //
-      // Window::circlePrecision
+      // CalcBufSize
       //
 
-      void Window::circlePrecision(int subdivisions)
+      void CalcBufSize(int subdivisions, std::size_t &bufsize)
       {
-         std::size_t bufsize = 0;
+         if(!subdivisions) return;
 
-         std::function<void(int)> calcBufSizeFaces;
-         calcBufSizeFaces = [&] (int mysubdivisions)
-         {
-            if(!mysubdivisions) return;
+         bufsize += 3;
 
-            bufsize += 3;
+         for(int i = 0; i < 2; i++)
+            CalcBufSize(subdivisions - 1, bufsize);
+      }
 
-            for(int i = 0; i < 2; i++)
-               calcBufSizeFaces(mysubdivisions - 1);
-         };
+      //
+      // Window::circleCreateLines
+      //
 
-         bufsize += 3 * 2;
+      void Window::circleCreateLines(int subdivisions)
+      {
+         std::size_t bufsize = 3 * 2;
+
          for(int i = 0; i < 4; i++)
-            calcBufSizeFaces(subdivisions);
+            CalcBufSize(subdivisions, bufsize);
 
          GDCC::Core::Array<Vertex> bufarray{bufsize};
          Vertex *buf = bufarray.data();
-         float angl = 0.0f;
 
+         for(std::size_t i = 0; i < bufsize; i++)
+            CalcPoint(Core::Lerp(0.0f, Core::tau, i / float(bufsize)), buf);
+
+         // Generate the VBO.
+         auto &vbo = privdata->circleLineBuff.buffer;
+
+         if(!vbo)
+            glGenBuffers(1, &vbo);
+
+         privdata->circleLineBuff.size = bufsize;
+         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
+         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+      }
+
+      //
+      // Window::circleCreateTris
+      //
+
+      void Window::circleCreateTris(int subdivisions)
+      {
+         std::size_t bufsize = 3 * 2;
+
+         for(int i = 0; i < 4; i++)
+            CalcBufSize(subdivisions, bufsize);
+
+         GDCC::Core::Array<Vertex> bufarray{bufsize};
+         Vertex *buf = bufarray.data();
+
+         // First, make a diamond out of two tris.
          CalcPoint(Core::pi + Core::pi2, buf);
          CalcPoint(0, buf);
          CalcPoint(Core::pi2, buf);
@@ -270,38 +301,54 @@ namespace Doom
          CalcPoint(Core::pi2, buf);
          CalcPoint(Core::pi, buf);
 
+         // Then create a fractal of triangles around that, for each quarter.
          for(int i = 0; i < 4; i++)
-         {
-            CalcFaces(subdivisions, angl, angl + Core::pi2, buf);
-            angl += Core::pi2;
-         }
+            CalcFaces(subdivisions, Core::pi2 * i, (Core::pi2 * i) + Core::pi2, buf);
 
+         // Generate the VBO.
          auto &vbo = privdata->circleBuff.buffer;
 
          if(!vbo)
             glGenBuffers(1, &vbo);
 
+         privdata->circleBuff.size = bufsize;
          glBindBuffer(GL_ARRAY_BUFFER, vbo);
          glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
          glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+      }
 
-         DynamicBuffer::SetupPointers();
+      //
+      // Window::circlePrecision
+      //
 
-         privdata->circleBuff.size = bufsize;
+      void Window::circlePrecision(int subdivisions)
+      {
+         circleCreateTris(subdivisions);
+         circleCreateLines(subdivisions);
       }
 
       //
       // Window::drawCircle
       //
 
-      void Window::drawCircle(int x, int y, int radius) const
+      void Window::drawCircle(int x, int y, int radius, bool line) const
       {
          glPushMatrix();
 
          glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y) * Eigen::Scaling(float(radius))}.data());
 
-         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
-         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+         if(!line)
+         {
+            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
+            DynamicBuffer::SetupPointers();
+            glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+         }
+         else
+         {
+            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleLineBuff.buffer);
+            DynamicBuffer::SetupPointers();
+            glDrawArrays(GL_LINE_LOOP, 0, privdata->circleLineBuff.size);
+         }
 
          glPopMatrix();
       }
@@ -310,7 +357,7 @@ namespace Doom
       // Window::drawEllipse
       //
 
-      void Window::drawEllipse(int x1, int y1, int x2, int y2) const
+      void Window::drawEllipse(int x1, int y1, int x2, int y2, bool line) const
       {
          if(x1 > x2) std::swap(x1, x2);
          if(y1 > y2) std::swap(y1, y2);
@@ -322,8 +369,18 @@ namespace Doom
 
          glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 1.0f)}.data());
 
-         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
-         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+         if(!line)
+         {
+            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
+            DynamicBuffer::SetupPointers();
+            glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
+         }
+         else
+         {
+            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleLineBuff.buffer);
+            DynamicBuffer::SetupPointers();
+            glDrawArrays(GL_LINE_LOOP, 0, privdata->circleLineBuff.size);
+         }
 
          glPopMatrix();
       }
@@ -404,20 +461,7 @@ namespace Doom
             }
          }
 
-         if(line)
-         {
-            glBegin(GL_LINE_LOOP);
-
-            // A--B
-            // |  |
-            // D--C
-
-            for(int i = 0; i < 4; i++)
-               glVertex2f(v[i].x, v[i].y);
-
-            glEnd();
-         }
-         else
+         if(!line)
          {
             glBegin(GL_TRIANGLES);
 
@@ -443,6 +487,19 @@ namespace Doom
 
             glEnd();
          }
+         else
+         {
+            glBegin(GL_LINE_LOOP);
+
+            // A--B
+            // |  |
+            // D--C
+
+            for(int i = 0; i < 4; i++)
+               glVertex2f(v[i].x, v[i].y);
+
+            glEnd();
+         }
       }
 
       //
@@ -451,10 +508,10 @@ namespace Doom
 
       void Window::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
       {
-         if(line)
-            glBegin(GL_LINE_LOOP);
-         else
+         if(!line)
             glBegin(GL_TRIANGLES);
+         else
+            glBegin(GL_LINE_LOOP);
 
          glTexCoord2f(0.5f, 0);
          glVertex2f(x1, y1);

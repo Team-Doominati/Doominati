@@ -66,7 +66,7 @@ static void DrawTest()
       {
          h *= 360.0;
 
-              if(h < 0)   h = 0;
+              if(h < 0)     h = 0;
          else if(h > 359.5) h = 359.5;
 
          float chroma = v * s;
@@ -180,6 +180,9 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::Pink);
    WindowCurrent->drawEllipse(0, 614, 900, h);
+
+   WindowCurrent->drawColorSet(Doom::GL::Color::Green);
+   WindowCurrent->drawEllipse(0, 614, 900, h, true);
 
    WindowCurrent->drawColorSet(Doom::GL::Color::Purple);
    WindowCurrent->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
