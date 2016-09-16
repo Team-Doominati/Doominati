@@ -12,6 +12,8 @@
 
 #include "GL/Particle.hpp"
 
+#include <GDCC/Core/String.hpp>
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -26,31 +28,23 @@ namespace Doom
       //
 
       ParticleSystem::ParticleSystem() :
-         ParticleSystem{0.0f, 0.0f, 128}
+         ParticleSystem{0.0f, 0.0f}
       {
       }
 
-      ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum) :
+      ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum, char const *texture) :
          mat{},
          particles{static_cast<decltype(particles)::size_type>(pnum)},
          pinactive{0}, pactive{-1}
       {
          setPosition(x, y);
+         setTexture(texture);
 
          std::ptrdiff_t i = 0;
          for(auto it = particles.begin(); it != particles.end(); ++it)
             it->next = ++i;
 
          particles.back().next = -1;
-      }
-
-      //
-      // ParticleSystem::setPosition
-      //
-
-      void ParticleSystem::setPosition(float x, float y)
-      {
-         mat = Eigen::Affine3f{Eigen::Translation3f(x, y)}.matrix();
       }
 
       //
@@ -73,6 +67,24 @@ namespace Doom
          }
 
          return nullptr;
+      }
+
+      //
+      // ParticleSystem::setPosition
+      //
+
+      void ParticleSystem::setPosition(float x, float y)
+      {
+         mat = Eigen::Affine3f{Eigen::Translation3f(x, y)}.matrix();
+      }
+
+      //
+      // ParticleSystem::setTexture
+      //
+
+      void ParticleSystem::setTexture(char const *texture)
+      {
+         texname.reset(GDCC::Core::StrDup(texture).release());
       }
 
       //

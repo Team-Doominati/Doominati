@@ -66,15 +66,17 @@ namespace Doom
          EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
          ParticleSystem();
-         ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128);
+         ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128, char const *texture = "TEXNULL");
 
-         void setPosition(float x, float y);
          Particle *create();
+         void setPosition(float x, float y);
+         void setTexture(char const *texture);
          void update();
 
       protected:
          Core::Matrix4 mat;
          GDCC::Core::Array<Particle> particles;
+         std::unique_ptr<char[]> texname;
 
       private:
          std::ptrdiff_t pinactive, pactive;

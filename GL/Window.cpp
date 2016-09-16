@@ -354,6 +354,8 @@ namespace Doom
 
          float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
+         textureBind(ps.texname.get());
+
          for(auto &p : ps.particles)
          {
             float x = Core::Lerp(p.oldposition.x, p.position.x, frac);

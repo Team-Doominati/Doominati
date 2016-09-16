@@ -40,7 +40,7 @@
 //
 
 static Doom::GL::Window *WindowCurrent;
-static Doom::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000};
+static Doom::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle.pam"};
 
 
 //----------------------------------------------------------------------------|
@@ -136,7 +136,7 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::White);
 
-   WindowCurrent->textureBind("@test3.ppm");
+   WindowCurrent->textureBind("@Textures/bigscreen.ppm");
    WindowCurrent->drawRectangle(303, 2, 603, 302);
 
    WindowCurrent->shaderSwap(shader);
@@ -146,7 +146,7 @@ static void DrawTest()
 
    WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
 
-   WindowCurrent->textureBind("@test.ppm");
+   WindowCurrent->textureBind("@Textures/colors.ppm");
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
    WindowCurrent->textureUnbind();
 
@@ -165,7 +165,7 @@ static void DrawTest()
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   WindowCurrent->textureBind("@test.ppm");
+   WindowCurrent->textureBind("@Textures/colors.ppm");
 
    Doom::GL::Color drawc{Doom::GL::Color::Pink};
    for(int i = 0; i < 3; i++)
