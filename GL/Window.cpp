@@ -307,28 +307,6 @@ namespace Doom
       }
 
       //
-      // Window::drawEllipse
-      //
-
-      void Window::drawEllipse(int x1, int y1, int x2, int y2) const
-      {
-         if(x1 > x2) std::swap(x1, x2);
-         if(y1 > y2) std::swap(y1, y2);
-
-         float rx = (x2 - x1) * 0.5f;
-         float ry = (y2 - y1) * 0.5f;
-
-         glPushMatrix();
-
-         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 0.0f)}.data());
-
-         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
-         glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
-
-         glPopMatrix();
-      }
-
-      //
       // Window::drawLine
       //
 
@@ -441,6 +419,27 @@ namespace Doom
 
             glEnd();
          }
+      }
+
+      //
+      // Window::drawTriangle
+      //
+
+      void Window::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
+      {
+         if(line)
+            glBegin(GL_LINE_LOOP);
+         else
+            glBegin(GL_TRIANGLES);
+
+         glTexCoord2f(0.5f, 0);
+         glVertex2f(x1, y1);
+         glTexCoord2f(0, 1);
+         glVertex2f(x2, y2);
+         glTexCoord2f(1, 1);
+         glVertex2f(x3, y3);
+
+         glEnd();
       }
 
       //

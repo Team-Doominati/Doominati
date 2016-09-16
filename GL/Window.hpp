@@ -46,10 +46,10 @@ namespace Doom
 
          // draw
          void drawCircle(int x, int y, int radius) const;
-         void drawEllipse(int x1, int y1, int x2, int y2) const;
          void drawLine(int x1, int y1, int x2, int y2) const;
          void drawParticleSystem(ParticleSystem const &ps);
          void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
+         void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
 
          // drawColor
          void drawColorSet(float r, float g, float b, float a = 1.0f);
