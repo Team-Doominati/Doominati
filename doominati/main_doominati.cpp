@@ -67,7 +67,7 @@ static void DrawTest()
          h *= 360.0;
 
               if(h < 0)   h = 0;
-         else if(h > 360) h = 360;
+         else if(h > 359.5) h = 359.5;
 
          float chroma = v * s;
          float hp = h / 60.0;

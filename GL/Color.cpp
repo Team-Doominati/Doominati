@@ -30,6 +30,9 @@ namespace Doom
       Color Color::FromHSV(float h, float s, float v, float a)
       {
          h *= 360.0f;
+
+              if(h < 0)     h = 0;
+         else if(h > 359.5) h = 359.5; // thanks floating point-bama
          
          float chroma = v * s;
          float hp = h / 60.0f;
