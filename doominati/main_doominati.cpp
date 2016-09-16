@@ -165,15 +165,19 @@ static void DrawTest()
    WindowCurrent->drawLine(xp + s, yp + c, xo + s, yo + c);
    WindowCurrent->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   // TODO: this fucking explodes when you set the color here
-   //       somehow???????????? ? ?? ?? ?? ? ?¿ ?? ??
+   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    WindowCurrent->drawEllipse(0, 614, 900, h);
 
    WindowCurrent->textureBind("@test.ppm");
-   WindowCurrent->drawColorSet(Doom::GL::Color::White);
 
+   Doom::GL::Color drawc{Doom::GL::Color::Pink};
    for(int i = 0; i < 3; i++)
+   {
+      WindowCurrent->drawColorSet(drawc);
+      drawc.interpolate(Doom::GL::Color::Blue, 1.0f / 3.0f);
+
       WindowCurrent->drawCircle(64 + (i * 128), 550, 64);
+   }
 
    WindowCurrent->textureUnbind();
 }
@@ -324,13 +328,13 @@ static int Main()
 
             for(;;)
             {
-               float fuck3 = (rand() % 1280) - (1280/2);
-               float fuck4 = (rand() % 720 ) - (720/2);
-
                Doom::GL::Particle *test = ParticleSystem.create();
 
                if(test == nullptr)
                   break;
+
+               float fuck3 = (rand() % 1280) - (1280/2);
+               float fuck4 = (rand() % 720 ) - (720/2);
 
                test->life = (rand() % 30) + 10;
                test->oldposition.x = test->position.x = -30.0f + fuck3;
