@@ -298,8 +298,9 @@ namespace Doom
       {
          glPushMatrix();
 
-         glLoadMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y) * Eigen::Scaling(float(radius))}.data());
+         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y) * Eigen::Scaling(float(radius))}.data());
 
+         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
          glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
          glPopMatrix();
@@ -319,8 +320,9 @@ namespace Doom
 
          glPushMatrix();
 
-         glLoadMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 0.0f)}.data());
+         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 0.0f)}.data());
 
+         glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
          glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
 
          glPopMatrix();
@@ -348,7 +350,7 @@ namespace Doom
       {
          glPushMatrix();
 
-         glLoadMatrixf(ps.mat.data());
+         glMultMatrixf(ps.mat.data());
 
          float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
