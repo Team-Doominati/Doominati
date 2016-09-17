@@ -1,2 +1,3 @@
-GL/gl_2_1.* linguist-vendored
+GL/gl_2_1.c linguist-vendored
+GL/gl_2_1.h linguist-vendored
 
