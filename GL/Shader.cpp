@@ -29,14 +29,14 @@ namespace Doom
       //
       // Shader constructor
       //
-      
+
       Shader::Shader() :
          handlef{},
          handlev{},
          program{}
       {
       }
-      
+
       Shader::Shader(char const *f, char const *v) :
          Shader{}
       {
@@ -44,7 +44,7 @@ namespace Doom
          compileVert(v);
          link();
       }
-      
+
       Shader::Shader(FS::File *ffp, FS::File *vfp) :
          Shader{}
       {
@@ -58,11 +58,11 @@ namespace Doom
       //
 
       template<GLenum Type>
-      GLuint CompileShader(char const *data)
+      GLuint CompileShader(char const *data, GLint size = -1)
       {
          GLuint handle = glCreateShader(Type);
 
-         glShaderSource(handle, 1, &data, nullptr);
+         glShaderSource(handle, 1, &data, &size);
          glCompileShader(handle);
 
          GLint compiled;
@@ -71,11 +71,8 @@ namespace Doom
          if(compiled != GL_TRUE)
          {
             static GLchar err[1024];
-            GLsizei errlen = 0;
-
-            glGetShaderInfoLog(handle, 1024, &errlen, err);
-            
-            throw ShaderError(err);
+            glGetShaderInfoLog(handle, 1024, nullptr, err);
+            throw ShaderError{err};
          }
 
          return handle;
@@ -88,10 +85,10 @@ namespace Doom
       void Shader::link()
       {
          if(!handlef || !handlev)
-            throw ShaderError("Shader::link: fragment or vertex handle is 0\n");
+            throw ShaderError{"fragment or vertex handle is 0"};
 
          if(program)
-            throw ShaderError("Shader::link: already open");
+            throw ShaderError{"already open"};
 
          program = glCreateProgram();
 
@@ -106,12 +103,9 @@ namespace Doom
          if(linked != GL_TRUE)
          {
             static GLchar err[1024];
-            GLsizei errlen = 0;
-
+            glGetProgramInfoLog(program, 1024, nullptr, err);
             program = 0;
-            
-            glGetProgramInfoLog(program, 1024, &errlen, err);
-            throw ShaderError(err);
+            throw ShaderError{err};
          }
 
          GLint idprev;
@@ -132,27 +126,27 @@ namespace Doom
       //
       // Shader::compileFrag
       //
-      
+
       void Shader::compileFrag(char const *data)
       {
          if(handlef)
-            throw ShaderError("Shader::compileFrag: already open\n");
-         
+            throw ShaderError{"already open"};
+
          handlef = CompileShader<GL_FRAGMENT_SHADER>(data);
       }
 
       //
       // Shader::compileVert
       //
-      
+
       void Shader::compileVert(char const *data)
       {
          if(handlev)
-            throw ShaderError("Shader::compileVert: already open\n");
-         
+            throw ShaderError{"already open"};
+
          handlev = CompileShader<GL_VERTEX_SHADER>(data);
       }
-      
+
       //
       // Shader::compileFrag (file overload)
       //
@@ -160,9 +154,12 @@ namespace Doom
       void Shader::compileFrag(FS::File *fp)
       {
          if(!fp)
-            throw ShaderError("Shader::compileFragFile: bad file\n");
-         
-         compileFrag(fp->data);
+            throw ShaderError{"bad file"};
+
+         if(handlef)
+            throw ShaderError{"already open"};
+
+         handlef = CompileShader<GL_FRAGMENT_SHADER>(fp->data, fp->size);
       }
 
       //
@@ -172,9 +169,12 @@ namespace Doom
       void Shader::compileVert(FS::File *fp)
       {
          if(!fp)
-            throw ShaderError("Shader::compileVertFile: bad file\n");
-         
-         compileVert(fp->data);
+            throw ShaderError{"bad file"};
+
+         if(handlev)
+            throw ShaderError{"already open"};
+
+         handlev = CompileShader<GL_VERTEX_SHADER>(fp->data, fp->size);
       }
 
       //

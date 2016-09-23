@@ -25,8 +25,6 @@
 
 #include "SDL.h"
 
-#include <GL/glu.h>
-
 #include <iostream>
 #include <unordered_map>
 
@@ -79,7 +77,7 @@ namespace Doom
 
 
 //----------------------------------------------------------------------------|
-// Extern Functions                                                           |
+// Types                                                                      |
 //
 
 namespace Doom
@@ -109,7 +107,18 @@ namespace Doom
          TextureHashmap  textures;
          DynamicBuffer   circleBuff, circleLineBuff;
       };
+   }
+}
 
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace Doom
+{
+   namespace GL
+   {
       //
       // Window::PrivData constructor
       //
@@ -117,7 +126,8 @@ namespace Doom
       Window::PrivData::PrivData(int w, int h) :
          window{}, gl{},
          textureCurrent{}, textures{},
-         circleBuff{}, circleLineBuff{}
+         circleBuff{VertexXYUV::Layout},
+         circleLineBuff{VertexXY::Layout, GL_LINE_LOOP}
       {
          int x = SDL_WINDOWPOS_UNDEFINED;
          int y = SDL_WINDOWPOS_UNDEFINED;
@@ -186,12 +196,10 @@ namespace Doom
          drawColorSet(1.0, 1.0, 1.0);
 
          // Set up basic no-texture.
-         {
-            textureNone =
-               &privdata->textures.emplace(std::piecewise_construct,
-                  std::forward_as_tuple("TEXNULL"),
-                  std::forward_as_tuple(2, 2, TextureNoneData)).first->second;
-         }
+         textureNone =
+            &privdata->textures.emplace(std::piecewise_construct,
+               std::forward_as_tuple("TEXNULL"),
+               std::forward_as_tuple(2, 2, TextureNoneData)).first->second;
 
          // Set up VBOs.
          circlePrecision(4);
@@ -207,39 +215,10 @@ namespace Doom
       }
 
       //
-      // CalcPoint
-      //
-
-      static void CalcPoint(float angl, Vertex *&buf)
-      {
-         float s = std::sin(angl);
-         float c = std::cos(angl);
-         *buf++ = { s, c, s * 0.5f + 0.5f, c * 0.5f + 0.5f };
-      }
-
-      //
-      // CalcFaces
-      //
-
-      static void CalcFaces(int subdivisions, float anglA, float anglC, Vertex *&buf)
-      {
-         if(!subdivisions) return;
-
-         float anglB = Core::Lerp(anglA, anglC, 0.5f);
-
-         CalcPoint(anglA, buf);
-         CalcPoint(anglB, buf);
-         CalcPoint(anglC, buf);
-
-         CalcFaces(subdivisions - 1, anglA, anglB, buf);
-         CalcFaces(subdivisions - 1, anglB, anglC, buf);
-      }
-
-      //
       // CalcBufSize
       //
 
-      void CalcBufSize(int subdivisions, std::size_t &bufsize)
+      static void CalcBufSize(int subdivisions, std::size_t &bufsize)
       {
          if(!subdivisions) return;
 
@@ -260,22 +239,47 @@ namespace Doom
          for(int i = 0; i < 4; i++)
             CalcBufSize(subdivisions, bufsize);
 
-         GDCC::Core::Array<Vertex> bufarray{bufsize};
-         Vertex *buf = bufarray.data();
+         GDCC::Core::Array<VertexXY> bufarray{bufsize};
 
          for(std::size_t i = 0; i < bufsize; i++)
-            CalcPoint(Core::Lerp(0.0f, Core::tau, i / float(bufsize)), buf);
+         {
+            float angl = Core::Lerp(0.0f, Core::tau, i / float(bufsize));
+            float s = std::sin(angl);
+            float c = std::cos(angl);
+            bufarray[i] = { s, c };
+         }
 
          // Generate the VBO.
-         auto &vbo = privdata->circleLineBuff.buffer;
+         privdata->circleLineBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);
+      }
 
-         if(!vbo)
-            glGenBuffers(1, &vbo);
+      //
+      // CalcPoint
+      //
 
-         privdata->circleLineBuff.size = bufsize;
-         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
-         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+      static void CalcPoint(float angl, VertexXYUV *&buf)
+      {
+         float s = std::sin(angl);
+         float c = std::cos(angl);
+         *buf++ = { s, c, s * 0.5f + 0.5f, c * 0.5f + 0.5f };
+      }
+
+      //
+      // CalcFaces
+      //
+
+      static void CalcFaces(int subdivisions, float anglA, float anglC, VertexXYUV *&buf)
+      {
+         if(!subdivisions) return;
+
+         float anglB = Core::Lerp(anglA, anglC, 0.5f);
+
+         CalcPoint(anglA, buf);
+         CalcPoint(anglB, buf);
+         CalcPoint(anglC, buf);
+
+         CalcFaces(subdivisions - 1, anglA, anglB, buf);
+         CalcFaces(subdivisions - 1, anglB, anglC, buf);
       }
 
       //
@@ -289,8 +293,8 @@ namespace Doom
          for(int i = 0; i < 4; i++)
             CalcBufSize(subdivisions, bufsize);
 
-         GDCC::Core::Array<Vertex> bufarray{bufsize};
-         Vertex *buf = bufarray.data();
+         GDCC::Core::Array<VertexXYUV> bufarray{bufsize};
+         VertexXYUV *buf = bufarray.data();
 
          // First, make a diamond out of two tris.
          CalcPoint(Core::pi + Core::pi2, buf);
@@ -306,15 +310,7 @@ namespace Doom
             CalcFaces(subdivisions, Core::pi2 * i, (Core::pi2 * i) + Core::pi2, buf);
 
          // Generate the VBO.
-         auto &vbo = privdata->circleBuff.buffer;
-
-         if(!vbo)
-            glGenBuffers(1, &vbo);
-
-         privdata->circleBuff.size = bufsize;
-         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-         glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * bufsize, nullptr, GL_DYNAMIC_DRAW);
-         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * bufsize, bufarray.data());
+         privdata->circleBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);
       }
 
       //
@@ -335,20 +331,13 @@ namespace Doom
       {
          glPushMatrix();
 
-         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y) * Eigen::Scaling(float(radius))}.data());
+         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y, 0.0f) * Eigen::Scaling(float(radius))}.data());
 
          if(!line)
-         {
-            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
-            DynamicBuffer::SetupPointers();
-            glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
-         }
+            privdata->circleBuff.bindAndDraw();
          else
-         {
-            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleLineBuff.buffer);
-            DynamicBuffer::SetupPointers();
-            glDrawArrays(GL_LINE_LOOP, 0, privdata->circleLineBuff.size);
-         }
+            privdata->circleLineBuff.bindAndDraw();
+
 
          glPopMatrix();
       }
@@ -367,20 +356,12 @@ namespace Doom
 
          glPushMatrix();
 
-         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry) * Eigen::Scaling(rx, ry, 1.0f)}.data());
+         glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry, 0.0f) * Eigen::Scaling(rx, ry, 1.0f)}.data());
 
          if(!line)
-         {
-            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleBuff.buffer);
-            DynamicBuffer::SetupPointers();
-            glDrawArrays(GL_TRIANGLES, 0, privdata->circleBuff.size);
-         }
+            privdata->circleBuff.bindAndDraw();
          else
-         {
-            glBindBuffer(GL_ARRAY_BUFFER, privdata->circleLineBuff.buffer);
-            DynamicBuffer::SetupPointers();
-            glDrawArrays(GL_LINE_LOOP, 0, privdata->circleLineBuff.size);
-         }
+            privdata->circleLineBuff.bindAndDraw();
 
          glPopMatrix();
       }
@@ -715,7 +696,7 @@ namespace Doom
          // orthogonal perspective and device coordinates.
          glMatrixMode(GL_PROJECTION);
          glLoadIdentity();
-         glOrtho(0, w, h, 0, -1, 1);
+         glOrtho(0, w, h, 0, 0, 0.01f);
 
          glMatrixMode(GL_MODELVIEW);
       }

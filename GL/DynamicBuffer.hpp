@@ -14,6 +14,7 @@
 #define Doom__GL__DynamicBuffer_H__
 
 #include "GL/gl_2_1.h"
+#include <cstddef>
 
 
 //----------------------------------------------------------------------------|
@@ -24,38 +25,73 @@ namespace Doom
 {
    namespace GL
    {
+      class Shader;
+
       //
-      // Vertex
+      // VertexLayout
       //
 
-      class Vertex
+      struct VertexLayout
       {
-      public:
+         GLsizei size;
+         GLsizei pntLen, pntPos; // Point
+         GLsizei texLen, texPos; // Texture
+         GLsizei colLen, colPos; // Color
+         GLsizei         nrmPos; // Normal
+         bool    nrmUse;
+      };
+
+      //
+      // VertexXY
+      //
+
+      struct VertexXY
+      {
+         float x, y;
+
+         static VertexLayout Layout;
+      };
+
+      //
+      // VertexXYUV
+      //
+
+      struct VertexXYUV
+      {
          float x, y, u, v;
+
+         static VertexLayout Layout;
       };
 
       //
       // DynamicBuffer
       //
-      // This used to be a templated madhouse, but fuck that shit.
-      // Just gimme the data.
-      //
 
       class DynamicBuffer
       {
       public:
-         GLuint      buffer{};
-         std::size_t size{};
+         DynamicBuffer() = delete;
+         DynamicBuffer(DynamicBuffer const &other) = delete;
 
-         //
-         // DynamicBuffer::SetupPointers
-         //
-
-         static void SetupPointers()
+         DynamicBuffer(VertexLayout layout_, GLenum drawtype_ = GL_TRIANGLES) :
+            buffer{},
+            size{},
+            layout{layout_},
+            drawtype{drawtype_}
          {
-            glVertexPointer(2, GL_FLOAT, 4 * sizeof(float), nullptr);
-            glTexCoordPointer(2, GL_FLOAT, 4 * sizeof(float), reinterpret_cast<GLvoid *>(2 * sizeof(float)));
          }
+
+         void bind();
+         void bindAndDraw() { bind(); draw(); }
+         void draw();
+         void setupData(std::size_t arraysize, void *data, GLenum type);
+         void setupPointers();
+
+      private:
+         GLuint       buffer;
+         std::size_t  size;
+         VertexLayout layout;
+         GLenum       drawtype;
       };
    }
 }
