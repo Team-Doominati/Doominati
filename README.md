@@ -1,5 +1,7 @@
-die die die
-===
+Doominati Game Engine
+=====================
+
+A multi purpose 2D game engine built on scripting and moddability.
 
 
 ### Project credits:
