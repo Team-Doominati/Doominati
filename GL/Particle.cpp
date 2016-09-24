@@ -35,6 +35,7 @@ namespace Doom
       ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum, char const *texture) :
          mat{},
          particles{static_cast<decltype(particles)::size_type>(pnum)},
+         texname{nullptr},
          pinactive{0}, pactive{-1}
       {
          setPosition(x, y);

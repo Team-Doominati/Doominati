@@ -180,10 +180,6 @@ namespace Doom
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
          glActiveTexture(GL_TEXTURE0);
 
-         // Set up OpenGL client.
-         glEnableClientState(GL_VERTEX_ARRAY);
-         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
          // Set up matrices.
          resize(w, h);
 
