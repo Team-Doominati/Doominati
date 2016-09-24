@@ -50,13 +50,19 @@ namespace DGE::Code
    void Thread::exec()
    {
       for(auto itr = tasks.begin(), end = tasks.end(); itr != end;)
-         itr++->exec();
+      {
+         Task *task = &*itr++;
+         task->exec();
+
+         if(task->state == TaskState::Stop)
+            task->stop();
+      }
    }
 
    //
    // Thread::startTask
    //
-   void Thread::startTask(Function *func, Word const *argV, Word argC)
+   Task *Thread::startTask(Function *func, Word const *argV, Word argC)
    {
       Task *task = Task::Create(this);
 
@@ -77,6 +83,10 @@ namespace DGE::Code
 
       task->codePtr = func->entry;
       task->vaaRegC = vaaC;
+
+      task->state = TaskState::Exec;
+
+      return task;
    }
 }
 

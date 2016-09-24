@@ -60,6 +60,21 @@ namespace DGE::Code
    }
 
    //
+   // Task::stop
+   //
+   Word Task::stop(Word *retV, Word retC)
+   {
+      Word stkC = std::min<Word>(retC, dataStk.size());
+
+      std::copy(retV, dataStk.data(), dataStk.data() + stkC);
+      std::fill(retV + stkC, retV + retC, 0);
+
+      stop();
+
+      return stkC;
+   }
+
+   //
    // Task::Create
    //
    Task *Task::Create(Thread *thrd)

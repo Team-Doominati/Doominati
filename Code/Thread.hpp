@@ -35,7 +35,7 @@ namespace DGE::Code
 
       void exec();
 
-      void startTask(Function *func, Word const *argV, Word argC);
+      Task *startTask(Function *func, Word const *argV, Word argC);
 
       Core::ListLink<Thread> link;
       Core::ListLink<Task>   tasks;

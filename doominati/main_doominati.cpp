@@ -314,7 +314,7 @@ static int Main()
    DGE::Code::Process proc{&prog};
 
    if(auto func = prog.funcs.find("main"))
-      proc.threads.next->obj->startTask(func, nullptr, 0);
+      proc.mainThread()->startTask(func, nullptr, 0);
 
    std::size_t timeLast = DGE::Core::GetTicks<DGE::Core::PlayTick<>>();
    std::size_t timeNext;

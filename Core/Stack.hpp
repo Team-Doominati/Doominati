@@ -46,6 +46,10 @@ namespace DGE::Core
       // clear
       void clear() {while(stkPtr != stack) (--stkPtr)->~T();}
 
+      // data
+      T       *data()       {return stack;}
+      T const *data() const {return stack;}
+
       // drop
       void drop() {(--stkPtr)->~T();}
       void drop(std::size_t n) {while(n--) (--stkPtr)->~T();}

@@ -38,6 +38,15 @@ namespace DGE::Code
    };
 
    //
+   // TaskState
+   //
+   enum class TaskState
+   {
+      Exec,
+      Stop,
+   };
+
+   //
    // Task
    //
    class Task
@@ -51,6 +60,9 @@ namespace DGE::Code
 
       void stop();
 
+      // Returns number of words returned. Rest of ret is zero-filled.
+      Word stop(Word *retV, Word retC);
+
       Core::ListLink<Task> link;
 
       Core::Stack<CallFrame> callStk;
@@ -62,6 +74,7 @@ namespace DGE::Code
       Thread  *thrd;
 
       OpCode const *codePtr;
+      TaskState     state;
       Word          delay;
       Word          vaaRegC;
 

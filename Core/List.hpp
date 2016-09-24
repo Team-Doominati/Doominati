@@ -69,6 +69,9 @@ namespace DGE::Core
       IteratorBase<T>       begin()       {return next;}
       IteratorBase<T const> begin() const {return next;}
 
+      // empty
+      bool empty() const {return next == this;}
+
       // end
       IteratorBase<T>       end()       {return this;}
       IteratorBase<T const> end() const {return this;}

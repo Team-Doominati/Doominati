@@ -365,7 +365,7 @@ namespace DGE::Code
       }
 
    task_stop:
-      stop();
+      state = TaskState::Stop;
       goto exec_stop;
 
    exec_intr:

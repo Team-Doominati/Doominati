@@ -17,6 +17,16 @@
 
 
 //----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace DGE::Code
+{
+   Process *Process::Main = nullptr;
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -28,7 +38,7 @@ namespace DGE::Code
    Process::Process(Program *prog_) :
       prog{prog_}
    {
-      (new Thread(this))->link.insert(&threads);
+      if(!Main) Main = this;
    }
 
    //
@@ -36,8 +46,21 @@ namespace DGE::Code
    //
    Process::~Process()
    {
+      if(Main == this)
+         Main = nullptr;
+
       while(threads.next->obj)
          delete threads.next->obj;
+   }
+
+   //
+   // Process::call
+   //
+   Word Process::call(Function *func, Word const *argV, Word argC, Word *retV, Word retC)
+   {
+      Task *task = mainThread()->startTask(func, argV, argC);
+      task->exec();
+      return task->stop(retV, retC);
    }
 
    //
@@ -49,6 +72,17 @@ namespace DGE::Code
 
       for(auto &thread : threads)
          thread.exec();
+   }
+
+   //
+   // Process::mainThread
+   //
+   Thread *Process::mainThread()
+   {
+      if(threads.empty())
+         (new Thread(this))->link.insert(&threads);
+
+      return threads.next->obj;
    }
 }
 
