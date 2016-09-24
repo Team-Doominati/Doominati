@@ -21,23 +21,20 @@
 // Extern Functions                                                           |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
+   //
+   // BinarySearch
+   //
+   template<typename T> T *BSearchStr(T *itr, T *end, char const *key)
    {
-      //
-      // BinarySearch
-      //
-      template<typename T> T *BSearchStr(T *itr, T *end, char const *key)
-      {
-         auto cmpL = [](T const &i, char const *k) {return std::strcmp(i.name, k) < 0;};
-         auto cmpU = [](char const *k, T const &i) {return std::strcmp(k, i.name) < 0;};
+      auto cmpL = [](T const &i, char const *k) {return std::strcmp(i.name, k) < 0;};
+      auto cmpU = [](char const *k, T const &i) {return std::strcmp(k, i.name) < 0;};
 
-         itr = std::lower_bound(itr, end, key, cmpL);
-         end = std::upper_bound(itr, end, key, cmpU);
+      itr = std::lower_bound(itr, end, key, cmpL);
+      end = std::upper_bound(itr, end, key, cmpU);
 
-         return itr == end ? nullptr : itr;
-      }
+      return itr == end ? nullptr : itr;
    }
 }
 

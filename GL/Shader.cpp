@@ -22,171 +22,168 @@
 // Extern Functions                                                           |
 //
 
-namespace DGE
+namespace DGE::GL
 {
-   namespace GL
+   //
+   // Shader constructor
+   //
+
+   Shader::Shader() :
+      handlef{},
+      handlev{},
+      program{}
    {
-      //
-      // Shader constructor
-      //
+   }
 
-      Shader::Shader() :
-         handlef{},
-         handlev{},
-         program{}
+   Shader::Shader(char const *f, char const *v) :
+      Shader{}
+   {
+      compileFrag(f);
+      compileVert(v);
+      link();
+   }
+
+   Shader::Shader(FS::File *ffp, FS::File *vfp) :
+      Shader{}
+   {
+      compileFrag(ffp);
+      compileVert(vfp);
+      link();
+   }
+
+   //
+   // CompileShader
+   //
+
+   template<GLenum Type>
+   GLuint CompileShader(char const *data, GLint size = -1)
+   {
+      GLuint handle = glCreateShader(Type);
+
+      glShaderSource(handle, 1, &data, &size);
+      glCompileShader(handle);
+
+      GLint compiled;
+      glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
+
+      if(compiled != GL_TRUE)
       {
+         static GLchar err[1024];
+         glGetShaderInfoLog(handle, 1024, nullptr, err);
+         throw ShaderError{err};
       }
 
-      Shader::Shader(char const *f, char const *v) :
-         Shader{}
+      return handle;
+   }
+
+   //
+   // Shader::link
+   //
+
+   void Shader::link()
+   {
+      if(!handlef || !handlev)
+         throw ShaderError{"fragment or vertex handle is 0"};
+
+      if(program)
+         throw ShaderError{"already open"};
+
+      program = glCreateProgram();
+
+      glAttachShader(program, handlef);
+      glAttachShader(program, handlev);
+
+      glLinkProgram(program);
+
+      GLint linked;
+      glGetProgramiv(program, GL_LINK_STATUS, &linked);
+
+      if(linked != GL_TRUE)
       {
-         compileFrag(f);
-         compileVert(v);
-         link();
+         static GLchar err[1024];
+         glGetProgramInfoLog(program, 1024, nullptr, err);
+         program = 0;
+         throw ShaderError{err};
       }
 
-      Shader::Shader(FS::File *ffp, FS::File *vfp) :
-         Shader{}
-      {
-         compileFrag(ffp);
-         compileVert(vfp);
-         link();
-      }
+      GLint idprev;
+      glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
 
-      //
-      // CompileShader
-      //
+      glUseProgram(program);
 
-      template<GLenum Type>
-      GLuint CompileShader(char const *data, GLint size = -1)
-      {
-         GLuint handle = glCreateShader(Type);
+      glUniform1i(glGetUniformLocation(program, "dge_texture"), 0);
 
-         glShaderSource(handle, 1, &data, &size);
-         glCompileShader(handle);
+      // Get device data locations.
+      u_ticks    = glGetUniformLocation(program, "dge_ticks");
+      u_mseconds = glGetUniformLocation(program, "dge_mseconds");
+      u_seconds  = glGetUniformLocation(program, "dge_seconds");
 
-         GLint compiled;
-         glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
+      glUseProgram(idprev);
+   }
 
-         if(compiled != GL_TRUE)
-         {
-            static GLchar err[1024];
-            glGetShaderInfoLog(handle, 1024, nullptr, err);
-            throw ShaderError{err};
-         }
+   //
+   // Shader::compileFrag
+   //
 
-         return handle;
-      }
+   void Shader::compileFrag(char const *data)
+   {
+      if(handlef)
+         throw ShaderError{"already open"};
 
-      //
-      // Shader::link
-      //
+      handlef = CompileShader<GL_FRAGMENT_SHADER>(data);
+   }
 
-      void Shader::link()
-      {
-         if(!handlef || !handlev)
-            throw ShaderError{"fragment or vertex handle is 0"};
+   //
+   // Shader::compileVert
+   //
 
-         if(program)
-            throw ShaderError{"already open"};
+   void Shader::compileVert(char const *data)
+   {
+      if(handlev)
+         throw ShaderError{"already open"};
 
-         program = glCreateProgram();
+      handlev = CompileShader<GL_VERTEX_SHADER>(data);
+   }
 
-         glAttachShader(program, handlef);
-         glAttachShader(program, handlev);
+   //
+   // Shader::compileFrag (file overload)
+   //
 
-         glLinkProgram(program);
+   void Shader::compileFrag(FS::File *fp)
+   {
+      if(!fp)
+         throw ShaderError{"bad file"};
 
-         GLint linked;
-         glGetProgramiv(program, GL_LINK_STATUS, &linked);
+      if(handlef)
+         throw ShaderError{"already open"};
 
-         if(linked != GL_TRUE)
-         {
-            static GLchar err[1024];
-            glGetProgramInfoLog(program, 1024, nullptr, err);
-            program = 0;
-            throw ShaderError{err};
-         }
+      handlef = CompileShader<GL_FRAGMENT_SHADER>(fp->data, fp->size);
+   }
 
-         GLint idprev;
-         glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
+   //
+   // Shader::compileVert (file overload)
+   //
 
-         glUseProgram(program);
+   void Shader::compileVert(FS::File *fp)
+   {
+      if(!fp)
+         throw ShaderError{"bad file"};
 
-         glUniform1i(glGetUniformLocation(program, "dge_texture"), 0);
+      if(handlev)
+         throw ShaderError{"already open"};
 
-         // Get device data locations.
-         u_ticks    = glGetUniformLocation(program, "dge_ticks");
-         u_mseconds = glGetUniformLocation(program, "dge_mseconds");
-         u_seconds  = glGetUniformLocation(program, "dge_seconds");
+      handlev = CompileShader<GL_VERTEX_SHADER>(fp->data, fp->size);
+   }
 
-         glUseProgram(idprev);
-      }
+   //
+   // Shader::update
+   //
 
-      //
-      // Shader::compileFrag
-      //
-
-      void Shader::compileFrag(char const *data)
-      {
-         if(handlef)
-            throw ShaderError{"already open"};
-
-         handlef = CompileShader<GL_FRAGMENT_SHADER>(data);
-      }
-
-      //
-      // Shader::compileVert
-      //
-
-      void Shader::compileVert(char const *data)
-      {
-         if(handlev)
-            throw ShaderError{"already open"};
-
-         handlev = CompileShader<GL_VERTEX_SHADER>(data);
-      }
-
-      //
-      // Shader::compileFrag (file overload)
-      //
-
-      void Shader::compileFrag(FS::File *fp)
-      {
-         if(!fp)
-            throw ShaderError{"bad file"};
-
-         if(handlef)
-            throw ShaderError{"already open"};
-
-         handlef = CompileShader<GL_FRAGMENT_SHADER>(fp->data, fp->size);
-      }
-
-      //
-      // Shader::compileVert (file overload)
-      //
-
-      void Shader::compileVert(FS::File *fp)
-      {
-         if(!fp)
-            throw ShaderError{"bad file"};
-
-         if(handlev)
-            throw ShaderError{"already open"};
-
-         handlev = CompileShader<GL_VERTEX_SHADER>(fp->data, fp->size);
-      }
-
-      //
-      // Shader::update
-      //
-
-      void Shader::update()
-      {
-         glUniform1i(u_ticks,    Core::GetTicks<Core::PlayTick<GLint>>());
-         glUniform1i(u_mseconds, static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
-         glUniform1i(u_seconds,  Core::GetTicks<Core::Second<GLint>>());
-      }
+   void Shader::update()
+   {
+      glUniform1i(u_ticks,    Core::GetTicks<Core::PlayTick<GLint>>());
+      glUniform1i(u_mseconds, static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
+      glUniform1i(u_seconds,  Core::GetTicks<Core::Second<GLint>>());
    }
 }
 

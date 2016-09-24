@@ -21,79 +21,76 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::GL
 {
-   namespace GL
+   class Shader;
+
+   //
+   // VertexLayout
+   //
+
+   struct VertexLayout
    {
-      class Shader;
+      GLsizei size;
+      GLsizei pntLen, pntPos; // Point
+      GLsizei texLen, texPos; // Texture
+      GLsizei colLen, colPos; // Color
+      GLsizei         nrmPos; // Normal
+      bool    nrmUse;
+   };
 
-      //
-      // VertexLayout
-      //
+   //
+   // VertexXY
+   //
 
-      struct VertexLayout
+   struct VertexXY
+   {
+      float x, y;
+
+      static VertexLayout Layout;
+   };
+
+   //
+   // VertexXYUV
+   //
+
+   struct VertexXYUV
+   {
+      float x, y, u, v;
+
+      static VertexLayout Layout;
+   };
+
+   //
+   // DynamicBuffer
+   //
+
+   class DynamicBuffer
+   {
+   public:
+      DynamicBuffer() = delete;
+      DynamicBuffer(DynamicBuffer const &other) = delete;
+
+      DynamicBuffer(VertexLayout layout_, GLenum drawtype_ = GL_TRIANGLES) :
+         buffer{},
+         size{},
+         layout{layout_},
+         drawtype{drawtype_}
       {
-         GLsizei size;
-         GLsizei pntLen, pntPos; // Point
-         GLsizei texLen, texPos; // Texture
-         GLsizei colLen, colPos; // Color
-         GLsizei         nrmPos; // Normal
-         bool    nrmUse;
-      };
+      }
 
-      //
-      // VertexXY
-      //
+      void bind();
+      void bindAndDraw() { bind(); draw(); }
+      void draw();
+      void setupData(std::size_t arraysize, void *data, GLenum type);
+      void setupPointers();
 
-      struct VertexXY
-      {
-         float x, y;
-
-         static VertexLayout Layout;
-      };
-
-      //
-      // VertexXYUV
-      //
-
-      struct VertexXYUV
-      {
-         float x, y, u, v;
-
-         static VertexLayout Layout;
-      };
-
-      //
-      // DynamicBuffer
-      //
-
-      class DynamicBuffer
-      {
-      public:
-         DynamicBuffer() = delete;
-         DynamicBuffer(DynamicBuffer const &other) = delete;
-
-         DynamicBuffer(VertexLayout layout_, GLenum drawtype_ = GL_TRIANGLES) :
-            buffer{},
-            size{},
-            layout{layout_},
-            drawtype{drawtype_}
-         {
-         }
-
-         void bind();
-         void bindAndDraw() { bind(); draw(); }
-         void draw();
-         void setupData(std::size_t arraysize, void *data, GLenum type);
-         void setupPointers();
-
-      private:
-         GLuint       buffer;
-         std::size_t  size;
-         VertexLayout layout;
-         GLenum       drawtype;
-      };
-   }
+   private:
+      GLuint       buffer;
+      std::size_t  size;
+      VertexLayout layout;
+      GLenum       drawtype;
+   };
 }
 
 #endif//DGE__GL__DynamicBuffer_H__

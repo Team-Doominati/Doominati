@@ -25,51 +25,48 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::FS
 {
-   namespace FS
+   class File;
+}
+
+namespace DGE::GL
+{
+   using TexturePixel = GLfloat[4];
+
+   //
+   // TextureData
+   //
+   class TextureData
    {
-      class File;
-   }
+   public:
+      TextureData(TextureData const &other) = delete;
+      TextureData(TextureData &&other) = default;
+      TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
+      ~TextureData();
 
-   namespace GL
+      GLuint        tex;
+      Core::Vector4 minmax;
+   };
+
+   //
+   // TextureLoader
+   //
+   class TextureLoader
    {
-      using TexturePixel = GLfloat[4];
+   public:
+      virtual void data(TexturePixel *buf) = 0;
 
-      //
-      // TextureData
-      //
-      class TextureData
-      {
-      public:
-         TextureData(TextureData const &other) = delete;
-         TextureData(TextureData &&other) = default;
-         TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
-         ~TextureData();
+      virtual std::pair<GLsizei, GLsizei> size() = 0;
+   };
 
-         GLuint        tex;
-         Core::Vector4 minmax;
-      };
-
-      //
-      // TextureLoader
-      //
-      class TextureLoader
-      {
-      public:
-         virtual void data(TexturePixel *buf) = 0;
-
-         virtual std::pair<GLsizei, GLsizei> size() = 0;
-      };
-
-      //
-      // TextureLoaderError
-      //
-      class TextureLoaderError : public std::runtime_error
-      {
-         using std::runtime_error::runtime_error;
-      };
-   }
+   //
+   // TextureLoaderError
+   //
+   class TextureLoaderError : public std::runtime_error
+   {
+      using std::runtime_error::runtime_error;
+   };
 }
 
 
@@ -77,12 +74,9 @@ namespace DGE
 // Extern Functions                                                           |
 //
 
-namespace DGE
+namespace DGE::GL
 {
-   namespace GL
-   {
-      std::unique_ptr<TextureLoader> CreateTextureLoader(FS::File *file);
-   }
+   std::unique_ptr<TextureLoader> CreateTextureLoader(FS::File *file);
 }
 
 #endif//DGE__GL__Texture_H__

@@ -21,124 +21,124 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
+   //
+   // Vector2
+   //
+   class Vector2
    {
-      class Vector2
+   public:
+      float x, y;
+
+      Vector2() = default;
+
+      //
+      // Vector2 constructor
+      //
+
+      constexpr Vector2(float x_, float y_) :
+         x{x_}, y{y_}
       {
-      public:
-         float x, y;
+      }
 
-         Vector2() = default;
+      //
+      // Vector2::add
+      //
 
-         //
-         // Vector2 constructor
-         //
+      Vector2 &add(Vector2 const &other)
+      {
+         x += other.x;
+         y += other.y;
 
-         constexpr Vector2(float x_, float y_) :
-            x{x_}, y{y_}
-         {
-         }
+         return *this;
+      }
 
-         //
-         // Vector2::add
-         //
+      //
+      // Vector2::sub
+      //
 
-         Vector2 &add(Vector2 const &other)
-         {
-            x += other.x;
-            y += other.y;
+      Vector2 &sub(Vector2 const &other)
+      {
+         x -= other.x;
+         y -= other.y;
 
-            return *this;
-         }
+         return *this;
+      }
 
-         //
-         // Vector2::sub
-         //
+      //
+      // Vector2::length
+      //
+      // Magnitude of vector.
+      //
 
-         Vector2 &sub(Vector2 const &other)
-         {
-            x -= other.x;
-            y -= other.y;
+      float length() const
+      {
+         return std::sqrt((x * x) + (y * y));
+      }
 
-            return *this;
-         }
+      //
+      // Vector2::dot
+      //
+      // Dot product of this and other.
+      //
 
-         //
-         // Vector2::length
-         //
-         // Magnitude of vector.
-         //
+      float dot(Vector2 const &other) const
+      {
+         return (x * other.x) + (y * other.y);
+      }
 
-         float length() const
-         {
-            return std::sqrt((x * x) + (y * y));
-         }
+      //
+      // interpolate
+      //
 
-         //
-         // Vector2::dot
-         //
-         // Dot product of this and other.
-         //
+      Vector2 &interpolate(Vector2 const &other, float amt)
+      {
+         x = Core::Lerp(x, other.x, amt);
+         y = Core::Lerp(y, other.y, amt);
 
-         float dot(Vector2 const &other) const
-         {
-            return (x * other.x) + (y * other.y);
-         }
+         return *this;
+      }
 
-         //
-         // interpolate
-         //
+      //
+      // Vector2 Unary operators
+      //
 
-         Vector2 &interpolate(Vector2 const &other, float amt)
-         {
-            x = Core::Lerp(x, other.x, amt);
-            y = Core::Lerp(y, other.y, amt);
+      Vector2 operator-() const { return { -x, -y }; }
+      bool operator!() const { return !(x && y); }
 
-            return *this;
-         }
+      //
+      // Vector2 Conversion operators
+      //
 
-         //
-         // Vector2 Unary operators
-         //
+      explicit operator bool() const { return x && y; }
 
-         Vector2 operator-() const { return { -x, -y }; }
-         bool operator!() const { return !(x && y); }
+      //
+      // Vector2 Infix operators
+      //
 
-         //
-         // Vector2 Conversion operators
-         //
+      Vector2 operator+(Vector2 const &other) const
+      {
+         return { x + other.x, y + other.y };
+      }
 
-         explicit operator bool() const { return x && y; }
+      Vector2 operator-(Vector2 const &other) const
+      {
+         return { x - other.x, y - other.y };
+      }
 
-         //
-         // Vector2 Infix operators
-         //
+      float operator*(Vector2 const &other) const
+      {
+         return dot(other);
+      }
 
-         Vector2 operator+(Vector2 const &other) const
-         {
-            return { x + other.x, y + other.y };
-         }
+      //
+      // Vector2 Assignment operators
+      //
 
-         Vector2 operator-(Vector2 const &other) const
-         {
-            return { x - other.x, y - other.y };
-         }
-
-         float operator*(Vector2 const &other) const
-         {
-            return dot(other);
-         }
-
-         //
-         // Vector2 Assignment operators
-         //
-
-         Vector2 &operator+=(Vector2 const &other) { return add(other); }
-         Vector2 &operator-=(Vector2 const &other) { return sub(other); }
-      };
-   }
+      Vector2 &operator+=(Vector2 const &other) { return add(other); }
+      Vector2 &operator-=(Vector2 const &other) { return sub(other); }
+   };
 }
 
 #endif//DGE__Core__Vector2_H__

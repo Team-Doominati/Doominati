@@ -21,16 +21,13 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
-   {
-      template<typename T = std::size_t>
-      using PlayTick = std::chrono::duration<T, std::ratio<1, 50>>;
+   template<typename T = std::size_t>
+   using PlayTick = std::chrono::duration<T, std::ratio<1, 50>>;
 
-      template<typename T>
-      using Second = std::chrono::duration<T, std::ratio<1>>;
-   }
+   template<typename T>
+   using Second = std::chrono::duration<T, std::ratio<1>>;
 }
 
 
@@ -38,40 +35,37 @@ namespace DGE
 // Extern Functions                                                           |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
+   //
+   // GetTime
+   //
+   // Returns duration since epoch.
+   //
+   inline std::chrono::steady_clock::duration GetTime()
    {
-      //
-      // GetTime
-      //
-      // Returns duration since epoch.
-      //
-      inline std::chrono::steady_clock::duration GetTime()
-      {
-         static std::chrono::steady_clock::time_point epoch;
-         if(epoch == std::chrono::steady_clock::time_point())
-            epoch = std::chrono::steady_clock::now();
-         return std::chrono::steady_clock::now() - epoch;
-      }
+      static std::chrono::steady_clock::time_point epoch;
+      if(epoch == std::chrono::steady_clock::time_point())
+         epoch = std::chrono::steady_clock::now();
+      return std::chrono::steady_clock::now() - epoch;
+   }
 
-      //
-      // GetTicks
-      //
-      template<typename T>
-      typename T::rep GetTicks()
-      {
-         return std::chrono::duration_cast<T>(GetTime()).count();
-      }
+   //
+   // GetTicks
+   //
+   template<typename T>
+   typename T::rep GetTicks()
+   {
+      return std::chrono::duration_cast<T>(GetTime()).count();
+   }
 
-      //
-      // GetTickFract
-      //
-      template<typename T>
-      double GetTickFract()
-      {
-         return std::fmod(static_cast<double>(GetTicks<T>()), 1.0);
-      }
+   //
+   // GetTickFract
+   //
+   template<typename T>
+   double GetTickFract()
+   {
+      return std::fmod(static_cast<double>(GetTicks<T>()), 1.0);
    }
 }
 

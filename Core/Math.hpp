@@ -20,12 +20,9 @@
 // Type Definitions                                                           |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
-   {
-      using Matrix4 = Eigen::Matrix4f;
-   }
+   using Matrix4 = Eigen::Matrix4f;
 }
 
 
@@ -33,14 +30,14 @@ namespace DGE
 // Static Functions                                                           |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
+   //
+   // Lerp
+   //
+   constexpr float Lerp(float x, float y, float amt)
    {
-      constexpr float Lerp(float x, float y, float amt)
-      {
-         return ((1.0f - amt) * x) + (amt * y);
-      }
+      return ((1.0f - amt) * x) + (amt * y);
    }
 }
 
@@ -49,15 +46,12 @@ namespace DGE
 // Static Objects                                                             |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
-   {
-      constexpr float pi = 3.14159265359f;
-      constexpr float pi2 = pi / 2.0f;
-      constexpr float pi4 = pi / 4.0f;
-      constexpr float tau = pi * 2.0f;
-   }
+   constexpr float pi = 3.14159265359f;
+   constexpr float pi2 = pi / 2.0f;
+   constexpr float pi4 = pi / 4.0f;
+   constexpr float tau = pi * 2.0f;
 }
 
 #endif//DGE__Core__Math_H__

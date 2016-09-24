@@ -24,80 +24,77 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::GL
 {
-   namespace GL
+   class Shader;
+   class TextureData;
+
+   //
+   // Window
+   //
+
+   class Window
    {
-      class Shader;
-      class TextureData;
+   public:
+      Window(int w, int h);
+      ~Window();
 
-      //
-      // Window
-      //
+      // circle
+      void circlePrecision(int subdivisions);
 
-      class Window
-      {
-      public:
-         Window(int w, int h);
-         ~Window();
+      // draw
+      void drawCircle(int x, int y, int radius, bool line = false) const;
+      void drawEllipse(int x1, int y1, int x2, int y2, bool line = false) const;
+      void drawLine(int x1, int y1, int x2, int y2) const;
+      void drawParticleSystem(ParticleSystem const &ps);
+      void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
+      void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
 
-         // circle
-         void circlePrecision(int subdivisions);
+      // drawColor
+      void drawColorSet(float r, float g, float b, float a = 1.0f);
+      void drawColorSet(Color const &col);
+      Color drawColorGet() const;
 
-         // draw
-         void drawCircle(int x, int y, int radius, bool line = false) const;
-         void drawEllipse(int x1, int y1, int x2, int y2, bool line = false) const;
-         void drawLine(int x1, int y1, int x2, int y2) const;
-         void drawParticleSystem(ParticleSystem const &ps);
-         void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
-         void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
+      // render
+      void renderBegin();
+      void renderEnd();
 
-         // drawColor
-         void drawColorSet(float r, float g, float b, float a = 1.0f);
-         void drawColorSet(Color const &col);
-         Color drawColorGet() const;
+      // shader
+      void shaderSwap(Shader *sp);
+      void shaderDrop();
+      void shaderUpdate();
 
-         // render
-         void renderBegin();
-         void renderEnd();
+      // texture
+      void textureBind(char const *name) {textureBind(textureGet(name));}
+      void textureBind(TextureData *tex);
+      TextureData *textureGet(char const *name);
+      void textureUnbind();
 
-         // shader
-         void shaderSwap(Shader *sp);
-         void shaderDrop();
-         void shaderUpdate();
+      int realw, realh;
+      int w, h;
 
-         // texture
-         void textureBind(char const *name) {textureBind(textureGet(name));}
-         void textureBind(TextureData *tex);
-         TextureData *textureGet(char const *name);
-         void textureUnbind();
+   private:
+      class PrivData;
 
-         int realw, realh;
-         int w, h;
+      void circleCreateLines(int subdivisions);
+      void circleCreateTris(int subdivisions);
 
-      private:
-         class PrivData;
+      void resize(int w, int h);
 
-         void circleCreateLines(int subdivisions);
-         void circleCreateTris(int subdivisions);
+      TextureData *textureGet_File(char const *name);
+      TextureData *textureGet_None(char const *name);
 
-         void resize(int w, int h);
+      float cr, cg, cb, ca;
 
-         TextureData *textureGet_File(char const *name);
-         TextureData *textureGet_None(char const *name);
+      std::unique_ptr<PrivData> privdata;
 
-         float cr, cg, cb, ca;
+      std::unique_ptr<Shader> shaderBase;
+      Shader *shaderCurrent;
 
-         std::unique_ptr<PrivData> privdata;
+      Core::Vector4 textureMinMax;
 
-         std::unique_ptr<Shader> shaderBase;
-         Shader *shaderCurrent;
-
-         Core::Vector4 textureMinMax;
-
-         TextureData *textureNone;
-      };
-   }
+      TextureData *textureNone;
+   };
 }
 
 #endif//DGE__GL__Window_H__

@@ -21,119 +21,119 @@
 // Types                                                                      |
 //
 
-namespace DGE
+namespace DGE::Core
 {
-   namespace Core
+   //
+   // Vector4
+   //
+   class Vector4
    {
-      class Vector4
+   public:
+      float x, y, z, w;
+
+      //
+      // Vector4::add
+      //
+
+      Vector4 &add(Vector4 const &other)
       {
-      public:
-         float x, y, z, w;
+         x += other.x;
+         y += other.y;
+         z += other.z;
+         w += other.w;
 
-         //
-         // Vector4::add
-         //
+         return *this;
+      }
 
-         Vector4 &add(Vector4 const &other)
-         {
-            x += other.x;
-            y += other.y;
-            z += other.z;
-            w += other.w;
+      //
+      // Vector4::sub
+      //
 
-            return *this;
-         }
+      Vector4 &sub(Vector4 const &other)
+      {
+         x -= other.x;
+         y -= other.y;
+         z -= other.z;
+         w -= other.w;
 
-         //
-         // Vector4::sub
-         //
+         return *this;
+      }
 
-         Vector4 &sub(Vector4 const &other)
-         {
-            x -= other.x;
-            y -= other.y;
-            z -= other.z;
-            w -= other.w;
+      //
+      // Vector4::length
+      //
+      // Magnitude of vector.
+      //
 
-            return *this;
-         }
+      float length() const
+      {
+         return std::sqrt((x * x) + (y * y) + (z * z) + (w * w));
+      }
 
-         //
-         // Vector4::length
-         //
-         // Magnitude of vector.
-         //
+      //
+      // Vector4::dot
+      //
+      // Dot product of this and other.
+      //
 
-         float length() const
-         {
-            return std::sqrt((x * x) + (y * y) + (z * z) + (w * w));
-         }
+      float dot(Vector4 const &other) const
+      {
+         return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+      }
 
-         //
-         // Vector4::dot
-         //
-         // Dot product of this and other.
-         //
+      //
+      // interpolate
+      //
 
-         float dot(Vector4 const &other) const
-         {
-            return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
-         }
+      Vector4 &interpolate(Vector4 const &other, float amt)
+      {
+         x = Core::Lerp(x, other.x, amt);
+         y = Core::Lerp(y, other.y, amt);
+         z = Core::Lerp(z, other.z, amt);
+         w = Core::Lerp(w, other.w, amt);
 
-         //
-         // interpolate
-         //
+         return *this;
+      }
 
-         Vector4 &interpolate(Vector4 const &other, float amt)
-         {
-            x = Core::Lerp(x, other.x, amt);
-            y = Core::Lerp(y, other.y, amt);
-            z = Core::Lerp(z, other.z, amt);
-            w = Core::Lerp(w, other.w, amt);
+      //
+      // Vector4 Unary operators
+      //
 
-            return *this;
-         }
+      Vector4 operator-() const { return { -x, -y, -z, -w }; }
+      bool operator!() const { return !(x && y && z && w); }
 
-         //
-         // Vector4 Unary operators
-         //
+      //
+      // Vector4 Conversion operators
+      //
 
-         Vector4 operator-() const { return { -x, -y, -z, -w }; }
-         bool operator!() const { return !(x && y && z && w); }
+      explicit operator bool() const { return x && y && z && w; }
 
-         //
-         // Vector4 Conversion operators
-         //
+      //
+      // Vector4 Infix operators
+      //
 
-         explicit operator bool() const { return x && y && z && w; }
+      Vector4 operator+(Vector4 const &other) const
+      {
+         return { x + other.x, y + other.y, z + other.z, w + other.w };
+      }
 
-         //
-         // Vector4 Infix operators
-         //
+      Vector4 operator-(Vector4 const &other) const
+      {
+         return { x - other.x, y - other.y, z - other.z, w - other.w };
+      }
 
-         Vector4 operator+(Vector4 const &other) const
-         {
-            return { x + other.x, y + other.y, z + other.z, w + other.w };
-         }
+      float operator*(Vector4 const &other) const
+      {
+         return dot(other);
+      }
 
-         Vector4 operator-(Vector4 const &other) const
-         {
-            return { x - other.x, y - other.y, z - other.z, w - other.w };
-         }
+      //
+      // Vector4 Assignment operators
+      //
 
-         float operator*(Vector4 const &other) const
-         {
-            return dot(other);
-         }
-
-         //
-         // Vector4 Assignment operators
-         //
-
-         Vector4 &operator+=(Vector4 const &other) { return add(other); }
-         Vector4 &operator-=(Vector4 const &other) { return sub(other); }
-      };
-   }
+      Vector4 &operator+=(Vector4 const &other) { return add(other); }
+      Vector4 &operator-=(Vector4 const &other) { return sub(other); }
+   };
 }
 
 #endif//DGE__Core__Vector4_H__
