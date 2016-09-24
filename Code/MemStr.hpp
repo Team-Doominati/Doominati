@@ -10,8 +10,8 @@
 //
 //----------------------------------------------------------------------------- 
 
-#ifndef Doom__Code__MemStr_H__
-#define Doom__Code__MemStr_H__
+#ifndef DGE__Code__MemStr_H__
+#define DGE__Code__MemStr_H__
 
 #include "Code/MemPtr.hpp"
 
@@ -22,16 +22,13 @@
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str);
-      std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str, std::size_t len);
+   std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str);
+   std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str, std::size_t len);
 
-      std::size_t MemStrLen(MemPtr<Byte const> str);
-   }
+   std::size_t MemStrLen(MemPtr<Byte const> str);
 }
 
-#endif//Doom__Code__MemStr_H__
+#endif//DGE__Code__MemStr_H__
 

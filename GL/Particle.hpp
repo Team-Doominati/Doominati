@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__GL__Particle_H__
-#define Doom__GL__Particle_H__
+#ifndef DGE__GL__Particle_H__
+#define DGE__GL__Particle_H__
 
 #include "GL/Color.hpp"
 #include "Core/Vector2.hpp"
@@ -24,7 +24,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -84,5 +84,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__GL__Particle_H__
+#endif//DGE__GL__Particle_H__
 

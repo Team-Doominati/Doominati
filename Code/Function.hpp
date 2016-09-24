@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Functions_H__
-#define Doom__Code__Functions_H__
+#ifndef DGE__Code__Functions_H__
+#define DGE__Code__Functions_H__
 
 #include "Code/Types.hpp"
 
@@ -22,22 +22,19 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Function
+   //
+   class Function
    {
-      //
-      // Function
-      //
-      class Function
-      {
-      public:
-         OpCode *entry;
-         Word    local;
-         Word    param;
-      };
-   }
+   public:
+      OpCode *entry;
+      Word    local;
+      Word    param;
+   };
 }
 
-#endif//Doom__Code__Functions_H__
+#endif//DGE__Code__Functions_H__
 

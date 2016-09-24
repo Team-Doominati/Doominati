@@ -20,27 +20,24 @@
 // Natives                                                                    |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // void *DGE_FreestoreBegin(void)
+   //
+   DGE_Code_NativeDefn(DGE_FreestoreBegin)
    {
-      //
-      // void *DGE_FreestoreBegin(void)
-      //
-      Doom_Code_NativeDefn(DGE_FreestoreBegin)
-      {
-         task->dataStk.push(task->prog->freestoreBegin);
-         return false;
-      }
+      task->dataStk.push(task->prog->freestoreBegin);
+      return false;
+   }
 
-      //
-      // void *DGE_FreestoreEnd(void)
-      //
-      Doom_Code_NativeDefn(DGE_FreestoreEnd)
-      {
-         task->dataStk.push(task->prog->freestoreEnd);
-         return false;
-      }
+   //
+   // void *DGE_FreestoreEnd(void)
+   //
+   DGE_Code_NativeDefn(DGE_FreestoreEnd)
+   {
+      task->dataStk.push(task->prog->freestoreEnd);
+      return false;
    }
 }
 

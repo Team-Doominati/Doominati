@@ -21,7 +21,7 @@
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -59,7 +59,7 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {

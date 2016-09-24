@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__Math_H__
-#define Doom__Core__Math_H__
+#ifndef DGE__Core__Math_H__
+#define DGE__Core__Math_H__
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -20,7 +20,7 @@
 // Type Definitions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -33,7 +33,7 @@ namespace Doom
 // Static Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -49,7 +49,7 @@ namespace Doom
 // Static Objects                                                             |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -60,5 +60,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__Core__Math_H__
+#endif//DGE__Core__Math_H__
 

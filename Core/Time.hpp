@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__Time_H__
-#define Doom__Core__Time_H__
+#ifndef DGE__Core__Time_H__
+#define DGE__Core__Time_H__
 
 #include <chrono>
 #include <cmath>
@@ -21,7 +21,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -38,7 +38,7 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -75,5 +75,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__Core__Time_H__
+#endif//DGE__Core__Time_H__
 

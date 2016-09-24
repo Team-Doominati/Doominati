@@ -20,18 +20,15 @@
 // Static Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // NativeVec
+   //
+   static std::vector<std::pair<Core::HashedStr, Native>> *&NativeVec()
    {
-      //
-      // NativeVec
-      //
-      static std::vector<std::pair<Core::HashedStr, Native>> *&NativeVec()
-      {
-         static auto *vec = new std::vector<std::pair<Core::HashedStr, Native>>;
-         return vec;
-      }
+      static auto *vec = new std::vector<std::pair<Core::HashedStr, Native>>;
+      return vec;
    }
 }
 
@@ -40,12 +37,9 @@ namespace Doom
 // Extern Objects                                                             |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      Core::HashMapFixed<Core::HashedStr, Native> Natives;
-   }
+   Core::HashMapFixed<Core::HashedStr, Native> Natives;
 }
 
 
@@ -53,38 +47,35 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // NativeAdder constructor
+   //
+   NativeAdder::NativeAdder(Core::HashedStr name, Native native)
    {
-      //
-      // NativeAdder constructor
-      //
-      NativeAdder::NativeAdder(Core::HashedStr name, Native native)
+      NativeVec()->push_back({name, native});
+   }
+
+   //
+   // NativeAdder::Finish
+   //
+   void NativeAdder::Finish()
+   {
+      auto &vec = NativeVec();
+      Natives.alloc(vec->size());
+
+      auto vecItr = vec->begin();
+      for(auto &native : Natives)
       {
-         NativeVec()->push_back({name, native});
+         native.key = vecItr->first;
+         native.val = vecItr->second;
+         ++vecItr;
       }
 
-      //
-      // NativeAdder::Finish
-      //
-      void NativeAdder::Finish()
-      {
-         auto &vec = NativeVec();
-         Natives.alloc(vec->size());
-
-         auto vecItr = vec->begin();
-         for(auto &native : Natives)
-         {
-            native.key = vecItr->first;
-            native.val = vecItr->second;
-            ++vecItr;
-         }
-
-         Natives.build();
-         delete vec;
-         vec = nullptr;
-      }
+      Natives.build();
+      delete vec;
+      vec = nullptr;
    }
 }
 

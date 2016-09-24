@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Process_H__
-#define Doom__Code__Process_H__
+#ifndef DGE__Code__Process_H__
+#define DGE__Code__Process_H__
 
 #include "Code/Types.hpp"
 
@@ -22,27 +22,24 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Process
+   //
+   class Process
    {
-      //
-      // Process
-      //
-      class Process
-      {
-      public:
-         Process(Program *prog);
-         ~Process();
+   public:
+      Process(Program *prog);
+      ~Process();
 
-         void exec();
+      void exec();
 
-         Core::ListLink<Thread> threads;
+      Core::ListLink<Thread> threads;
 
-         Program *const prog;
-      };
-   }
+      Program *const prog;
+   };
 }
 
-#endif//Doom__Code__Process_H__
+#endif//DGE__Code__Process_H__
 

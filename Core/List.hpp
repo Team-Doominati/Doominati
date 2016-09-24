@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__List_H__
-#define Doom__Core__List_H__
+#ifndef DGE__Core__List_H__
+#define DGE__Core__List_H__
 
 #include <cstddef>
 
@@ -20,7 +20,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -113,5 +113,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__Core__List_H__
+#endif//DGE__Core__List_H__
 

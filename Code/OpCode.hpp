@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__OpCode_H__
-#define Doom__Code__OpCode_H__
+#ifndef DGE__Code__OpCode_H__
+#define DGE__Code__OpCode_H__
 
 #include "Code/Types.hpp"
 
@@ -22,31 +22,28 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // OpCode
+   //
+   class OpCode
    {
+   public:
       //
-      // OpCode
+      // Op
       //
-      class OpCode
+      enum Op : std::uint16_t
       {
-      public:
-         //
-         // Op
-         //
-         enum Op : std::uint16_t
-         {
-            #define Doom_Code_OpList(op) op,
-            #include "Code/OpList.hpp"
-         };
-
-
-         Op                            op;
-         union H {HWord h; Byte b[2];} h;
-         union W {Word  w; H    h[2];} w;
+         #define DGE_Code_OpList(op) op,
+         #include "Code/OpList.hpp"
       };
-   }
+
+
+      Op                            op;
+      union H {HWord h; Byte b[2];} h;
+      union W {Word  w; H    h[2];} w;
+   };
 }
 
 
@@ -54,13 +51,10 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      std::ostream &operator << (std::ostream &out, OpCode::Op in);
-   }
+   std::ostream &operator << (std::ostream &out, OpCode::Op in);
 }
 
-#endif//Doom__Code__OpCode_H__
+#endif//DGE__Code__OpCode_H__
 

@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Program_H__
-#define Doom__Code__Program_H__
+#ifndef DGE__Code__Program_H__
+#define DGE__Code__Program_H__
 
 #include "Code/Function.hpp"
 #include "Code/Memory.hpp"
@@ -28,27 +28,24 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Program
+   //
+   class Program
    {
-      //
-      // Program
-      //
-      class Program
-      {
-      public:
-         GDCC::Core::Array<OpCode>                        codes;
-         Core::HashMapFixed<GDCC::Core::String, Function> funcs;
+   public:
+      GDCC::Core::Array<OpCode>                        codes;
+      Core::HashMapFixed<GDCC::Core::String, Function> funcs;
 
-         // This belongs in Process some day.
-         Memory memory;
+      // This belongs in Process some day.
+      Memory memory;
 
-         Word freestoreBegin;
-         Word freestoreEnd;
-      };
-   }
+      Word freestoreBegin;
+      Word freestoreEnd;
+   };
 }
 
-#endif//Doom__Code__Program_H__
+#endif//DGE__Code__Program_H__
 

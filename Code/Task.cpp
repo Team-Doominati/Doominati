@@ -21,12 +21,9 @@
 // Static Objects                                                             |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      static Core::ListLink<Task> TaskFree;
-   }
+   static Core::ListLink<Task> TaskFree;
 }
 
 
@@ -34,60 +31,57 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Task constructor
+   //
+   Task::Task() :
+      link{this},
+      codePtr{nullptr},
+      delay{0}
    {
-      //
-      // Task constructor
-      //
-      Task::Task() :
-         link{this},
-         codePtr{nullptr},
-         delay{0}
+      callStk.reserve(CallStkSize);
+      dataStk.reserve(DataStkSize);
+   }
+
+   //
+   // Task::stop
+   //
+   void Task::stop()
+   {
+      // Release execution resources.
+      callStk.clear();
+      dataStk.clear();
+      locReg.clear();
+
+      // Move to free list.
+      link.relink(&TaskFree);
+   }
+
+   //
+   // Task::Create
+   //
+   Task *Task::Create(Thread *thrd)
+   {
+      Task *task;
+      if(TaskFree.next->obj)
       {
-         callStk.reserve(CallStkSize);
-         dataStk.reserve(DataStkSize);
+         task = TaskFree.next->obj;
+         task->link.unlink();
       }
+      else
+         task = new Task;
 
-      //
-      // Task::stop
-      //
-      void Task::stop()
-      {
-         // Release execution resources.
-         callStk.clear();
-         dataStk.clear();
-         locReg.clear();
+      task->prog = thrd->prog;
+      task->proc = thrd->proc;
+      task->thrd = thrd;
 
-         // Move to free list.
-         link.relink(&TaskFree);
-      }
+      task->link.insert(&thrd->tasks);
 
-      //
-      // Task::Create
-      //
-      Task *Task::Create(Thread *thrd)
-      {
-         Task *task;
-         if(TaskFree.next->obj)
-         {
-            task = TaskFree.next->obj;
-            task->link.unlink();
-         }
-         else
-            task = new Task;
+      task->delay = 0;
 
-         task->prog = thrd->prog;
-         task->proc = thrd->proc;
-         task->thrd = thrd;
-
-         task->link.insert(&thrd->tasks);
-
-         task->delay = 0;
-
-         return task;
-      }
+      return task;
    }
 }
 

@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__String_H__
-#define Doom__Core__String_H__
+#ifndef DGE__Core__String_H__
+#define DGE__Core__String_H__
 
 #include <GDCC/Core/String.hpp>
 
@@ -24,7 +24,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -57,15 +57,15 @@ namespace Doom
 namespace std
 {
    //
-   // hash<::Doom::Core::HashedStr>
+   // hash<::DGE::Core::HashedStr>
    //
    template<>
-   struct hash<::Doom::Core::HashedStr>
+   struct hash<::DGE::Core::HashedStr>
    {
-      constexpr size_t operator () (::Doom::Core::HashedStr const &str) const
+      constexpr size_t operator () (::DGE::Core::HashedStr const &str) const
          {return str.hash;}
    };
 }
 
-#endif//Doom__Core__String_H__
+#endif//DGE__Core__String_H__
 

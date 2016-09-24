@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__GL__Shader_H__
-#define Doom__GL__Shader_H__
+#ifndef DGE__GL__Shader_H__
+#define DGE__GL__Shader_H__
 
 #include "GL/gl_2_1.h"
 
@@ -22,7 +22,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace FS
    {
@@ -73,4 +73,4 @@ namespace Doom
    }
 }
 
-#endif//Doom__GL__Shader_H__
+#endif//DGE__GL__Shader_H__

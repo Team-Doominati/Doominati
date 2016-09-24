@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__GL__Color_H__
-#define Doom__GL__Color_H__
+#ifndef DGE__GL__Color_H__
+#define DGE__GL__Color_H__
 
 #include <utility>
 #include "Core/Math.hpp"
@@ -21,7 +21,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -209,5 +209,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__GL__Color_H__
+#endif//DGE__GL__Color_H__
 

@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Thread_H__
-#define Doom__Code__Thread_H__
+#ifndef DGE__Code__Thread_H__
+#define DGE__Code__Thread_H__
 
 #include "Code/Types.hpp"
 
@@ -22,31 +22,28 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Thread
+   //
+   class Thread
    {
-      //
-      // Thread
-      //
-      class Thread
-      {
-      public:
-         Thread(Process *proc);
-         ~Thread();
+   public:
+      Thread(Process *proc);
+      ~Thread();
 
-         void exec();
+      void exec();
 
-         void startTask(Function *func, Word const *argV, Word argC);
+      void startTask(Function *func, Word const *argV, Word argC);
 
-         Core::ListLink<Thread> link;
-         Core::ListLink<Task>   tasks;
+      Core::ListLink<Thread> link;
+      Core::ListLink<Task>   tasks;
 
-         Process *const proc;
-         Program *const prog;
-      };
-   }
+      Process *const proc;
+      Program *const prog;
+   };
 }
 
-#endif//Doom__Code__Thread_H__
+#endif//DGE__Code__Thread_H__
 

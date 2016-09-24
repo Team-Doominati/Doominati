@@ -63,7 +63,7 @@ static char const baseVertShader[] = R"(
    }
 )";
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -80,7 +80,7 @@ namespace Doom
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -115,7 +115,7 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {

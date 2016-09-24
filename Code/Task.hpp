@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Task_H__
-#define Doom__Code__Task_H__
+#ifndef DGE__Code__Task_H__
+#define DGE__Code__Task_H__
 
 #include "Code/Types.hpp"
 
@@ -24,57 +24,54 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // CallFrame
+   //
+   class CallFrame
    {
-      //
-      // CallFrame
-      //
-      class CallFrame
-      {
-      public:
-         OpCode const *codePtr;
-         Word          locRegC;
-         Word          vaaRegC;
-      };
+   public:
+      OpCode const *codePtr;
+      Word          locRegC;
+      Word          vaaRegC;
+   };
 
-      //
-      // Task
-      //
-      class Task
-      {
-      public:
-         Task();
-         Task(Task const &) = delete;
-         Task(Task &&) = delete;
+   //
+   // Task
+   //
+   class Task
+   {
+   public:
+      Task();
+      Task(Task const &) = delete;
+      Task(Task &&) = delete;
 
-         void exec();
+      void exec();
 
-         void stop();
+      void stop();
 
-         Core::ListLink<Task> link;
+      Core::ListLink<Task> link;
 
-         Core::Stack<CallFrame> callStk;
-         Core::Stack<Word>      dataStk;
-         Core::Store<Word>      locReg;
+      Core::Stack<CallFrame> callStk;
+      Core::Stack<Word>      dataStk;
+      Core::Store<Word>      locReg;
 
-         Process *proc;
-         Program *prog;
-         Thread  *thrd;
+      Process *proc;
+      Program *prog;
+      Thread  *thrd;
 
-         OpCode const *codePtr;
-         Word          delay;
-         Word          vaaRegC;
+      OpCode const *codePtr;
+      Word          delay;
+      Word          vaaRegC;
 
 
-         static Task *Create(Thread *thrd);
+      static Task *Create(Thread *thrd);
 
-         static constexpr std::size_t CallStkSize =   8;
-         static constexpr std::size_t DataStkSize = 256;
-      };
-   }
+      static constexpr std::size_t CallStkSize =   8;
+      static constexpr std::size_t DataStkSize = 256;
+   };
 }
 
-#endif//Doom__Code__Task_H__
+#endif//DGE__Code__Task_H__
 

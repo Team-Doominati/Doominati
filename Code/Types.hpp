@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Types_H__
-#define Doom__Code__Types_H__
+#ifndef DGE__Code__Types_H__
+#define DGE__Code__Types_H__
 
 #include <cstdint>
 
@@ -20,25 +20,22 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      class Function;
-      class OpCode;
-      class Process;
-      class Program;
-      class Task;
-      class Thread;
+   class Function;
+   class OpCode;
+   class Process;
+   class Program;
+   class Task;
+   class Thread;
 
-      using Byte  = std::uint8_t;
-      using HWord = std::uint16_t;
-      using SWord = std::int32_t;
-      using Word  = std::uint32_t;
+   using Byte  = std::uint8_t;
+   using HWord = std::uint16_t;
+   using SWord = std::int32_t;
+   using Word  = std::uint32_t;
 
-      using Native = bool (*)(Task *, Word const *, Word);
-   }
+   using Native = bool (*)(Task *, Word const *, Word);
 }
 
-#endif//Doom__Code__Types_H__
+#endif//DGE__Code__Types_H__
 

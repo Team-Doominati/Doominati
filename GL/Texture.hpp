@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__GL__Texture_H__
-#define Doom__GL__Texture_H__
+#ifndef DGE__GL__Texture_H__
+#define DGE__GL__Texture_H__
 
 #include "GL/gl_2_1.h"
 
@@ -25,7 +25,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace FS
    {
@@ -77,7 +77,7 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -85,5 +85,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__GL__Texture_H__
+#endif//DGE__GL__Texture_H__
 

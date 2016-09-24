@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__Store_H__
-#define Doom__Core__Store_H__
+#ifndef DGE__Core__Store_H__
+#define DGE__Core__Store_H__
 
 #include <climits>
 #include <new>
@@ -22,7 +22,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -152,5 +152,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__Core__Store_H__
+#endif//DGE__Core__Store_H__
 

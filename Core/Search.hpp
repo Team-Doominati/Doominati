@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Core__Search_H__
-#define Doom__Core__Search_H__
+#ifndef DGE__Core__Search_H__
+#define DGE__Core__Search_H__
 
 #include <algorithm>
 #include <cstring>
@@ -21,7 +21,7 @@
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace Core
    {
@@ -41,5 +41,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__Core__Search_H__
+#endif//DGE__Core__Search_H__
 

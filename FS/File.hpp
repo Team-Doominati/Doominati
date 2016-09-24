@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__FS__File_H__
-#define Doom__FS__File_H__
+#ifndef DGE__FS__File_H__
+#define DGE__FS__File_H__
 
 #include <cstddef>
 #include <memory>
@@ -21,54 +21,51 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::FS
 {
-   namespace FS
+   class Dir;
+
+   enum class Format
    {
-      class Dir;
+      None,
 
-      enum class Format
-      {
-         None,
+      DGE_NTS, // Doominati Game Engine Null-Terminated Strings
+      Pak,     // PAK archive
+      PAM,     // Portable Arbitrary Map
+      PBM,     // Portable Bit Map
+      PGM,     // Portable Gray Map
+      PNG,     // Portable Network Graphics
+      PPM,     // Portable Pixel Map
+      Wad,     // WAD archive
+      WAVE,    // Waveform Audio File Format
 
-         DGE_NTS, // Doominati Game Engine Null-Terminated Strings
-         Pak,     // PAK archive
-         PAM,     // Portable Arbitrary Map
-         PBM,     // Portable Bit Map
-         PGM,     // Portable Gray Map
-         PNG,     // Portable Network Graphics
-         PPM,     // Portable Pixel Map
-         Wad,     // WAD archive
-         WAVE,    // Waveform Audio File Format
+      Unknown
+   };
 
-         Unknown
-      };
+   //
+   // File
+   //
+   class File
+   {
+   public:
+      File();
+      File(File const &) = delete;
+      File(File &&) = default;
+      File(char const *data, std::size_t size);
+      ~File();
 
-      //
-      // File
-      //
-      class File
-      {
-      public:
-         File();
-         File(File const &) = delete;
-         File(File &&) = default;
-         File(char const *data, std::size_t size);
-         ~File();
+      File &operator = (File const &) = delete;
+      File &operator = (File &&) = default;
 
-         File &operator = (File const &) = delete;
-         File &operator = (File &&) = default;
+      Dir *findDir();
 
-         Dir *findDir();
-
-         std::unique_ptr<Dir> dir;
-         char const          *data;
-         char const          *name;
-         std::size_t          refs;
-         std::size_t          size;
-         Format               format;
-      };
-   }
+      std::unique_ptr<Dir> dir;
+      char const          *data;
+      char const          *name;
+      std::size_t          refs;
+      std::size_t          size;
+      Format               format;
+   };
 }
 
 
@@ -76,13 +73,10 @@ namespace Doom
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::FS
 {
-   namespace FS
-   {
-      Format DetectFormat(char const *data, std::size_t size);
-   }
+   Format DetectFormat(char const *data, std::size_t size);
 }
 
-#endif//Doom__FS__File_H__
+#endif//DGE__FS__File_H__
 

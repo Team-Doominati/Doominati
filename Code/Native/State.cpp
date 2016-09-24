@@ -19,18 +19,15 @@
 // Natives                                                                    |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // void DGE_Delay(unsigned ticks)
+   //
+   DGE_Code_NativeDefn(DGE_Delay)
    {
-      //
-      // void DGE_Delay(unsigned ticks)
-      //
-      Doom_Code_NativeDefn(DGE_Delay)
-      {
-         task->delay = argv[0];
-         return true;
-      }
+      task->delay = argv[0];
+      return true;
    }
 }
 

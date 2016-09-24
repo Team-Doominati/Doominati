@@ -19,27 +19,24 @@
 // Natives                                                                    |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // void DGE_PrintChar(unsigned c)
+   //
+   DGE_Code_NativeDefn(DGE_PrintChar)
    {
-      //
-      // void DGE_PrintChar(unsigned c)
-      //
-      Doom_Code_NativeDefn(DGE_PrintChar)
-      {
-         std::cout.put(argv[0]);
-         return false;
-      }
+      std::cout.put(argv[0]);
+      return false;
+   }
 
-      //
-      // void DGE_PrintWordD(unsigned d)
-      //
-      Doom_Code_NativeDefn(DGE_PrintWordD)
-      {
-         std::cout << argv[0];
-         return false;
-      }
+   //
+   // void DGE_PrintWordD(unsigned d)
+   //
+   DGE_Code_NativeDefn(DGE_PrintWordD)
+   {
+      std::cout << argv[0];
+      return false;
    }
 }
 

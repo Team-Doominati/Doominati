@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__Code__Native_H__
-#define Doom__Code__Native_H__
+#ifndef DGE__Code__Native_H__
+#define DGE__Code__Native_H__
 
 #include "Code/Types.hpp"
 
@@ -24,48 +24,45 @@
 //
 
 //
-// Doom_Code_NativeArgs
+// DGE_Code_NativeArgs
 //
 #if __GNUC__
-# define Doom_Code_NativeArgs() \
-   __attribute__((unused)) ::Doom::Code::Task *task, \
-   __attribute__((unused)) ::Doom::Code::Word const *argv, \
-   __attribute__((unused)) ::Doom::Code::Word argc
+# define DGE_Code_NativeArgs() \
+   __attribute__((unused)) ::DGE::Code::Task *task, \
+   __attribute__((unused)) ::DGE::Code::Word const *argv, \
+   __attribute__((unused)) ::DGE::Code::Word argc
 #else
-# define Doom_Code_NativeArgs() ::Doom::Code::Task *task, \
-   ::Doom::Code::Word const *argv, ::Doom::Code::Word argc
+# define DGE_Code_NativeArgs() ::DGE::Code::Task *task, \
+   ::DGE::Code::Word const *argv, ::DGE::Code::Word argc
 #endif
 
 //
-// Doom_Code_NativeDefn
+// DGE_Code_NativeDefn
 //
-#define Doom_Code_NativeDefn(name) \
-   static bool Doom_Code_Native_##name(Doom_Code_NativeArgs()); \
-   static ::Doom::Code::NativeAdder Doom_Code_NativeAdder_##name{ \
-      "_" #name, Doom_Code_Native_##name}; \
-   static bool Doom_Code_Native_##name(Doom_Code_NativeArgs())
+#define DGE_Code_NativeDefn(name) \
+   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs()); \
+   static ::DGE::Code::NativeAdder DGE_Code_NativeAdder_##name{ \
+      "_" #name, DGE_Code_Native_##name}; \
+   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // NativeAdder
+   //
+   class NativeAdder
    {
-      //
-      // NativeAdder
-      //
-      class NativeAdder
-      {
-      public:
-         NativeAdder(Core::HashedStr name, Native native);
+   public:
+      NativeAdder(Core::HashedStr name, Native native);
 
 
-         static void Finish();
-      };
-   }
+      static void Finish();
+   };
 }
 
 
@@ -73,13 +70,10 @@ namespace Doom
 // Extern Objects                                                             |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
-   {
-      extern Core::HashMapFixed<Core::HashedStr, Native> Natives;
-   }
+   extern Core::HashMapFixed<Core::HashedStr, Native> Natives;
 }
 
-#endif//Doom__Code__Native_H__
+#endif//DGE__Code__Native_H__
 

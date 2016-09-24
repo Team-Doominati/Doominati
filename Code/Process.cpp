@@ -20,38 +20,35 @@
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // Process constructor
+   //
+   Process::Process(Program *prog_) :
+      prog{prog_}
    {
-      //
-      // Process constructor
-      //
-      Process::Process(Program *prog_) :
-         prog{prog_}
-      {
-         (new Thread(this))->link.insert(&threads);
-      }
+      (new Thread(this))->link.insert(&threads);
+   }
 
-      //
-      // Process destructor
-      //
-      Process::~Process()
-      {
-         while(threads.next->obj)
-            delete threads.next->obj;
-      }
+   //
+   // Process destructor
+   //
+   Process::~Process()
+   {
+      while(threads.next->obj)
+         delete threads.next->obj;
+   }
 
-      //
-      // Process::exec
-      //
-      void Process::exec()
-      {
-         // TODO: Hardware threads.
+   //
+   // Process::exec
+   //
+   void Process::exec()
+   {
+      // TODO: Hardware threads.
 
-         for(auto &thread : threads)
-            thread.exec();
-      }
+      for(auto &thread : threads)
+         thread.exec();
    }
 }
 

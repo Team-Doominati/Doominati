@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef Doom__GL__DynamicBuffer_H__
-#define Doom__GL__DynamicBuffer_H__
+#ifndef DGE__GL__DynamicBuffer_H__
+#define DGE__GL__DynamicBuffer_H__
 
 #include "GL/gl_2_1.h"
 #include <cstddef>
@@ -21,7 +21,7 @@
 // Types                                                                      |
 //
 
-namespace Doom
+namespace DGE
 {
    namespace GL
    {
@@ -96,5 +96,5 @@ namespace Doom
    }
 }
 
-#endif//Doom__GL__DynamicBuffer_H__
+#endif//DGE__GL__DynamicBuffer_H__
 

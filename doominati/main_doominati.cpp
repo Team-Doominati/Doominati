@@ -39,8 +39,8 @@
 // Static Objects                                                             |
 //
 
-static Doom::GL::Window *WindowCurrent;
-static Doom::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle.pam"};
+static DGE::GL::Window *WindowCurrent;
+static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle.pam"};
 
 
 //----------------------------------------------------------------------------|
@@ -116,10 +116,10 @@ static void DrawTest()
    )";
 
 
-   static Doom::GL::Shader *shader;
+   static DGE::GL::Shader *shader;
 
    if(!shader)
-      shader = new Doom::GL::Shader{shaderFragment, shaderVertex};
+      shader = new DGE::GL::Shader{shaderFragment, shaderVertex};
 
    auto w = WindowCurrent->w;
    auto h = WindowCurrent->h;
@@ -130,11 +130,11 @@ static void DrawTest()
    auto xp = w - xo;
    auto yp = h - yo;
 
-   double seconds = Doom::Core::GetTicks<Doom::Core::Second<double>>();
+   double seconds = DGE::Core::GetTicks<DGE::Core::Second<double>>();
 
    WindowCurrent->drawParticleSystem(ParticleSystem);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::White);
+   WindowCurrent->drawColorSet(DGE::GL::Color::White);
 
    WindowCurrent->textureBind("@Textures/bigscreen.ppm");
    WindowCurrent->drawRectangle(303, 2, 603, 302);
@@ -144,7 +144,7 @@ static void DrawTest()
    WindowCurrent->drawRectangle(2, 2, 302, 302);
    WindowCurrent->shaderDrop();
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
+   WindowCurrent->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
 
    WindowCurrent->textureBind("@Textures/colors.ppm");
    WindowCurrent->drawRectangle(w - 102, h - 102, w - 2, h - 2);
@@ -152,12 +152,12 @@ static void DrawTest()
 
    WindowCurrent->drawRectangle(xp, yp, xo, yo, 0, true);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Red);
+   WindowCurrent->drawColorSet(DGE::GL::Color::Red);
 
    WindowCurrent->drawLine(xp, yp, xo, yo);
    WindowCurrent->drawLine(xp, yo, xo, yp);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Green);
+   WindowCurrent->drawColorSet(DGE::GL::Color::Green);
 
    double s = std::sin(seconds * 4.0) * 40.0;
    double c = std::cos(seconds * 4.0) * 40.0;
@@ -167,27 +167,27 @@ static void DrawTest()
 
    WindowCurrent->textureBind("@Textures/colors.ppm");
 
-   Doom::GL::Color drawc{Doom::GL::Color::Pink};
+   DGE::GL::Color drawc{DGE::GL::Color::Pink};
    for(int i = 0; i < 3; i++)
    {
       WindowCurrent->drawColorSet(drawc);
-      drawc.interpolate(Doom::GL::Color::Blue, 1.0f / 3.0f);
+      drawc.interpolate(DGE::GL::Color::Blue, 1.0f / 3.0f);
 
       WindowCurrent->drawCircle(64 + (i * 128), 550, 64);
    }
 
    WindowCurrent->textureUnbind();
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Pink);
+   WindowCurrent->drawColorSet(DGE::GL::Color::Pink);
    WindowCurrent->drawEllipse(0, 614, 900, h);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Green);
+   WindowCurrent->drawColorSet(DGE::GL::Color::Green);
    WindowCurrent->drawEllipse(0, 614, 900, h, true);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::Purple);
+   WindowCurrent->drawColorSet(DGE::GL::Color::Purple);
    WindowCurrent->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
+   WindowCurrent->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    WindowCurrent->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
 }
 
@@ -246,14 +246,14 @@ static void DrawFPS()
    static double timeMean = 1/50.0;
    double timeThis, timePass;
 
-   timeThis = Doom::Core::GetTicks<Doom::Core::Second<double>>();
+   timeThis = DGE::Core::GetTicks<DGE::Core::Second<double>>();
    timePass = timeThis - timeLast;
    timeLast = timeThis;
    timeMean = (timeMean * 19 + timePass) / 20;
 
    unsigned int fps = std::round(1 / timeMean);
 
-   WindowCurrent->drawColorSet(Doom::GL::Color::White);
+   WindowCurrent->drawColorSet(DGE::GL::Color::White);
 
    int x = WindowCurrent->w - 65;
    int y = 35;
@@ -269,11 +269,11 @@ static void DrawFPS()
 // LoadCodedefs
 //
 
-static void LoadCodedefs(Doom::Code::Program *prog)
+static void LoadCodedefs(DGE::Code::Program *prog)
 {
-   Doom::Code::Loader loader;
-   Doom::FS::Dir::ForFile("codedefs",
-      std::bind(&Doom::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
+   DGE::Code::Loader loader;
+   DGE::FS::Dir::ForFile("codedefs",
+      std::bind(&DGE::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
 
    std::cerr << "Loaded " << loader.loadPASS << " codedefs.\n";
 
@@ -300,30 +300,30 @@ static int Main()
 
    std::atexit(SDL_Quit);
 
-   Doom::GL::Window window{640, 480};
+   DGE::GL::Window window{640, 480};
    WindowCurrent = &window;
 
-   Doom::Game::InputSource_Local input;
+   DGE::Game::InputSource_Local input;
 
-   Doom::FS::Dir::AddRoot("."); // HACK
+   DGE::FS::Dir::AddRoot("."); // HACK
 
    // Initialize scripting and call main.
-   Doom::Code::NativeAdder::Finish();
-   Doom::Code::Program prog;
+   DGE::Code::NativeAdder::Finish();
+   DGE::Code::Program prog;
    LoadCodedefs(&prog);
-   Doom::Code::Process proc{&prog};
+   DGE::Code::Process proc{&prog};
 
    if(auto func = prog.funcs.find("main"))
       proc.threads.next->obj->startTask(func, nullptr, 0);
 
-   std::size_t timeLast = Doom::Core::GetTicks<Doom::Core::PlayTick<>>();
+   std::size_t timeLast = DGE::Core::GetTicks<DGE::Core::PlayTick<>>();
    std::size_t timeNext;
 
    for(;;)
    {
       std::size_t timeDelta;
 
-      timeNext  = Doom::Core::GetTicks<Doom::Core::PlayTick<>>();
+      timeNext  = DGE::Core::GetTicks<DGE::Core::PlayTick<>>();
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
 
@@ -337,7 +337,7 @@ static int Main()
 
             for(;;)
             {
-               Doom::GL::Particle *test = ParticleSystem.create();
+               DGE::GL::Particle *test = ParticleSystem.create();
 
                if(test == nullptr)
                   break;
@@ -353,8 +353,8 @@ static int Main()
                test->acceleration.x = (1.0f/16384)*((rand()%255)-128);
                test->acceleration.y = (1.0f/16384)*((rand()%255)-128);
                test->scale.x = test->scale.y = (1.0f/4096)*((rand()%255)-128)*40;
-               test->color = Doom::GL::Color::Pink;
-               test->colordest = Doom::GL::Color::Red;
+               test->color = DGE::GL::Color::Pink;
+               test->colordest = DGE::GL::Color::Red;
                test->colordest.a = 0.0f;
                test->colorspeed = 0.04f;
                test->rotspeed = (1.0f/4096)*((rand()%255)-128);

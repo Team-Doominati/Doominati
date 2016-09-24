@@ -45,19 +45,19 @@ endfunction()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-   TRY_CXX_COMPILER_FLAG(-Wall       FLAG_CXX_Wall   )
-   TRY_CXX_COMPILER_FLAG(-Wextra     FLAG_CXX_Wextra )
+   TRY_CXX_COMPILER_FLAG(-Wall       FLAG_CXX_Wall)
+   TRY_CXX_COMPILER_FLAG(-Wextra     FLAG_CXX_Wextra)
    TRY_CXX_COMPILER_FLAG(-Wshadow    FLAG_CXX_Wshadow)
    TRY_CXX_COMPILER_FLAG(-ffast-math FLAG_CXX_ffast_math)
 
-   TRY_CXX_COMPILER_FLAG(-std=c++11 FLAG_CXX_STD_CXX11)
+   TRY_CXX_COMPILER_FLAG(-std=c++1z FLAG_CXX_STD_CXX17)
 endif()
 
 if(MSVC)
    # Fucking MSVC.
 
-   add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast)
-   add_definitions(/wd4996 /wd4800 /wd4244 /wd4800 /wd4146 /wd4055 /wd4054)
+   add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast /std:c++latest)
+   add_definitions(/wd4996 /wd4800 /wd4244 /wd4146 /wd4055 /wd4054)
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")

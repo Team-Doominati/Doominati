@@ -17,28 +17,25 @@
 // Extern Functions                                                           |
 //
 
-namespace Doom
+namespace DGE::Code
 {
-   namespace Code
+   //
+   // operator std::ostream << OpCode::Op
+   //
+   std::ostream &operator << (std::ostream &out, OpCode::Op in)
    {
-      //
-      // operator std::ostream << OpCode::Op
-      //
-      std::ostream &operator << (std::ostream &out, OpCode::Op in)
+      switch(in)
       {
-         switch(in)
-         {
-            #define Doom_Code_OpList(op) \
-               case OpCode::op: out << #op; break;
-            #include "Code/OpList.hpp"
+         #define DGE_Code_OpList(op) \
+            case OpCode::op: out << #op; break;
+         #include "Code/OpList.hpp"
 
-         default:
-            out << "Op(" << static_cast<std::uint16_t>(in) << ')';
-            break;
-         }
-
-         return out;
+      default:
+         out << "Op(" << static_cast<std::uint16_t>(in) << ')';
+         break;
       }
+
+      return out;
    }
 }
 
