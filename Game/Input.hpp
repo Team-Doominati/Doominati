@@ -41,8 +41,8 @@ namespace DGE::Game
    class InputFrame
    {
    public:
-      std::int16_t movefwd,    moveside;
-      std::int32_t deltapitch, deltayaw;
+      std::int16_t movefwd, moveside;
+      std::int32_t mx,      my;
       InputButtons buttons;
    };
 

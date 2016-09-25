@@ -86,11 +86,9 @@ namespace DGE::Game
    void InputSource_Local::poll()
    {
       frameLast = frameNext;
-      frameNext.deltapitch = frameNext.deltayaw = 0;
 
       // Poll events.
-      SDL_Event event;
-      while(SDL_PollEvent(&event))
+      for(SDL_Event event; SDL_PollEvent(&event);)
       {
          if(event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
          {
@@ -99,50 +97,45 @@ namespace DGE::Game
 
             switch(event.key.keysym.sym)
             {
-            case SDLK_w: frameNext.movefwd  =  delta; break;
-            case SDLK_s: frameNext.movefwd  = -delta; break;
-            case SDLK_d: frameNext.moveside =  delta; break;
-            case SDLK_a: frameNext.moveside = -delta; break;
-            case SDLK_e: frameNext.buttons.use = down; break;
+            case SDLK_w: frameNext.movefwd     =  delta; break;
+            case SDLK_s: frameNext.movefwd     = -delta; break;
+            case SDLK_d: frameNext.moveside    =  delta; break;
+            case SDLK_a: frameNext.moveside    = -delta; break;
+            case SDLK_e: frameNext.buttons.use =  down;  break;
             case SDLK_ESCAPE: throw EXIT_SUCCESS;
             }
          }
          else if(event.type == SDL_MOUSEBUTTONDOWN ||
-                  event.type == SDL_MOUSEBUTTONUP)
+                 event.type == SDL_MOUSEBUTTONUP)
          {
             bool down = (event.type == SDL_MOUSEBUTTONDOWN);
 
             switch(event.button.button)
             {
-            case SDL_BUTTON_LEFT:
-               frameNext.buttons.attack = down;
-               break;
-            case SDL_BUTTON_RIGHT:
-               frameNext.buttons.altattack = down;
-               break;
+            case SDL_BUTTON_LEFT:  frameNext.buttons.attack    = down; break;
+            case SDL_BUTTON_RIGHT: frameNext.buttons.altattack = down; break;
             }
-         }
-         else if(event.type == SDL_MOUSEMOTION)
-         {
-            // TODO: this should create a real fixed point angle
-            frameNext.deltayaw   = event.motion.xrel;
-            frameNext.deltapitch = event.motion.yrel;
          }
          else if(event.type == SDL_CONTROLLERAXISMOTION)
          {
-            if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
+            switch(event.caxis.axis)
+            {
+            case SDL_CONTROLLER_AXIS_LEFTX:
                frameNext.moveside = event.caxis.value;
-            else if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+               break;
+            case SDL_CONTROLLER_AXIS_LEFTY:
                frameNext.movefwd = -event.caxis.value;
-            // TODO: this should create a real fixed point angle
-            else if(event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX)
-               frameNext.deltayaw = event.caxis.value;
-            else if(event.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
-               frameNext.deltapitch = event.caxis.value;
+               break;
+            }
          }
          else if(event.type == SDL_QUIT)
             throw EXIT_SUCCESS;
       }
+
+      int mx, my;
+      SDL_GetMouseState(&mx, &my);
+      frameNext.mx = mx;
+      frameNext.my = my;
    }
 }
 
