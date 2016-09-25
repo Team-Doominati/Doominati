@@ -81,6 +81,9 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/GL/Texture/PAM.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Window/Draw.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Window/PrivData.hpp
+   ${CMAKE_SOURCE_DIR}/GL/Window/Texture.cpp
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.c
    ${CMAKE_SOURCE_DIR}/GL/gl_2_1.h
 
