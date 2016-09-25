@@ -55,6 +55,10 @@ namespace DGE::GL
       void drawColorSet(Color const &col);
       Color drawColorGet() const;
 
+      // line
+      void lineSmooth(bool on);
+      void lineWidth(int width);
+
       // render
       void renderBegin();
       void renderEnd();

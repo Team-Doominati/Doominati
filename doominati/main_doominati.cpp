@@ -39,8 +39,86 @@
 // Static Objects                                                             |
 //
 
+//
+// WindowCurrent
+//
 static DGE::GL::Window *WindowCurrent;
+
+//
+// ParticleSystem
+//
 static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle.pam"};
+
+//
+// TestShader
+//
+static std::unique_ptr<DGE::GL::Shader> TestShader;
+
+//
+// TestShaderFragment
+//
+static char const *TestShaderFragment = R"(
+   #version 120
+
+   uniform int dge_ticks;
+   uniform int dge_mseconds;
+   uniform int dge_seconds;
+
+   vec4 HSVToRGB(float h, float s, float v, float a)
+   {
+      h *= 360.0;
+
+           if(h < 0)     h = 0;
+      else if(h > 359.5) h = 359.5;
+
+      float chroma = v * s;
+      float hp = h / 60.0;
+      float x = chroma * (1 - abs(mod(hp, 2) - 1));
+      float r1 = 0, g1 = 0, b1 = 0;
+
+           if(0 <= hp && hp < 1) r1 = chroma, g1 = x,      b1 = 0;
+      else if(1 <= hp && hp < 2) r1 = x,      g1 = chroma, b1 = 0;
+      else if(2 <= hp && hp < 3) r1 = 0,      g1 = chroma, b1 = x;
+      else if(3 <= hp && hp < 4) r1 = 0,      g1 = x,      b1 = chroma;
+      else if(4 <= hp && hp < 5) r1 = x,      g1 = 0,      b1 = chroma;
+      else if(5 <= hp && hp < 6) r1 = chroma, g1 = 0,      b1 = x;
+
+      float m = v - chroma;
+      return vec4(r1 + m, g1 + m, b1 + m, a);
+   }
+
+   void main(void)
+   {
+      const float pi = 3.14159265;
+
+      float t = float(dge_mseconds) / 32.0;
+      vec2 uv = (gl_FragCoord.xy / vec2(640.0, 480.0)) * vec2(256.0, 224.0);
+
+      float bx = uv.x + 0.5 * sin(t / 8.0);
+      float by = uv.y + 0.5 * cos(t / 8.0);
+
+      float v;
+
+      v  = sin((-bx + t) / 32.0);
+      v += cos((by + t) / 32.0);
+      v += sin((bx + by + t) / 32.0);
+      v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
+
+      gl_FragColor = HSVToRGB(sin(v * pi) * 0.5 + 0.5, 1.0, 1.0, 1.0);
+   }
+)";
+
+//
+// TestShaderVertex
+//
+static char const *TestShaderVertex = R"(
+   #version 120
+
+   void main(void)
+   {
+      gl_Position = ftransform();
+   }
+)";
 
 
 //----------------------------------------------------------------------------|
@@ -52,75 +130,8 @@ static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/pa
 //
 // Draws test pattern.
 //
-
 static void DrawTest()
 {
-   static char const *shaderFragment = R"(
-      #version 120
-
-      uniform int dge_ticks;
-      uniform int dge_mseconds;
-      uniform int dge_seconds;
-
-      vec4 HSVToRGB(float h, float s, float v, float a)
-      {
-         h *= 360.0;
-
-              if(h < 0)     h = 0;
-         else if(h > 359.5) h = 359.5;
-
-         float chroma = v * s;
-         float hp = h / 60.0;
-         float x = chroma * (1 - abs(mod(hp, 2) - 1));
-         float r1 = 0, g1 = 0, b1 = 0;
-
-              if(0 <= hp && hp < 1) r1 = chroma, g1 = x,      b1 = 0;
-         else if(1 <= hp && hp < 2) r1 = x,      g1 = chroma, b1 = 0;
-         else if(2 <= hp && hp < 3) r1 = 0,      g1 = chroma, b1 = x;
-         else if(3 <= hp && hp < 4) r1 = 0,      g1 = x,      b1 = chroma;
-         else if(4 <= hp && hp < 5) r1 = x,      g1 = 0,      b1 = chroma;
-         else if(5 <= hp && hp < 6) r1 = chroma, g1 = 0,      b1 = x;
-
-         float m = v - chroma;
-         return vec4(r1 + m, g1 + m, b1 + m, a);
-      }
-
-      void main(void)
-      {
-         const float pi = 3.1415926535897932384626433832795;
-
-         float t = float(dge_mseconds) / 32.0;
-         vec2 uv = (gl_FragCoord.xy / vec2(640.0, 480.0)) * vec2(256.0, 224.0);
-
-         float bx = uv.x + 0.5 * sin(t / 8.0);
-         float by = uv.y + 0.5 * cos(t / 8.0);
-
-         float v;
-
-         v  = sin((-bx + t) / 32.0);
-         v += cos((by + t) / 32.0);
-         v += sin((bx + by + t) / 32.0);
-         v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
-
-         gl_FragColor = HSVToRGB(sin(v * pi) * 0.5 + 0.5, 1.0, 1.0, 1.0);
-      }
-   )";
-
-   static char const *shaderVertex = R"(
-      #version 120
-
-      void main(void)
-      {
-         gl_Position = ftransform();
-      }
-   )";
-
-
-   static DGE::GL::Shader *shader;
-
-   if(!shader)
-      shader = new DGE::GL::Shader{shaderFragment, shaderVertex};
-
    auto w = WindowCurrent->w;
    auto h = WindowCurrent->h;
 
@@ -139,7 +150,7 @@ static void DrawTest()
    WindowCurrent->textureBind("@Textures/bigscreen.ppm");
    WindowCurrent->drawRectangle(303, 2, 603, 302);
 
-   WindowCurrent->shaderSwap(shader);
+   WindowCurrent->shaderSwap(TestShader.get());
    WindowCurrent->shaderUpdate();
    WindowCurrent->drawRectangle(2, 2, 302, 302);
    WindowCurrent->shaderDrop();
@@ -228,6 +239,8 @@ static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
    // |   |
    //  -6-
 
+   WindowCurrent->lineSmooth(true);
+   WindowCurrent->lineWidth(2);
    if(digit.seg0) WindowCurrent->drawLine(xl, yh, xh, yh);
    if(digit.seg1) WindowCurrent->drawLine(xl, ym, xl, yh);
    if(digit.seg2) WindowCurrent->drawLine(xh, ym, xh, yh);
@@ -235,6 +248,8 @@ static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
    if(digit.seg4) WindowCurrent->drawLine(xl, yl, xl, ym);
    if(digit.seg5) WindowCurrent->drawLine(xh, yl, xh, ym);
    if(digit.seg6) WindowCurrent->drawLine(xl, yl, xh, yl);
+   WindowCurrent->lineSmooth(false);
+   WindowCurrent->lineWidth(1);
 }
 
 //
@@ -268,7 +283,6 @@ static void DrawFPS()
 //
 // LoadCodedefs
 //
-
 static void LoadCodedefs(DGE::Code::Program *prog)
 {
    DGE::Code::Loader loader;
@@ -289,7 +303,6 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 //
 // Main
 //
-
 static int Main()
 {
    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -302,6 +315,7 @@ static int Main()
 
    DGE::GL::Window window{640, 480};
    WindowCurrent = &window;
+   TestShader.reset(new DGE::GL::Shader{TestShaderFragment, TestShaderVertex});
 
    DGE::Game::InputSource_Local input;
 
@@ -327,14 +341,11 @@ static int Main()
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
 
-      if(!timeDelta)
-         SDL_Delay(1);
-      else
+      if(timeDelta)
       {
          while(timeDelta--)
          {
             // Playsim actions.
-
             for(;;)
             {
                DGE::GL::Particle *test = ParticleSystem.create();
@@ -342,22 +353,32 @@ static int Main()
                if(test == nullptr)
                   break;
 
-               float fuck3 = (rand() % 1280) - (1280/2);
-               float fuck4 = (rand() % 720 ) - (720/2);
+               float const r[] = {
+                  float((rand() % 1280) - (1280/2)),
+                  float((rand() % 720 ) - (720/2)),
+                  float(rand() % 30),
+                  float((rand() % 255) - 128),
+                  float((rand() % 255) - 128),
+                  float((rand() % 255) - 128),
+                  float((rand() % 255) - 128),
+                  float((rand() % 255) - 128),
+                  float((rand() % 255) - 128)
+               };
 
-               test->life = (rand() % 30) + 10;
-               test->oldposition.x = test->position.x = -30.0f + fuck3;
-               test->oldposition.y = test->position.y = -30.0f + fuck4;
-               test->velocity.x = (1.0f/4096)*((rand()%255)-128);
-               test->velocity.y = (1.0f/4096)*((rand()%255)-128);
-               test->acceleration.x = (1.0f/16384)*((rand()%255)-128);
-               test->acceleration.y = (1.0f/16384)*((rand()%255)-128);
-               test->scale.x = test->scale.y = (1.0f/4096)*((rand()%255)-128)*40;
-               test->color = DGE::GL::Color::Pink;
-               test->colordest = DGE::GL::Color::Red;
+               test->life           = r[2] + 10;
+               test->oldposition.x  = test->position.x = -30.0f + r[0];
+               test->oldposition.y  = test->position.y = -30.0f + r[1];
+               test->velocity.x     = (1.0f / 4096) * r[3];
+               test->velocity.y     = (1.0f / 4096) * r[4];
+               test->acceleration.x = (1.0f / 16384) * r[5];
+               test->acceleration.y = (1.0f / 16384) * r[6];
+               test->scale.x = test->scale.y = (1.0f / 4096) * r[7] * 40;
+               test->color       = DGE::GL::Color::Pink;
+               test->colordest   = DGE::GL::Color::Red;
                test->colordest.a = 0.0f;
-               test->colorspeed = 0.04f;
-               test->rotspeed = (1.0f/4096)*((rand()%255)-128);
+               test->colorspeed  = 0.04f;
+
+               test->rotspeed = (1.0f / 4096) * r[8];
             }
 
             input.poll();
@@ -365,13 +386,13 @@ static int Main()
             ParticleSystem.update();
          }
       }
+      else
+         SDL_Delay(1);
 
       // Rendering actions.
-
       window.renderBegin();
 
       DrawTest();
-
       DrawFPS();
 
       window.renderEnd();

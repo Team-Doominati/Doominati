@@ -33,38 +33,44 @@
 // Static Objects                                                             |
 //
 
-static char const baseFragShader[] = R"(
-   #version 120
-
-   uniform sampler2D dge_texture;
-
-   varying vec4 color;
-   varying vec4 texcoord;
-
-   void main(void)
-   {
-      gl_FragColor = texture2D(dge_texture, texcoord.xy) * color;
-//    gl_FragColor = vec4(texcoord.xy, 0.0, 1.0);
-   }
-)";
-
-static char const baseVertShader[] = R"(
-   #version 120
-
-   varying vec4 color;
-   varying vec4 texcoord;
-
-   void main(void)
-   {
-      gl_Position = ftransform();
-
-      texcoord = gl_MultiTexCoord0;
-      color = gl_Color;
-   }
-)";
-
 namespace DGE::GL
 {
+   //
+   // BaseFragShader
+   //
+   static char const BaseFragShader[] = R"(
+      #version 120
+
+      uniform sampler2D dge_texture;
+
+      varying vec4 color;
+      varying vec4 texcoord;
+
+      void main(void)
+      {
+         gl_FragColor = texture2D(dge_texture, texcoord.xy) * color;
+   //    gl_FragColor = vec4(texcoord.xy, 0.0, 1.0);
+      }
+   )";
+
+   //
+   // BaseVertShader
+   //
+   static char const BaseVertShader[] = R"(
+      #version 120
+
+      varying vec4 color;
+      varying vec4 texcoord;
+
+      void main(void)
+      {
+         gl_Position = ftransform();
+
+         texcoord = gl_MultiTexCoord0;
+         color = gl_Color;
+      }
+   )";
+
    //
    // TextureNoneData
    //
@@ -84,7 +90,6 @@ namespace DGE::GL
    //
    // Private instance data.
    //
-
    class Window::PrivData
    {
    public:
@@ -106,6 +111,54 @@ namespace DGE::GL
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace DGE::GL
+{
+   //
+   // Circle_CalcBufSize
+   //
+   static void Circle_CalcBufSize(int subdivisions, std::size_t &bufsize)
+   {
+      if(!subdivisions) return;
+
+      bufsize += 3;
+
+      for(int i = 0; i < 2; i++)
+         Circle_CalcBufSize(subdivisions - 1, bufsize);
+   }
+
+   //
+   // Circle_CalcPoint
+   //
+   static void Circle_CalcPoint(float angl, VertexXYUV *&buf)
+   {
+      float s = std::sin(angl);
+      float c = std::cos(angl);
+      *buf++ = { s, c, s * 0.5f + 0.5f, c * 0.5f + 0.5f };
+   }
+
+   //
+   // Circle_CalcFaces
+   //
+   static void Circle_CalcFaces(int subdivisions, float anglA, float anglC, VertexXYUV *&buf)
+   {
+      if(!subdivisions) return;
+
+      float anglB = Core::Lerp(anglA, anglC, 0.5f);
+
+      Circle_CalcPoint(anglA, buf);
+      Circle_CalcPoint(anglB, buf);
+      Circle_CalcPoint(anglC, buf);
+
+      Circle_CalcFaces(subdivisions - 1, anglA, anglB, buf);
+      Circle_CalcFaces(subdivisions - 1, anglB, anglC, buf);
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -114,7 +167,6 @@ namespace DGE::GL
    //
    // Window::PrivData constructor
    //
-
    Window::PrivData::PrivData(int w, int h) :
       window{}, gl{},
       textureCurrent{}, textures{},
@@ -145,7 +197,6 @@ namespace DGE::GL
    //
    // Window::PrivData destructor
    //
-
    Window::PrivData::~PrivData()
    {
       SDL_GL_DeleteContext(gl);
@@ -155,7 +206,6 @@ namespace DGE::GL
    //
    // Window constructor
    //
-
    Window::Window(int w_, int h_) :
       realw{w_}, realh{h_},
       w{1280}, h{720},
@@ -179,7 +229,7 @@ namespace DGE::GL
       glLoadIdentity();
 
       // Set up base shader.
-      shaderBase.reset(new Shader{baseFragShader, baseVertShader});
+      shaderBase.reset(new Shader{BaseFragShader, BaseVertShader});
       shaderDrop();
       drawColorSet(1.0, 1.0, 1.0);
 
@@ -196,36 +246,20 @@ namespace DGE::GL
    //
    // Window destructor
    //
-
-   Window::~Window()
-   {
-      // Needs to exist for very specific reasons.
-   }
-
+   // Needs to exist here specifically, because of the way
+   // unique_ptr works with incomplete types.
    //
-   // CalcBufSize
-   //
-
-   static void CalcBufSize(int subdivisions, std::size_t &bufsize)
-   {
-      if(!subdivisions) return;
-
-      bufsize += 3;
-
-      for(int i = 0; i < 2; i++)
-         CalcBufSize(subdivisions - 1, bufsize);
-   }
+   Window::~Window() {}
 
    //
    // Window::circleCreateLines
    //
-
    void Window::circleCreateLines(int subdivisions)
    {
       std::size_t bufsize = 3 * 2;
 
       for(int i = 0; i < 4; i++)
-         CalcBufSize(subdivisions, bufsize);
+         Circle_CalcBufSize(subdivisions, bufsize);
 
       GDCC::Core::Array<VertexXY> bufarray{bufsize};
 
@@ -242,60 +276,30 @@ namespace DGE::GL
    }
 
    //
-   // CalcPoint
-   //
-
-   static void CalcPoint(float angl, VertexXYUV *&buf)
-   {
-      float s = std::sin(angl);
-      float c = std::cos(angl);
-      *buf++ = { s, c, s * 0.5f + 0.5f, c * 0.5f + 0.5f };
-   }
-
-   //
-   // CalcFaces
-   //
-
-   static void CalcFaces(int subdivisions, float anglA, float anglC, VertexXYUV *&buf)
-   {
-      if(!subdivisions) return;
-
-      float anglB = Core::Lerp(anglA, anglC, 0.5f);
-
-      CalcPoint(anglA, buf);
-      CalcPoint(anglB, buf);
-      CalcPoint(anglC, buf);
-
-      CalcFaces(subdivisions - 1, anglA, anglB, buf);
-      CalcFaces(subdivisions - 1, anglB, anglC, buf);
-   }
-
-   //
    // Window::circleCreateTris
    //
-
    void Window::circleCreateTris(int subdivisions)
    {
       std::size_t bufsize = 3 * 2;
 
       for(int i = 0; i < 4; i++)
-         CalcBufSize(subdivisions, bufsize);
+         Circle_CalcBufSize(subdivisions, bufsize);
 
       GDCC::Core::Array<VertexXYUV> bufarray{bufsize};
       VertexXYUV *buf = bufarray.data();
 
       // First, make a diamond out of two tris.
-      CalcPoint(Core::pi + Core::pi2, buf);
-      CalcPoint(0, buf);
-      CalcPoint(Core::pi2, buf);
+      Circle_CalcPoint(Core::pi + Core::pi2, buf);
+      Circle_CalcPoint(0, buf);
+      Circle_CalcPoint(Core::pi2, buf);
 
-      CalcPoint(Core::pi + Core::pi2, buf);
-      CalcPoint(Core::pi2, buf);
-      CalcPoint(Core::pi, buf);
+      Circle_CalcPoint(Core::pi + Core::pi2, buf);
+      Circle_CalcPoint(Core::pi2, buf);
+      Circle_CalcPoint(Core::pi, buf);
 
       // Then create a fractal of triangles around that, for each quarter.
       for(int i = 0; i < 4; i++)
-         CalcFaces(subdivisions, Core::pi2 * i, (Core::pi2 * i) + Core::pi2, buf);
+         Circle_CalcFaces(subdivisions, Core::pi2 * i, (Core::pi2 * i) + Core::pi2, buf);
 
       // Generate the VBO.
       privdata->circleBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);
@@ -304,7 +308,6 @@ namespace DGE::GL
    //
    // Window::circlePrecision
    //
-
    void Window::circlePrecision(int subdivisions)
    {
       circleCreateTris(subdivisions);
@@ -314,7 +317,6 @@ namespace DGE::GL
    //
    // Window::drawCircle
    //
-
    void Window::drawCircle(int x, int y, int radius, bool line) const
    {
       glPushMatrix();
@@ -333,7 +335,6 @@ namespace DGE::GL
    //
    // Window::drawEllipse
    //
-
    void Window::drawEllipse(int x1, int y1, int x2, int y2, bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
@@ -357,7 +358,6 @@ namespace DGE::GL
    //
    // Window::drawLine
    //
-
    void Window::drawLine(int x1, int y1, int x2, int y2) const
    {
       glBegin(GL_LINES);
@@ -371,7 +371,6 @@ namespace DGE::GL
    //
    // Window::drawParticleSystem
    //
-
    void Window::drawParticleSystem(ParticleSystem const &ps)
    {
       glPushMatrix();
@@ -400,7 +399,6 @@ namespace DGE::GL
    //
    // Window::drawRectangle
    //
-
    void Window::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
@@ -474,7 +472,6 @@ namespace DGE::GL
    //
    // Window::drawTriangle
    //
-
    void Window::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
    {
       if(!line)
@@ -495,7 +492,6 @@ namespace DGE::GL
    //
    // Window::drawColorSet
    //
-
    void Window::drawColorSet(float r, float g, float b, float a)
    {
       glColor4f(r, g, b, a);
@@ -508,7 +504,6 @@ namespace DGE::GL
    //
    // Window::drawColorSet
    //
-
    void Window::drawColorSet(Color const &col)
    {
       drawColorSet(col.r, col.g, col.b, col.a);
@@ -517,16 +512,56 @@ namespace DGE::GL
    //
    // Window::drawColorGet
    //
-
    Color Window::drawColorGet() const
    {
       return { cr, cg, cb, ca };
    }
 
    //
+   // Window:lineSmooth
+   //
+   void Window::lineSmooth(bool on)
+   {
+      if(on) glEnable(GL_LINE_SMOOTH);
+      else   glDisable(GL_LINE_SMOOTH);
+   }
+
+   //
+   // Window::lineWidth
+   //
+   void Window::lineWidth(int width)
+   {
+      glLineWidth(width);
+   }
+
+   //
+   // Window::renderBegin
+   //
+   void Window::renderBegin()
+   {
+      // Check if window has been resized.
+      {
+         int newW, newH;
+         SDL_GetWindowSize(privdata->window, &newW, &newH);
+
+         if(w != newW || h != newH)
+            resize(newW, newH);
+      }
+
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   }
+
+   //
+   // Window::renderEnd
+   //
+   void Window::renderEnd()
+   {
+      SDL_GL_SwapWindow(privdata->window);
+   }
+
+   //
    // Window::shaderSwap
    //
-
    void Window::shaderSwap(Shader *sp)
    {
       if(sp)
@@ -539,7 +574,6 @@ namespace DGE::GL
    //
    // Window::shaderDrop
    //
-
    void Window::shaderDrop()
    {
       shaderSwap(shaderBase.get());
@@ -548,7 +582,6 @@ namespace DGE::GL
    //
    // Window::shaderUpdate
    //
-
    void Window::shaderUpdate()
    {
       shaderCurrent->update();
@@ -557,7 +590,6 @@ namespace DGE::GL
    //
    // Window::textureBind
    //
-
    void Window::textureBind(TextureData *tex)
    {
       if(privdata->textureCurrent != tex->tex)
@@ -643,36 +675,8 @@ namespace DGE::GL
    }
 
    //
-   // Window::renderBegin
-   //
-
-   void Window::renderBegin()
-   {
-      // Check if window has been resized.
-      {
-         int newW, newH;
-         SDL_GetWindowSize(privdata->window, &newW, &newH);
-
-         if(w != newW || h != newH)
-            resize(newW, newH);
-      }
-
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   }
-
-   //
-   // Window::renderEnd
-   //
-
-   void Window::renderEnd()
-   {
-      SDL_GL_SwapWindow(privdata->window);
-   }
-
-   //
    // Window::resize
    //
-
    void Window::resize(int w_, int h_)
    {
       realw = w_;
