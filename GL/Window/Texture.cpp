@@ -24,17 +24,30 @@
 namespace DGE::GL
 {
    //
+   // Window::PrivData::texAdd
+   //
+   Window::Texture *Window::PrivData::texAdd(GLsizei w, GLsizei h,
+      TexturePixel const *data, GDCC::Core::String name)
+   {
+      std::size_t idx = texVec.size();
+      texVec.emplace_back(TextureData(w, h, data), name, idx);
+      texMap.insert(&texVec.back());
+
+      texNone = &texVec.front();
+
+      return &texVec.back();
+   }
+
+   //
    // Window::textureBind
    //
    void Window::textureBind(TextureData *tex)
    {
-      if(privdata->textureCurrent != tex->tex)
+      if(privdata->texBound != tex->tex)
       {
          glBindTexture(GL_TEXTURE_2D, tex->tex);
-         privdata->textureCurrent = tex->tex;
+         privdata->texBound = tex->tex;
       }
-
-      textureMinMax = tex->minmax;
    }
 
    //
@@ -42,12 +55,46 @@ namespace DGE::GL
    //
    TextureData *Window::textureGet(char const *name)
    {
-      auto itr = privdata->textures.find(name);
-      if(itr != privdata->textures.end())
-         return &itr->second;
+      return &textureGetRaw(name)->data;
+   }
 
-      if(*name == '@')
-         return textureGet_File(name + 1);
+   //
+   // Window::textureGet
+   //
+   TextureData *Window::textureGet(GDCC::Core::String name)
+   {
+      return &textureGetRaw(name)->data;
+   }
+
+   //
+   // Window::textureGet
+   //
+   TextureData *Window::textureGet(std::size_t idx)
+   {
+      if(idx < privdata->texVec.size())
+         return &privdata->texVec[idx].data;
+
+      return &privdata->texNone->data;
+   }
+
+   //
+   // Window::textureGetIdx
+   //
+   std::size_t Window::textureGetIdx(GDCC::Core::String name)
+   {
+      return textureGetRaw(name)->idx;
+   }
+
+   //
+   // Window::textureGetRaw
+   //
+   Window::Texture *Window::textureGetRaw(GDCC::Core::String name)
+   {
+      if(auto tex = privdata->texMap.find(name))
+         return tex;
+
+      if(name[0] == '@')
+         return textureGet_File(name);
 
       std::cerr << "unknown texture: " << name << '\n';
       return textureGet_None(name);
@@ -56,14 +103,15 @@ namespace DGE::GL
    //
    // Window::textureGet_File
    //
-   TextureData *Window::textureGet_File(char const *name)
+   Window::Texture *Window::textureGet_File(GDCC::Core::String name)
    {
-      FS::File *file = FS::Dir::FindFile(name);
+      char const *filename = name.data() + 1;
+      FS::File *file = FS::Dir::FindFile(filename);
 
       if(!file)
       {
-         std::cerr << "texture file not found: " << name << '\n';
-         return textureGet_None(name - 1);
+         std::cerr << "texture file not found: " << filename << '\n';
+         return textureGet_None(name);
       }
 
       try
@@ -74,42 +122,37 @@ namespace DGE::GL
          std::unique_ptr<TexturePixel[]> buf{new TexturePixel[width * height]};
          loader->data(buf.get());
 
-         return &privdata->textures.emplace(std::piecewise_construct,
-            std::forward_as_tuple(name - 1),
-            std::forward_as_tuple(width, height, buf.get())).first->second;
+         return privdata->texAdd(width, height, buf.get(), name);
       }
       catch(TextureLoaderError const &err)
       {
-         std::cerr << "TextureLoaderError: " << name
+         std::cerr << "TextureLoaderError: " << filename
             << ": " << err.what() << '\n';
-         return textureGet_None(name - 1);
+         return textureGet_None(name);
       }
    }
 
    //
    // Window::textureGet_None
    //
-   TextureData *Window::textureGet_None(char const *name)
+   Window::Texture *Window::textureGet_None(GDCC::Core::String name)
    {
       TexturePixel const data[4] =
          {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
 
-      return &privdata->textures.emplace(std::piecewise_construct,
-         std::forward_as_tuple(name),
-         std::forward_as_tuple(2, 2, data)).first->second;
+      return privdata->texAdd(2, 2, data, name);
    }
 
    //
    // Window::textureUnbind
    //
-
    void Window::textureUnbind()
    {
-      TextureData const *tex = textureNone;
-      if(privdata->textureCurrent != tex->tex)
+      TextureData const *tex = &privdata->texNone->data;
+      if(privdata->texBound != tex->tex)
       {
          glBindTexture(GL_TEXTURE_2D, tex->tex);
-         privdata->textureCurrent = tex->tex;
+         privdata->texBound = tex->tex;
       }
    }
 }

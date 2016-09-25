@@ -47,7 +47,10 @@ namespace DGE::GL
    //
    TextureData::~TextureData()
    {
-      glDeleteTextures(1, &tex);
+      // OpenGL does not actually specify any invalid texture index, but -1
+      // should be safe enough. Worst case, one texture never gets freed.
+      if(tex != static_cast<GLuint>(-1))
+         glDeleteTextures(1, &tex);
    }
 
    std::unique_ptr<TextureLoader> CreateTextureLoader_PAM(FS::File *file);

@@ -40,13 +40,17 @@ namespace DGE::GL
    class TextureData
    {
    public:
-      TextureData(TextureData const &other) = delete;
-      TextureData(TextureData &&other) = default;
+      TextureData() : tex{static_cast<GLuint>(-1)} {}
+      TextureData(TextureData const &) = delete;
+      TextureData(TextureData &&t) : tex{t.tex} {t.tex = -1;}
       TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
       ~TextureData();
 
-      GLuint        tex;
-      Core::Vector4 minmax;
+      TextureData &operator = (TextureData const &) = delete;
+      TextureData &operator = (TextureData &&t)
+         {std::swap(tex, t.tex); return *this;}
+
+      GLuint tex;
    };
 
    //

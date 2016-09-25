@@ -24,6 +24,11 @@
 // Types                                                                      |
 //
 
+namespace GDCC::Core
+{
+   class String;
+}
+
 namespace DGE::GL
 {
    class Shader;
@@ -71,7 +76,10 @@ namespace DGE::GL
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
       void textureBind(TextureData *tex);
+      TextureData *textureGet(GDCC::Core::String name);
       TextureData *textureGet(char const *name);
+      TextureData *textureGet(std::size_t idx);
+      std::size_t  textureGetIdx(GDCC::Core::String name);
       void textureUnbind();
 
       int realw, realh;
@@ -79,14 +87,16 @@ namespace DGE::GL
 
    private:
       class PrivData;
+      class Texture;
 
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
 
       void resize(int w, int h);
 
-      TextureData *textureGet_File(char const *name);
-      TextureData *textureGet_None(char const *name);
+      Texture *textureGetRaw(GDCC::Core::String name);
+      Texture *textureGet_File(GDCC::Core::String name);
+      Texture *textureGet_None(GDCC::Core::String name);
 
       float cr, cg, cb, ca;
 
@@ -94,10 +104,6 @@ namespace DGE::GL
 
       std::unique_ptr<Shader> shaderBase;
       Shader *shaderCurrent;
-
-      Core::Vector4 textureMinMax;
-
-      TextureData *textureNone;
    };
 }
 

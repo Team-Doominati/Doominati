@@ -125,7 +125,7 @@ namespace DGE::GL
    //
    Window::PrivData::PrivData(int w, int h) :
       window{}, gl{},
-      textureCurrent{}, textures{},
+      texBound{},
       circleBuff{VertexXYUV::Layout},
       circleLineBuff{VertexXY::Layout, GL_LINE_LOOP}
    {
@@ -190,15 +190,7 @@ namespace DGE::GL
       drawColorSet(1.0, 1.0, 1.0);
 
       // Set up basic no-texture.
-      {
-         TexturePixel const data[4] =
-            {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
-
-         textureNone =
-            &privdata->textures.emplace(std::piecewise_construct,
-               std::forward_as_tuple("TEXNULL"),
-               std::forward_as_tuple(2, 2, data)).first->second;
-      }
+      textureGet_None("TEXNULL");
 
       // Set up VBOs.
       circlePrecision(4);
