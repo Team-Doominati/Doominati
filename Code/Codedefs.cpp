@@ -94,6 +94,9 @@ namespace DGE::Code
    static void GenCodeHW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    static void GenCodeW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    static void GenCodeWW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
+
+   template<Word N>
+   static void GenCodeR(Loader *loader, OpCode *code, Loader::RawExpA const &args);
 }
 
 
@@ -105,51 +108,59 @@ namespace DGE::Code
 {
    static std::unordered_map<GDCC::Core::String, CodeTrans> CodeTransTab
    {
-      {"Nop",      {GenCode,   0, 1, OpCode::Nop}},
-      {"Kill",     {GenCodeHW, 2, 1, OpCode::Kill}},
+      {"Nop",          {GenCode,     0, 1, OpCode::Nop}},
+      {"Kill",         {GenCodeHW,   2, 1, OpCode::Kill}},
 
-      {"AddU",     {GenCode,   0, 1, OpCode::AddU}},
-      {"AndU",     {GenCode,   0, 1, OpCode::AndU}},
-      {"CmpI_GE",  {GenCode,   0, 1, OpCode::CmpI_GE}},
-      {"CmpI_GT",  {GenCode,   0, 1, OpCode::CmpI_GT}},
-      {"CmpI_LE",  {GenCode,   0, 1, OpCode::CmpI_LE}},
-      {"CmpI_LT",  {GenCode,   0, 1, OpCode::CmpI_LT}},
-      {"CmpU_EQ",  {GenCode,   0, 1, OpCode::CmpU_EQ}},
-      {"CmpU_GE",  {GenCode,   0, 1, OpCode::CmpU_GE}},
-      {"CmpU_GT",  {GenCode,   0, 1, OpCode::CmpU_GT}},
-      {"CmpU_LE",  {GenCode,   0, 1, OpCode::CmpU_LE}},
-      {"CmpU_LT",  {GenCode,   0, 1, OpCode::CmpU_LT}},
-      {"CmpU_NE",  {GenCode,   0, 1, OpCode::CmpU_NE}},
-      {"Call",     {GenCodeW,  1, 1, OpCode::Call}},
-      {"Cnat",     {GenCodeHW, 2, 1, OpCode::Cnat}},
-      {"Copy",     {GenCode,   0, 1, OpCode::Copy}},
-      {"DivI",     {GenCode,   0, 1, OpCode::DivI}},
-      {"DivU",     {GenCode,   0, 1, OpCode::DivU}},
-      {"Drop_Nul", {GenCode,   0, 1, OpCode::Drop_Nul}},
-      {"Drop_Ptr", {GenCode,   0, 1, OpCode::Drop_Ptr}},
-      {"Drop_Reg", {GenCodeW,  1, 1, OpCode::Drop_Reg}},
-      {"InvU",     {GenCode,   0, 1, OpCode::InvU}},
-      {"Jcnd_Lit", {GenCodeWW, 2, 2, OpCode::Jcnd_Lit}},
-      {"Jcnd_Nil", {GenCodeW,  1, 1, OpCode::Jcnd_Nil}},
-      {"Jcnd_Tru", {GenCodeW,  1, 1, OpCode::Jcnd_Tru}},
-      {"Jump",     {GenCode,   0, 1, OpCode::Jump}},
-      {"Jump_Lit", {GenCodeW,  1, 1, OpCode::Jump_Lit}},
-      {"LNot",     {GenCode,   0, 1, OpCode::LNot}},
-      {"ModI",     {GenCode,   0, 1, OpCode::ModI}},
-      {"ModU",     {GenCode,   0, 1, OpCode::ModU}},
-      {"MulU",     {GenCode,   0, 1, OpCode::MulU}},
-      {"NegI",     {GenCode,   0, 1, OpCode::NegI}},
-      {"OrIU",     {GenCode,   0, 1, OpCode::OrIU}},
-      {"OrXU",     {GenCode,   0, 1, OpCode::OrXU}},
-      {"Push_Lit", {GenCodeW,  1, 1, OpCode::Push_Lit}},
-      {"Push_Ptr", {GenCode,   0, 1, OpCode::Push_Ptr}},
-      {"Push_Reg", {GenCodeW,  1, 1, OpCode::Push_Reg}},
-      {"Retn",     {GenCode,   0, 1, OpCode::Retn}},
-      {"ShLU",     {GenCode,   0, 1, OpCode::ShLU}},
-      {"ShRI",     {GenCode,   0, 1, OpCode::ShRI}},
-      {"ShRU",     {GenCode,   0, 1, OpCode::ShRU}},
-      {"SubU",     {GenCode,   0, 1, OpCode::SubU}},
-      {"Swap",     {GenCode,   0, 1, OpCode::Swap}},
+      {"AddU",         {GenCode,     0, 1, OpCode::AddU}},
+      {"AndU",         {GenCode,     0, 1, OpCode::AndU}},
+      {"CmpI_GE",      {GenCode,     0, 1, OpCode::CmpI_GE}},
+      {"CmpI_GT",      {GenCode,     0, 1, OpCode::CmpI_GT}},
+      {"CmpI_LE",      {GenCode,     0, 1, OpCode::CmpI_LE}},
+      {"CmpI_LT",      {GenCode,     0, 1, OpCode::CmpI_LT}},
+      {"CmpU_EQ",      {GenCode,     0, 1, OpCode::CmpU_EQ}},
+      {"CmpU_GE",      {GenCode,     0, 1, OpCode::CmpU_GE}},
+      {"CmpU_GT",      {GenCode,     0, 1, OpCode::CmpU_GT}},
+      {"CmpU_LE",      {GenCode,     0, 1, OpCode::CmpU_LE}},
+      {"CmpU_LT",      {GenCode,     0, 1, OpCode::CmpU_LT}},
+      {"CmpU_NE",      {GenCode,     0, 1, OpCode::CmpU_NE}},
+      {"Call",         {GenCodeW,    1, 1, OpCode::Call}},
+      {"Cnat",         {GenCodeHW,   2, 1, OpCode::Cnat}},
+      {"Copy",         {GenCode,     0, 1, OpCode::Copy}},
+      {"DivI",         {GenCode,     0, 1, OpCode::DivI}},
+      {"DivU",         {GenCode,     0, 1, OpCode::DivU}},
+      {"Drop_Nul",     {GenCode,     0, 1, OpCode::Drop_Nul}},
+      {"Drop_Ptr",     {GenCode,     0, 1, OpCode::Drop_Ptr}},
+      {"Drop_PtrB",    {GenCode,     0, 1, OpCode::Drop_PtrB}},
+      {"Drop_PtrH",    {GenCode,     0, 1, OpCode::Drop_PtrH}},
+      {"Drop_Reg",     {GenCodeR<4>, 1, 1, OpCode::Drop_Reg}},
+      {"Drop_RegB",    {GenCodeR<1>, 1, 1, OpCode::Drop_RegB}},
+      {"Drop_RegH",    {GenCodeR<2>, 1, 1, OpCode::Drop_RegH}},
+      {"InvU",         {GenCode,     0, 1, OpCode::InvU}},
+      {"Jcnd_Lit",     {GenCodeWW,   2, 2, OpCode::Jcnd_Lit}},
+      {"Jcnd_Nil",     {GenCodeW,    1, 1, OpCode::Jcnd_Nil}},
+      {"Jcnd_Tru",     {GenCodeW,    1, 1, OpCode::Jcnd_Tru}},
+      {"Jump",         {GenCode,     0, 1, OpCode::Jump}},
+      {"Jump_Lit",     {GenCodeW,    1, 1, OpCode::Jump_Lit}},
+      {"LNot",         {GenCode,     0, 1, OpCode::LNot}},
+      {"ModI",         {GenCode,     0, 1, OpCode::ModI}},
+      {"ModU",         {GenCode,     0, 1, OpCode::ModU}},
+      {"MulU",         {GenCode,     0, 1, OpCode::MulU}},
+      {"NegI",         {GenCode,     0, 1, OpCode::NegI}},
+      {"OrIU",         {GenCode,     0, 1, OpCode::OrIU}},
+      {"OrXU",         {GenCode,     0, 1, OpCode::OrXU}},
+      {"Push_Lit",     {GenCodeW,    1, 1, OpCode::Push_Lit}},
+      {"Push_Ptr",     {GenCode,     0, 1, OpCode::Push_Ptr}},
+      {"Push_PtrB",    {GenCode,     0, 1, OpCode::Push_PtrB}},
+      {"Push_PtrH",    {GenCode,     0, 1, OpCode::Push_PtrH}},
+      {"Push_Reg",     {GenCodeR<4>, 1, 1, OpCode::Push_Reg}},
+      {"Push_RegB",    {GenCodeR<1>, 1, 1, OpCode::Push_RegB}},
+      {"Push_RegH",    {GenCodeR<2>, 1, 1, OpCode::Push_RegH}},
+      {"Retn",         {GenCode,     0, 1, OpCode::Retn}},
+      {"ShLU",         {GenCode,     0, 1, OpCode::ShLU}},
+      {"ShRI",         {GenCode,     0, 1, OpCode::ShRI}},
+      {"ShRU",         {GenCode,     0, 1, OpCode::ShRU}},
+      {"SubU",         {GenCode,     0, 1, OpCode::SubU}},
+      {"Swap",         {GenCode,     0, 1, OpCode::Swap}},
    };
 }
 
@@ -220,6 +231,22 @@ namespace DGE::Code
       if(DebugOpCode)
          std::cerr << "OpCode: " << code->op
             << '(' << code[0].w.w << ',' << code[1].w.w << ")\n";
+   }
+
+   //
+   // GenCodeR
+   //
+   template<Word N>
+   static void GenCodeR(Loader *loader, OpCode *code, Loader::RawExpA const &args)
+   {
+      Word arg0 = loader->evalExp(args[0]);
+
+      code->h.h = arg0 % 4 / N;
+      code->w.w = arg0 / 4;
+
+      if(DebugOpCode)
+         std::cerr << "OpCode: " << code->op
+            << '(' << code->h.h << ',' << code->w.w << ")\n";
    }
 }
 

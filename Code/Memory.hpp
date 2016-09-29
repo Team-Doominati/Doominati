@@ -114,5 +114,45 @@ namespace DGE::Code
    };
 }
 
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace DGE::Code
+{
+   //
+   // GetWordByte
+   //
+   inline Byte GetWordByte(Word w, Word idx)
+   {
+      return (w >> (idx * 8)) & 0xFF;
+   }
+
+   //
+   // GetWordHWord
+   //
+   inline HWord GetWordHWord(Word w, Word idx)
+   {
+      return (w >> (idx * 16)) & 0xFFFF;
+   }
+
+   //
+   // SetWordByte
+   //
+   inline void SetWordByte(Word &w, Word idx, Byte val)
+   {
+      w = (w & ~(Word(0xFF) << (idx * 8))) | (Word(val) << (idx * 8));
+   }
+
+   //
+   // SetWordHWord
+   //
+   inline void SetWordHWord(Word &w, Word idx, HWord val)
+   {
+      w = (w & ~(Word(0xFFFF) << (idx * 16))) | (Word(val) << (idx * 16));
+   }
+}
+
 #endif//DGE__Code__Memory_H__
 

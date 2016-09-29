@@ -279,8 +279,28 @@ namespace DGE::Code
          dataStk.drop(2);
          NextCase();
 
+      DeclCase(Drop_PtrB):
+         prog->memory.setB(dataStk[1], dataStk[2]);
+         dataStk.drop(2);
+         NextCase();
+
+      DeclCase(Drop_PtrH):
+         prog->memory.setH(dataStk[1] >> 1, dataStk[2]);
+         dataStk.drop(2);
+         NextCase();
+
       DeclCase(Drop_Reg):
          locReg[codePtr->w.w] = dataStk[1];
+         dataStk.drop();
+         NextCase();
+
+      DeclCase(Drop_RegB):
+         SetWordByte(locReg[codePtr->w.w], codePtr->h.h, dataStk[1]);
+         dataStk.drop();
+         NextCase();
+
+      DeclCase(Drop_RegH):
+         SetWordHWord(locReg[codePtr->w.w], codePtr->h.h, dataStk[1]);
          dataStk.drop();
          NextCase();
 
@@ -339,8 +359,24 @@ namespace DGE::Code
          dataStk[1] = prog->memory.getW(dataStk[1] >> 2);
          NextCase();
 
+      DeclCase(Push_PtrB):
+         dataStk[1] = prog->memory.getB(dataStk[1]);
+         NextCase();
+
+      DeclCase(Push_PtrH):
+         dataStk[1] = prog->memory.getH(dataStk[1] >> 1);
+         NextCase();
+
       DeclCase(Push_Reg):
          dataStk.push(locReg[codePtr->w.w]);
+         NextCase();
+
+      DeclCase(Push_RegB):
+         dataStk.push(GetWordByte(locReg[codePtr->w.w], codePtr->h.h));
+         NextCase();
+
+      DeclCase(Push_RegH):
+         dataStk.push(GetWordHWord(locReg[codePtr->w.w], codePtr->h.h));
          NextCase();
 
       DeclCase(Retn):
