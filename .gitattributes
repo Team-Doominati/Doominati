@@ -1,3 +1,6 @@
+*           text=auto
+*.cpp       text=auto diff=cpp whitepsace
+*.hpp       text=auto diff=cpp whitespace
 GL/gl_2_1.c linguist-vendored
 GL/gl_2_1.h linguist-vendored
 
