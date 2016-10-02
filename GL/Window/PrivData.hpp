@@ -65,7 +65,7 @@ namespace DGE::GL
 
       PrivData() = delete;
       PrivData(PrivData const &other) = delete;
-      PrivData(int w, int h);
+      PrivData(int w_, int h_);
 
       ~PrivData();
 

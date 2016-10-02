@@ -123,7 +123,7 @@ namespace DGE::GL
    //
    // Window::PrivData constructor
    //
-   Window::PrivData::PrivData(int w, int h) :
+   Window::PrivData::PrivData(int w_, int h_) :
       window{}, gl{},
       texBound{},
       circleBuff{VertexXYUV::Layout},
@@ -133,7 +133,7 @@ namespace DGE::GL
       int y = SDL_WINDOWPOS_UNDEFINED;
 
       // Set up window.
-      if(!(window = SDL_CreateWindow("Doominati", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
+      if(!(window = SDL_CreateWindow("Doominati", x, y, w_, h_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
       {
          SDL_QuitSubSystem(SDL_INIT_VIDEO);
          std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
@@ -165,7 +165,7 @@ namespace DGE::GL
    Window::Window(int w_, int h_) :
       realw{w_}, realh{h_},
       w{1280}, h{720},
-      privdata{new PrivData{w_, h_}}
+      privdata{new PrivData(w_, h_)}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);

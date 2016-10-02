@@ -26,11 +26,11 @@ namespace DGE::GL
    //
    // Window::PrivData::texAdd
    //
-   Window::Texture *Window::PrivData::texAdd(GLsizei w, GLsizei h,
+   Window::Texture *Window::PrivData::texAdd(GLsizei texw, GLsizei texh,
       TexturePixel const *data, GDCC::Core::String name)
    {
       std::size_t idx = texVec.size();
-      texVec.emplace_back(TextureData(w, h, data), name, idx);
+      texVec.emplace_back(TextureData(texw, texh, data), name, idx);
       texMap.insert(&texVec.back());
 
       texNone = &texVec.front();
