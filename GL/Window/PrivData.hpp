@@ -69,7 +69,7 @@ namespace DGE::GL
 
       ~PrivData();
 
-      Texture *texAdd(GLsizei w, GLsizei h, TexturePixel const *data,
+      Texture *texAdd(GLsizei texw, GLsizei texh, TexturePixel const *data,
          GDCC::Core::String name);
 
       SDL_Window   *window;
