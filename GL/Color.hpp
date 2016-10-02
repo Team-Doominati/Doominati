@@ -33,9 +33,6 @@ namespace DGE::GL
       Color() = default;
       Color(float r_, float g_, float b_, float a_ = 1.0f) : r{r_}, g{g_}, b{b_}, a{a_} {}
 
-      static Color FromHSV(float h, float s, float v, float a = 1.0f);
-      static Color Interpolate(Color const &a, Color const &b, float amt);
-
       Color &fromHSV(float h, float s, float v, float aa = 1.0f)
       {
          return *this = Color::FromHSV(h, s, v, aa);
@@ -50,6 +47,20 @@ namespace DGE::GL
 
          return *this;
       }
+
+      float &operator[](std::size_t x)
+      {
+         switch(x)
+         {
+         default: case 0: return r;
+                  case 1: return g;
+                  case 2: return b;
+                  case 3: return a;
+         }
+      }
+
+      static Color FromHSV(float h, float s, float v, float a = 1.0f);
+      static Color Interpolate(Color const &a, Color const &b, float amt);
 
       float r = 1.0f;
       float g = 1.0f;

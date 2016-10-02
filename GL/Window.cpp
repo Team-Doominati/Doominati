@@ -220,7 +220,7 @@ namespace DGE::GL
 
       for(std::size_t i = 0; i < bufsize; i++)
       {
-         float angl = Core::Lerp(0.0f, Core::tau, i / float(bufsize));
+         float angl = Core::Lerp(0.0f, Core::Tau, i / float(bufsize));
          float s = std::sin(angl);
          float c = std::cos(angl);
          bufarray[i] = { s, c };
@@ -244,17 +244,17 @@ namespace DGE::GL
       VertexXYUV *buf = bufarray.data();
 
       // First, make a diamond out of two tris.
-      Circle_CalcPoint(Core::pi + Core::pi2, buf);
+      Circle_CalcPoint(Core::Pi + Core::Pi2, buf);
       Circle_CalcPoint(0, buf);
-      Circle_CalcPoint(Core::pi2, buf);
+      Circle_CalcPoint(Core::Pi2, buf);
 
-      Circle_CalcPoint(Core::pi + Core::pi2, buf);
-      Circle_CalcPoint(Core::pi2, buf);
-      Circle_CalcPoint(Core::pi, buf);
+      Circle_CalcPoint(Core::Pi + Core::Pi2, buf);
+      Circle_CalcPoint(Core::Pi2, buf);
+      Circle_CalcPoint(Core::Pi, buf);
 
       // Then create a fractal of triangles around that, for each quarter.
       for(int i = 0; i < 4; i++)
-         Circle_CalcFaces(subdivisions, Core::pi2 * i, (Core::pi2 * i) + Core::pi2, buf);
+         Circle_CalcFaces(subdivisions, Core::Pi2 * i, (Core::Pi2 * i) + Core::Pi2, buf);
 
       // Generate the VBO.
       privdata->circleBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);

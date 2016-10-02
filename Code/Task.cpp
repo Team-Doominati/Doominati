@@ -15,6 +15,7 @@
 #include "Code/Thread.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 
 //----------------------------------------------------------------------------|

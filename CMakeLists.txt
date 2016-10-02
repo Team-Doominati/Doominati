@@ -57,7 +57,7 @@ if(MSVC)
    # Fucking MSVC.
 
    add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast /std:c++latest)
-   add_definitions(/wd4996 /wd4800 /wd4244 /wd4146 /wd4055 /wd4054)
+   add_definitions(/wd4996 /wd4800 /wd4244 /wd4146 /wd4055 /wd4054 /wd4805)
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG")
