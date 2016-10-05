@@ -47,7 +47,7 @@ static DGE::GL::Window *WindowCurrent;
 //
 // ParticleSystem
 //
-static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle.pam"};
+static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle2.png"};
 
 //
 // TestShader
@@ -362,7 +362,7 @@ static int Main()
                   float((rand() % 255) - 128),
                   float((rand() % 255) - 128),
                   float((rand() % 255) - 128),
-                  float((rand() % 255) - 128)
+                  float(rand() % 360) / 360.0f
                };
 
                test->life           = r[2] + 10;
@@ -373,12 +373,10 @@ static int Main()
                test->acceleration.x = (1.0f / 16384) * r[5];
                test->acceleration.y = (1.0f / 16384) * r[6];
                test->scale.x = test->scale.y = (1.0f / 4096) * r[7] * 40;
-               test->color       = DGE::GL::Color::Pink;
-               test->colordest   = DGE::GL::Color::Red;
+               test->color       = DGE::GL::Color::FromHSV(r[8], 1, 1);
+               test->colordest   = DGE::GL::Color::Zero;
                test->colordest.a = 0.0f;
                test->colorspeed  = 0.04f;
-
-               test->rotspeed = (1.0f / 4096) * r[8];
             }
 
             input.poll();

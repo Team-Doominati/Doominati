@@ -83,6 +83,11 @@ namespace DGE::FS
 
    Format DetectFormat(char const *data, std::size_t size)
    {
+      if(size < 2) return Format::Unknown;
+
+      if(data[0] == '\037' && data[1] == '\213')
+         return Format::gzip;
+
       if(size < 3) return Format::Unknown;
 
       // Portable * Map

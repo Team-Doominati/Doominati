@@ -49,6 +49,8 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Code/Thread.hpp
    ${CMAKE_SOURCE_DIR}/Code/Types.hpp
 
+   ${CMAKE_SOURCE_DIR}/Core/BitStream.cpp
+   ${CMAKE_SOURCE_DIR}/Core/BitStream.hpp
    ${CMAKE_SOURCE_DIR}/Core/HashMapFixed.hpp
    ${CMAKE_SOURCE_DIR}/Core/List.hpp
    ${CMAKE_SOURCE_DIR}/Core/Math.hpp
@@ -59,8 +61,11 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/Core/Store.hpp
    ${CMAKE_SOURCE_DIR}/Core/String.hpp
    ${CMAKE_SOURCE_DIR}/Core/Time.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Types.hpp
    ${CMAKE_SOURCE_DIR}/Core/Vector2.hpp
    ${CMAKE_SOURCE_DIR}/Core/Vector4.hpp
+   ${CMAKE_SOURCE_DIR}/Core/Zip.cpp
+   ${CMAKE_SOURCE_DIR}/Core/Zip.hpp
 
    ${CMAKE_SOURCE_DIR}/FS/Dir/Directory.cpp
    ${CMAKE_SOURCE_DIR}/FS/Dir.cpp
@@ -79,6 +84,7 @@ add_executable(doominati WIN32
    ${CMAKE_SOURCE_DIR}/GL/Texture.cpp
    ${CMAKE_SOURCE_DIR}/GL/Texture.hpp
    ${CMAKE_SOURCE_DIR}/GL/Texture/PAM.cpp
+   ${CMAKE_SOURCE_DIR}/GL/Texture/PNG.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.cpp
    ${CMAKE_SOURCE_DIR}/GL/Window.hpp
    ${CMAKE_SOURCE_DIR}/GL/Window/Draw.cpp

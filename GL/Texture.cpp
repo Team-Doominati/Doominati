@@ -56,6 +56,7 @@ namespace DGE::GL
    std::unique_ptr<TextureLoader> CreateTextureLoader_PAM(FS::File *file);
    std::unique_ptr<TextureLoader> CreateTextureLoader_PBM(FS::File *file);
    std::unique_ptr<TextureLoader> CreateTextureLoader_PGM(FS::File *file);
+   std::unique_ptr<TextureLoader> CreateTextureLoader_PNG(FS::File *file);
    std::unique_ptr<TextureLoader> CreateTextureLoader_PPM(FS::File *file);
 
    //
@@ -68,6 +69,7 @@ namespace DGE::GL
       case FS::Format::PAM: return CreateTextureLoader_PAM(file);
       case FS::Format::PBM: return CreateTextureLoader_PBM(file);
       case FS::Format::PGM: return CreateTextureLoader_PGM(file);
+      case FS::Format::PNG: return CreateTextureLoader_PNG(file);
       case FS::Format::PPM: return CreateTextureLoader_PPM(file);
 
       default:

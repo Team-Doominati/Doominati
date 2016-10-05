@@ -59,6 +59,8 @@ namespace DGE::GL
    class TextureLoader
    {
    public:
+      virtual ~TextureLoader() {}
+
       virtual void data(TexturePixel *buf) = 0;
 
       virtual std::pair<GLsizei, GLsizei> size() = 0;

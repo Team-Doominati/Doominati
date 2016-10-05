@@ -30,6 +30,7 @@ namespace DGE::FS
       None,
 
       DGE_NTS, // Doominati Game Engine Null-Terminated Strings
+      gzip,    // gzip compressed data
       Pak,     // PAK archive
       PAM,     // Portable Arbitrary Map
       PBM,     // Portable Bit Map
