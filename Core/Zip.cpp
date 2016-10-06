@@ -28,6 +28,32 @@ namespace DGE::Core
    static constexpr int MaxBits       = 15;
    static constexpr int MaxLitCodes   = 286;
    static constexpr int MaxDstCodes   = 30;
+
+   static struct StaticHuffmanTables
+   {
+      StaticHuffmanTables() :
+         tableLen{FixedLitCodes},
+         tableDst{MaxDstCodes}
+      {
+         unsigned buffer[FixedLitCodes];
+
+         // Don't ask.
+         std::size_t i = 0;
+         while(i < 144)           buffer[i++] = 8;
+         while(i < 256)           buffer[i++] = 9;
+         while(i < 280)           buffer[i++] = 7;
+         while(i < FixedLitCodes) buffer[i++] = 8;
+
+         tableLen.construct(buffer, FixedLitCodes);
+
+         for(i = 0; i < MaxDstCodes;) buffer[i++] = 5;
+
+         tableDst.construct(buffer, MaxDstCodes);
+      }
+
+      HuffmanTable tableLen;
+      HuffmanTable tableDst;
+   } Tables;
 }
 
 
@@ -356,30 +382,7 @@ namespace DGE::Core
    //
    void Zip::streamHuffmanStatic(Byte *&out, BitStreamLE &in)
    {
-      thread_local HuffmanTable tableLen{FixedLitCodes}, tableDst{MaxDstCodes};
-      thread_local bool built = false;
-
-      if(!built)
-      {
-         unsigned buffer[FixedLitCodes];
-
-         // Don't ask.
-         std::size_t i = 0;
-         while(i < 144)           buffer[i++] = 8;
-         while(i < 256)           buffer[i++] = 9;
-         while(i < 280)           buffer[i++] = 7;
-         while(i < FixedLitCodes) buffer[i++] = 8;
-
-         tableLen.construct(buffer, FixedLitCodes);
-
-         for(i = 0; i < MaxDstCodes;) buffer[i++] = 5;
-
-         tableDst.construct(buffer, MaxDstCodes);
-
-         built = true;
-      }
-
-      outputTables(out, in, tableLen, tableDst);
+      outputTables(out, in, Tables.tableLen, Tables.tableDst);
    }
 
    //
