@@ -117,15 +117,12 @@ namespace DGE::Core
    //
    // Zip::loadHeader_Gzip
    //
-   Zip::GzipHeader Zip::loadHeader_Gzip()
+   void Zip::loadHeader_Gzip()
    {
-      static constexpr std::uint32_t ftext    = 0b00001;
       static constexpr std::uint32_t fhcrc    = 0b00010;
       static constexpr std::uint32_t fextra   = 0b00100;
       static constexpr std::uint32_t fname    = 0b01000;
       static constexpr std::uint32_t fcomment = 0b10000;
-
-      GzipHeader ret;
 
       if(size < 10)
          throw ZipError("not enough data in gzip header");
@@ -141,38 +138,28 @@ namespace DGE::Core
          throw ZipError("unknown compression method");
 
       Byte flg = *data++;
-      ret.text = flg & ftext;
-
-      for(int i = 0; i < 4; i++)
-         ret.mtime |= *data++ << ((4 - i) * 8);
-
-      Byte xfl = *data++;
-
-      if(xfl == 2) ret.compressionLevel = FLevel_Maximum;
-      if(xfl == 4) ret.compressionLevel = FLevel_Fastest;
-
-      ret.os = static_cast<GzipOS>(*data++);
+      data += 6;
 
       if(flg & fextra)
       {
          // TODO: parse extra data
-         std::uint16_t xlen = data[0] | (data[1] << 8);
-         data += xlen + 2;
-         size -= xlen + 2;
+         auto len = data[0] | (data[1] << 8);
+         data += len + 2;
+         size -= len + 2;
       }
 
       if(flg & fname)
       {
-         ret.origName = data; // let's just assume this is OK
-         data += ret.origName.size() + 1;
-         size -= ret.origName.size() + 1;
+         auto len = std::strlen(data); // let's just assume this is OK
+         data += len + 1;
+         size -= len + 1;
       }
 
       if(flg & fcomment)
       {
-         ret.comment = data;
-         data += ret.comment.size() + 1;
-         size -= ret.comment.size() + 1;
+         auto len = std::strlen(data);
+         data += len + 1;
+         size -= len + 1;
       }
 
       if(flg & fhcrc)
@@ -181,25 +168,21 @@ namespace DGE::Core
          data += 2;
          size -= 2;
       }
-
-      return ret;
    }
 
    //
    // Zip::loadHeader_Zlib
    //
-   Zip::ZlibHeader Zip::loadHeader_Zlib()
+   void Zip::loadHeader_Zlib()
    {
-      ZlibHeader ret;
-
       if(size < 2)
          throw ZipError("not enough data in zlib header");
 
       size -= 2;
 
-      unsigned   cmf   = data[0];
-      Byte       cm    = (cmf & 0x0F);
-      Byte       cinfo = (cmf & 0xF0) >> 4;
+      unsigned cmf   = data[0];
+      Byte     cm    = (cmf & 0x0F);
+      Byte     cinfo = (cmf & 0xF0) >> 4;
 
       if(cm != 8)
          throw ZipError("unknown compression method");
@@ -209,7 +192,6 @@ namespace DGE::Core
 
       Byte     flg    = data[1];
       unsigned fcheck = (cmf * 256) + flg;
-      unsigned flevel = (flg & 0b11000000) >> 6;
 
       if((fcheck % 31) != 0)
          throw ZipError("FCHECK is incorrect");
@@ -222,15 +204,7 @@ namespace DGE::Core
             throw ZipError("not enough data in zlib header");
 
          size -= 4;
-
-         for(int i = 0; i < 4; i++)
-            ret.dictID = (ret.dictID << 8) | *data++;
       }
-
-      ret.windowSize = 1u << (cinfo + 8);
-      ret.compressionLevel = FLevel(flevel);
-
-      return ret;
    }
 
    //

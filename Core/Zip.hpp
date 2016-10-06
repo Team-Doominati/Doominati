@@ -66,62 +66,6 @@ namespace DGE::Core
    class Zip
    {
    public:
-      enum FLevel
-      {
-         FLevel_Fastest,
-         FLevel_Fast,
-         FLevel_Default,
-         FLevel_Maximum
-      };
-
-      enum GzipOS
-      {
-         GzipOS_FAT,
-         GzipOS_Amiga,
-         GzipOS_VMS,
-         GzipOS_Unix,
-         GzipOS_VMCMS,
-         GzipOS_TOS,
-         GzipOS_HPFS,
-         GzipOS_Macintosh,
-         GzipOS_ZSystem,
-         GzipOS_CPM,
-         GzipOS_TOPS20,
-         GzipOS_NTFS,
-         GzipOS_QDOS,
-         GzipOS_RISCOS,
-         GzipOS_Unknown = 255
-      };
-
-      struct ZlibHeader
-      {
-         unsigned      windowSize       = 0;
-         FLevel        compressionLevel = FLevel_Fastest;
-         std::uint32_t dictID           = 0;
-//       std::uint32_t adler32          = 0;
-      };
-
-//    struct GzipSubfield
-//    {
-//       std::uint16_t           id;
-//       GDCC::Core::Array<Byte> data;
-//    };
-
-      struct GzipHeader
-      {
-         bool          text             = false;
-         std::uint32_t mtime            = 0;
-         FLevel        compressionLevel = FLevel_Default;
-         GzipOS        os               = GzipOS_Unknown;
-//       std::uint32_t crc32            = 0;
-//       std::uint32_t inputSize        = 0;
-
-//       GDCC::Core::Array<GzipSubfield> extraData;
-
-         std::string origName;
-         std::string comment;
-      };
-
       Zip(Zip const &) = delete;
       Zip(char const *data_, std::size_t size_) :
          data{data_},
@@ -129,8 +73,8 @@ namespace DGE::Core
       {
       }
 
-      GzipHeader loadHeader_Gzip();
-      ZlibHeader loadHeader_Zlib();
+      void loadHeader_Gzip();
+      void loadHeader_Zlib();
       void loadStream(Byte *out);
 
    private:
