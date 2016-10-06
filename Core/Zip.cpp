@@ -24,10 +24,10 @@
 
 namespace DGE::Core
 {
-   static constexpr std::size_t FixedLitCodes = 288;
-   static constexpr std::size_t MaxBits       = 15;
-   static constexpr std::size_t MaxLitCodes   = 286;
-   static constexpr std::size_t MaxDstCodes   = 30;
+   static constexpr int FixedLitCodes = 288;
+   static constexpr int MaxBits       = 15;
+   static constexpr int MaxLitCodes   = 286;
+   static constexpr int MaxDstCodes   = 30;
 }
 
 
@@ -40,23 +40,23 @@ namespace DGE::Core
    //
    // HuffmanTable::construct
    //
-   void HuffmanTable::construct(unsigned const *lengths, std::size_t num)
+   void HuffmanTable::construct(unsigned const *lengths, int num)
    {
-      for(unsigned i = 0; i < MaxBits; i++)
+      for(int i = 0; i < MaxBits; i++)
          nsymbols[i] = 0;
 
-      for(unsigned i = 0; i < num; i++)
+      for(int i = 0; i < num; i++)
          nsymbols[lengths[i]]++;
 
       // incomplete so we ignore this block
       if(nsymbols[0] == num)
          return;
 
-      unsigned offsets[MaxBits + 1] = {};
-      for(unsigned i = 1; i < MaxBits; i++)
+      int offsets[MaxBits + 1] = {};
+      for(int i = 1; i < MaxBits; i++)
          offsets[i + 1] = offsets[i] + nsymbols[i];
 
-      for(unsigned i = 0; i < num; i++)
+      for(int i = 0; i < num; i++)
          if(lengths[i] != 0)
             symbols[offsets[lengths[i]]++] = i;
    }
@@ -66,15 +66,15 @@ namespace DGE::Core
    //
    unsigned HuffmanTable::decode(BitStreamLE &in) const
    {
-      std::ptrdiff_t code  = 0;
-      std::ptrdiff_t first = 0;
-      unsigned       index = 0;
+      int code  = 0;
+      int first = 0;
+      int index = 0;
 
       for(unsigned i = 1; i <= MaxBits; i++)
       {
          code |= in.get();
 
-         std::ptrdiff_t count = nsymbols[i];
+         int count = nsymbols[i];
 
          if(code - count < first)
             return symbols[index + (code - first)];

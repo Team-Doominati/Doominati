@@ -45,10 +45,10 @@ namespace DGE::Core
          symbols.fill(0);
       }
 
-      void construct(unsigned const *lengths, std::size_t num);
+      void construct(unsigned const *lengths, int num);
       unsigned decode(BitStreamLE &in) const;
 
-      GDCC::Core::Array<unsigned> nsymbols;
+      GDCC::Core::Array<int>      nsymbols;
       GDCC::Core::Array<unsigned> symbols;
    };
 

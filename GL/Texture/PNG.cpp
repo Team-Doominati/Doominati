@@ -354,6 +354,7 @@ namespace DGE::GL
          unfilter(outData[scanline * y], &outData[scanline * y] + 1);
 
       // Read pixels.
+      float depth = (1 << bitdepth) - 1.0f;
       auto bufp = outData.data() + 1;
       for(std::size_t y = 0; y < height; y++, bufp++)
          for(std::size_t x = 0; x < width; x++)
@@ -369,10 +370,10 @@ namespace DGE::GL
             {
                unsigned num = 0;
 
-               for(unsigned b = 0; b < bitMult; b++)
+               for(std::size_t b = 0; b < bitMult; b++)
                   num = (num << 8) | *bufp++;
 
-               (*pixel)[i] = num / ((1 << bitdepth) - 1.0f);
+               (*pixel)[i] = num / depth;
             }
             break;
          default: throw TextureLoaderError("unsupported color type");
