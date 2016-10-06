@@ -66,12 +66,18 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-include_directories(${CMAKE_SOURCE_DIR})
-
 find_package(GDCC   REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SDL2   REQUIRED)
 find_package(Eigen3 REQUIRED)
+
+include_directories(${CMAKE_SOURCE_DIR})
+
+include_directories(SYSTEM
+   ${GDCC_INCLUDE_DIRS}
+   ${OPENGL_INCLUDE_DIR}
+   ${SDL2_INCLUDE_DIRS}
+   ${EIGEN3_INCLUDE_DIRS})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUT_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUT_DIR})
@@ -96,7 +102,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${OUT_DIR})
 ## Targets                                                                    |
 ##
 
+add_subdirectory(Code)
+add_subdirectory(Core)
 add_subdirectory(doominati)
+add_subdirectory(FS)
+add_subdirectory(GL)
+add_subdirectory(Game)
 
 ## EOF
 

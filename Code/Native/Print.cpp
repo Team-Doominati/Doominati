@@ -21,6 +21,7 @@
 
 namespace DGE::Code
 {
+   void NativeLoad_Print() {} // See Code/Native.cpp.
    //
    // void DGE_PrintChar(unsigned c)
    //

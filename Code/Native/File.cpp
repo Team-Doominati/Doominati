@@ -37,6 +37,8 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   void NativeLoad_File() {} // See Code/Native.cpp.
+
    //
    // void DGE_FileClose(int fd)
    //

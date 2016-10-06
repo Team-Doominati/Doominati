@@ -22,6 +22,8 @@
 
 namespace DGE::Code
 {
+   void NativeLoad_Memory() {} // See Code/Native.cpp.
+
    //
    // void *DGE_FreestoreBegin(void)
    //

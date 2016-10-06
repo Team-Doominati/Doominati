@@ -1,0 +1,53 @@
+##-----------------------------------------------------------------------------
+##
+## Copyright (C) 2016 Team Doominati
+##
+## See COPYING for license information.
+##
+##-----------------------------------------------------------------------------
+##
+## CMake file for dge-code.
+##
+##-----------------------------------------------------------------------------
+
+
+##----------------------------------------------------------------------------|
+## Targets                                                                    |
+##
+
+##
+## dge-code-lib
+##
+add_library(dge-code-lib STATIC
+   Codedefs.cpp
+   Codedefs.hpp
+   Function.hpp
+   Memory.cpp
+   Memory.hpp
+   MemPtr.hpp
+   MemStr.cpp
+   MemStr.hpp
+   Native.cpp
+   Native.hpp
+   Native/File.cpp
+   Native/Memory.cpp
+   Native/Print.cpp
+   Native/State.cpp
+   OpCode.cpp
+   OpCode.hpp
+   OpList.hpp
+   Process.cpp
+   Process.hpp
+   Program.hpp
+   Task.cpp
+   TaskExec.cpp
+   Task.hpp
+   Thread.cpp
+   Thread.hpp
+   Types.hpp
+)
+
+target_link_libraries(dge-code-lib dge-fs-lib)
+
+## EOF
+

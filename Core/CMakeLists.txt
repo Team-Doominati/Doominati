@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for doominati.
+## CMake file for dge-core.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,15 +16,31 @@
 ##
 
 ##
-## doominati
+## dge-core-lib
 ##
-
-add_executable(doominati WIN32
-   main_doominati.cpp
+add_library(dge-core-lib STATIC
+   BitStream.cpp
+   BitStream.hpp
+   HashMapFixed.hpp
+   HashMap.hpp
+   List.hpp
+   Math.hpp
+   NTS.cpp
+   NTS.hpp
+   Search.hpp
+   Stack.hpp
+   Store.hpp
+   String.hpp
+   Time.hpp
+   Types.hpp
+   Vector2.hpp
+   Vector4.hpp
+   Zip.cpp
+   Zip.hpp
 )
 
-target_link_libraries(doominati dge-game-lib
-   ${SDL2_MAIN_LIBRARIES})
+target_link_libraries(dge-core-lib
+   ${GDCC_LIBRARIES})
 
 ## EOF
 

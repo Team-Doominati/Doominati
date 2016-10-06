@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for doominati.
+## CMake file for dge-game.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,15 +16,14 @@
 ##
 
 ##
-## doominati
+## dge-game-lib
 ##
-
-add_executable(doominati WIN32
-   main_doominati.cpp
+add_library(dge-game-lib STATIC
+   Input.cpp
+   Input.hpp
 )
 
-target_link_libraries(doominati dge-game-lib
-   ${SDL2_MAIN_LIBRARIES})
+target_link_libraries(dge-game-lib dge-code-lib dge-gl-lib)
 
 ## EOF
 
