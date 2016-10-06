@@ -24,10 +24,10 @@
 
 namespace DGE::Core
 {
-   static constexpr int FixedLitCodes = 288;
-   static constexpr int MaxBits       = 15;
-   static constexpr int MaxLitCodes   = 286;
-   static constexpr int MaxDstCodes   = 30;
+   static constexpr std::size_t FixedLitCodes = 288;
+   static constexpr int         MaxBits       = 15;
+   static constexpr std::size_t MaxLitCodes   = 286;
+   static constexpr std::size_t MaxDstCodes   = 30;
 
    static struct StaticHuffmanTables
    {
