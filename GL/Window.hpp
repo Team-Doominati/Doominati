@@ -37,7 +37,6 @@ namespace DGE::GL
    //
    // Window
    //
-
    class Window
    {
    public:

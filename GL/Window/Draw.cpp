@@ -26,12 +26,10 @@ namespace DGE::GL
    {
       glPushMatrix();
 
-      glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x, y, 0.0f) * Eigen::Scaling(float(radius))}.data());
+      glMultMatrixf(Eigen::Affine3f(Eigen::Translation3f(x, y, 0.0f) * Eigen::Scaling(float(radius))).data());
 
-      if(!line)
-         privdata->circleBuff.bindAndDraw();
-      else
-         privdata->circleLineBuff.bindAndDraw();
+      if(!line) privdata->circleBuff.bindAndDraw();
+      else      privdata->circleLineBuff.bindAndDraw();
 
 
       glPopMatrix();
@@ -50,12 +48,10 @@ namespace DGE::GL
 
       glPushMatrix();
 
-      glMultMatrixf(Eigen::Affine3f{Eigen::Translation3f(x1 + rx, y1 + ry, 0.0f) * Eigen::Scaling(rx, ry, 1.0f)}.data());
+      glMultMatrixf(Eigen::Affine3f(Eigen::Translation3f(x1 + rx, y1 + ry, 0.0f) * Eigen::Scaling(rx, ry, 1.0f)).data());
 
-      if(!line)
-         privdata->circleBuff.bindAndDraw();
-      else
-         privdata->circleLineBuff.bindAndDraw();
+      if(!line) privdata->circleBuff.bindAndDraw();
+      else      privdata->circleLineBuff.bindAndDraw();
 
       glPopMatrix();
    }
@@ -138,7 +134,6 @@ namespace DGE::GL
          // A--B
          // |  |
          // D--C
-
          for(int i = 0; i < 4; i++)
             glVertex2f(v[i].x, v[i].y);
 
@@ -151,10 +146,8 @@ namespace DGE::GL
    //
    void Window::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
    {
-      if(!line)
-         glBegin(GL_TRIANGLES);
-      else
-         glBegin(GL_LINE_LOOP);
+      if(!line) glBegin(GL_TRIANGLES);
+      else      glBegin(GL_LINE_LOOP);
 
       glTexCoord2f(0.5f, 0);
       glVertex2f(x1, y1);

@@ -51,11 +51,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    TRY_CXX_COMPILER_FLAG(-ffast-math FLAG_CXX_ffast_math)
 
    TRY_CXX_COMPILER_FLAG(-std=c++1z FLAG_CXX_STD_CXX17)
-endif()
-
-if(MSVC)
+elseif(MSVC)
    # Fucking MSVC.
-
    add_definitions(-D_SCL_SECURE_NO_WARNINGS /fp:fast /std:c++latest)
    add_definitions(/wd4996 /wd4800 /wd4244 /wd4146 /wd4055 /wd4054 /wd4805)
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")

@@ -126,7 +126,7 @@ namespace DGE::GL
    Window::PrivData::PrivData(int w_, int h_) :
       window{}, gl{},
       texBound{},
-      circleBuff{VertexXYUV::Layout},
+      circleBuff    {VertexXYUV::Layout},
       circleLineBuff{VertexXY::Layout, GL_LINE_LOOP}
    {
       int x = SDL_WINDOWPOS_UNDEFINED;
@@ -216,7 +216,7 @@ namespace DGE::GL
       for(int i = 0; i < 4; i++)
          Circle_CalcBufSize(subdivisions, bufsize);
 
-      GDCC::Core::Array<VertexXY> bufarray{bufsize};
+      GDCC::Core::Array<VertexXY> bufarray(bufsize);
 
       for(std::size_t i = 0; i < bufsize; i++)
       {
@@ -240,7 +240,7 @@ namespace DGE::GL
       for(int i = 0; i < 4; i++)
          Circle_CalcBufSize(subdivisions, bufsize);
 
-      GDCC::Core::Array<VertexXYUV> bufarray{bufsize};
+      GDCC::Core::Array<VertexXYUV> bufarray(bufsize);
       VertexXYUV *buf = bufarray.data();
 
       // First, make a diamond out of two tris.
