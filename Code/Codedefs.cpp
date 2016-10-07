@@ -379,6 +379,19 @@ namespace DGE::Code
          return res;
       }
 
+      // Special.
+      if(val[0] == '{')
+      {
+         // TODO: Scan for closing brace and perform table lookup.
+
+         if(!std::memcmp(val + 1, "s}", 2))
+            return static_cast<std::size_t>(GDCC::Core::String::Get(val + 3));
+
+         // TODO: Throw parse exception.
+         std::cerr << "unrecognized special: '" << val << "'\n";
+         return 0;
+      }
+
       // Glyph.
       if(std::isalpha(val[0]) || val[0] == '_')
       {

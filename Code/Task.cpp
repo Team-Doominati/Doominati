@@ -67,7 +67,7 @@ namespace DGE::Code
    {
       Word stkC = std::min<Word>(retC, dataStk.size());
 
-      std::copy(retV, dataStk.data(), dataStk.data() + stkC);
+      std::copy(dataStk.data(), dataStk.data() + stkC, retV);
       std::fill(retV + stkC, retV + retC, 0);
 
       stop();
