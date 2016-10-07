@@ -84,6 +84,9 @@ namespace DGE::GL
       int realw, realh;
       int w, h;
 
+
+      static Window *Current;
+
    private:
       class PrivData;
       class Texture;

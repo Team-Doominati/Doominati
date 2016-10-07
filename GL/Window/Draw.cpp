@@ -12,6 +12,9 @@
 
 #include "GL/Window/PrivData.hpp"
 
+#include "Code/Native.hpp"
+#include "Code/Task.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -185,6 +188,189 @@ namespace DGE::GL
    Color Window::drawColorGet() const
    {
       return { cr, cg, cb, ca };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::GL
+{
+   //
+   // void DGE_DrawColor(unsigned r, unsigned g, unsigned b, unsigned a)
+   //
+   DGE_Code_NativeDefn(DGE_DrawColor)
+   {
+      float r = argv[0] / 0xFFFFFFFF.0p0;
+      float g = argv[1] / 0xFFFFFFFF.0p0;
+      float b = argv[2] / 0xFFFFFFFF.0p0;
+      float a = argc > 3 ? argv[3] / 0xFFFFFFFF.0p0 : 1.0f;
+
+      Window::Current->drawColorSet(r, g, b, a);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawCircle(int x, int y, int radius)
+   //
+   DGE_Code_NativeDefn(DGE_DrawCircle)
+   {
+      int x = static_cast<int>(argv[0]);
+      int y = static_cast<int>(argv[1]);
+      int r = static_cast<int>(argv[2]);
+
+      Window::Current->drawCircle(x, y, r);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawCircleLine(int x, int y, int radius)
+   //
+   DGE_Code_NativeDefn(DGE_DrawCircleLine)
+   {
+      int x = static_cast<int>(argv[0]);
+      int y = static_cast<int>(argv[1]);
+      int r = static_cast<int>(argv[2]);
+
+      Window::Current->drawCircle(x, y, r, true);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawEllipse(int x1, int y1, int x2, int y2)
+   //
+   DGE_Code_NativeDefn(DGE_DrawEllipse)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+
+      Window::Current->drawEllipse(x1, y1, x2, y2);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawEllipseLine(int x1, int y1, int x2, int y2)
+   //
+   DGE_Code_NativeDefn(DGE_DrawEllipseLine)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+
+      Window::Current->drawEllipse(x1, y1, x2, y2, true);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawRectangle(int x1, int y1, int x2, int y2)
+   //
+   DGE_Code_NativeDefn(DGE_DrawRectangle)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+
+      Window::Current->drawRectangle(x1, y1, x2, y2);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawRectangleLine(int x1, int y1, int x2, int y2)
+   //
+   DGE_Code_NativeDefn(DGE_DrawRectangleLine)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+
+      Window::Current->drawRectangle(x1, y1, x2, y2, 0, true);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawLine(int x1, int y1, int x2, int y2)
+   //
+   DGE_Code_NativeDefn(DGE_DrawLine)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+
+      Window::Current->drawLine(x1, y1, x2, y2);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawTexture(unsigned tex)
+   //
+   DGE_Code_NativeDefn(DGE_DrawTexture)
+   {
+      if(argv[0])
+         Window::Current->textureBind(Window::Current->textureGet(argv[0]));
+      else
+         Window::Current->textureUnbind();
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
+   //
+   DGE_Code_NativeDefn(DGE_DrawTriangle)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+      int x3 = static_cast<int>(argv[4]);
+      int y3 = static_cast<int>(argv[5]);
+
+      Window::Current->drawTriangle(x1, y1, x2, y2, x3, y3);
+
+      return false;
+   }
+
+   //
+   // void DGE_DrawTriangleLine(int x1, int y1, int x2, int y2, int x3, int y3)
+   //
+   DGE_Code_NativeDefn(DGE_DrawTriangleLine)
+   {
+      int x1 = static_cast<int>(argv[0]);
+      int y1 = static_cast<int>(argv[1]);
+      int x2 = static_cast<int>(argv[2]);
+      int y2 = static_cast<int>(argv[3]);
+      int x3 = static_cast<int>(argv[4]);
+      int y3 = static_cast<int>(argv[5]);
+
+      Window::Current->drawTriangle(x1, y1, x2, y2, x3, y3, true);
+
+      return false;
+   }
+
+   //
+   // unsigned DGE_GetTexture(__str_ent *name)
+   //
+   DGE_Code_NativeDefn(DGE_GetTexture)
+   {
+      GDCC::Core::String str{argv[0]};
+      task->dataStk.push(Window::Current->textureGetIdx(str));
+      return false;
    }
 }
 

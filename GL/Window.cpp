@@ -14,12 +14,17 @@
 
 #include "GL/Shader.hpp"
 
+#include "Code/Native.hpp"
+#include "Code/Process.hpp"
+#include "Code/Program.hpp"
+
 #include "Core/Vector4.hpp"
 #include "Core/Time.hpp"
 
 #include <GDCC/Core/Array.hpp>
 
 #include <iostream>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
@@ -63,6 +68,19 @@ namespace DGE::GL
          color = gl_Color;
       }
    )";
+
+   static std::vector<Code::Function *> CallbackRenderBegin;
+   static std::vector<Code::Function *> CallbackRenderEnd;
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace DGE::GL
+{
+   Window *Window::Current = nullptr;
 }
 
 
@@ -329,6 +347,9 @@ namespace DGE::GL
       }
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      for(auto const &callback : CallbackRenderBegin)
+         Code::Process::Main->call(callback);
    }
 
    //
@@ -336,6 +357,9 @@ namespace DGE::GL
    //
    void Window::renderEnd()
    {
+      for(auto const &callback : CallbackRenderEnd)
+         Code::Process::Main->call(callback);
+
       SDL_GL_SwapWindow(privdata->window);
    }
 
@@ -384,6 +408,32 @@ namespace DGE::GL
       glOrtho(0, w, h, 0, 0, 0.01f);
 
       glMatrixMode(GL_MODELVIEW);
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::GL
+{
+   //
+   // void DGE_CallbackDrawBegin(void (*callback)(void))
+   //
+   DGE_Code_NativeDefn(DGE_CallbackDrawBegin)
+   {
+      CallbackRenderBegin.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      return false;
+   }
+
+   //
+   // void DGE_CallbackDrawEnd(void (*callback)(void))
+   //
+   DGE_Code_NativeDefn(DGE_CallbackDrawEnd)
+   {
+      CallbackRenderEnd.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      return false;
    }
 }
 
