@@ -111,6 +111,8 @@ namespace DGE::Code
       {"Nop",          {GenCode,     0, 1, OpCode::Nop}},
       {"Kill",         {GenCodeHW,   2, 1, OpCode::Kill}},
 
+      {"Ad3U",         {GenCode,     0, 1, OpCode::Ad3U}},
+      {"AdXU",         {GenCode,     0, 1, OpCode::AdXU}},
       {"AddU",         {GenCode,     0, 1, OpCode::AddU}},
       {"AndU",         {GenCode,     0, 1, OpCode::AndU}},
       {"CmpI_GE",      {GenCode,     0, 1, OpCode::CmpI_GE}},
@@ -144,6 +146,7 @@ namespace DGE::Code
       {"LNot",         {GenCode,     0, 1, OpCode::LNot}},
       {"ModI",         {GenCode,     0, 1, OpCode::ModI}},
       {"ModU",         {GenCode,     0, 1, OpCode::ModU}},
+      {"MuXU",         {GenCode,     0, 1, OpCode::MuXU}},
       {"MulU",         {GenCode,     0, 1, OpCode::MulU}},
       {"NegI",         {GenCode,     0, 1, OpCode::NegI}},
       {"OrIU",         {GenCode,     0, 1, OpCode::OrIU}},
@@ -159,6 +162,8 @@ namespace DGE::Code
       {"ShLU",         {GenCode,     0, 1, OpCode::ShLU}},
       {"ShRI",         {GenCode,     0, 1, OpCode::ShRI}},
       {"ShRU",         {GenCode,     0, 1, OpCode::ShRU}},
+      {"Su3U",         {GenCode,     0, 1, OpCode::Su3U}},
+      {"SuXU",         {GenCode,     0, 1, OpCode::SuXU}},
       {"SubU",         {GenCode,     0, 1, OpCode::SubU}},
       {"Swap",         {GenCode,     0, 1, OpCode::Swap}},
    };

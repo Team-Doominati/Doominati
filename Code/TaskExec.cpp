@@ -156,6 +156,15 @@ namespace DGE::Code
    {
       l = static_cast<SWord>(l) >> r;
    }
+
+   //
+   // WriteDWord
+   //
+   static inline void WriteDWord(Word *l, DWord r)
+   {
+      l[0] = r;
+      l[1] = r >> 32;
+   }
 }
 
 
@@ -221,6 +230,15 @@ namespace DGE::Code
          DefnCase_OpStk(CmpU_GE);
          DefnCase_OpStk(CmpU_GT);
          DefnCase_OpStk(CmpU_NE);
+
+      DeclCase(Ad3U):
+         WriteDWord(&dataStk[3], DWord(dataStk[2]) + dataStk[1] + dataStk[3]);
+         dataStk.drop();
+         NextCase();
+
+      DeclCase(AdXU):
+         WriteDWord(&dataStk[2], DWord(dataStk[2]) + dataStk[1]);
+         NextCase();
 
       DeclCase(Call):
       {
@@ -347,6 +365,10 @@ namespace DGE::Code
          dataStk[1] = !dataStk[1];
          NextCase();
 
+      DeclCase(MuXU):
+         WriteDWord(&dataStk[2], DWord(dataStk[2]) * dataStk[1]);
+         NextCase();
+
       DeclCase(NegI):
          dataStk[1] = ~dataStk[1] + 1;
          NextCase();
@@ -393,6 +415,15 @@ namespace DGE::Code
          // Drop call frame.
          callStk.drop();
 
+         NextCase();
+
+      DeclCase(Su3U):
+         WriteDWord(&dataStk[3], DWord(dataStk[2]) - dataStk[1] - (~dataStk[3] + 1));
+         dataStk.drop();
+         NextCase();
+
+      DeclCase(SuXU):
+         WriteDWord(&dataStk[2], DWord(dataStk[2]) - dataStk[1]);
          NextCase();
 
       DeclCase(Swap):
