@@ -96,6 +96,27 @@
 namespace DGE::Code
 {
    //
+   // Bclz
+   //
+   static inline void Bclz(Word &w)
+   {
+      #define Count0(base) (base)
+      #define Count1(base) (w & (0x80000000 >> (base)) ? Count0(base) : Count0(base + 1))
+      #define Count2(base) (w & (0xC0000000 >> (base)) ? Count1(base) : Count1(base + 2))
+      #define Count4(base) (w & (0xF0000000 >> (base)) ? Count2(base) : Count2(base + 4))
+      #define Count8(base) (w & (0xFF000000 >> (base)) ? Count4(base) : Count4(base + 8))
+
+      w = w ? w & 0xFFFF0000 ? Count8(0) : Count8(16) : 32;
+
+      #undef Count8
+      #undef Count4
+      #undef Count2
+      #undef Count1
+      #undef Count0
+   }
+   static inline void Bclo(Word &w) {Bclz(w = ~w);}
+
+   //
    // CmpI_*
    //
    static inline void CmpI_LE(Word &l, Word r)
@@ -240,6 +261,14 @@ namespace DGE::Code
          WriteDWord(&dataStk[2], DWord(dataStk[2]) + dataStk[1]);
          NextCase();
 
+      DeclCase(Bclo):
+         Bclo(dataStk[1]);
+         NextCase();
+
+      DeclCase(Bclz):
+         Bclz(dataStk[1]);
+         NextCase();
+
       DeclCase(Call):
       {
          Function *func = &prog->funcs[dataStk[1]];
@@ -361,8 +390,18 @@ namespace DGE::Code
          codePtr = &prog->codes[codePtr->w.w];
          ThisCase();
 
+      DeclCase(LAnd):
+         dataStk[2] = dataStk[2] && dataStk[1];
+         dataStk.drop();
+         NextCase();
+
       DeclCase(LNot):
          dataStk[1] = !dataStk[1];
+         NextCase();
+
+      DeclCase(LOrI):
+         dataStk[2] = dataStk[2] || dataStk[1];
+         dataStk.drop();
          NextCase();
 
       DeclCase(MuXU):
