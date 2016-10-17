@@ -15,6 +15,7 @@
 
 #include "Code/Types.hpp"
 
+#include "Core/HashMapFixed.hpp"
 #include "Core/String.hpp"
 
 #include <GDCC/Core/Array.hpp>
@@ -65,6 +66,8 @@ namespace DGE::Code
 
       Loader();
 
+      Word addJump(RawExp const *jumpv, Word jumpc);
+
       Word evalExp(RawExp const &exp);
 
       void gen(Program *prog);
@@ -114,6 +117,7 @@ namespace DGE::Code
       std::unordered_map<Core::HashedStr, Word>   labels;
       std::unordered_map<Core::HashedStr, Word>   globals;
       std::vector<RawInit>                        inits;
+      std::vector<Core::HashMapFixed<Word, Word>> jumps;
 
       Word codeCount;
       Word globalCount;

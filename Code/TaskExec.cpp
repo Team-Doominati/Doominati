@@ -373,6 +373,16 @@ namespace DGE::Code
          dataStk.drop();
          ThisCase();
 
+      DeclCase(Jcnd_Tab):
+         if(Word *jump = prog->jumps[codePtr->w.w].find(dataStk[1]))
+         {
+            dataStk.drop();
+            codePtr = &prog->codes[*jump];
+         }
+         else
+            ++codePtr;
+         ThisCase();
+
       DeclCase(Jcnd_Tru):
          if(dataStk[1])
             codePtr = &prog->codes[codePtr->w.w];

@@ -92,6 +92,7 @@ namespace DGE::Code
 {
    static void GenCode(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    static void GenCodeHW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
+   static void GenCodeJTab(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    static void GenCodeW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
    static void GenCodeWW(Loader *loader, OpCode *code, Loader::RawExpA const &args);
 
@@ -106,6 +107,7 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   #define VA static_cast<std::size_t>(-1)
    static std::unordered_map<GDCC::Core::String, CodeTrans> CodeTransTab
    {
       {"Nop",          {GenCode,     0, 1, OpCode::Nop}},
@@ -142,6 +144,7 @@ namespace DGE::Code
       {"InvU",         {GenCode,     0, 1, OpCode::InvU}},
       {"Jcnd_Lit",     {GenCodeWW,   2, 2, OpCode::Jcnd_Lit}},
       {"Jcnd_Nil",     {GenCodeW,    1, 1, OpCode::Jcnd_Nil}},
+      {"Jcnd_Tab",     {GenCodeJTab,VA, 1, OpCode::Jcnd_Tab}},
       {"Jcnd_Tru",     {GenCodeW,    1, 1, OpCode::Jcnd_Tru}},
       {"Jump",         {GenCode,     0, 1, OpCode::Jump}},
       {"Jump_Lit",     {GenCodeW,    1, 1, OpCode::Jump_Lit}},
@@ -171,6 +174,7 @@ namespace DGE::Code
       {"SubU",         {GenCode,     0, 1, OpCode::SubU}},
       {"Swap",         {GenCode,     0, 1, OpCode::Swap}},
    };
+   #undef VA
 }
 
 
@@ -214,6 +218,17 @@ namespace DGE::Code
       if(DebugOpCode)
          std::cerr << "OpCode: " << code->op
             << '(' << code->h.h << ',' << code->w.w << ")\n";
+   }
+
+   //
+   // GenCodeJTab
+   //
+   static void GenCodeJTab(Loader *loader, OpCode *code, Loader::RawExpA const &args)
+   {
+      code->w.w = loader->addJump(args.data(), args.size() / 2);
+
+      if(DebugOpCode)
+         std::cerr << "OpCode: " << code->op << '(' << code->w.w << ")\n";
    }
 
    //
@@ -288,7 +303,8 @@ namespace DGE::Code
          throw GDCC::Core::ParseExceptExpect({}, "code", codeStr, false);
 
       // TODO: Better error message.
-      if(argv.size() != code->second.argc)
+      if(code->second.argc != static_cast<std::size_t>(-1) &&
+         argv.size() != code->second.argc)
          throw GDCC::Core::ParseExceptStr({}, "invalid argument count");
 
       codes.emplace_back(code->first, std::move(argv));
@@ -306,6 +322,29 @@ namespace DGE::Code
 
       funcs.push_back({glyph, label, param, local, funcs.size()});
       return funcs.back().index;
+   }
+
+   //
+   // Loader::addJump
+   //
+   Word Loader::addJump(RawExp const *jumpv, Word jumpc)
+   {
+      Word ret = jumps.size();
+
+      Core::HashMapFixed<Word, Word> tab;
+      tab.alloc(jumpc);
+
+      for(auto &jump : tab)
+      {
+         jump.key = evalExp(*jumpv++);
+         jump.val = evalExp(*jumpv++);
+      }
+
+      tab.build();
+
+      jumps.push_back(std::move(tab));
+
+      return ret;
    }
 
    //
@@ -476,6 +515,8 @@ namespace DGE::Code
    {
       prog->codes = GDCC::Core::Array<OpCode>{codeCount + 1};
       genCodes(prog);
+
+      prog->jumps = {GDCC::Core::Move, jumps.begin(), jumps.end()};
 
       prog->funcs.alloc(funcs.size());
       genFuncs(prog);

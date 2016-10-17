@@ -36,8 +36,9 @@ namespace DGE::Code
    class Program
    {
    public:
-      GDCC::Core::Array<OpCode>                        codes;
-      Core::HashMapFixed<GDCC::Core::String, Function> funcs;
+      GDCC::Core::Array<OpCode>                         codes;
+      Core::HashMapFixed<GDCC::Core::String, Function>  funcs;
+      GDCC::Core::Array<Core::HashMapFixed<Word, Word>> jumps;
 
       // This belongs in Process some day.
       Memory memory;

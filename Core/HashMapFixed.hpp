@@ -47,6 +47,22 @@ namespace DGE::Core
 
 
       HashMapFixed() : hasher{}, table{nullptr}, elemV{nullptr}, elemC{0} {}
+      HashMapFixed(HashMapFixed const &) = delete;
+
+      //
+      // Move constructor
+      //
+      HashMapFixed(HashMapFixed &&m) :
+         hasher{std::move(m.hasher)},
+         table {m.table},
+         elemV {m.elemV},
+         elemC {m.elemC}
+      {
+         m.table = nullptr;
+         m.elemV = nullptr;
+         m.elemC = 0;
+      }
+
       ~HashMapFixed() {free();}
 
       // operator [ std::size_t ]
