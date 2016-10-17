@@ -80,10 +80,10 @@
 // Ops
 //
 #define AddU(l, r) ((l) += (r))
-#define AndU(l, r) ((l) &= (r))
+#define BAnd(l, r) ((l) &= (r))
+#define BOrI(l, r) ((l) |= (r))
+#define BOrX(l, r) ((l) ^= (r))
 #define MulU(l, r) ((l) *= (r))
-#define OrIU(l, r) ((l) |= (r))
-#define OrXU(l, r) ((l) ^= (r))
 #define ShLU(l, r) ((l) <<= (r))
 #define ShRU(l, r) ((l) >>= (r))
 #define SubU(l, r) ((l) -= (r))
@@ -228,14 +228,14 @@ namespace DGE::Code
          goto task_stop;
 
          DefnCase_OpStk(AddU);
-         DefnCase_OpStk(AndU);
+         DefnCase_OpStk(BAnd);
+         DefnCase_OpStk(BOrI);
+         DefnCase_OpStk(BOrX);
          DefnCase_OpStk(DivI);
          DefnCase_OpStk(DivU);
          DefnCase_OpStk(ModI);
          DefnCase_OpStk(ModU);
          DefnCase_OpStk(MulU);
-         DefnCase_OpStk(OrIU);
-         DefnCase_OpStk(OrXU);
          DefnCase_OpStk(ShLU);
          DefnCase_OpStk(ShRI);
          DefnCase_OpStk(ShRU);
@@ -259,6 +259,10 @@ namespace DGE::Code
 
       DeclCase(AdXU):
          WriteDWord(&dataStk[2], DWord(dataStk[2]) + dataStk[1]);
+         NextCase();
+
+      DeclCase(BNot):
+         dataStk[1] = ~dataStk[1];
          NextCase();
 
       DeclCase(Bclo):
@@ -349,10 +353,6 @@ namespace DGE::Code
       DeclCase(Drop_RegH):
          SetWordHWord(locReg[codePtr->w.w], codePtr->h.h, dataStk[1]);
          dataStk.drop();
-         NextCase();
-
-      DeclCase(InvU):
-         dataStk[1] = ~dataStk[1];
          NextCase();
 
       DeclCase(Jcnd_Lit):
