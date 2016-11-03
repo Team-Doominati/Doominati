@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Window/PrivData.hpp"
+#include "GL/Renderer/PrivData.hpp"
 
 #include "FS/Dir.hpp"
 
@@ -24,9 +24,9 @@
 namespace DGE::GL
 {
    //
-   // Window::PrivData::texAdd
+   // Renderer::PrivData::texAdd
    //
-   Window::Texture *Window::PrivData::texAdd(GLsizei texw, GLsizei texh,
+   Renderer::Texture *Renderer::PrivData::texAdd(GLsizei texw, GLsizei texh,
       TexturePixel const *data, GDCC::Core::String name)
    {
       std::size_t idx = texVec.size();
@@ -39,9 +39,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureBind
+   // Renderer::textureBind
    //
-   void Window::textureBind(TextureData *tex)
+   void Renderer::textureBind(TextureData *tex)
    {
       if(privdata->texBound != tex->tex)
       {
@@ -51,25 +51,25 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureGet
+   // Renderer::textureGet
    //
-   TextureData *Window::textureGet(char const *name)
+   TextureData *Renderer::textureGet(char const *name)
    {
       return &textureGetRaw(name)->data;
    }
 
    //
-   // Window::textureGet
+   // Renderer::textureGet
    //
-   TextureData *Window::textureGet(GDCC::Core::String name)
+   TextureData *Renderer::textureGet(GDCC::Core::String name)
    {
       return &textureGetRaw(name)->data;
    }
 
    //
-   // Window::textureGet
+   // Renderer::textureGet
    //
-   TextureData *Window::textureGet(std::size_t idx)
+   TextureData *Renderer::textureGet(std::size_t idx)
    {
       if(idx < privdata->texVec.size())
          return &privdata->texVec[idx].data;
@@ -78,17 +78,17 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureGetIdx
+   // Renderer::textureGetIdx
    //
-   std::size_t Window::textureGetIdx(GDCC::Core::String name)
+   std::size_t Renderer::textureGetIdx(GDCC::Core::String name)
    {
       return textureGetRaw(name)->idx;
    }
 
    //
-   // Window::textureGetRaw
+   // Renderer::textureGetRaw
    //
-   Window::Texture *Window::textureGetRaw(GDCC::Core::String name)
+   Renderer::Texture *Renderer::textureGetRaw(GDCC::Core::String name)
    {
       if(auto tex = privdata->texMap.find(name))
          return tex;
@@ -101,9 +101,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureGet_File
+   // Renderer::textureGet_File
    //
-   Window::Texture *Window::textureGet_File(GDCC::Core::String name)
+   Renderer::Texture *Renderer::textureGet_File(GDCC::Core::String name)
    {
       char const *filename = name.data() + 1;
       FS::File *file = FS::Dir::FindFile(filename);
@@ -133,9 +133,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureGet_None
+   // Renderer::textureGet_None
    //
-   Window::Texture *Window::textureGet_None(GDCC::Core::String name)
+   Renderer::Texture *Renderer::textureGet_None(GDCC::Core::String name)
    {
       TexturePixel const data[4] =
          {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
@@ -144,9 +144,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::textureUnbind
+   // Renderer::textureUnbind
    //
-   void Window::textureUnbind()
+   void Renderer::textureUnbind()
    {
       TextureData const *tex = &privdata->texNone->data;
       if(privdata->texBound != tex->tex)

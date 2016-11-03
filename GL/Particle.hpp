@@ -58,7 +58,7 @@ namespace DGE::GL
 
    class ParticleSystem
    {
-      friend class Window;
+      friend class Renderer;
 
    public:
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW

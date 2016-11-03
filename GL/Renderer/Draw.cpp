@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Window/PrivData.hpp"
+#include "GL/Renderer/PrivData.hpp"
 
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
@@ -23,9 +23,9 @@
 namespace DGE::GL
 {
    //
-   // Window::drawCircle
+   // Renderer::drawCircle
    //
-   void Window::drawCircle(int x, int y, int radius, bool line) const
+   void Renderer::drawCircle(int x, int y, int radius, bool line) const
    {
       glPushMatrix();
 
@@ -39,9 +39,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawEllipse
+   // Renderer::drawEllipse
    //
-   void Window::drawEllipse(int x1, int y1, int x2, int y2, bool line) const
+   void Renderer::drawEllipse(int x1, int y1, int x2, int y2, bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
       if(y1 > y2) std::swap(y1, y2);
@@ -60,9 +60,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawLine
+   // Renderer::drawLine
    //
-   void Window::drawLine(int x1, int y1, int x2, int y2) const
+   void Renderer::drawLine(int x1, int y1, int x2, int y2) const
    {
       glBegin(GL_LINES);
 
@@ -73,9 +73,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawRectangle
+   // Renderer::drawRectangle
    //
-   void Window::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line) const
+   void Renderer::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
       if(y1 > y2) std::swap(y1, y2);
@@ -145,9 +145,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawTriangle
+   // Renderer::drawTriangle
    //
-   void Window::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
+   void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
    {
       if(!line) glBegin(GL_TRIANGLES);
       else      glBegin(GL_LINE_LOOP);
@@ -163,9 +163,9 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawColorSet
+   // Renderer::drawColorSet
    //
-   void Window::drawColorSet(float r, float g, float b, float a)
+   void Renderer::drawColorSet(float r, float g, float b, float a)
    {
       glColor4f(r, g, b, a);
       cr = r;
@@ -175,17 +175,17 @@ namespace DGE::GL
    }
 
    //
-   // Window::drawColorSet
+   // Renderer::drawColorSet
    //
-   void Window::drawColorSet(Color const &col)
+   void Renderer::drawColorSet(Color const &col)
    {
       drawColorSet(col.r, col.g, col.b, col.a);
    }
 
    //
-   // Window::drawColorGet
+   // Renderer::drawColorGet
    //
-   Color Window::drawColorGet() const
+   Color Renderer::drawColorGet() const
    {
       return { cr, cg, cb, ca };
    }
@@ -208,7 +208,7 @@ namespace DGE::GL
       float b = argv[2] / 0xFFFFFFFF.0p0;
       float a = argc > 3 ? argv[3] / 0xFFFFFFFF.0p0 : 1.0f;
 
-      Window::Current->drawColorSet(r, g, b, a);
+      Renderer::Current->drawColorSet(r, g, b, a);
 
       return false;
    }
@@ -222,7 +222,7 @@ namespace DGE::GL
       int y = static_cast<int>(argv[1]);
       int r = static_cast<int>(argv[2]);
 
-      Window::Current->drawCircle(x, y, r);
+      Renderer::Current->drawCircle(x, y, r);
 
       return false;
    }
@@ -236,7 +236,7 @@ namespace DGE::GL
       int y = static_cast<int>(argv[1]);
       int r = static_cast<int>(argv[2]);
 
-      Window::Current->drawCircle(x, y, r, true);
+      Renderer::Current->drawCircle(x, y, r, true);
 
       return false;
    }
@@ -251,7 +251,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Window::Current->drawEllipse(x1, y1, x2, y2);
+      Renderer::Current->drawEllipse(x1, y1, x2, y2);
 
       return false;
    }
@@ -266,7 +266,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Window::Current->drawEllipse(x1, y1, x2, y2, true);
+      Renderer::Current->drawEllipse(x1, y1, x2, y2, true);
 
       return false;
    }
@@ -281,7 +281,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Window::Current->drawRectangle(x1, y1, x2, y2);
+      Renderer::Current->drawRectangle(x1, y1, x2, y2);
 
       return false;
    }
@@ -296,7 +296,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Window::Current->drawRectangle(x1, y1, x2, y2, 0, true);
+      Renderer::Current->drawRectangle(x1, y1, x2, y2, 0, true);
 
       return false;
    }
@@ -311,7 +311,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Window::Current->drawLine(x1, y1, x2, y2);
+      Renderer::Current->drawLine(x1, y1, x2, y2);
 
       return false;
    }
@@ -322,9 +322,9 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_DrawTexture)
    {
       if(argv[0])
-         Window::Current->textureBind(Window::Current->textureGet(argv[0]));
+         Renderer::Current->textureBind(Renderer::Current->textureGet(argv[0]));
       else
-         Window::Current->textureUnbind();
+         Renderer::Current->textureUnbind();
 
       return false;
    }
@@ -341,7 +341,7 @@ namespace DGE::GL
       int x3 = static_cast<int>(argv[4]);
       int y3 = static_cast<int>(argv[5]);
 
-      Window::Current->drawTriangle(x1, y1, x2, y2, x3, y3);
+      Renderer::Current->drawTriangle(x1, y1, x2, y2, x3, y3);
 
       return false;
    }
@@ -358,7 +358,7 @@ namespace DGE::GL
       int x3 = static_cast<int>(argv[4]);
       int y3 = static_cast<int>(argv[5]);
 
-      Window::Current->drawTriangle(x1, y1, x2, y2, x3, y3, true);
+      Renderer::Current->drawTriangle(x1, y1, x2, y2, x3, y3, true);
 
       return false;
    }
@@ -369,7 +369,7 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_GetTexture)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Window::Current->textureGetIdx(str));
+      task->dataStk.push(Renderer::Current->textureGetIdx(str));
       return false;
    }
 }

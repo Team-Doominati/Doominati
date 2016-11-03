@@ -26,6 +26,7 @@
 #include "GL/Particle.hpp"
 #include "GL/Shader.hpp"
 #include "GL/Window.hpp"
+#include "GL/Renderer.hpp"
 
 #include "Game/Input.hpp"
 
@@ -135,10 +136,10 @@ static char const *TestShaderVertex = R"(
 //
 static void DrawTest()
 {
-   auto window = DGE::GL::Window::Current;
+   auto renderer = DGE::GL::Renderer::Current;
 
-   auto w = window->w;
-   auto h = window->h;
+   auto w = renderer->w;
+   auto h = renderer->h;
 
    auto xo = w / 3.0f;
    auto yo = h / 3.0f;
@@ -148,63 +149,63 @@ static void DrawTest()
 
    double seconds = DGE::Core::GetTicks<DGE::Core::Second<double>>();
 
-   window->drawParticleSystem(ParticleSystem);
+   renderer->drawParticleSystem(ParticleSystem);
 
-   window->drawColorSet(DGE::GL::Color::White);
+   renderer->drawColorSet(DGE::GL::Color::White);
 
-   window->textureBind("@Textures/bigscreen.ppm");
-   window->drawRectangle(303, 2, 603, 302);
+   renderer->textureBind("@Textures/bigscreen.ppm");
+   renderer->drawRectangle(303, 2, 603, 302);
 
-   window->shaderSwap(TestShader.get());
-   window->shaderUpdate();
-   window->drawRectangle(2, 2, 302, 302);
-   window->shaderDrop();
+   renderer->shaderSwap(TestShader.get());
+   renderer->shaderUpdate();
+   renderer->drawRectangle(2, 2, 302, 302);
+   renderer->shaderDrop();
 
-   window->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
+   renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds) * 0.5f + 0.5f, 1.0, 1.0));
 
-   window->textureBind("@Textures/colors.ppm");
-   window->drawRectangle(w - 102, h - 102, w - 2, h - 2);
-   window->textureUnbind();
+   renderer->textureBind("@Textures/colors.ppm");
+   renderer->drawRectangle(w - 102, h - 102, w - 2, h - 2);
+   renderer->textureUnbind();
 
-   window->drawRectangle(xp, yp, xo, yo, 0, true);
+   renderer->drawRectangle(xp, yp, xo, yo, 0, true);
 
-   window->drawColorSet(DGE::GL::Color::Red);
+   renderer->drawColorSet(DGE::GL::Color::Red);
 
-   window->drawLine(xp, yp, xo, yo);
-   window->drawLine(xp, yo, xo, yp);
+   renderer->drawLine(xp, yp, xo, yo);
+   renderer->drawLine(xp, yo, xo, yp);
 
-   window->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawColorSet(DGE::GL::Color::Green);
 
    double s = std::sin(seconds * 4.0) * 40.0;
    double c = std::cos(seconds * 4.0) * 40.0;
 
-   window->drawLine(xp + s, yp + c, xo + s, yo + c);
-   window->drawLine(xp + s, yo + c, xo + s, yp + c);
+   renderer->drawLine(xp + s, yp + c, xo + s, yo + c);
+   renderer->drawLine(xp + s, yo + c, xo + s, yp + c);
 
-   window->textureBind("@Textures/colors.ppm");
+   renderer->textureBind("@Textures/colors.ppm");
 
    DGE::GL::Color drawc{DGE::GL::Color::Pink};
    for(int i = 0; i < 3; i++)
    {
-      window->drawColorSet(drawc);
+      renderer->drawColorSet(drawc);
       drawc.interpolate(DGE::GL::Color::Blue, 1.0f / 3.0f);
 
-      window->drawCircle(64 + (i * 128), 550, 64);
+      renderer->drawCircle(64 + (i * 128), 550, 64);
    }
 
-   window->textureUnbind();
+   renderer->textureUnbind();
 
-   window->drawColorSet(DGE::GL::Color::Pink);
-   window->drawEllipse(0, 614, 900, h);
+   renderer->drawColorSet(DGE::GL::Color::Pink);
+   renderer->drawEllipse(0, 614, 900, h);
 
-   window->drawColorSet(DGE::GL::Color::Green);
-   window->drawEllipse(0, 614, 900, h, true);
+   renderer->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawEllipse(0, 614, 900, h, true);
 
-   window->drawColorSet(DGE::GL::Color::Purple);
-   window->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
+   renderer->drawColorSet(DGE::GL::Color::Purple);
+   renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
 
-   window->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
-   window->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
+   renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
+   renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
 }
 
 //
@@ -244,19 +245,19 @@ static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
    // |   |
    //  -6-
 
-   auto window = DGE::GL::Window::Current;
+   auto renderer = DGE::GL::Renderer::Current;
 
-   window->lineSmooth(true);
-   window->lineWidth(2);
-   if(digit.seg0) window->drawLine(xl, yh, xh, yh);
-   if(digit.seg1) window->drawLine(xl, ym, xl, yh);
-   if(digit.seg2) window->drawLine(xh, ym, xh, yh);
-   if(digit.seg3) window->drawLine(xl, ym, xh, ym);
-   if(digit.seg4) window->drawLine(xl, yl, xl, ym);
-   if(digit.seg5) window->drawLine(xh, yl, xh, ym);
-   if(digit.seg6) window->drawLine(xl, yl, xh, yl);
-   window->lineSmooth(false);
-   window->lineWidth(1);
+   renderer->lineSmooth(true);
+   renderer->lineWidth(2);
+   if(digit.seg0) renderer->drawLine(xl, yh, xh, yh);
+   if(digit.seg1) renderer->drawLine(xl, ym, xl, yh);
+   if(digit.seg2) renderer->drawLine(xh, ym, xh, yh);
+   if(digit.seg3) renderer->drawLine(xl, ym, xh, ym);
+   if(digit.seg4) renderer->drawLine(xl, yl, xl, ym);
+   if(digit.seg5) renderer->drawLine(xh, yl, xh, ym);
+   if(digit.seg6) renderer->drawLine(xl, yl, xh, yl);
+   renderer->lineSmooth(false);
+   renderer->lineWidth(1);
 }
 
 //
@@ -275,9 +276,9 @@ static void DrawFPS()
 
    unsigned int fps = std::round(1 / timeMean);
 
-   DGE::GL::Window::Current->drawColorSet(DGE::GL::Color::White);
+   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Color::White);
 
-   int x = DGE::GL::Window::Current->w - 65;
+   int x = DGE::GL::Renderer::Current->w - 65;
    int y = 35;
 
    if(fps > 999) fps = 999;
@@ -358,6 +359,10 @@ static int Main()
 
    DGE::GL::Window window{640, 480};
    DGE::GL::Window::Current = &window;
+
+   DGE::GL::Renderer renderer{&window, 1280, 720};
+   DGE::GL::Renderer::Current = &renderer;
+
    TestShader.reset(new DGE::GL::Shader{TestShaderFragment, TestShaderVertex});
 
    DGE::Game::InputSource_Local input;
@@ -403,11 +408,13 @@ static int Main()
 
       // Rendering actions.
       window.renderBegin();
+      renderer.renderBegin();
 
       DrawTest();
       DrawFPS();
 
       window.renderEnd();
+      renderer.renderEnd();
    }
 
    return EXIT_SUCCESS;

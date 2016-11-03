@@ -50,7 +50,7 @@ namespace DGE::GL
       Shader();
       Shader(char const *f, char const *v);
       Shader(FS::File *ffp, FS::File *vfp);
-      Shader(Shader const &brother) = delete; // [Yholl]
+      Shader(Shader const &other) = delete;
       Shader(Shader &&other) = default;
 
       void compileFrag(char const *data);

@@ -27,6 +27,11 @@ add_library(dge-gl-lib STATIC
    gl_2_1.h
    Particle.cpp
    Particle.hpp
+   Renderer.cpp
+   Renderer.hpp
+   Renderer/Draw.cpp
+   Renderer/PrivData.hpp
+   Renderer/Texture.cpp
    Shader.cpp
    Shader.hpp
    Texture.cpp
@@ -35,9 +40,7 @@ add_library(dge-gl-lib STATIC
    Texture/PNG.cpp
    Window.cpp
    Window.hpp
-   Window/Draw.cpp
    Window/PrivData.hpp
-   Window/Texture.cpp
 )
 
 target_link_libraries(dge-gl-lib dge-code-lib
