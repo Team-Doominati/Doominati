@@ -19,12 +19,11 @@
 ## doominati
 ##
 
-add_executable(doominati WIN32
+add_executable(doominati ${DGE_MAIN_ENTRY}
    main_doominati.cpp
 )
 
-target_link_libraries(doominati dge-game-lib
-   ${SDL2_MAIN_LIBRARIES})
+target_link_libraries(doominati dge-game-lib ${DGE_MAIN_LIBRARIES})
 
 ## EOF
 

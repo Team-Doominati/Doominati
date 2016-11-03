@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "doominati/main_doominati.hpp"
+
 #include "Code/Codedefs.hpp"
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
@@ -408,6 +410,8 @@ static int Main()
 //
 int main(int argc, char **argv)
 {
+   DGE_doominati_InitMain();
+
    auto &opts = GDCC::Core::GetOptions();
 
    // Don't want an output option.
