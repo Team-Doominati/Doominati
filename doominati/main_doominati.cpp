@@ -61,6 +61,8 @@ static char const *TestShaderFragment = R"(
    uniform int dge_mseconds;
    uniform int dge_seconds;
 
+   varying vec4 texcoord;
+
    vec4 HSVToRGB(float h, float s, float v, float a)
    {
       h *= 360.0;
@@ -89,7 +91,7 @@ static char const *TestShaderFragment = R"(
       const float pi = 3.14159265;
 
       float t = float(dge_mseconds) / 32.0;
-      vec2 uv = (gl_FragCoord.xy / vec2(640.0, 480.0)) * vec2(256.0, 224.0);
+      vec2 uv = texcoord.xy * vec2(256.0, 224.0);
 
       float bx = uv.x + 0.5 * sin(t / 8.0);
       float by = uv.y + 0.5 * cos(t / 8.0);
@@ -111,9 +113,13 @@ static char const *TestShaderFragment = R"(
 static char const *TestShaderVertex = R"(
    #version 120
 
+   varying vec4 texcoord;
+
    void main(void)
    {
       gl_Position = ftransform();
+
+      texcoord = gl_MultiTexCoord0;
    }
 )";
 
