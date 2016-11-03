@@ -302,6 +302,42 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 }
 
 //
+// ParticleTest
+//
+bool ParticleTest(DGE::GL::Particle *particle)
+{
+   if(particle == nullptr)
+      return true;
+
+   float const r[] = {
+      float((rand() % 1280) - (1280/2)),
+      float((rand() % 720 ) - (720/2)),
+      float( rand() % 30),
+      float((rand() % 255)  - 128),
+      float((rand() % 255)  - 128),
+      float((rand() % 255)  - 128),
+      float((rand() % 255)  - 128),
+      float((rand() % 255)  - 128),
+      float( rand() % 360)  / 360.0f
+   };
+
+   particle->life           = r[2] + 10;
+   particle->oldposition.x  = particle->position.x = -30.0f + r[0];
+   particle->oldposition.y  = particle->position.y = -30.0f + r[1];
+   particle->velocity.x     = (1.0f / 4096)  * r[3];
+   particle->velocity.y     = (1.0f / 4096)  * r[4];
+   particle->acceleration.x = (1.0f / 16384) * r[5];
+   particle->acceleration.y = (1.0f / 16384) * r[6];
+   particle->scale.x        = particle->scale.y = (1.0f / 4096) * r[7] * 40;
+   particle->color          = DGE::GL::Color::FromHSV(r[8], 1, 1);
+   particle->colordest      = DGE::GL::Color::Zero;
+   particle->colordest.a    = 0.0f;
+   particle->colorspeed     = 0.04f;
+
+   return false;
+}
+
+//
 // Main
 //
 static int Main()
@@ -348,37 +384,8 @@ static int Main()
          {
             // Playsim actions.
             for(;;)
-            {
-               DGE::GL::Particle *test = ParticleSystem.create();
-
-               if(test == nullptr)
+               if(ParticleTest(ParticleSystem.create()))
                   break;
-
-               float const r[] = {
-                  float((rand() % 1280) - (1280/2)),
-                  float((rand() % 720 ) - (720/2)),
-                  float(rand() % 30),
-                  float((rand() % 255) - 128),
-                  float((rand() % 255) - 128),
-                  float((rand() % 255) - 128),
-                  float((rand() % 255) - 128),
-                  float((rand() % 255) - 128),
-                  float(rand() % 360) / 360.0f
-               };
-
-               test->life           = r[2] + 10;
-               test->oldposition.x  = test->position.x = -30.0f + r[0];
-               test->oldposition.y  = test->position.y = -30.0f + r[1];
-               test->velocity.x     = (1.0f / 4096) * r[3];
-               test->velocity.y     = (1.0f / 4096) * r[4];
-               test->acceleration.x = (1.0f / 16384) * r[5];
-               test->acceleration.y = (1.0f / 16384) * r[6];
-               test->scale.x = test->scale.y = (1.0f / 4096) * r[7] * 40;
-               test->color       = DGE::GL::Color::FromHSV(r[8], 1, 1);
-               test->colordest   = DGE::GL::Color::Zero;
-               test->colordest.a = 0.0f;
-               test->colorspeed  = 0.04f;
-            }
 
             input.poll();
             proc.exec();
