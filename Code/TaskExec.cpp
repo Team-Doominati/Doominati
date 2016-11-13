@@ -139,6 +139,30 @@ namespace DGE::Code
    static inline void CmpU_NE(Word &l, Word r) {l = l != r;}
 
    //
+   // DiXI
+   //
+   static inline void DiXI(Word o[2], Word l, Word r)
+   {
+      if(r)
+      {
+         o[0] = static_cast<SWord>(l) / static_cast<SWord>(r);
+         o[1] = static_cast<SWord>(l) % static_cast<SWord>(r);
+      }
+   }
+
+   //
+   // DiXU
+   //
+   static inline void DiXU(Word o[2], Word l, Word r)
+   {
+      if(r)
+      {
+         o[0] = l / r;
+         o[1] = l % r;
+      }
+   }
+
+   //
    // DivI
    //
    static inline void DivI(Word &l, Word r)
@@ -321,6 +345,14 @@ namespace DGE::Code
          dataStk.push(dataStk[1]);
          NextCase();
 
+      DeclCase(DiXI):
+         DiXI(&dataStk[2], dataStk[2], dataStk[1]);
+         NextCase();
+
+      DeclCase(DiXU):
+         DiXU(&dataStk[2], dataStk[2], dataStk[1]);
+         NextCase();
+
       DeclCase(Drop_Nul):
          dataStk.drop();
          NextCase();
@@ -448,6 +480,11 @@ namespace DGE::Code
 
       DeclCase(Push_RegH):
          dataStk.push(GetWordHWord(locReg[codePtr->w.w], codePtr->h.h));
+         NextCase();
+
+      DeclCase(Push_StrB):
+         dataStk[2] = GDCC::Core::String{dataStk[2]}[dataStk[1]];
+         dataStk.drop();
          NextCase();
 
       DeclCase(Retn):
