@@ -123,6 +123,7 @@ namespace DGE::Code
       MemPtr operator - (Word off) {return {mem, idx - off};}
 
       bool operator == (MemPtr const &r) {return idx == r.idx;}
+      bool operator != (MemPtr const &r) {return idx != r.idx;}
 
       MemPtr &operator = (MemPtr const &) = default;
       MemPtr &operator = (Word idx_)
