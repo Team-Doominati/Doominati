@@ -495,8 +495,8 @@ namespace DGE::Code
          // Apply call frame.
          codePtr   = callStk[1].codePtr;
          vaaRegC   = callStk[1].vaaRegC;
-         locReg.free(callStk[1].locRegC);
          locReg.free(callStk[1].vaaRegC);
+         locReg.free(callStk[1].locRegC);
 
          // Drop call frame.
          callStk.drop();
