@@ -719,7 +719,7 @@ namespace DGE::Code
          in.expect(")");
       }
       else
-         while(in && !in.peek("}")) in.drop();
+         while(in && !in.drop("}")) in.drop();
    }
 
    //
