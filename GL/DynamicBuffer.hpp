@@ -13,7 +13,7 @@
 #ifndef DGE__GL__DynamicBuffer_H__
 #define DGE__GL__DynamicBuffer_H__
 
-#include "GL/gl_2_1.h"
+#include "GL/OpenGL2.1.h"
 #include <cstddef>
 
 

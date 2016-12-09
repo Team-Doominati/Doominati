@@ -13,7 +13,7 @@
 #ifndef DGE__GL__Texture_H__
 #define DGE__GL__Texture_H__
 
-#include "GL/gl_2_1.h"
+#include "GL/OpenGL2.1.h"
 
 #include "Core/Vector4.hpp"
 

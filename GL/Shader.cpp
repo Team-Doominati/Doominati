@@ -11,7 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Shader.hpp"
-#include "GL/gl_2_1.h"
+#include "GL/OpenGL2.1.h"
 
 #include "Core/Time.hpp"
 
