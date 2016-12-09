@@ -85,11 +85,12 @@ namespace DGE::Core
 
          // Allocate and initialize new array.
          T *stackNew = static_cast<T *>(::operator new(idxEnd * sizeof(T)));
-         for(T *itrNew = stackNew, *itr = stkPtr, *end = stack; itr != end;)
-         {
-            new(itrNew++) T(std::move(*--itr));
-            itr->~T();
-         }
+         for(T *itrNew = stackNew, *itr = stack, *end = stkPtr; itr != end;)
+            new(itrNew++) T(std::move(*itr++));
+
+         // Destruct old array.
+         for(T *itr = stkPtr, *end = stack; itr != end;)
+            (--itr)->~T();
 
          // Free old array.
          ::operator delete(stack);
