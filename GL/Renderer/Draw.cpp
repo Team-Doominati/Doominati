@@ -203,10 +203,10 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_DrawColor)
    {
-      float r = argv[0] / 0xFFFFFFFF.0p0;
-      float g = argv[1] / 0xFFFFFFFF.0p0;
-      float b = argv[2] / 0xFFFFFFFF.0p0;
-      float a = argc > 3 ? argv[3] / 0xFFFFFFFF.0p0 : 1.0f;
+      float r = argv[0] / 4294967295.0;
+      float g = argv[1] / 4294967295.0;
+      float b = argv[2] / 4294967295.0;
+      float a = argc > 3 ? argv[3] / 4294967295.0 : 1.0f;
 
       Renderer::Current->drawColorSet(r, g, b, a);
 
