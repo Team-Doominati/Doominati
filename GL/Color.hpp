@@ -13,8 +13,9 @@
 #ifndef DGE__GL__Color_H__
 #define DGE__GL__Color_H__
 
-#include <utility>
 #include "Core/Math.hpp"
+
+#include <utility>
 
 
 //----------------------------------------------------------------------------|

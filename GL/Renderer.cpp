@@ -88,7 +88,7 @@ namespace DGE::GL
    //
    // Circle_CalcBufSize
    //
-   static void Circle_CalcBufSize(int subdivisions, std::size_t &bufsize)
+   static inline void Circle_CalcBufSize(int subdivisions, std::size_t &bufsize)
    {
       if(!subdivisions) return;
 
@@ -101,7 +101,7 @@ namespace DGE::GL
    //
    // Circle_CalcPoint
    //
-   static void Circle_CalcPoint(float angl, VertexXYUV *&buf)
+   static inline void Circle_CalcPoint(float angl, VertexXYUV *&buf)
    {
       float s = std::sin(angl);
       float c = std::cos(angl);
@@ -111,7 +111,7 @@ namespace DGE::GL
    //
    // Circle_CalcFaces
    //
-   static void Circle_CalcFaces(int subdivisions, float anglA, float anglC, VertexXYUV *&buf)
+   static inline void Circle_CalcFaces(int subdivisions, float anglA, float anglC, VertexXYUV *&buf)
    {
       if(!subdivisions) return;
 
@@ -154,6 +154,7 @@ namespace DGE::GL
    // Renderer constructor
    //
    Renderer::Renderer(Window *win_, int w_, int h_) :
+      realw{}, realh{},
       w{w_}, h{h_},
       prevw{0}, prevh{0},
       privdata{new PrivData()},
@@ -190,9 +191,6 @@ namespace DGE::GL
 
    //
    // Renderer destructor
-   //
-   // Needs to exist here specifically, because of the way
-   // unique_ptr works with incomplete types.
    //
    Renderer::~Renderer()
    {
