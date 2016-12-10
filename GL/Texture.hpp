@@ -42,7 +42,7 @@ namespace DGE::GL
    public:
       TextureData() : tex{static_cast<GLuint>(-1)} {}
       TextureData(TextureData const &) = delete;
-      TextureData(TextureData &&t) : tex{t.tex} {t.tex = -1;}
+      TextureData(TextureData &&t) : tex{t.tex} {t.tex = 0;}
       TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
       ~TextureData();
 
