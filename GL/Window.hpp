@@ -13,6 +13,8 @@
 #ifndef DGE__GL__Window_H__
 #define DGE__GL__Window_H__
 
+#include "SDL.h"
+
 #include <memory>
 
 
@@ -42,11 +44,10 @@ namespace DGE::GL
       static Window *Current;
 
    private:
-      class PrivData;
-
       void resize(int w, int h);
 
-      std::unique_ptr<PrivData> privdata;
+      SDL_Window   *window;
+      SDL_GLContext gl;
    };
 }
 

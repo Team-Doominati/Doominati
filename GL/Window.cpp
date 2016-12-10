@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Window/PrivData.hpp"
+#include "GL/Window.hpp"
 
 #include <iostream>
 
@@ -32,9 +32,10 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // Window::PrivData constructor
+   // Window constructor
    //
-   Window::PrivData::PrivData(int w_, int h_) :
+   Window::Window(int w_, int h_) :
+      w{w_}, h{h_},
       window{},
       gl{}
    {
@@ -42,7 +43,7 @@ namespace DGE::GL
       int y = SDL_WINDOWPOS_UNDEFINED;
 
       // Set up window.
-      if(!(window = SDL_CreateWindow("Doominati", x, y, w_, h_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
+      if(!(window = SDL_CreateWindow("Doominati", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
       {
          SDL_QuitSubSystem(SDL_INIT_VIDEO);
          std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
@@ -60,31 +61,12 @@ namespace DGE::GL
    }
 
    //
-   // Window::PrivData destructor
-   //
-   Window::PrivData::~PrivData()
-   {
-      SDL_GL_DeleteContext(gl);
-      SDL_DestroyWindow(window);
-   }
-
-   //
-   // Window constructor
-   //
-   Window::Window(int w_, int h_) :
-      w{w_}, h{h_},
-      privdata{new PrivData(w_, h_)}
-   {
-   }
-
-   //
    // Window destructor
-   //
-   // Needs to exist here specifically, because of the way
-   // unique_ptr works with incomplete types.
    //
    Window::~Window()
    {
+      SDL_GL_DeleteContext(gl);
+      SDL_DestroyWindow(window);
    }
 
    //
@@ -93,15 +75,13 @@ namespace DGE::GL
    void Window::renderBegin()
    {
       // Check if window has been resized.
-      {
-         int newW, newH;
-         SDL_GetWindowSize(privdata->window, &newW, &newH);
+      int newW, newH;
+      SDL_GetWindowSize(window, &newW, &newH);
 
-         if(w != newW || h != newH)
-         {
-            w = newW;
-            h = newH;
-         }
+      if(w != newW || h != newH)
+      {
+         w = newW;
+         h = newH;
       }
    }
 
@@ -110,7 +90,7 @@ namespace DGE::GL
    //
    void Window::renderEnd()
    {
-      SDL_GL_SwapWindow(privdata->window);
+      SDL_GL_SwapWindow(window);
    }
 }
 

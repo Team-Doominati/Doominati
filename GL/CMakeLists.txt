@@ -40,7 +40,6 @@ add_library(dge-gl-lib STATIC
    Texture/PNG.cpp
    Window.cpp
    Window.hpp
-   Window/PrivData.hpp
 )
 
 target_link_libraries(dge-gl-lib dge-code-lib
