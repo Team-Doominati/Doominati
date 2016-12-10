@@ -135,6 +135,8 @@ namespace DGE::Code
       {"Call",         {GenCodeW,    1, 1, OpCode::Call}},
       {"Cnat",         {GenCodeHW,   2, 1, OpCode::Cnat}},
       {"Copy",         {GenCode,     0, 1, OpCode::Copy}},
+      {"DiXI",         {GenCode,     0, 1, OpCode::DiXI}},
+      {"DiXU",         {GenCode,     0, 1, OpCode::DiXU}},
       {"DivI",         {GenCode,     0, 1, OpCode::DivI}},
       {"DivU",         {GenCode,     0, 1, OpCode::DivU}},
       {"Drop_Nul",     {GenCode,     0, 1, OpCode::Drop_Nul}},
@@ -165,6 +167,7 @@ namespace DGE::Code
       {"Push_Reg",     {GenCodeR<4>, 1, 1, OpCode::Push_Reg}},
       {"Push_RegB",    {GenCodeR<1>, 1, 1, OpCode::Push_RegB}},
       {"Push_RegH",    {GenCodeR<2>, 1, 1, OpCode::Push_RegH}},
+      {"Push_StrB",    {GenCode,     0, 1, OpCode::Push_StrB}},
       {"Retn",         {GenCode,     0, 1, OpCode::Retn}},
       {"ShLU",         {GenCode,     0, 1, OpCode::ShLU}},
       {"ShRI",         {GenCode,     0, 1, OpCode::ShRI}},
@@ -300,7 +303,8 @@ namespace DGE::Code
    {
       auto code = CodeTransTab.find(GDCC::Core::String::Find(codeStr));
       if(code == CodeTransTab.end())
-         throw GDCC::Core::ParseExceptExpect({}, "code", codeStr, false);
+         throw GDCC::Core::ParseExceptExpect(
+            GDCC::Core::Origin{}, "code", codeStr, false);
 
       // TODO: Better error message.
       if(code->second.argc != static_cast<std::size_t>(-1) &&
@@ -715,7 +719,7 @@ namespace DGE::Code
          in.expect(")");
       }
       else
-         while(in && !in.peek("}")) in.drop();
+         while(in && !in.drop("}")) in.drop();
    }
 
    //

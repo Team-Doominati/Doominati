@@ -23,8 +23,8 @@ add_library(dge-gl-lib STATIC
    Color.hpp
    DynamicBuffer.cpp
    DynamicBuffer.hpp
-   gl_2_1.c
-   gl_2_1.h
+   OpenGL2.1.c
+   OpenGL2.1.h
    Particle.cpp
    Particle.hpp
    Renderer.cpp

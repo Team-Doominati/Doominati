@@ -18,7 +18,7 @@
 
 #include "Core/Time.hpp"
 
-#include "GL/gl_2_1.h"
+#include "GL/OpenGL2.1.h"
 #include "GL/Window.hpp"
 
 
