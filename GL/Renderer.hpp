@@ -37,7 +37,10 @@ namespace DGE::GL
    class Renderer
    {
    public:
-      Renderer(Window *win_, int w_, int h_);
+      Renderer() = delete;
+      Renderer(Window &win_, int w_, int h_);
+      Renderer(Renderer const &) = delete;
+      Renderer(Renderer &&) = default;
       ~Renderer();
 
       // circle
@@ -65,9 +68,9 @@ namespace DGE::GL
       void renderEnd();
 
       // shader
-      void shaderSwap(Shader *sp);
-      void shaderDrop();
-      void shaderUpdate();
+      void shaderSwap(Shader &s) {(shaderCurrent = &s)->setCurrent();}
+      void shaderDrop() {shaderSwap(shaderBase);}
+      void shaderUpdate() {shaderCurrent->update();}
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
@@ -104,9 +107,9 @@ namespace DGE::GL
       float cr, cg, cb, ca;
 
       std::unique_ptr<PrivData> privdata;
-      Window *win;
+      Window &win;
 
-      std::unique_ptr<Shader> shaderBase;
+      Shader  shaderBase;
       Shader *shaderCurrent;
    };
 }

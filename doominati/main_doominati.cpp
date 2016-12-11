@@ -42,15 +42,7 @@
 // Static Objects                                                             |
 //
 
-//
-// ParticleSystem
-//
 static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle2.png"};
-
-//
-// TestShader
-//
-static std::unique_ptr<DGE::GL::Shader> TestShader;
 
 //
 // TestShaderFragment
@@ -134,7 +126,7 @@ static char const *TestShaderVertex = R"(
 //
 // Draws test pattern.
 //
-static void DrawTest()
+static void DrawTest(DGE::GL::Shader &testShader)
 {
    auto renderer = DGE::GL::Renderer::Current;
 
@@ -156,7 +148,7 @@ static void DrawTest()
    renderer->textureBind("@Textures/bigscreen.ppm");
    renderer->drawRectangle(303, 2, 603, 302);
 
-   renderer->shaderSwap(TestShader.get());
+   renderer->shaderSwap(testShader);
    renderer->shaderUpdate();
    renderer->drawRectangle(2, 2, 302, 302);
    renderer->shaderDrop();
@@ -317,8 +309,8 @@ bool ParticleTest(DGE::GL::Particle *particle)
       return true;
 
    float const r[] = {
-      float((rand() % 1280) - (1280/2)),
-      float((rand() % 720 ) - (720/2)),
+      float((rand() % 1280) - (1280/2.0f)),
+      float((rand() % 720 ) - (720/2.0f)),
       float( rand() % 30),
       float((rand() % 255)  - 128),
       float((rand() % 255)  - 128),
@@ -349,25 +341,29 @@ bool ParticleTest(DGE::GL::Particle *particle)
 //
 static int Main()
 {
+   // Initialize SDL.
    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
    {
       std::cerr << "SDL_Init: " << SDL_GetError() << '\n';
       throw EXIT_FAILURE;
    }
 
-   std::atexit(SDL_Quit);
+   // Initialize rendering.
+   struct
+   {
+      DGE::GL::Window window{640, 480};
+      DGE::GL::Renderer renderer{window, 1280, 720};
+      DGE::GL::Shader testShader{TestShaderFragment, TestShaderVertex};
+   } context;
 
-   DGE::GL::Window window{640, 480};
-   DGE::GL::Window::Current = &window;
+   DGE::GL::Window::Current = &context.window;
+   DGE::GL::Renderer::Current = &context.renderer;
 
-   DGE::GL::Renderer renderer{&window, 1280, 720};
-   DGE::GL::Renderer::Current = &renderer;
-
-   TestShader.reset(new DGE::GL::Shader{TestShaderFragment, TestShaderVertex});
-
+   // Initialize input.
    DGE::Game::InputSource_Local input;
 
-   DGE::FS::Dir::AddRoot("."); // HACK
+   // Initialize filesystem.
+   DGE::FS::Dir::AddRoot(".");
 
    // Initialize scripting and call main.
    DGE::Code::NativeAdder::Finish();
@@ -378,6 +374,7 @@ static int Main()
    if(auto func = prog.funcs.find("main"))
       proc.mainThread()->startTask(func, nullptr, 0);
 
+   // Run main loop.
    std::size_t timeLast = DGE::Core::GetTicks<DGE::Core::PlayTick<>>();
    std::size_t timeNext;
 
@@ -407,14 +404,12 @@ static int Main()
          SDL_Delay(1);
 
       // Rendering actions.
-      window.renderBegin();
-      renderer.renderBegin();
+      context.renderer.renderBegin();
 
-      DrawTest();
+      DrawTest(context.testShader);
       DrawFPS();
 
-      window.renderEnd();
-      renderer.renderEnd();
+      context.renderer.renderEnd();
    }
 
    return EXIT_SUCCESS;
@@ -452,7 +447,8 @@ int main(int argc, char **argv)
          GDCC::Core::ProcessOptions(opts, argc, argv, false);
 
       std::cout <<
-         "Doominati v0.0.0 -- Copyright (C) Team Doominati 2016\n"
+         "Doominati " << opts.list.version <<
+         " -- Copyright (C) Team Doominati 2016\n"
          "See COPYING for license information.\n\n";
 
       return Main();

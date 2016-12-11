@@ -153,12 +153,14 @@ namespace DGE::GL
    //
    // Renderer constructor
    //
-   Renderer::Renderer(Window *win_, int w_, int h_) :
+   Renderer::Renderer(Window &win_, int w_, int h_) :
       realw{}, realh{},
       w{w_}, h{h_},
       prevw{0}, prevh{0},
       privdata{new PrivData()},
-      win{win_}
+      win{win_},
+      shaderBase{BaseFragShader, BaseVertShader},
+      shaderCurrent{&shaderBase}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
@@ -178,8 +180,6 @@ namespace DGE::GL
       glLoadIdentity();
 
       // Set up base shader.
-      shaderBase.reset(new Shader{BaseFragShader, BaseVertShader});
-      shaderDrop();
       drawColorSet(1.0, 1.0, 1.0);
 
       // Set up basic no-texture.
@@ -309,8 +309,10 @@ namespace DGE::GL
    //
    void Renderer::renderBegin()
    {
-      if(realw != win->w || realh != win->h)
-         resize(win->w, win->h);
+      win.renderBegin();
+
+      if(realw != win.w || realh != win.h)
+         resize(win.w, win.h);
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -323,36 +325,10 @@ namespace DGE::GL
    //
    void Renderer::renderEnd()
    {
+      win.renderEnd();
+
       for(auto const &callback : CallbackRenderEnd)
          Code::Process::Main->call(callback);
-   }
-
-   //
-   // Renderer::shaderSwap
-   //
-   void Renderer::shaderSwap(Shader *sp)
-   {
-      if(sp)
-      {
-         shaderCurrent = sp;
-         shaderCurrent->setCurrent();
-      }
-   }
-
-   //
-   // Renderer::shaderDrop
-   //
-   void Renderer::shaderDrop()
-   {
-      shaderSwap(shaderBase.get());
-   }
-
-   //
-   // Renderer::shaderUpdate
-   //
-   void Renderer::shaderUpdate()
-   {
-      shaderCurrent->update();
    }
 
    //
