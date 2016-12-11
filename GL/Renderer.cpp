@@ -335,7 +335,7 @@ namespace DGE::GL
       if(sp)
       {
          shaderCurrent = sp;
-         glUseProgram(shaderCurrent->program);
+         shaderCurrent->setCurrent();
       }
    }
 

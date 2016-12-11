@@ -34,35 +34,44 @@ namespace DGE::GL
    //
    // ShaderError
    //
-
    class ShaderError : public std::runtime_error
    {
+   public:
       using std::runtime_error::runtime_error;
    };
 
    //
    // Shader
    //
-
    class Shader
    {
    public:
-      Shader();
-      Shader(char const *f, char const *v);
-      Shader(FS::File *ffp, FS::File *vfp);
+      Shader() = delete;
+      Shader(char const *f, char const *v)
+         {compileFrag(f); compileVert(v); link();}
+      Shader(FS::File *f, FS::File *v)
+         {compileFrag(f); compileVert(v); link();}
       Shader(Shader const &other) = delete;
-      Shader(Shader &&other) = default;
+      Shader(Shader &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
+         {s.frag = s.vert = s.prog = 0; postLink();}
+      ~Shader();
 
-      void compileFrag(char const *data);
-      void compileVert(char const *data);
-      void compileFrag(FS::File *fp);
-      void compileVert(FS::File *fp);
-      void link();
       void update();
+      void setCurrent();
 
-      GLuint handlef;
-      GLuint handlev;
-      GLuint program;
+   private:
+      void compileFrag(char const *data);
+      void compileFrag(FS::File *fp);
+
+      void compileVert(char const *data);
+      void compileVert(FS::File *fp);
+
+      void link();
+      void postLink();
+
+      GLuint frag;
+      GLuint vert;
+      GLuint prog;
 
       GLint u_ticks;
       GLint u_mseconds;
