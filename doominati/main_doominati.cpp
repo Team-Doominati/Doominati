@@ -32,17 +32,15 @@
 
 #include <GDCC/Core/Option.hpp>
 
+#include "SDL.h"
+
 #include <iostream>
 #include <cstdlib>
-
-#include "SDL.h"
 
 
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
 //
-
-static DGE::GL::ParticleSystem ParticleSystem{1280/2, 720/2, 1000, "@Textures/particle2.png"};
 
 //
 // TestShaderFragment
@@ -126,7 +124,7 @@ static char const *TestShaderVertex = R"(
 //
 // Draws test pattern.
 //
-static void DrawTest(DGE::GL::Shader &testShader)
+static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 {
    auto renderer = DGE::GL::Renderer::Current;
 
@@ -141,7 +139,7 @@ static void DrawTest(DGE::GL::Shader &testShader)
 
    double seconds = DGE::Core::GetTicks<DGE::Core::Second<double>>();
 
-   renderer->drawParticleSystem(ParticleSystem);
+   renderer->drawParticleSystem(ps);
 
    renderer->drawColorSet(DGE::GL::Color::White);
 
@@ -289,11 +287,17 @@ static void LoadCodedefs(DGE::Code::Program *prog)
    DGE::FS::Dir::ForFile("codedefs",
       std::bind(&DGE::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
 
-   std::cerr << "Loaded " << loader.loadPASS << " codedefs.\n";
+   if(loader.loadPASS)
+   {
+      bool s = loader.loadPASS != 1;
+      std::cerr << "Loaded " << loader.loadPASS << " codedef" << s << ".\n";
+   }
 
    if(loader.loadFAIL)
    {
-      std::cerr << "Encountered " << loader.loadFAIL << " codedefs errors.\n";
+      bool s = loader.loadFAIL != 1;
+      std::cerr << "Encountered " << loader.loadFAIL <<
+         " codedefs error" << s << ".\n";
       throw EXIT_FAILURE;
    }
 
@@ -354,6 +358,8 @@ static int Main()
       DGE::GL::Window window{640, 480};
       DGE::GL::Renderer renderer{window, 1280, 720};
       DGE::GL::Shader testShader{TestShaderFragment, TestShaderVertex};
+      DGE::GL::ParticleSystem ps{1280 / 2, 720 / 2, 1000,
+         "@Textures/particle2.png"};
    } context;
 
    DGE::GL::Window::Current = &context.window;
@@ -392,12 +398,12 @@ static int Main()
          {
             // Playsim actions.
             for(;;)
-               if(ParticleTest(ParticleSystem.create()))
+               if(ParticleTest(context.ps.create()))
                   break;
 
             input.poll();
             proc.exec();
-            ParticleSystem.update();
+            context.ps.update();
          }
       }
       else
@@ -406,7 +412,7 @@ static int Main()
       // Rendering actions.
       context.renderer.renderBegin();
 
-      DrawTest(context.testShader);
+      DrawTest(context.ps, context.testShader);
       DrawFPS();
 
       context.renderer.renderEnd();
@@ -447,9 +453,9 @@ int main(int argc, char **argv)
          GDCC::Core::ProcessOptions(opts, argc, argv, false);
 
       std::cout <<
-         "Doominati " << opts.list.version <<
-         " -- Copyright (C) Team Doominati 2016\n"
-         "See COPYING for license information.\n\n";
+         " Doominati " << opts.list.version <<
+         " Copyright (C) 2016 Team Doominati\n"
+         "      See COPYING for license information.\n\n";
 
       return Main();
    }
