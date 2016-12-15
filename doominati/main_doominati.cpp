@@ -141,7 +141,7 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->drawParticleSystem(ps);
 
-   renderer->drawColorSet(DGE::GL::Color::White);
+   renderer->drawColorSet(DGE::GL::Colors.at("White"));
 
    renderer->textureBind("@Textures/bigscreen.ppm");
    renderer->drawRectangle(303, 2, 603, 302);
@@ -159,12 +159,12 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->drawRectangle(xp, yp, xo, yo, 0, true);
 
-   renderer->drawColorSet(DGE::GL::Color::Red);
+   renderer->drawColorSet(DGE::GL::Colors.at("Red"));
 
    renderer->drawLine(xp, yp, xo, yo);
    renderer->drawLine(xp, yo, xo, yp);
 
-   renderer->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawColorSet(DGE::GL::Colors.at("Green"));
 
    double s = std::sin(seconds * 4.0) * 40.0;
    double c = std::cos(seconds * 4.0) * 40.0;
@@ -174,24 +174,24 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->textureBind("@Textures/colors.ppm");
 
-   DGE::GL::Color drawc{DGE::GL::Color::Pink};
+   DGE::GL::Color drawc{DGE::GL::Colors.at("Pink")};
    for(int i = 0; i < 3; i++)
    {
       renderer->drawColorSet(drawc);
-      drawc.interpolate(DGE::GL::Color::Blue, 1.0f / 3.0f);
+      drawc.interpolate(DGE::GL::Colors.at("Blue"), 1.0f / 3.0f);
 
       renderer->drawCircle(64 + (i * 128), 550, 64);
    }
 
    renderer->textureUnbind();
 
-   renderer->drawColorSet(DGE::GL::Color::Pink);
+   renderer->drawColorSet(DGE::GL::Colors.at("Pink"));
    renderer->drawEllipse(0, 614, 900, h);
 
-   renderer->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawColorSet(DGE::GL::Colors.at("Green"));
    renderer->drawEllipse(0, 614, 900, h, true);
 
-   renderer->drawColorSet(DGE::GL::Color::Purple);
+   renderer->drawColorSet(DGE::GL::Colors.at("Purple"));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
 
    renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
@@ -266,7 +266,7 @@ static void DrawFPS()
 
    unsigned int fps = std::round(1 / timeMean);
 
-   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Color::White);
+   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Colors.at("White"));
 
    int x = DGE::GL::Renderer::Current->w - 65;
    int y = 35;
@@ -333,7 +333,7 @@ bool ParticleTest(DGE::GL::Particle *particle)
    particle->acceleration.y = (1.0f / 16384) * r[6];
    particle->scale.x        = particle->scale.y = (1.0f / 4096) * r[7] * 40;
    particle->color          = DGE::GL::Color::FromHSV(r[8], 1, 1);
-   particle->colordest      = DGE::GL::Color::Zero;
+   particle->colordest      = DGE::GL::Colors.at("Zero");
    particle->colordest.a    = 0.0f;
    particle->colorspeed     = 0.04f;
 

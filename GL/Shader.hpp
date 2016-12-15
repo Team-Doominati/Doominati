@@ -29,8 +29,6 @@ namespace DGE::FS
 
 namespace DGE::GL
 {
-   class Window;
-
    //
    // ShaderError
    //
@@ -51,7 +49,7 @@ namespace DGE::GL
          {compileFrag(f); compileVert(v); link();}
       Shader(FS::File *f, FS::File *v)
          {compileFrag(f); compileVert(v); link();}
-      Shader(Shader const &other) = delete;
+      Shader(Shader const &) = delete;
       Shader(Shader &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
          {s.frag = s.vert = s.prog = 0; postLink();}
       ~Shader();
