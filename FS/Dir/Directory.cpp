@@ -84,36 +84,39 @@ namespace DGE::FS
       std::size_t dirC = 0, fileC = 0;
       for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
       {
-         if(GDCC::Core::IsDir(dir->getFull()))
-            ++dirC;
-         else
-            ++fileC;
+         switch(dir->getStat().type)
+         {
+         case GDCC::Core::Stat::Type::Dir:  ++dirC;  break;
+         case GDCC::Core::Stat::Type::File: ++fileC; break;
+         default: break;
+         }
       }
 
       dirs  = GDCC::Core::Array<Dir_Directory>{dirC};
       files = GDCC::Core::Array<File_Directory>{fileC};
 
-      Dir_Directory *dirItr = dirs.begin();
+      Dir_Directory  *dirItr  = dirs.begin();
       File_Directory *fileItr = files.begin();
 
       // Set names. Load them as-needed.
       for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
       {
-         char const *strFull = dir->getFull();
-         std::size_t lenFull = std::strlen(strFull);
-         std::size_t lenPart = std::strlen(dir->getPart());
-
-         if(GDCC::Core::IsDir(strFull))
+         switch(dir->getStat().type)
          {
-            dirItr->dirName = GDCC::Core::StrDup(strFull, lenFull);
-            dirItr->name    = &dirItr->dirName[lenFull - lenPart];
+         case GDCC::Core::Stat::Type::Dir:
+            dirItr->dirName = GDCC::Core::StrDup(dir->getStrFull(), dir->getLenFull());
+            dirItr->name    = &dirItr->dirName[dir->getLenBase()];
             ++dirItr;
-         }
-         else
-         {
-            fileItr->fileName = GDCC::Core::StrDup(strFull, lenFull);
-            fileItr->name     = &fileItr->fileName[lenFull - lenPart];
+            break;
+
+         case GDCC::Core::Stat::Type::File:
+            fileItr->fileName = GDCC::Core::StrDup(dir->getStrFull(), dir->getLenFull());
+            fileItr->name     = &fileItr->fileName[dir->getLenBase()];
             ++fileItr;
+            break;
+
+         default:
+            break;
          }
       }
 

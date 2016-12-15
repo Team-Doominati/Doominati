@@ -369,7 +369,13 @@ static int Main()
    DGE::Game::InputSource_Local input;
 
    // Initialize filesystem.
-   DGE::FS::Dir::AddRoot(".");
+   if(GDCC::Core::GetOptionArgs().size())
+   {
+      for(auto const &arg : GDCC::Core::GetOptionArgs())
+         DGE::FS::Dir::AddRoot(arg);
+   }
+   else
+      DGE::FS::Dir::AddRoot(".");
 
    // Initialize scripting and call main.
    DGE::Code::NativeAdder::Finish();

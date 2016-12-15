@@ -28,12 +28,14 @@ namespace DGE::Code
    void NativeLoad_Print() {} // See Code/Native.cpp.
 
    //
-   // void DGE_DebugDataStk(void)
+   // void DGE_DebugDataStk(int dump)
    //
    DGE_Code_NativeDefn(DGE_DebugDataStk)
    {
+      bool dump = argc < 1 ? 0 : argv[0] & 1;
+
       std::cerr << task->dataStk.data() << '+' << task->dataStk.size() << '\n';
-      for(auto const &val : task->dataStk)
+      if(dump) for(auto const &val : task->dataStk)
          std::cerr << "  " << val << '\n';
       return false;
    }
