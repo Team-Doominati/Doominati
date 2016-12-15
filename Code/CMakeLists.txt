@@ -29,6 +29,7 @@ add_library(dge-code-lib STATIC
    MemStr.hpp
    Native.cpp
    Native.hpp
+   Native/Debug.cpp
    Native/File.cpp
    Native/Memory.cpp
    Native/Print.cpp
@@ -38,6 +39,7 @@ add_library(dge-code-lib STATIC
    OpList.hpp
    Process.cpp
    Process.hpp
+   Program.cpp
    Program.hpp
    Task.cpp
    TaskExec.cpp

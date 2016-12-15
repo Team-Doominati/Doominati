@@ -51,6 +51,7 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   void NativeLoad_Debug();
    void NativeLoad_File();
    void NativeLoad_Memory();
    void NativeLoad_Print();
@@ -73,6 +74,7 @@ namespace DGE::Code
       // library are actually constructed, a function or object from that
       // compilation unit must be used.
       // Other solutions exist, but are overly vendor-specific.
+      NativeLoad_Debug();
       NativeLoad_File();
       NativeLoad_Memory();
       NativeLoad_Print();

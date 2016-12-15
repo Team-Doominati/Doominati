@@ -28,30 +28,6 @@ namespace DGE::Code
    void NativeLoad_Print() {} // See Code/Native.cpp.
 
    //
-   // void DGE_DebugDataStk(int dump)
-   //
-   DGE_Code_NativeDefn(DGE_DebugDataStk)
-   {
-      bool dump = argc < 1 ? 0 : argv[0] & 1;
-
-      std::cerr << task->dataStk.data() << '+' << task->dataStk.size() << '\n';
-      if(dump) for(auto const &val : task->dataStk)
-         std::cerr << "  " << val << '\n';
-      return false;
-   }
-
-   //
-   // void DGE_DebugLocReg(void)
-   //
-   DGE_Code_NativeDefn(DGE_DebugLocReg)
-   {
-      std::cerr << &task->locReg[0] << "+" << task->locReg.size() << '\n';
-      for(auto const &reg : task->locReg)
-         std::cerr << "  " << reg << '\n';
-      return false;
-   }
-
-   //
    // void DGE_PrintChar(unsigned c)
    //
    DGE_Code_NativeDefn(DGE_PrintChar)

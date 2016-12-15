@@ -14,6 +14,7 @@
 #define DGE__Core__Stack_H__
 
 #include <climits>
+#include <iterator>
 #include <new>
 #include <utility>
 
@@ -33,6 +34,11 @@ namespace DGE::Core
    class Stack
    {
    public:
+      using const_iterator         = T const *;
+      using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+      using iterator               = T *;
+      using reverse_iterator       = std::reverse_iterator<iterator>;
+
       Stack() : stack{nullptr}, stkEnd{nullptr}, stkPtr{nullptr} {}
       ~Stack() {clear(); ::operator delete(stack);}
 
@@ -64,6 +70,14 @@ namespace DGE::Core
       // push
       void push(T const &value) {new(stkPtr++) T(          value );}
       void push(T      &&value) {new(stkPtr++) T(std::move(value));}
+
+      // rbegin
+      const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
+            reverse_iterator rbegin()       {return       reverse_iterator(end());}
+
+      // rend
+      const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
+            reverse_iterator rend()       {return       reverse_iterator(begin());}
 
       //
       // reserve

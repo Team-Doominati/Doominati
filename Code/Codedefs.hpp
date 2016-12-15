@@ -19,6 +19,7 @@
 #include "Core/String.hpp"
 
 #include <GDCC/Core/Array.hpp>
+#include <GDCC/Core/Origin.hpp>
 
 #include <unordered_map>
 #include <vector>
@@ -48,8 +49,18 @@ namespace DGE::Code
    public:
       using RawExp  = GDCC::Core::Array<char const *>;
       using RawExpA = GDCC::Core::Array<RawExp>;
-      using RawCode = std::pair<GDCC::Core::String, RawExpA>;
       using RawInit = std::pair<Word, RawExpA>;
+
+      //
+      // RawCode
+      //
+      struct RawCode
+      {
+         GDCC::Core::Origin orig;
+         GDCC::Core::String func;
+         GDCC::Core::String code;
+         RawExpA            args;
+      };
 
       //
       // RawFunc
@@ -119,8 +130,13 @@ namespace DGE::Code
       std::vector<RawInit>                        inits;
       std::vector<Core::HashMapFixed<Word, Word>> jumps;
 
+      GDCC::Core::Origin orig;
+      GDCC::Core::String origFunc;
+
       Word codeCount;
       Word globalCount;
+
+      bool haveOrig : 1;
    };
 }
 

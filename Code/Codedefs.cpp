@@ -292,7 +292,8 @@ namespace DGE::Code
       loadPASS{0},
 
       codeCount{1},
-      globalCount{MemBlock::SizeW}
+      globalCount{MemBlock::SizeW},
+      haveOrig{false}
    {
    }
 
@@ -311,7 +312,7 @@ namespace DGE::Code
          argv.size() != code->second.argc)
          throw GDCC::Core::ParseExceptStr({}, "invalid argument count");
 
-      codes.emplace_back(code->first, std::move(argv));
+      codes.push_back({orig, origFunc, code->first, std::move(argv)});
       codeCount += code->second.count;
    }
 
@@ -518,6 +519,8 @@ namespace DGE::Code
    void Loader::gen(Program *prog)
    {
       prog->codes = GDCC::Core::Array<OpCode>{codeCount + 1};
+      if(haveOrig)
+         prog->origs = GDCC::Core::Array<Origin>{codeCount + 1};
       genCodes(prog);
 
       prog->jumps = {GDCC::Core::Move, jumps.begin(), jumps.end()};
@@ -535,18 +538,24 @@ namespace DGE::Code
    void Loader::genCodes(Program *prog)
    {
       auto codeItr = prog->codes.begin();
+      auto origItr = prog->origs.empty() ? nullptr : prog->origs.begin();
 
       GenCode_Kill(codeItr++, 0, 0);
+      if(origItr) *origItr++ = {{}, "internal"};
 
       for(auto &code : codes)
       {
-         auto const &trans = CodeTransTab[code.first];
+         auto const &trans = CodeTransTab[code.code];
          codeItr->op = trans.op;
-         trans.gen(this, codeItr, code.second);
+         trans.gen(this, codeItr, code.args);
          codeItr += trans.count;
+
+         if(origItr) for(auto i = trans.count; i--;)
+            *origItr++ = {code.orig, code.func};
       }
 
       GenCode_Kill(codeItr++, 0, 1);
+      if(origItr) *origItr++ = {{}, "internal"};
    }
 
    //
@@ -635,6 +644,9 @@ namespace DGE::Code
       Core::NTSArray  arr{file->data, file->size};
       Core::NTSStream in {arr};
 
+      orig     = {nullptr};
+      origFunc = nullptr;
+
       try
       {
          while(in) loadKeyword(in);
@@ -698,6 +710,23 @@ namespace DGE::Code
       if(!*code || addLabel(code)) while(!in.drop("}"))
       {
          code = in.get();
+
+         // Origins.
+         if(code[0] == '@')
+         {
+            haveOrig = true;
+
+            if(std::strcmp(code+1, "l") == 0)
+               orig.line = strtoull(in.get(), nullptr, 16);
+
+            else if(std::strcmp(code+1, "file") == 0)
+               orig.file = in.get();
+
+            else if(std::strcmp(code+1, "func") == 0)
+               origFunc = in.get();
+
+            continue;
+         }
 
          in.expect("(");
 
