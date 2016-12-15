@@ -289,13 +289,13 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 
    if(loader.loadPASS)
    {
-      bool s = loader.loadPASS != 1;
+      char const *s = (loader.loadPASS != 1) ? "s" : "";
       std::cerr << "Loaded " << loader.loadPASS << " codedef" << s << ".\n";
    }
 
    if(loader.loadFAIL)
    {
-      bool s = loader.loadFAIL != 1;
+      char const *s = (loader.loadFAIL != 1) ? "s" : "";
       std::cerr << "Encountered " << loader.loadFAIL <<
          " codedefs error" << s << ".\n";
       throw EXIT_FAILURE;
