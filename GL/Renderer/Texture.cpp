@@ -117,7 +117,7 @@ namespace DGE::GL
       try
       {
          auto loader = CreateTextureLoader(file);
-         GLsizei width, height;
+         GLsizei  width, height;
          std::tie(width, height) = loader->size();
          std::unique_ptr<TexturePixel[]> buf{new TexturePixel[width * height]};
          loader->data(buf.get());

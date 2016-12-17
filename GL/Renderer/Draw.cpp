@@ -152,16 +152,28 @@ namespace DGE::GL
    {
       if(!fontCurrent) return;
 
-      drawColorSet(1, 1, 1, 1);
+      int origx = x;
+      fontCurrent->kernReset();
       for(char const *itr = str, *end = str + std::strlen(str); *itr;)
       {
          char32_t ch;
          std::tie(ch, itr) = GDCC::Core::Str8To32(itr, end);
 
+         switch(ch)
+         {
+         case '\n': y += fontCurrent->height;
+         case '\r': x  = origx; continue;
+         }
+
          auto &gly = fontCurrent->getChar(ch);
+         int ox = x + gly.ox + fontCurrent->kernAmt;
+         int oy = y + gly.oy;
+
          textureBind(&gly.data);
-         drawRectangle(x, y, x + (gly.w * 4), y + (gly.h * 4));
-         x += gly.adv * 4;
+         drawRectangle(ox, oy, ox + gly.w, oy + gly.h);
+
+         x += gly.ax;
+         y += gly.ay;
       }
    }
 

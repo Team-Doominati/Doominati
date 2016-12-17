@@ -62,7 +62,7 @@ namespace DGE::GL
       Color drawColorGet() const;
 
       // font
-      void fontBind(Font &font) {fontCurrent = &font;}
+      void fontBind(FontFace &font) {fontCurrent = &font;}
       void fontUnbind() {fontCurrent = fontBase.get();}
 
       // line
@@ -99,7 +99,7 @@ namespace DGE::GL
       class PrivData;
       class Texture;
 
-      Font *baseFont() const;
+      FontFace *baseFont() const;
 
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
@@ -120,8 +120,8 @@ namespace DGE::GL
       Shader  shaderBase;
       Shader *shaderCurrent;
 
-      std::unique_ptr<Font> fontBase;
-      Font                 *fontCurrent;
+      std::unique_ptr<FontFace> fontBase;
+      FontFace                 *fontCurrent;
    };
 }
 

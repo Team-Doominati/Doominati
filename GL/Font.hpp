@@ -43,31 +43,32 @@ namespace DGE::GL
    public:
       using std::runtime_error::runtime_error;
    };
-   
+
    //
-   // FontGlyphInfo
+   // FontGlyphMetr
    //
-   struct FontGlyphInfo
+   struct FontGlyphMetr
    {
-      GLsizei w, h;
-      float   adv;
+      GLsizei w,  h;
+      float   ax, ay;
+      int     ox, oy;
    };
 
    //
    // FontGlyph
    //
-   class FontGlyph : public FontGlyphInfo
+   class FontGlyph : public FontGlyphMetr
    {
    public:
       FontGlyph() = delete;
 
       FontGlyph(FontGlyph &&gly) :
-         FontGlyphInfo{std::move(gly)},
+         FontGlyphMetr{std::move(gly)},
          data{std::move(gly.data)}, link{this, std::move(gly.link)}, ch{gly.ch}
       {}
 
-      FontGlyph(char32_t ch_, TextureData &&data_, FontGlyphInfo &&info) :
-         FontGlyphInfo{std::move(info)},
+      FontGlyph(char32_t ch_, TextureData &&data_, FontGlyphMetr &&metr) :
+         FontGlyphMetr{std::move(metr)},
          data{std::move(data_)}, link{this}, ch{ch_} {}
 
       FontGlyph(FontGlyph const &) = delete;
@@ -78,31 +79,39 @@ namespace DGE::GL
    };
 
    //
-   // Font
+   // FontFace
    //
-   class Font
+   class FontFace
    {
    public:
-      Font() = delete;
-      Font(FS::File *fp, int ptsize);
-      Font(Font const &) = delete;
-      Font(Font &&) = default;
-      ~Font();
+      FontFace() = delete;
+      FontFace(FS::File *fp, int ptsize);
+      FontFace(FontFace const &) = delete;
+      FontFace(FontFace &&) = default;
+      ~FontFace();
 
       FontGlyph &getChar(char32_t ch);
+
+      void kernReset() {kernCh = 0;}
+
+      float kernAmt;
+      float height;
 
    private:
       using GlyphMap = Core::HashMapKeyMem<char32_t, FontGlyph,
          &FontGlyph::ch, &FontGlyph::link>;
       using GlyphVec = std::vector<FontGlyph>;
 
-      FontGlyph &addChar(char32_t ch, TexturePixel const *data, FontGlyphInfo &&info);
+      FontGlyph &addChar(char32_t ch, TexturePixel const *data, FontGlyphMetr &&metr);
       FontGlyph &getChar_Repl(char32_t ch);
 
       FT_FaceRec_ *face;
 
       GlyphMap glyMap;
       GlyphVec glyVec;
+
+      bool hasKerning : 1;
+      char32_t kernCh;
    };
 }
 

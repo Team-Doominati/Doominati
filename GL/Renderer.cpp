@@ -205,11 +205,11 @@ namespace DGE::GL
    //
    // Renderer::baseFont
    //
-   Font *Renderer::baseFont() const
+   FontFace *Renderer::baseFont() const
    {
       // TODO: don't hardcode this
       try
-         {return new Font(FS::Dir::FindFile("Fonts/base.ttf"), 12);}
+         {return new FontFace(FS::Dir::FindFile("Fonts/base.ttf"), 72);}
       catch(FontLoadError const &exc)
       {
          std::cerr << "couldn't load base font: " << exc.what() << std::endl;
