@@ -146,6 +146,26 @@ namespace DGE::GL
    }
 
    //
+   // Renderer::drawText
+   //
+   void Renderer::drawText(int x, int y, char const *str)
+   {
+      if(!fontCurrent) return;
+
+      drawColorSet(1, 1, 1, 1);
+      for(char const *itr = str, *end = str + std::strlen(str); *itr;)
+      {
+         char32_t ch;
+         std::tie(ch, itr) = GDCC::Core::Str8To32(itr, end);
+
+         auto &gly = fontCurrent->getChar(ch);
+         textureBind(&gly.data);
+         drawRectangle(x, y, x + (gly.w * 4), y + (gly.h * 4));
+         x += gly.adv * 4;
+      }
+   }
+
+   //
    // Renderer::drawTriangle
    //
    void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,

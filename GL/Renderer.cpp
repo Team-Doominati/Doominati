@@ -18,8 +18,12 @@
 
 #include "Core/Time.hpp"
 
+#include "FS/Dir.hpp"
+
 #include "GL/OpenGL2.1.h"
 #include "GL/Window.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -160,7 +164,9 @@ namespace DGE::GL
       privdata{new PrivData()},
       win{win_},
       shaderBase{BaseFragShader, BaseVertShader},
-      shaderCurrent{&shaderBase}
+      shaderCurrent{&shaderBase},
+      fontBase{baseFont()},
+      fontCurrent{fontBase.get()}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
@@ -194,6 +200,21 @@ namespace DGE::GL
    //
    Renderer::~Renderer()
    {
+   }
+
+   //
+   // Renderer::baseFont
+   //
+   Font *Renderer::baseFont() const
+   {
+      // TODO: don't hardcode this
+      try
+         {return new Font(FS::Dir::FindFile("Fonts/base.ttf"), 12);}
+      catch(FontLoadError const &exc)
+      {
+         std::cerr << "couldn't load base font: " << exc.what() << std::endl;
+         return nullptr;
+      }
    }
 
    //

@@ -196,6 +196,10 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
+
+   renderer->drawColorSet(DGE::GL::Colors.at("White"));
+   renderer->drawRectangle(18, 18, 300, 64);
+   renderer->drawText(20, 20, "testasdf");
 }
 
 //

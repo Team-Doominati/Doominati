@@ -13,6 +13,7 @@
 #ifndef DGE__GL__Renderer_H__
 #define DGE__GL__Renderer_H__
 
+#include "GL/Font.hpp"
 #include "GL/Particle.hpp"
 #include "GL/Shader.hpp"
 #include "GL/Texture.hpp"
@@ -52,12 +53,17 @@ namespace DGE::GL
       void drawLine(int x1, int y1, int x2, int y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
       void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
+      void drawText(int x, int y, char const *str);
       void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
 
       // drawColor
       void drawColorSet(float r, float g, float b, float a = 1.0f);
       void drawColorSet(Color const &col);
       Color drawColorGet() const;
+
+      // font
+      void fontBind(Font &font) {fontCurrent = &font;}
+      void fontUnbind() {fontCurrent = fontBase.get();}
 
       // line
       void lineSmooth(bool on);
@@ -93,6 +99,8 @@ namespace DGE::GL
       class PrivData;
       class Texture;
 
+      Font *baseFont() const;
+
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
 
@@ -111,6 +119,9 @@ namespace DGE::GL
 
       Shader  shaderBase;
       Shader *shaderCurrent;
+
+      std::unique_ptr<Font> fontBase;
+      Font                 *fontCurrent;
    };
 }
 
