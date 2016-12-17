@@ -45,9 +45,11 @@ namespace DGE::GL
    {
    public:
       Shader() = delete;
-      Shader(char const *f, char const *v)
+      Shader(char const *f, char const *v) :
+         frag{}, vert{}, prog{}, u_ticks{}, u_mseconds{}, u_seconds{}
          {compileFrag(f); compileVert(v); link();}
-      Shader(FS::File *f, FS::File *v)
+      Shader(FS::File *f, FS::File *v) :
+         frag{}, vert{}, prog{}, u_ticks{}, u_mseconds{}, u_seconds{}
          {compileFrag(f); compileVert(v); link();}
       Shader(Shader const &) = delete;
       Shader(Shader &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
