@@ -352,6 +352,15 @@ static int Main()
       throw EXIT_FAILURE;
    }
 
+   // Initialize filesystem.
+   if(GDCC::Core::GetOptionArgs().size())
+   {
+      for(auto const &arg : GDCC::Core::GetOptionArgs())
+         DGE::FS::Dir::AddRoot(arg);
+   }
+   else
+      DGE::FS::Dir::AddRoot(".");
+
    // Initialize rendering.
    struct
    {
@@ -367,15 +376,6 @@ static int Main()
 
    // Initialize input.
    DGE::Game::InputSource_Local input;
-
-   // Initialize filesystem.
-   if(GDCC::Core::GetOptionArgs().size())
-   {
-      for(auto const &arg : GDCC::Core::GetOptionArgs())
-         DGE::FS::Dir::AddRoot(arg);
-   }
-   else
-      DGE::FS::Dir::AddRoot(".");
 
    // Initialize scripting and call main.
    DGE::Code::NativeAdder::Finish();

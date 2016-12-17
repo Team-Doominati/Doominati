@@ -81,10 +81,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 
-find_package(Eigen3 REQUIRED)
-find_package(GDCC   REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(SDL2   REQUIRED)
+find_package(Eigen3   REQUIRED)
+find_package(GDCC     REQUIRED)
+find_package(OpenGL   REQUIRED)
+find_package(SDL2     REQUIRED)
+find_package(Freetype REQUIRED)
 
 if(NOT DGE_CONSOLE_APPLICATION AND NOT SDL2_MAIN_FOUND)
    message(FATAL_ERROR
@@ -105,7 +106,8 @@ include_directories(SYSTEM
    ${GDCC_INCLUDE_DIRS}
    ${OPENGL_INCLUDE_DIR}
    ${SDL2_INCLUDE_DIRS}
-   ${EIGEN3_INCLUDE_DIRS})
+   ${EIGEN3_INCLUDE_DIRS}
+   ${FREETYPE_INCLUDE_DIRS})
 
 
 ##----------------------------------------------------------------------------|

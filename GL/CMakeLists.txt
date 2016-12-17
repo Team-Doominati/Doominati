@@ -23,6 +23,8 @@ add_library(dge-gl-lib STATIC
    Color.hpp
    DynamicBuffer.cpp
    DynamicBuffer.hpp
+   Font.cpp
+   Font.hpp
    OpenGL2.1.c
    OpenGL2.1.h
    Particle.cpp
@@ -44,7 +46,8 @@ add_library(dge-gl-lib STATIC
 
 target_link_libraries(dge-gl-lib dge-code-lib
    ${OPENGL_LIBRARIES}
-   ${SDL2_LIBRARIES})
+   ${SDL2_LIBRARIES}
+   ${FREETYPE_LIBRARIES})
 
 ## EOF
 
