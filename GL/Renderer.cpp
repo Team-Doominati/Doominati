@@ -160,6 +160,7 @@ namespace DGE::GL
    Renderer::Renderer(Window &win_, int w_, int h_) :
       realw{}, realh{},
       w{w_}, h{h_},
+      textAlignH{AlignHorz::Left}, textAlignV{AlignVert::Top},
       prevw{0}, prevh{0},
       privdata{new PrivData()},
       win{win_},

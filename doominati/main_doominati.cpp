@@ -48,10 +48,13 @@
 static char const *TestShaderFragment = R"(
    #version 120
 
+   uniform sampler2D dge_texture;
+
    uniform int dge_ticks;
    uniform int dge_mseconds;
    uniform int dge_seconds;
 
+   varying vec4 color;
    varying vec4 texcoord;
 
    vec4 HSVToRGB(float h, float s, float v, float a)
@@ -94,7 +97,10 @@ static char const *TestShaderFragment = R"(
       v += sin((bx + by + t) / 32.0);
       v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
 
-      gl_FragColor = HSVToRGB(sin(v * pi) * 0.5 + 0.5, 1.0, 1.0, 1.0);
+      gl_FragColor =
+         texture2D(dge_texture, texcoord.xy) *
+         HSVToRGB(sin(v * pi) * 0.5 + 0.5, 0.5, 1.0, 1.0) *
+         color;
    }
 )";
 
@@ -104,6 +110,7 @@ static char const *TestShaderFragment = R"(
 static char const *TestShaderVertex = R"(
    #version 120
 
+   varying vec4 color;
    varying vec4 texcoord;
 
    void main(void)
@@ -111,6 +118,7 @@ static char const *TestShaderVertex = R"(
       gl_Position = ftransform();
 
       texcoord = gl_MultiTexCoord0;
+      color = gl_Color;
    }
 )";
 
@@ -146,6 +154,7 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
    renderer->textureBind("@Textures/bigscreen.ppm");
    renderer->drawRectangle(303, 2, 603, 302);
 
+   renderer->textureUnbind();
    renderer->shaderSwap(testShader);
    renderer->shaderUpdate();
    renderer->drawRectangle(2, 2, 302, 302);
@@ -197,10 +206,12 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
    renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
 
-   renderer->drawText(20, 80,
+   renderer->shaderSwap(testShader);
+   renderer->drawText(40, 240,
       "hello, world!\n"
       "KERNING BRAVADO fiffling\n"
       "今日は、世界さん！");
+   renderer->shaderDrop();
 }
 
 //

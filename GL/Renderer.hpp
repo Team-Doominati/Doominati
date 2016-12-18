@@ -33,6 +33,26 @@ namespace DGE::GL
    class Window;
 
    //
+   // AlignHorz
+   //
+   enum class AlignHorz
+   {
+      Left,
+      Right,
+      Center
+   };
+
+   //
+   // AlignVert
+   //
+   enum class AlignVert
+   {
+      Top,
+      Bottom,
+      Center
+   };
+
+   //
    // Renderer
    //
    class Renderer
@@ -92,6 +112,9 @@ namespace DGE::GL
 
       int realw, realh;
       int w, h;
+
+      AlignHorz textAlignH;
+      AlignVert textAlignV;
 
       static Renderer *Current;
 

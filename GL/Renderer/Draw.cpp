@@ -152,8 +152,9 @@ namespace DGE::GL
    {
       if(!fontCurrent) return;
 
-      int origx = x;
       fontCurrent->kernReset();
+
+      float px = 0, py = 0;
       for(char const *itr = str, *end = str + std::strlen(str); *itr;)
       {
          char32_t ch;
@@ -161,19 +162,19 @@ namespace DGE::GL
 
          switch(ch)
          {
-         case '\n': y += fontCurrent->height;
-         case '\r': x  = origx; continue;
+         case '\n': py += fontCurrent->height;
+         case '\r': px  = 0; continue;
          }
 
          auto &gly = fontCurrent->getChar(ch);
-         int ox = x + gly.ox + fontCurrent->kernAmt;
-         int oy = y + gly.oy;
+         int ox = x + px + gly.ox + fontCurrent->kernAmt;
+         int oy = y + py + gly.oy;
 
          textureBind(&gly.data);
          drawRectangle(ox, oy, ox + gly.w, oy + gly.h);
 
-         x += gly.ax;
-         y += gly.ay;
+         px += gly.ax;
+         py += gly.ay;
       }
    }
 
