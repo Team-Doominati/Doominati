@@ -32,6 +32,7 @@ add_library(dge-gl-lib STATIC
    Renderer.cpp
    Renderer.hpp
    Renderer/Draw.cpp
+   Renderer/DrawText.cpp
    Renderer/PrivData.hpp
    Renderer/Texture.cpp
    Shader.cpp

@@ -133,6 +133,8 @@ namespace DGE::GL
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
 
+      float textLine(float x, float y, char const *str, char const *end);
+
       int prevw, prevh;
 
       float cr, cg, cb, ca;

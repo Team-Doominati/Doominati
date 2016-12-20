@@ -37,7 +37,6 @@
 #include <iostream>
 #include <cstdlib>
 
-
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
 //
@@ -206,12 +205,13 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
    renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
 
-   renderer->shaderSwap(testShader);
-   renderer->drawText(40, 240,
-      "hello, world!\n"
-      "KERNING BRAVADO fiffling\n"
-      "今日は、世界さん！");
-   renderer->shaderDrop();
+   renderer->drawColorSet(DGE::GL::Colors.at("Cyan"));
+   renderer->drawText(w / 2, 240,
+      u8"Hello, world!\n今日は、世界さん！\nKerning AVA fiffl");
+
+   renderer->textureUnbind();
+   renderer->drawColorSet(DGE::GL::Colors.at("Red"));
+   renderer->drawRectangle((w / 2) - 16, 240 - 16, (w / 2) + 16, 240 + 16);
 }
 
 //

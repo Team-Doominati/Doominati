@@ -146,39 +146,6 @@ namespace DGE::GL
    }
 
    //
-   // Renderer::drawText
-   //
-   void Renderer::drawText(int x, int y, char const *str)
-   {
-      if(!fontCurrent) return;
-
-      fontCurrent->kernReset();
-
-      float px = 0, py = 0;
-      for(char const *itr = str, *end = str + std::strlen(str); *itr;)
-      {
-         char32_t ch;
-         std::tie(ch, itr) = GDCC::Core::Str8To32(itr, end);
-
-         switch(ch)
-         {
-         case '\n': py += fontCurrent->height;
-         case '\r': px  = 0; continue;
-         }
-
-         auto &gly = fontCurrent->getChar(ch);
-         int ox = x + px + gly.ox + fontCurrent->kernAmt;
-         int oy = y + py + gly.oy;
-
-         textureBind(&gly.data);
-         drawRectangle(ox, oy, ox + gly.w, oy + gly.h);
-
-         px += gly.ax;
-         py += gly.ay;
-      }
-   }
-
-   //
    // Renderer::drawTriangle
    //
    void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
