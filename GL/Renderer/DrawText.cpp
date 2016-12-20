@@ -28,16 +28,13 @@ namespace DGE::GL
    float Renderer::textLine(float x, float y, char const *itr, char const *end)
    {
       float px = 0, py = 0;
-      while(itr <= end && *itr)
+
+      while(itr < end)
       {
          char32_t ch;
          std::tie(ch, itr) = GDCC::Core::Str8To32(itr, end);
 
-         switch(ch)
-         {
-         case '\n': return py + fontCurrent->height;
-         case '\r': px = 0; continue;
-         }
+         if(ch == '\r') px = 0;
 
          auto &gly = fontCurrent->getChar(ch);
          int ox = x + px + gly.ox + fontCurrent->kernAmt;
@@ -50,7 +47,7 @@ namespace DGE::GL
          py += gly.ay;
       }
 
-      return py;
+      return py + fontCurrent->height; // TODO: hack
    }
 
    //
@@ -63,12 +60,19 @@ namespace DGE::GL
       fontCurrent->kernReset();
 
       float py = y + (fontCurrent->height / 2.0f); // TODO: hack
-      for(char const *itr = str; *itr; itr++)
+      for(char const *itr = str;;)
       {
-         char const *end = std::strchr(itr, '\n');
-         if(!end)    end = itr + std::strlen(itr);
-         py += textLine(x, py, itr, end);
-         itr = end;
+         if(char const *end = std::strchr(itr, '\n'))
+         {
+            py += textLine(x, py, itr, end);
+            itr = end + 1;
+         }
+         else
+         {
+            end = itr + std::strlen(itr);
+            py += textLine(x, py, itr, end);
+            break;
+         }
       }
    }
 }
