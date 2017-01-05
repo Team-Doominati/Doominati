@@ -13,6 +13,7 @@
 #ifndef DGE__GL__Renderer_H__
 #define DGE__GL__Renderer_H__
 
+#include "GL/Font.hpp"
 #include "GL/Particle.hpp"
 #include "GL/Shader.hpp"
 #include "GL/Texture.hpp"
@@ -30,6 +31,26 @@ namespace GDCC::Core
 namespace DGE::GL
 {
    class Window;
+
+   //
+   // AlignHorz
+   //
+   enum class AlignHorz
+   {
+      Left,
+      Right,
+      Center
+   };
+
+   //
+   // AlignVert
+   //
+   enum class AlignVert
+   {
+      Top,
+      Bottom,
+      Center
+   };
 
    //
    // Renderer
@@ -52,12 +73,17 @@ namespace DGE::GL
       void drawLine(int x1, int y1, int x2, int y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
       void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
+      void drawText(int x, int y, char const *str);
       void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
 
       // drawColor
       void drawColorSet(float r, float g, float b, float a = 1.0f);
       void drawColorSet(Color const &col);
       Color drawColorGet() const;
+
+      // font
+      void fontBind(FontFace &font) {fontCurrent = &font;}
+      void fontUnbind() {fontCurrent = fontBase.get();}
 
       // line
       void lineSmooth(bool on);
@@ -87,11 +113,16 @@ namespace DGE::GL
       int realw, realh;
       int w, h;
 
+      AlignHorz textAlignH;
+      AlignVert textAlignV;
+
       static Renderer *Current;
 
    private:
       class PrivData;
       class Texture;
+
+      FontFace *baseFont() const;
 
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
@@ -102,6 +133,8 @@ namespace DGE::GL
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
 
+      float textLine(float x, float y, char const *str, char const *end);
+
       int prevw, prevh;
 
       float cr, cg, cb, ca;
@@ -111,6 +144,9 @@ namespace DGE::GL
 
       Shader  shaderBase;
       Shader *shaderCurrent;
+
+      std::unique_ptr<FontFace> fontBase;
+      FontFace                 *fontCurrent;
    };
 }
 

@@ -29,7 +29,10 @@ namespace DGE::GL
    {
       glPushMatrix();
 
-      glMultMatrixf(Eigen::Affine3f(Eigen::Translation3f(x, y, 0.0f) * Eigen::Scaling(float(radius))).data());
+      glMultMatrixf(Eigen::Affine3f(
+         Eigen::Translation3f(x, y, 0.0f) *
+         Eigen::Scaling(float(radius))
+      ).data());
 
       if(!line) privdata->circleBuff.bindAndDraw();
       else      privdata->circleLineBuff.bindAndDraw();
@@ -51,7 +54,10 @@ namespace DGE::GL
 
       glPushMatrix();
 
-      glMultMatrixf(Eigen::Affine3f(Eigen::Translation3f(x1 + rx, y1 + ry, 0.0f) * Eigen::Scaling(rx, ry, 1.0f)).data());
+      glMultMatrixf(Eigen::Affine3f(
+         Eigen::Translation3f(x1 + rx, y1 + ry, 0.0f) *
+         Eigen::Scaling(rx, ry, 1.0f)
+      ).data());
 
       if(!line) privdata->circleBuff.bindAndDraw();
       else      privdata->circleLineBuff.bindAndDraw();
@@ -75,7 +81,8 @@ namespace DGE::GL
    //
    // Renderer::drawRectangle
    //
-   void Renderer::drawRectangle(int x1, int y1, int x2, int y2, float rot, bool line) const
+   void Renderer::drawRectangle(int x1, int y1, int x2, int y2, float rot,
+      bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
       if(y1 > y2) std::swap(y1, y2);
@@ -111,22 +118,16 @@ namespace DGE::GL
          // B--A
          // | /
          // C
-         glTexCoord2f(1, 0);
-         glVertex2f(v[1].x, v[1].y);
-         glTexCoord2f(0, 0);
-         glVertex2f(v[0].x, v[0].y);
-         glTexCoord2f(0, 1);
-         glVertex2f(v[3].x, v[3].y);
+         glTexCoord2f(1, 0); glVertex2f(v[1].x, v[1].y);
+         glTexCoord2f(0, 0); glVertex2f(v[0].x, v[0].y);
+         glTexCoord2f(0, 1); glVertex2f(v[3].x, v[3].y);
 
          //    A
          //  / |
          // B--C
-         glTexCoord2f(1, 0);
-         glVertex2f(v[1].x, v[1].y);
-         glTexCoord2f(0, 1);
-         glVertex2f(v[3].x, v[3].y);
-         glTexCoord2f(1, 1);
-         glVertex2f(v[2].x, v[2].y);
+         glTexCoord2f(1, 0); glVertex2f(v[1].x, v[1].y);
+         glTexCoord2f(0, 1); glVertex2f(v[3].x, v[3].y);
+         glTexCoord2f(1, 1); glVertex2f(v[2].x, v[2].y);
 
          glEnd();
       }
@@ -147,17 +148,15 @@ namespace DGE::GL
    //
    // Renderer::drawTriangle
    //
-   void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line) const
+   void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
+      bool line) const
    {
       if(!line) glBegin(GL_TRIANGLES);
       else      glBegin(GL_LINE_LOOP);
 
-      glTexCoord2f(0.5f, 0);
-      glVertex2f(x1, y1);
-      glTexCoord2f(0, 1);
-      glVertex2f(x2, y2);
-      glTexCoord2f(1, 1);
-      glVertex2f(x3, y3);
+      glTexCoord2f(0.5f, 0); glVertex2f(x1, y1);
+      glTexCoord2f(0,    1); glVertex2f(x2, y2);
+      glTexCoord2f(1,    1); glVertex2f(x3, y3);
 
       glEnd();
    }
@@ -187,7 +186,7 @@ namespace DGE::GL
    //
    Color Renderer::drawColorGet() const
    {
-      return { cr, cg, cb, ca };
+      return {cr, cg, cb, ca};
    }
 }
 
@@ -203,9 +202,9 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_DrawColor)
    {
-      float r = argv[0] / 4294967295.0;
-      float g = argv[1] / 4294967295.0;
-      float b = argv[2] / 4294967295.0;
+      float r =            argv[0] / 4294967295.0;
+      float g =            argv[1] / 4294967295.0;
+      float b =            argv[2] / 4294967295.0;
       float a = argc > 3 ? argv[3] / 4294967295.0 : 1.0f;
 
       Renderer::Current->drawColorSet(r, g, b, a);

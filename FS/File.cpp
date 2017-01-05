@@ -80,7 +80,6 @@ namespace DGE::FS
    //
    // DetectFormat
    //
-
    Format DetectFormat(char const *data, std::size_t size)
    {
       if(size < 2) return Format::Unknown;

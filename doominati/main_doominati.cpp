@@ -37,7 +37,6 @@
 #include <iostream>
 #include <cstdlib>
 
-
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
 //
@@ -48,10 +47,13 @@
 static char const *TestShaderFragment = R"(
    #version 120
 
+   uniform sampler2D dge_texture;
+
    uniform int dge_ticks;
    uniform int dge_mseconds;
    uniform int dge_seconds;
 
+   varying vec4 color;
    varying vec4 texcoord;
 
    vec4 HSVToRGB(float h, float s, float v, float a)
@@ -94,7 +96,10 @@ static char const *TestShaderFragment = R"(
       v += sin((bx + by + t) / 32.0);
       v += sin((sqrt(pow(bx + sin(t / 3.0), 2.0) + pow(by + cos(t / 2.0), 2.0) + 1.0) + t) / 128.0);
 
-      gl_FragColor = HSVToRGB(sin(v * pi) * 0.5 + 0.5, 1.0, 1.0, 1.0);
+      gl_FragColor =
+         texture2D(dge_texture, texcoord.xy) *
+         HSVToRGB(sin(v * pi) * 0.5 + 0.5, 0.5, 1.0, 1.0) *
+         color;
    }
 )";
 
@@ -104,6 +109,7 @@ static char const *TestShaderFragment = R"(
 static char const *TestShaderVertex = R"(
    #version 120
 
+   varying vec4 color;
    varying vec4 texcoord;
 
    void main(void)
@@ -111,6 +117,7 @@ static char const *TestShaderVertex = R"(
       gl_Position = ftransform();
 
       texcoord = gl_MultiTexCoord0;
+      color = gl_Color;
    }
 )";
 
@@ -141,11 +148,12 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->drawParticleSystem(ps);
 
-   renderer->drawColorSet(DGE::GL::Color::White);
+   renderer->drawColorSet(DGE::GL::Colors.at("White"));
 
    renderer->textureBind("@Textures/bigscreen.ppm");
    renderer->drawRectangle(303, 2, 603, 302);
 
+   renderer->textureUnbind();
    renderer->shaderSwap(testShader);
    renderer->shaderUpdate();
    renderer->drawRectangle(2, 2, 302, 302);
@@ -159,12 +167,12 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->drawRectangle(xp, yp, xo, yo, 0, true);
 
-   renderer->drawColorSet(DGE::GL::Color::Red);
+   renderer->drawColorSet(DGE::GL::Colors.at("Red"));
 
    renderer->drawLine(xp, yp, xo, yo);
    renderer->drawLine(xp, yo, xo, yp);
 
-   renderer->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawColorSet(DGE::GL::Colors.at("Green"));
 
    double s = std::sin(seconds * 4.0) * 40.0;
    double c = std::cos(seconds * 4.0) * 40.0;
@@ -174,28 +182,36 @@ static void DrawTest(DGE::GL::ParticleSystem &ps, DGE::GL::Shader &testShader)
 
    renderer->textureBind("@Textures/colors.ppm");
 
-   DGE::GL::Color drawc{DGE::GL::Color::Pink};
+   DGE::GL::Color drawc{DGE::GL::Colors.at("Pink")};
    for(int i = 0; i < 3; i++)
    {
       renderer->drawColorSet(drawc);
-      drawc.interpolate(DGE::GL::Color::Blue, 1.0f / 3.0f);
+      drawc.interpolate(DGE::GL::Colors.at("Blue"), 1.0f / 3.0f);
 
       renderer->drawCircle(64 + (i * 128), 550, 64);
    }
 
    renderer->textureUnbind();
 
-   renderer->drawColorSet(DGE::GL::Color::Pink);
+   renderer->drawColorSet(DGE::GL::Colors.at("Pink"));
    renderer->drawEllipse(0, 614, 900, h);
 
-   renderer->drawColorSet(DGE::GL::Color::Green);
+   renderer->drawColorSet(DGE::GL::Colors.at("Green"));
    renderer->drawEllipse(0, 614, 900, h, true);
 
-   renderer->drawColorSet(DGE::GL::Color::Purple);
+   renderer->drawColorSet(DGE::GL::Colors.at("Purple"));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h);
 
    renderer->drawColorSet(DGE::GL::Color::FromHSV(std::sin(seconds * 0.25f) * 0.5f + 0.5f, 1.0, 1.0));
    renderer->drawTriangle(900 + 50, h - 100, 900, h, 900 + 100, h, true);
+
+   renderer->drawColorSet(DGE::GL::Colors.at("Cyan"));
+   renderer->drawText(w / 2, 240,
+      u8"Hello, world!\n今日は、世界さん！\nKerning AVA fiffl");
+
+   renderer->textureUnbind();
+   renderer->drawColorSet(DGE::GL::Colors.at("Red"));
+   renderer->drawRectangle((w / 2) - 16, 240 - 16, (w / 2) + 16, 240 + 16);
 }
 
 //
@@ -266,7 +282,8 @@ static void DrawFPS()
 
    unsigned int fps = std::round(1 / timeMean);
 
-   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Color::White);
+   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Colors.at("White"));
+   DGE::GL::Renderer::Current->textureUnbind();
 
    int x = DGE::GL::Renderer::Current->w - 65;
    int y = 35;
@@ -333,7 +350,7 @@ bool ParticleTest(DGE::GL::Particle *particle)
    particle->acceleration.y = (1.0f / 16384) * r[6];
    particle->scale.x        = particle->scale.y = (1.0f / 4096) * r[7] * 40;
    particle->color          = DGE::GL::Color::FromHSV(r[8], 1, 1);
-   particle->colordest      = DGE::GL::Color::Zero;
+   particle->colordest      = DGE::GL::Colors.at("Zero");
    particle->colordest.a    = 0.0f;
    particle->colorspeed     = 0.04f;
 
@@ -352,6 +369,15 @@ static int Main()
       throw EXIT_FAILURE;
    }
 
+   // Initialize filesystem.
+   if(GDCC::Core::GetOptionArgs().size())
+   {
+      for(auto const &arg : GDCC::Core::GetOptionArgs())
+         DGE::FS::Dir::AddRoot(arg);
+   }
+   else
+      DGE::FS::Dir::AddRoot(".");
+
    // Initialize rendering.
    struct
    {
@@ -367,15 +393,6 @@ static int Main()
 
    // Initialize input.
    DGE::Game::InputSource_Local input;
-
-   // Initialize filesystem.
-   if(GDCC::Core::GetOptionArgs().size())
-   {
-      for(auto const &arg : GDCC::Core::GetOptionArgs())
-         DGE::FS::Dir::AddRoot(arg);
-   }
-   else
-      DGE::FS::Dir::AddRoot(".");
 
    // Initialize scripting and call main.
    DGE::Code::NativeAdder::Finish();

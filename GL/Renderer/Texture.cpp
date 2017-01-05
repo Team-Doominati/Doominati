@@ -43,11 +43,11 @@ namespace DGE::GL
    //
    void Renderer::textureBind(TextureData *tex)
    {
-      if(privdata->texBound != tex->tex)
-      {
-         glBindTexture(GL_TEXTURE_2D, tex->tex);
-         privdata->texBound = tex->tex;
-      }
+      if(!tex)
+         textureUnbind();
+
+      else if(privdata->texBound != tex->tex)
+         glBindTexture(GL_TEXTURE_2D, privdata->texBound = tex->tex);
    }
 
    //
@@ -117,7 +117,7 @@ namespace DGE::GL
       try
       {
          auto loader = CreateTextureLoader(file);
-         GLsizei width, height;
+         GLsizei  width, height;
          std::tie(width, height) = loader->size();
          std::unique_ptr<TexturePixel[]> buf{new TexturePixel[width * height]};
          loader->data(buf.get());
