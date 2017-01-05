@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 Team Doominati
+## Copyright (C) 2016-2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -22,6 +22,7 @@ add_library(dge-fs-lib STATIC
    Dir.cpp
    Dir.hpp
    Dir/Directory.cpp
+   Dir/Pak.cpp
    File.cpp
    File.hpp
 )

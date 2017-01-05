@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -62,12 +62,12 @@ namespace DGE::FS
       if(!dir) switch(format)
       {
       case Format::Pak:
-         //dir = DirCreate_Pak(this);
+         dir = CreateDir_Pak(this);
          if(!dir) format = Format::Unknown;
          break;
 
       case Format::Wad:
-         //dir = DirCreate_Wad(this));
+         //dir = CreateDir_Wad(this));
          if(!dir) format = Format::Unknown;
          break;
 

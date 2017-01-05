@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -127,11 +127,11 @@ namespace DGE::FS
          if(file) switch(DetectFormat(file->data(), file->size()))
          {
          case Format::Pak:
-            //dir = DirCreate_Pak(std::move(file));
+            dir = CreateDir_Pak(std::move(file));
             break;
 
          case Format::Wad:
-            //dir = DirCreate_Wad(std::move(file));
+            //dir = CreateDir_Wad(std::move(file));
             break;
 
          default:
@@ -192,6 +192,67 @@ namespace DGE::FS
    void Dir::ForFile(char const *path, ForFunc const &fn)
    {
       return ForFile(GDCC::Core::StrDup(path).get(), fn);
+   }
+
+   //
+   // DirData default constructor
+   //
+   DirData::DirData() : fileFS{nullptr}, fileBlock{nullptr} {}
+
+   //
+   // DirData move constructor
+   //
+   DirData::DirData(DirData &&dd) = default;
+
+   //
+   // DirData constructor
+   //
+   DirData::DirData(File *file) : fileFS{file}
+   {
+      ++fileFS->refs;
+   }
+
+   //
+   // DirData constructor
+   //
+   DirData::DirData(std::unique_ptr<GDCC::Core::FileBlock> &&file) :
+      fileFS{nullptr}, fileBlock{std::move(file)}
+   {
+   }
+
+   //
+   // DirData destructor
+   //
+   DirData::~DirData()
+   {
+      if(fileFS) --fileFS->refs;
+   }
+
+   //
+   // DirData::operator = DirData
+   //
+   DirData &DirData::operator = (DirData &&dd) = default;
+
+   //
+   // DirData::data
+   //
+   char const *DirData::data() const
+   {
+      if(fileFS)    return fileFS->data;
+      if(fileBlock) return fileBlock->data();
+
+      return nullptr;
+   }
+
+   //
+   // DirData::size
+   //
+   std::size_t DirData::size() const
+   {
+      if(fileFS)    return fileFS->size;
+      if(fileBlock) return fileBlock->size();
+
+      return 0;
    }
 }
 

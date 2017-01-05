@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -68,6 +68,31 @@ namespace DGE::FS
       static void ForFile(char       *path, ForFunc const &fn);
       static void ForFile(char const *path, ForFunc const &fn);
    };
+
+   //
+   // DirData
+   //
+   class DirData
+   {
+   public:
+      DirData();
+      DirData(DirData const &) = delete;
+      DirData(DirData &&dd);
+      DirData(File *file);
+      DirData(std::unique_ptr<GDCC::Core::FileBlock> &&file);
+      ~DirData();
+
+      DirData &operator = (DirData const &) = delete;
+      DirData &operator = (DirData &&dd);
+
+      char const *data() const;
+
+      std::size_t size() const;
+
+   private:
+      File                                  *fileFS;
+      std::unique_ptr<GDCC::Core::FileBlock> fileBlock;
+   };
 }
 
 
@@ -78,10 +103,8 @@ namespace DGE::FS
 namespace DGE::FS
 {
    std::unique_ptr<Dir> CreateDir_Directory(char const *name);
-   std::unique_ptr<Dir> CreateDir_Pak(File *file);
-   std::unique_ptr<Dir> CreateDir_Pak(std::unique_ptr<GDCC::Core::FileBlock> &&file);
-   std::unique_ptr<Dir> CreateDir_Wad(File *file);
-   std::unique_ptr<Dir> CreateDir_Wad(std::unique_ptr<GDCC::Core::FileBlock> &&file);
+   std::unique_ptr<Dir> CreateDir_Pak(DirData &&dd);
+   std::unique_ptr<Dir> CreateDir_Wad(DirData &&dd);
 }
 
 #endif//DGE__FS__Dir_H__
