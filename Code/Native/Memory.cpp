@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -20,10 +20,10 @@
 // Natives                                                                    |
 //
 
+DGE_Code_NativeLoader(Memory)
+
 namespace DGE::Code
 {
-   void NativeLoad_Memory() {} // See Code/Native.cpp.
-
    //
    // void *DGE_FreestoreBegin(void)
    //

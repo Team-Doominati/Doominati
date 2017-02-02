@@ -45,6 +45,15 @@
       "_" #name, DGE_Code_Native_##name}; \
    static bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
 
+//
+// DGE_Code_NativeLoader
+//
+#define DGE_Code_NativeLoader(name) \
+   namespace DGE::Code \
+   { \
+      void NativeLoad_##name() {} \
+   }
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |

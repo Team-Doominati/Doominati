@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -19,10 +19,10 @@
 // Natives                                                                    |
 //
 
+DGE_Code_NativeLoader(State)
+
 namespace DGE::Code
 {
-   void NativeLoad_State() {} // See Code/Native.cpp.
-
    //
    // void DGE_Delay(unsigned ticks)
    //

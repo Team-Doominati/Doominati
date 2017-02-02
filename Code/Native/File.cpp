@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -35,10 +35,10 @@ namespace DGE::Code
 // Natives                                                                    |
 //
 
+DGE_Code_NativeLoader(File)
+
 namespace DGE::Code
 {
-   void NativeLoad_File() {} // See Code/Native.cpp.
-
    //
    // void DGE_FileClose(int fd)
    //

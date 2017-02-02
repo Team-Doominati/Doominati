@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #include "GL/Renderer/PrivData.hpp"
 
+#include "Code/MemStr.hpp"
+#include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
@@ -77,7 +79,27 @@ namespace DGE::GL
    }
 }
 
-// TODO: natives
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+DGE_Code_NativeLoader(DrawText)
+
+namespace DGE::GL
+{
+   //
+   // void DGE_DrawText(int x, int y, char const *str)
+   //
+   DGE_Code_NativeDefn(DGE_DrawText)
+   {
+      int x = static_cast<int>(argv[0]);
+      int y = static_cast<int>(argv[1]);
+      Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
+      Renderer::Current->drawText(x, y, MemStrDup(str).get());
+      return false;
+   }
+}
 
 // EOF
 

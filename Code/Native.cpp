@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -52,6 +52,7 @@ namespace DGE::Code
 namespace DGE::Code
 {
    void NativeLoad_Debug();
+   void NativeLoad_DrawText();
    void NativeLoad_File();
    void NativeLoad_Memory();
    void NativeLoad_Print();
@@ -75,6 +76,7 @@ namespace DGE::Code
       // compilation unit must be used.
       // Other solutions exist, but are overly vendor-specific.
       NativeLoad_Debug();
+      NativeLoad_DrawText();
       NativeLoad_File();
       NativeLoad_Memory();
       NativeLoad_Print();
