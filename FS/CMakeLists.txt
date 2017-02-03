@@ -23,8 +23,11 @@ add_library(dge-fs-lib STATIC
    Dir.hpp
    Dir/Directory.cpp
    Dir/Pak.cpp
+   Dir/Zip.cpp
    File.cpp
    File.hpp
+   Path.cpp
+   Path.hpp
 )
 
 target_link_libraries(dge-fs-lib dge-core-lib)

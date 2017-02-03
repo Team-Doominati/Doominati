@@ -126,13 +126,9 @@ namespace DGE::FS
 
          if(file) switch(DetectFormat(file->data(), file->size()))
          {
-         case Format::Pak:
-            dir = CreateDir_Pak(std::move(file));
-            break;
-
-         case Format::Wad:
-            //dir = CreateDir_Wad(std::move(file));
-            break;
+         case Format::Pak: dir = CreateDir_Pak(std::move(file)); break;
+       //case Format::Wad: dir = CreateDir_Wad(std::move(file)); break;
+         case Format::Zip: dir = CreateDir_Zip(std::move(file)); break;
 
          default:
             break;

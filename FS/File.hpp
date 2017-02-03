@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,7 @@ namespace DGE::FS
       PPM,     // Portable Pixel Map
       Wad,     // WAD archive
       WAVE,    // Waveform Audio File Format
+      Zip,     // ZIP archive
 
       Unknown
    };

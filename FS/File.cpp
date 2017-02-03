@@ -61,18 +61,14 @@ namespace DGE::FS
    {
       if(!dir) switch(format)
       {
-      case Format::Pak:
-         dir = CreateDir_Pak(this);
-         if(!dir) format = Format::Unknown;
-         break;
+      case Format::Pak: dir = CreateDir_Pak(this); break;
+    //case Format::Wad: dir = CreateDir_Wad(this); break;
+      case Format::Zip: dir = CreateDir_Zip(this); break;
 
-      case Format::Wad:
-         //dir = CreateDir_Wad(this));
-         if(!dir) format = Format::Unknown;
-         break;
-
-      default: break;
+      default: return dir.get();
       }
+
+      if(!dir) format = Format::Unknown;
 
       return dir.get();
    }
@@ -124,6 +120,15 @@ namespace DGE::FS
       if(data[0] == 'R' && data[1] == 'I' && data[ 2] == 'F' && data[ 3] == 'F' &&
          data[8] == 'W' && data[9] == 'A' && data[10] == 'V' && data[11] == 'E')
          return Format::WAVE;
+
+      if(size < 22) return Format::Unknown;
+
+      // ZIP archive.
+      if(data[0] == 'P' && data[1] == 'K' &&
+         ((data[2] == '\x01' && data[3] == '\x02') ||
+          (data[2] == '\x03' && data[3] == '\x04') ||
+          (data[2] == '\x05' && data[3] == '\x06')))
+         return Format::Zip;
 
       return Format::Unknown;
    }

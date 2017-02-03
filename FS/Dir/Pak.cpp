@@ -12,6 +12,8 @@
 
 #include "FS/Dir.hpp"
 
+#include "FS/Path.hpp"
+
 #include "Core/BinaryIO.hpp"
 #include "Core/Search.hpp"
 
@@ -30,9 +32,10 @@
 namespace DGE::FS
 {
    class Dir_PakSub;
-   class File_Pak;
    class DirLoader_Pak;
-   class PakMap;
+   class File_Pak;
+
+   using PakMap = DirMap<File_Pak>;
 
    //
    // Dir_PakBase
@@ -64,8 +67,6 @@ namespace DGE::FS
    public:
       Dir_Pak(DirData &&dd_) : dd{std::move(dd_)} {}
       virtual ~Dir_Pak();
-
-      void buildTables(DirLoader_Pak const &pak);
 
 
       friend class DirLoader_Pak;
@@ -130,116 +131,6 @@ namespace DGE::FS
    class PakError : public std::exception
    {
    };
-
-   //
-   // PakMap
-   //
-   // Acts as an intermediary loading format.
-   //
-   class PakMap
-   {
-   public:
-      //
-      // Name
-      //
-      struct Name
-      {
-         Name(char const *name_, char const *end_) : name{name_}, end{end_} {}
-
-         bool operator < (Name const &r) const
-            {return std::lexicographical_compare(name, end, r.name, r.end);}
-
-         char const *name, *end;
-      };
-
-
-      PakMap() : files{nullptr}, fileC{0} {}
-
-      //
-      // constructor
-      //
-      PakMap(File_Pak *fileItr, File_Pak *lumpEnd) : files{nullptr},
-         fileC{0}
-      {
-         for(; fileItr != lumpEnd; ++fileItr)
-            add(fileItr, fileItr->name);
-      }
-
-      //
-      // add
-      //
-      void add(File_Pak *file, char const *name)
-      {
-         if(auto s = std::strchr(name, '/'))
-            map[{name, s}].add(file, s + 1);
-         else if(!files)
-            files = file, fileC = 1;
-         else
-            ++fileC;
-      }
-
-      //
-      // count
-      //
-      std::size_t count() const
-      {
-         std::size_t n = map.size();
-         for(auto const &m : map)
-            n += m.second.count();
-
-         return n;
-      }
-
-      std::map<Name, PakMap> map;
-      File_Pak              *files;
-      std::size_t            fileC;
-   };
-}
-
-
-//----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-namespace DGE::FS
-{
-   //
-   // PathCompare
-   //
-   static int PathCompare(char const *l, char const *r)
-   {
-      char const *ls = std::strchr(l, '/');
-      char const *rs = std::strchr(r, '/');
-
-      // Both are final component.
-      if(!ls && !rs)
-         return std::strcmp(l, r);
-
-      // Left is final component, right is not.
-      if(!ls) return -1;
-
-      // Right is final component, left is not.
-      if(!rs) return +1;
-
-      // If the bases are inequal, that determines sorting.
-      for(auto li = l, ri = r;; ++li, ++ri)
-      {
-         if(*li == '/')
-         {
-            if(*ri == '/') break;
-            return -1;
-         }
-
-         if(*ri == '/')
-            return +1;
-
-         if(*li != *ri)
-            return *li - *ri;
-      }
-
-      // Otherwise, compare after the bases.
-      return PathCompare(ls + 1, rs + 1);
-   }
 }
 
 

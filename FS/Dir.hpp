@@ -105,6 +105,7 @@ namespace DGE::FS
    std::unique_ptr<Dir> CreateDir_Directory(char const *name);
    std::unique_ptr<Dir> CreateDir_Pak(DirData &&dd);
    std::unique_ptr<Dir> CreateDir_Wad(DirData &&dd);
+   std::unique_ptr<Dir> CreateDir_Zip(DirData &&dd);
 }
 
 #endif//DGE__FS__Dir_H__
