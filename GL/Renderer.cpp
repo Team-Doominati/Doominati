@@ -369,6 +369,17 @@ namespace DGE::GL
          glMatrixMode(GL_MODELVIEW);
       }
    }
+
+   void NativeLoad_DrawText();
+
+   //
+   // Renderer::NativeFinish
+   //
+   void Renderer::NativeFinish()
+   {
+      // See: Code/Native.cpp
+      NativeLoad_DrawText();
+   }
 }
 
 

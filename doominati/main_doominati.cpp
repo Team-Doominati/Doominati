@@ -171,6 +171,7 @@ static int Main()
       DGE::FS::Dir::AddRoot(".");
 
    // Initialize rendering.
+   DGE::GL::Renderer::NativeFinish();
    DGE::GL::Window window{640, 480};
    DGE::GL::Renderer renderer{window, 1280, 720};
 

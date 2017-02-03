@@ -116,6 +116,9 @@ namespace DGE::GL
       AlignHorz textAlignH;
       AlignVert textAlignV;
 
+
+      static void NativeFinish();
+
       static Renderer *Current;
 
    private:
