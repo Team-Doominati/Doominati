@@ -12,6 +12,11 @@
 
 #include "GL/Window.hpp"
 
+#include "Code/MemStr.hpp"
+#include "Code/Program.hpp"
+#include "Code/Native.hpp"
+#include "Code/Task.hpp"
+
 #include <iostream>
 
 
@@ -43,7 +48,7 @@ namespace DGE::GL
       int y = SDL_WINDOWPOS_UNDEFINED;
 
       // Set up window.
-      if(!(window = SDL_CreateWindow("Doominati", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
+      if(!(window = SDL_CreateWindow("Doominati Confirmed", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
       {
          SDL_QuitSubSystem(SDL_INIT_VIDEO);
          std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
@@ -91,6 +96,31 @@ namespace DGE::GL
    void Window::renderEnd()
    {
       SDL_GL_SwapWindow(window);
+   }
+
+   //
+   // Window::setTitle
+   //
+   void Window::setTitle(char const *title)
+   {
+      SDL_SetWindowTitle(window, title);
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::GL
+{
+   //
+   // void DGE_SetWindowTitle(char const *str)
+   //
+   DGE_Code_NativeDefn(DGE_SetWindowTitle)
+   {
+      Window::Current->setTitle(Code::MemStrDup({&task->prog->memory, argv[0]}).get());
+      return false;
    }
 }
 

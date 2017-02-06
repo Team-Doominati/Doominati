@@ -38,6 +38,7 @@ namespace DGE::GL
 
       void renderBegin();
       void renderEnd();
+      void setTitle(char const *title);
 
       int w, h;
 
