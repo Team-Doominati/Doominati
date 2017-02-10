@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -63,50 +63,25 @@ namespace DGE::Core
          m.elemC = 0;
       }
 
-      ~HashMapFixed() {free();}
+      //
+      // constructor
+      //
+      template<typename Ctor>
+      HashMapFixed(size_type count, Ctor ctor) :
+         hasher{}, table{nullptr}, elemV{nullptr}, elemC{0}
+      {
+         reset(count, std::move(ctor));
+      }
+
+      ~HashMapFixed() {reset();}
 
       // operator [ std::size_t ]
       T       &operator [] (std::size_t i)       {return elemV[i].val;}
       T const &operator [] (std::size_t i) const {return elemV[i].val;}
 
-      //
-      // alloc
-      //
-      void alloc(size_type count)
-      {
-         if(elemV) free();
-
-         if(!count) return;
-
-         size_type sizeRaw = sizeof(Elem) * count + sizeof(Elem *) * count;
-
-         elemC = count;
-         elemV = static_cast<Elem *>(::operator new(sizeRaw));
-      }
-
       // begin
       iterator       begin()       {return elemV;}
       const_iterator begin() const {return elemV;}
-
-      //
-      // build
-      //
-      void build()
-      {
-         // Initialize table.
-         table = reinterpret_cast<Elem **>(elemV + elemC);
-         for(Elem **elem = table + elemC; elem != table;)
-            *--elem = nullptr;
-
-         // Insert elements.
-         for(Elem &elem : *this)
-         {
-            size_type hash = hasher(elem.key) % elemC;
-
-            elem.next = table[hash];
-            table[hash] = &elem;
-         }
-      }
 
       // empty
       bool empty() const {return !elemC;}
@@ -143,28 +118,94 @@ namespace DGE::Core
       }
 
       //
-      // free
+      // reset
       //
-      void free()
+      void reset()
       {
-         if(table)
-         {
-            for(Elem *elem = elemV + elemC; elem != elemV;)
-               (--elem)->~Elem();
+         for(Elem *elem = elemV + elemC; elem != elemV;)
+            (--elem)->~Elem();
 
-            table = nullptr;
+         table = nullptr;
+
+         free();
+      }
+
+      //
+      // reset
+      //
+      template<typename Ctor>
+      void reset(size_type count, Ctor ctor)
+      {
+         reset();
+
+         alloc(count);
+
+         Elem *elem = elemV, *elemEnd = elemV + elemC;
+         try
+         {
+            while(elem != elemEnd)
+               ctor(elem++);
+         }
+         catch(...)
+         {
+            while(elem != elemV)
+               (--elem)->~Elem();
+            free();
+
+            throw;
          }
 
-         ::operator delete(elemV);
-
-         elemV = nullptr;
-         elemC = 0;
+         build();
       }
 
       // size
       size_type size() const {return elemC;}
 
    private:
+      //
+      // alloc
+      //
+      void alloc(size_type count)
+      {
+         if(!count) return;
+
+         size_type sizeRaw = sizeof(Elem) * count + sizeof(Elem *) * count;
+
+         elemC = count;
+         elemV = static_cast<Elem *>(::operator new(sizeRaw));
+      }
+
+      //
+      // build
+      //
+      void build()
+      {
+         // Initialize table.
+         table = reinterpret_cast<Elem **>(elemV + elemC);
+         for(Elem **elem = table + elemC; elem != table;)
+            *--elem = nullptr;
+
+         // Insert elements.
+         for(Elem &elem : *this)
+         {
+            size_type hash = hasher(elem.key) % elemC;
+
+            elem.next = table[hash];
+            table[hash] = &elem;
+         }
+      }
+
+      //
+      // free
+      //
+      void free()
+      {
+         ::operator delete(elemV);
+
+         elemV = nullptr;
+         elemC = 0;
+      }
+
       Hash hasher;
 
       Elem    **table;

@@ -339,18 +339,8 @@ namespace DGE::Code
    {
       Word ret = jumps.size();
 
-      Core::HashMapFixed<Word, Word> tab;
-      tab.alloc(jumpc);
-
-      for(auto &jump : tab)
-      {
-         jump.key = evalExp(*jumpv++);
-         jump.val = evalExp(*jumpv++);
-      }
-
-      tab.build();
-
-      jumps.push_back(std::move(tab));
+      jumps.emplace_back(jumpc, [&](auto elem)
+         {elem->key = evalExp(*jumpv++); elem->val = evalExp(*jumpv++);});
 
       return ret;
    }
@@ -528,9 +518,7 @@ namespace DGE::Code
 
       prog->jumps = {GDCC::Core::Move, jumps.begin(), jumps.end()};
 
-      prog->funcs.alloc(funcs.size());
       genFuncs(prog);
-      prog->funcs.build();
 
       genGlobals(prog);
    }
@@ -566,23 +554,22 @@ namespace DGE::Code
    //
    void Loader::genFuncs(Program *prog)
    {
-      auto funcItr = prog->funcs.begin();
-
-      for(auto &func : funcs)
+      auto func = funcs.begin();
+      prog->funcs.reset(funcs.size(), [&](auto elem)
       {
-         OpCode *entry = &prog->codes[getLabel(func.label)];
+         OpCode *entry = &prog->codes[getLabel(func->label)];
 
-         funcItr->key = {func.glyph.str, func.glyph.len, func.glyph.hash};
-         funcItr->val = {entry, func.local, func.param};
+         elem->key = {func->glyph.str, func->glyph.len, func->glyph.hash};
+         elem->val = {entry, func->local, func->param};
 
          if(DebugFunction)
-            std::cerr << "Function: " << funcItr->key << '('
-               << funcItr->val.param << ") @"
-               << funcItr->val.entry - prog->codes.data() << " {"
-               << funcItr->val.local << "}\n";
+            std::cerr << "Function: " << elem->key << '('
+               << elem->val.param << ") @"
+               << elem->val.entry - prog->codes.data() << " {"
+               << elem->val.local << "}\n";
 
-         ++funcItr;
-      }
+         ++func;
+      });
    }
 
    //

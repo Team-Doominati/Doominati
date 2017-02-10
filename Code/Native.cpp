@@ -65,17 +65,11 @@ namespace DGE::Code
    void NativeAdder::Finish()
    {
       auto &vec = NativeVec();
-      Natives.alloc(vec->size());
 
       auto vecItr = vec->begin();
-      for(auto &native : Natives)
-      {
-         native.key = vecItr->first;
-         native.val = vecItr->second;
-         ++vecItr;
-      }
+      Natives.reset(vec->size(),
+         [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
 
-      Natives.build();
       delete vec;
       vec = nullptr;
    }
