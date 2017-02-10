@@ -60,7 +60,7 @@ namespace DGE::Code
       Program *const prog;
 
 
-      static Process *Main;
+      static Process *GetMain();
    };
 }
 

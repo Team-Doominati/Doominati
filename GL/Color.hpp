@@ -60,12 +60,12 @@ namespace DGE::GL
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
+// Extern Functions                                                           |
 //
 
 namespace DGE::GL
 {
-   extern std::unordered_map<std::string, Color> const Colors;
+   Color const &GetColor(std::string name);
 }
 
 #endif//DGE__GL__Color_H__

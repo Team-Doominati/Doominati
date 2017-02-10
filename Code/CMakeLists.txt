@@ -49,7 +49,10 @@ add_library(dge-code-lib SHARED
    Types.hpp
 )
 
-target_link_libraries(dge-code-lib dge-fs-lib)
+target_link_libraries(dge-code-lib
+   dge-core-lib
+   dge-fs-lib
+   ${GDCC_LIBRARIES})
 
 ## EOF
 

@@ -16,12 +16,12 @@
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
+// Static Objects                                                             |
 //
 
 namespace DGE::GL
 {
-   std::unordered_map<std::string, Color> const Colors = {
+   static std::unordered_map<std::string, Color> const Colors = {
       {"AliceBlue", {0.941, 0.973, 1.000}},
       {"AntiqueWhite", {0.980, 0.922, 0.843}},
       {"Aqua", {0.000, 1.000, 1.000}},
@@ -243,6 +243,14 @@ namespace DGE::GL
          Core::Lerp(a.b, b.b, amt),
          Core::Lerp(a.a, b.a, amt)
       };
+   }
+
+   //
+   // GetColor
+   //
+   Color const &GetColor(std::string name)
+   {
+      return Colors.at(name);
    }
 }
 

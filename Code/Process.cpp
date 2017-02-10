@@ -17,12 +17,12 @@
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
+// Static Objects                                                             |
 //
 
 namespace DGE::Code
 {
-   Process *Process::Main = nullptr;
+   static Process *MainProcess;
 }
 
 
@@ -38,7 +38,7 @@ namespace DGE::Code
    Process::Process(Program *prog_) :
       prog{prog_}
    {
-      if(!Main) Main = this;
+      if(!MainProcess) MainProcess = this;
    }
 
    //
@@ -46,8 +46,8 @@ namespace DGE::Code
    //
    Process::~Process()
    {
-      if(Main == this)
-         Main = nullptr;
+      if(MainProcess == this)
+         MainProcess = nullptr;
 
       while(threads.next->obj)
          delete threads.next->obj;
@@ -83,6 +83,14 @@ namespace DGE::Code
          (new Thread(this))->link.insert(&threads);
 
       return threads.next->obj;
+   }
+
+   //
+   // Process::GetMain
+   //
+   Process *Process::GetMain()
+   {
+      return MainProcess;
    }
 }
 

@@ -10,7 +10,12 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "doominati/main_doominati.hpp"
+#if DGE_MAIN_HANDLED
+#define SDL_MAIN_HANDLED
+#define DGE_doominati_InitMain() SDL_SetMainReady()
+#else
+#define DGE_doominati_InitMain()
+#endif
 
 #include "Code/Codedefs.hpp"
 #include "Code/Native.hpp"
@@ -98,7 +103,7 @@ static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
    // |   |
    //  -6-
 
-   auto renderer = DGE::GL::Renderer::Current;
+   auto renderer = DGE::GL::Renderer::GetCurrent();
 
    renderer->lineSmooth(true);
    renderer->lineWidth(2);
@@ -129,8 +134,8 @@ static void DrawFPS()
 
    unsigned int fps = std::round(1 / timeMean);
 
-   DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Colors.at("White"));
-   DGE::GL::Renderer::Current->textureUnbind();
+   DGE::GL::Renderer::GetCurrent()->drawColorSet(DGE::GL::GetColor("White"));
+   DGE::GL::Renderer::GetCurrent()->textureUnbind();
 
    if(fps > 999) fps = 999;
 
@@ -190,8 +195,8 @@ static int Main()
    DGE::GL::Window window{640, 480};
    DGE::GL::Renderer renderer{window, 1280, 720};
 
-   DGE::GL::Window::Current = &window;
-   DGE::GL::Renderer::Current = &renderer;
+   DGE::GL::Window::SetCurrent(&window);
+   DGE::GL::Renderer::SetCurrent(&renderer);
 
    // Initialize input.
    DGE::Game::InputSource_Local input;

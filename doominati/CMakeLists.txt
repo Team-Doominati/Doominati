@@ -19,11 +19,15 @@
 ## doominati
 ##
 
-add_executable(doominati ${DGE_MAIN_ENTRY}
-   main_doominati.cpp
-)
+add_executable(doominati ${DGE_MAIN_ENTRY} main_doominati.cpp)
 
-target_link_libraries(doominati dge-game-lib ${DGE_MAIN_LIBRARIES})
+target_link_libraries(doominati
+   dge-code-lib
+   dge-core-lib
+   dge-fs-lib
+   dge-game-lib
+   dge-gl-lib
+   ${DGE_MAIN_LIBRARIES})
 
 ## EOF
 

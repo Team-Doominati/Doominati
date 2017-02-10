@@ -207,7 +207,7 @@ namespace DGE::GL
       float b =            argv[2] / 4294967295.0;
       float a = argc > 3 ? argv[3] / 4294967295.0 : 1.0f;
 
-      Renderer::Current->drawColorSet(r, g, b, a);
+      Renderer::GetCurrent()->drawColorSet(r, g, b, a);
 
       return false;
    }
@@ -221,7 +221,7 @@ namespace DGE::GL
       int y = static_cast<int>(argv[1]);
       int r = static_cast<int>(argv[2]);
 
-      Renderer::Current->drawCircle(x, y, r);
+      Renderer::GetCurrent()->drawCircle(x, y, r);
 
       return false;
    }
@@ -235,7 +235,7 @@ namespace DGE::GL
       int y = static_cast<int>(argv[1]);
       int r = static_cast<int>(argv[2]);
 
-      Renderer::Current->drawCircle(x, y, r, true);
+      Renderer::GetCurrent()->drawCircle(x, y, r, true);
 
       return false;
    }
@@ -250,7 +250,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Renderer::Current->drawEllipse(x1, y1, x2, y2);
+      Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2);
 
       return false;
    }
@@ -265,7 +265,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Renderer::Current->drawEllipse(x1, y1, x2, y2, true);
+      Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2, true);
 
       return false;
    }
@@ -280,7 +280,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Renderer::Current->drawRectangle(x1, y1, x2, y2);
+      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2);
 
       return false;
    }
@@ -295,7 +295,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Renderer::Current->drawRectangle(x1, y1, x2, y2, 0, true);
+      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, 0, true);
 
       return false;
    }
@@ -310,7 +310,7 @@ namespace DGE::GL
       int x2 = static_cast<int>(argv[2]);
       int y2 = static_cast<int>(argv[3]);
 
-      Renderer::Current->drawLine(x1, y1, x2, y2);
+      Renderer::GetCurrent()->drawLine(x1, y1, x2, y2);
 
       return false;
    }
@@ -321,9 +321,9 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_DrawTexture)
    {
       if(argv[0])
-         Renderer::Current->textureBind(Renderer::Current->textureGet(argv[0]));
+         Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));
       else
-         Renderer::Current->textureUnbind();
+         Renderer::GetCurrent()->textureUnbind();
 
       return false;
    }
@@ -340,7 +340,7 @@ namespace DGE::GL
       int x3 = static_cast<int>(argv[4]);
       int y3 = static_cast<int>(argv[5]);
 
-      Renderer::Current->drawTriangle(x1, y1, x2, y2, x3, y3);
+      Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3);
 
       return false;
    }
@@ -357,7 +357,7 @@ namespace DGE::GL
       int x3 = static_cast<int>(argv[4]);
       int y3 = static_cast<int>(argv[5]);
 
-      Renderer::Current->drawTriangle(x1, y1, x2, y2, x3, y3, true);
+      Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3, true);
 
       return false;
    }
@@ -368,7 +368,7 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_GetTexture)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Renderer::Current->textureGetIdx(str));
+      task->dataStk.push(Renderer::GetCurrent()->textureGetIdx(str));
       return false;
    }
 }

@@ -154,7 +154,7 @@ namespace DGE::GL
       int x = static_cast<int>(argv[0]);
       int y = static_cast<int>(argv[1]);
       Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
-      Renderer::Current->drawText(x, y, MemStrDup(str).get());
+      Renderer::GetCurrent()->drawText(x, y, MemStrDup(str).get());
       return false;
    }
 
@@ -166,8 +166,8 @@ namespace DGE::GL
       AlignHorz h = static_cast<AlignHorz>(argv[0]);
       AlignVert v = static_cast<AlignVert>(argv[1]);
 
-      if(h != AlignHorz::Keep) Renderer::Current->textAlignH = h;
-      if(v != AlignVert::Keep) Renderer::Current->textAlignV = v;
+      if(h != AlignHorz::Keep) Renderer::GetCurrent()->textAlignH = h;
+      if(v != AlignVert::Keep) Renderer::GetCurrent()->textAlignV = v;
 
       return false;
    }

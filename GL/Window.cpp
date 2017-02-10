@@ -21,12 +21,12 @@
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
+// Static Objects                                                             |
 //
 
 namespace DGE::GL
 {
-   Window *Window::Current = nullptr;
+   static Window *CurrentWindow;
 }
 
 
@@ -105,6 +105,22 @@ namespace DGE::GL
    {
       SDL_SetWindowTitle(window, title);
    }
+
+   //
+   // Window::GetCurrent
+   //
+   Window *Window::GetCurrent()
+   {
+      return CurrentWindow;
+   }
+
+   //
+   // Window::SetCurrent
+   //
+   void Window::SetCurrent(Window *window)
+   {
+      CurrentWindow = window;
+   }
 }
 
 
@@ -119,7 +135,7 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_SetWindowTitle)
    {
-      Window::Current->setTitle(Code::MemStrDup({&task->prog->memory, argv[0]}).get());
+      Window::GetCurrent()->setTitle(Code::MemStrDup({&task->prog->memory, argv[0]}).get());
       return false;
    }
 }

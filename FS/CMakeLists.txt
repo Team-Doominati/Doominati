@@ -30,7 +30,9 @@ add_library(dge-fs-lib SHARED
    Path.hpp
 )
 
-target_link_libraries(dge-fs-lib dge-core-lib)
+target_link_libraries(dge-fs-lib
+   dge-core-lib
+   ${GDCC_LIBRARIES})
 
 ## EOF
 

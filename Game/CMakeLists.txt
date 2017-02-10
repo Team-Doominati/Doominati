@@ -23,7 +23,11 @@ add_library(dge-game-lib SHARED
    Input.hpp
 )
 
-target_link_libraries(dge-game-lib dge-code-lib dge-gl-lib)
+target_link_libraries(dge-game-lib
+   dge-code-lib
+   dge-core-lib
+   ${GDCC_LIBRARIES}
+   ${SDL2_LIBRARIES})
 
 ## EOF
 

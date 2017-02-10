@@ -122,7 +122,8 @@ namespace DGE::GL
       AlignVert textAlignV;
 
 
-      static Renderer *Current;
+      static Renderer *GetCurrent();
+      static void SetCurrent(Renderer *renderer);
 
    private:
       class PrivData;

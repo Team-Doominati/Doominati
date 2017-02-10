@@ -42,7 +42,9 @@ namespace DGE::GL
 
       int w, h;
 
-      static Window *Current;
+
+      static Window *GetCurrent();
+      static void SetCurrent(Window *window);
 
    private:
       void resize(int w, int h);

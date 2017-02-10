@@ -45,7 +45,10 @@ add_library(dge-gl-lib SHARED
    Window.hpp
 )
 
-target_link_libraries(dge-gl-lib dge-code-lib
+target_link_libraries(dge-gl-lib
+   dge-code-lib
+   dge-core-lib
+   ${GDCC_LIBRARIES}
    ${OPENGL_LIBRARIES}
    ${SDL2_LIBRARIES}
    ${FREETYPE_LIBRARIES})

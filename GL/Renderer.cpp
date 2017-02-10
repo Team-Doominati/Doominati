@@ -71,16 +71,8 @@ namespace DGE::GL
    static std::vector<Code::Function *> CallbackRenderBegin;
    static std::vector<Code::Function *> CallbackRenderEnd;
    static std::vector<Code::Function *> CallbackResize;
-}
 
-
-//----------------------------------------------------------------------------|
-// Extern Objects                                                             |
-//
-
-namespace DGE::GL
-{
-   Renderer *Renderer::Current = nullptr;
+   static Renderer *CurrentRenderer;
 }
 
 
@@ -346,7 +338,7 @@ namespace DGE::GL
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       for(auto const &callback : CallbackRenderBegin)
-         Code::Process::Main->call(callback);
+         Code::Process::GetMain()->call(callback);
    }
 
    //
@@ -357,7 +349,7 @@ namespace DGE::GL
       win.renderEnd();
 
       for(auto const &callback : CallbackRenderEnd)
-         Code::Process::Main->call(callback);
+         Code::Process::GetMain()->call(callback);
    }
 
    //
@@ -370,8 +362,24 @@ namespace DGE::GL
          glViewport(0, 0, w = w_, h = h_);
 
          for(auto const &callback : CallbackResize)
-            Code::Process::Main->call<2>(callback, {{static_cast<Code::Word>(w), static_cast<Code::Word>(h)}});
+            Code::Process::GetMain()->call<2>(callback, {{static_cast<Code::Word>(w), static_cast<Code::Word>(h)}});
       }
+   }
+
+   //
+   // Renderer::GetCurrent
+   //
+   Renderer *Renderer::GetCurrent()
+   {
+      return CurrentRenderer;
+   }
+
+   //
+   // Renderer::SetCurrent
+   //
+   void Renderer::SetCurrent(Renderer *renderer)
+   {
+      CurrentRenderer = renderer;
    }
 }
 
@@ -387,7 +395,7 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_CallbackDrawBegin)
    {
-      CallbackRenderBegin.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      CallbackRenderBegin.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
       return false;
    }
 
@@ -396,7 +404,7 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_CallbackDrawEnd)
    {
-      CallbackRenderEnd.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      CallbackRenderEnd.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
       return false;
    }
 
@@ -405,7 +413,7 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_CallbackResize)
    {
-      CallbackResize.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      CallbackResize.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
       return false;
    }
 
