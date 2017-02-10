@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 Team Doominati
+## Copyright (C) 2016-2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -18,13 +18,14 @@
 ##
 ## dge-gl-lib
 ##
-add_library(dge-gl-lib SHARED
+add_library(dge-gl-lib STATIC
    Color.cpp
    Color.hpp
    DynamicBuffer.cpp
    DynamicBuffer.hpp
    Font.cpp
    Font.hpp
+   Native.cpp
    OpenGL2.1.c
    OpenGL2.1.h
    Particle.cpp

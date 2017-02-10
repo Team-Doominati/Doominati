@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 Team Doominati
+## Copyright (C) 2016-2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -18,7 +18,7 @@
 ##
 ## dge-core-lib
 ##
-add_library(dge-core-lib SHARED
+add_library(dge-core-lib STATIC
    BitStream.cpp
    BitStream.hpp
    HashMapFixed.hpp

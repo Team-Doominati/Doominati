@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -24,6 +24,13 @@
 //
 
 //
+// DGE_Code_NativeAdd
+//
+#define DGE_Code_NativeAdd(name) \
+   bool DGE_Code_Native_##name(DGE_Code_NativeArgs()); \
+   ::DGE::Code::NativeAdder::Add("_" #name, DGE_Code_Native_##name)
+
+//
 // DGE_Code_NativeArgs
 //
 #if __GNUC__
@@ -40,10 +47,7 @@
 // DGE_Code_NativeDefn
 //
 #define DGE_Code_NativeDefn(name) \
-   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs()); \
-   static ::DGE::Code::NativeAdder DGE_Code_NativeAdder_##name{ \
-      "_" #name, DGE_Code_Native_##name}; \
-   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
+   bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
 
 
 //----------------------------------------------------------------------------|
@@ -60,6 +64,8 @@ namespace DGE::Code
    public:
       NativeAdder(Core::HashedStr name, Native native);
 
+
+      static void Add(Core::HashedStr name, Native native);
 
       static void Finish();
    };

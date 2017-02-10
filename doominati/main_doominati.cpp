@@ -66,6 +66,8 @@ static GDCC::Option::Bool FpsCounterOpt{
 // Static Functions                                                           |
 //
 
+namespace DGE::GL {void NativeAdd();}
+
 //
 // DrawDigit
 //
@@ -202,6 +204,7 @@ static int Main()
    DGE::Game::InputSource_Local input;
 
    // Initialize scripting and call main.
+   DGE::GL::NativeAdd();
    DGE::Code::NativeAdder::Finish();
    DGE::Code::Program prog;
    LoadCodedefs(&prog);
