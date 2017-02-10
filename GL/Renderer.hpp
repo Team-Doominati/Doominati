@@ -99,12 +99,14 @@ namespace DGE::GL
 
       // shader
       void shaderSwap(Shader &s) {(shaderCurrent = &s)->setCurrent();}
-      void shaderDrop() {shaderSwap(shaderBase);}
-      void shaderUpdate() {shaderCurrent->update();}
+      void shaderDrop()          {shaderSwap(shaderBase);}
+      void shaderUpdate()        {shaderCurrent->update();}
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
-      void textureBind(TextureData *tex);
+      void textureBind(TextureData const *tex);
+
+      TextureData const *textureCurrent();
 
       TextureData *textureGet(GDCC::Core::String name);
       TextureData *textureGet(char const *name);
@@ -114,7 +116,6 @@ namespace DGE::GL
 
       void textureUnbind();
 
-      int realw, realh;
       int w, h;
 
       AlignHorz textAlignH;
@@ -139,8 +140,6 @@ namespace DGE::GL
       Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
-
-      int prevw, prevh;
 
       float cr, cg, cb, ca;
 

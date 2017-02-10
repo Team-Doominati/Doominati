@@ -97,6 +97,8 @@ namespace DGE::GL
       case AlignVert::Center: py = y - (height / 2.0f); break;
       }
 
+      auto origtex = textureCurrent();
+
       for(auto &line : lines)
       {
          fontCurrent->kernReset();
@@ -132,6 +134,8 @@ namespace DGE::GL
 
          py += fontCurrent->getHeight();
       }
+
+      textureBind(origtex);
    }
 }
 

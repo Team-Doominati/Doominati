@@ -24,7 +24,6 @@ namespace DGE::GL
    //
    // ParticleSystem constructor
    //
-
    ParticleSystem::ParticleSystem() :
       ParticleSystem{0.0f, 0.0f}
    {
@@ -49,7 +48,6 @@ namespace DGE::GL
    //
    // ParticleSystem::create
    //
-
    Particle *ParticleSystem::create()
    {
       std::ptrdiff_t i = pinactive;
@@ -71,7 +69,6 @@ namespace DGE::GL
    //
    // ParticleSystem::setPosition
    //
-
    void ParticleSystem::setPosition(float x, float y)
    {
       mat = Eigen::Affine3f{Eigen::Translation3f(x, y, 0.0f)}.matrix();
@@ -80,7 +77,6 @@ namespace DGE::GL
    //
    // ParticleSystem::setTexture
    //
-
    void ParticleSystem::setTexture(char const *texture)
    {
       texname.reset(GDCC::Core::StrDup(texture).release());
@@ -89,7 +85,6 @@ namespace DGE::GL
    //
    // ParticleSystem::update
    //
-
    void ParticleSystem::update()
    {
       std::ptrdiff_t prev = -1;

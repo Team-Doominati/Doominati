@@ -70,11 +70,11 @@ namespace DGE::GL
       Texture *texAdd(GLsizei texw, GLsizei texh, TexturePixel const *data,
          GDCC::Core::String name);
 
-      GLuint        texBound;
-      TextureMap    texMap;
-      TextureVec    texVec;
-      DynamicBuffer circleBuff, circleLineBuff;
-      Texture      *texNone;
+      TextureData const *texBound;
+      TextureMap         texMap;
+      TextureVec         texVec;
+      DynamicBuffer      circleBuff, circleLineBuff;
+      Texture           *texNone;
    };
 }
 

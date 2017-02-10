@@ -32,10 +32,29 @@
 
 #include <GDCC/Core/Option.hpp>
 
+#include <GDCC/Option/Bool.hpp>
+
 #include "SDL.h"
 
 #include <iostream>
 #include <cstdlib>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --fps-counter
+//
+static bool FpsCounterOn = false;
+static GDCC::Option::Bool FpsCounterOpt{
+   &GDCC::Core::GetOptionList(),
+   GDCC::Option::Base::Info()
+      .setName("fps-counter")
+      .setDescS("Enables a simple frames per second counter."),
+   &FpsCounterOn
+};
 
 
 //----------------------------------------------------------------------------|
@@ -113,14 +132,11 @@ static void DrawFPS()
    DGE::GL::Renderer::Current->drawColorSet(DGE::GL::Colors.at("White"));
    DGE::GL::Renderer::Current->textureUnbind();
 
-   int x = DGE::GL::Renderer::Current->w - 65;
-   int y = 35;
-
    if(fps > 999) fps = 999;
 
-   DrawDigit(fps / 100 % 10, x +  0, y, x + 15, y - 25);
-   DrawDigit(fps /  10 % 10, x + 20, y, x + 35, y - 25);
-   DrawDigit(fps /   1 % 10, x + 40, y, x + 55, y - 25);
+   DrawDigit(fps / 100 % 10,  0, 25, 15, 0);
+   DrawDigit(fps /  10 % 10, 20, 25, 35, 0);
+   DrawDigit(fps /   1 % 10, 40, 25, 55, 0);
 }
 
 //
@@ -215,7 +231,7 @@ static int Main()
 
       // Rendering actions.
       renderer.renderBegin();
-      DrawFPS();
+      if(FpsCounterOn) DrawFPS();
       renderer.renderEnd();
    }
 

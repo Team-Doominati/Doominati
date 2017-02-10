@@ -70,6 +70,7 @@ namespace DGE::GL
 
    static std::vector<Code::Function *> CallbackRenderBegin;
    static std::vector<Code::Function *> CallbackRenderEnd;
+   static std::vector<Code::Function *> CallbackResize;
 }
 
 
@@ -141,7 +142,7 @@ namespace DGE::GL
    // Renderer::PrivData constructor
    //
    Renderer::PrivData::PrivData() :
-      texBound{},
+      texBound{nullptr},
       circleBuff    {VertexXYUV::Layout},
       circleLineBuff{VertexXY::Layout, GL_LINE_LOOP}
    {
@@ -158,10 +159,8 @@ namespace DGE::GL
    // Renderer constructor
    //
    Renderer::Renderer(Window &win_, int w_, int h_) :
-      realw{}, realh{},
       w{w_}, h{h_},
       textAlignH{AlignHorz::Left}, textAlignV{AlignVert::Top},
-      prevw{0}, prevh{0},
       privdata{new PrivData()},
       win{win_},
       shaderBase{BaseFragShader, BaseVertShader},
@@ -180,6 +179,9 @@ namespace DGE::GL
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glActiveTexture(GL_TEXTURE0);
 
+      lineSmooth(false);
+      lineWidth(1);
+
       // Set up matrices.
       resize(w, h);
 
@@ -191,6 +193,7 @@ namespace DGE::GL
 
       // Set up basic no-texture.
       textureGet_None("TEXNULL");
+      textureUnbind();
 
       // Set up VBOs.
       circlePrecision(4);
@@ -292,6 +295,8 @@ namespace DGE::GL
 
       float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
+      auto origtex = textureCurrent();
+
       textureBind(ps.texname.get());
 
       for(auto &p : ps.particles)
@@ -305,6 +310,8 @@ namespace DGE::GL
          drawColorSet(p.color);
          drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
       }
+
+      textureBind(origtex);
 
       glPopMatrix();
    }
@@ -333,7 +340,7 @@ namespace DGE::GL
    {
       win.renderBegin();
 
-      if(realw != win.w || realh != win.h)
+      if(w != win.w || h != win.h)
          resize(win.w, win.h);
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -358,15 +365,12 @@ namespace DGE::GL
    //
    void Renderer::resize(int w_, int h_)
    {
-      if(realw != w_ || realh != h_)
-         glViewport(0, 0, realw = w_, realh = h_);
-
-      if(w != prevw || h != prevh)
+      if(w != w_ || h != h_)
       {
-         glMatrixMode(GL_PROJECTION);
-         glLoadIdentity();
-         glOrtho(0, prevw = w, prevh = h, 0, 0, 0.01f);
-         glMatrixMode(GL_MODELVIEW);
+         glViewport(0, 0, w = w_, h = h_);
+
+         for(auto const &callback : CallbackResize)
+            Code::Process::Main->call<2>(callback, {static_cast<Code::Word>(w), static_cast<Code::Word>(h)});
       }
    }
 
@@ -404,6 +408,29 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_CallbackDrawEnd)
    {
       CallbackRenderEnd.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      return false;
+   }
+
+   //
+   // void DGE_CallbackResize(void (*callback)(int w, int h))
+   //
+   DGE_Code_NativeDefn(DGE_CallbackResize)
+   {
+      CallbackResize.push_back(&Code::Process::Main->prog->funcs[argv[0]]);
+      return false;
+   }
+
+   //
+   // void DGE_SetVirtualResolution(unsigned w, unsigned h)
+   //
+   DGE_Code_NativeDefn(DGE_SetVirtualResolution)
+   {
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glOrtho(0, argv[0], argv[1], 0, 0, 0.01f);
+
+      glMatrixMode(GL_MODELVIEW);
+
       return false;
    }
 }

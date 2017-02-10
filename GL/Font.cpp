@@ -93,11 +93,11 @@ namespace DGE::GL
    // FontFace constructor
    //
    FontFace::FontFace(FS::File *fp, int ptsize) :
-      kernAmt{},
       face{nullptr},
       glyMap{},
       glyVec{},
-      kernCh{}
+      kernCh{},
+      kernAmt{}
    {
       if(!fp) throw FontLoadError("no file");
 

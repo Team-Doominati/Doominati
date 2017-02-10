@@ -41,13 +41,21 @@ namespace DGE::GL
    //
    // Renderer::textureBind
    //
-   void Renderer::textureBind(TextureData *tex)
+   void Renderer::textureBind(TextureData const *tex)
    {
       if(!tex)
          textureUnbind();
 
-      else if(privdata->texBound != tex->tex)
-         glBindTexture(GL_TEXTURE_2D, privdata->texBound = tex->tex);
+      else if(!privdata->texBound || privdata->texBound->tex != tex->tex)
+         glBindTexture(GL_TEXTURE_2D, (privdata->texBound = tex)->tex);
+   }
+
+   //
+   // Renderer::textureCurrent
+   //
+   TextureData const *Renderer::textureCurrent()
+   {
+      return privdata->texBound;
    }
 
    //
@@ -149,11 +157,8 @@ namespace DGE::GL
    void Renderer::textureUnbind()
    {
       TextureData const *tex = &privdata->texNone->data;
-      if(privdata->texBound != tex->tex)
-      {
-         glBindTexture(GL_TEXTURE_2D, tex->tex);
-         privdata->texBound = tex->tex;
-      }
+      if(!privdata->texBound || privdata->texBound->tex != tex->tex)
+         glBindTexture(GL_TEXTURE_2D, (privdata->texBound = tex)->tex);
    }
 }
 
