@@ -18,7 +18,7 @@
 ##
 ## dge-fs-lib
 ##
-add_library(dge-fs-lib STATIC
+add_library(dge-fs-lib SHARED
    Dir.cpp
    Dir.hpp
    Dir/Directory.cpp

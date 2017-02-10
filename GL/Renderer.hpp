@@ -122,8 +122,6 @@ namespace DGE::GL
       AlignVert textAlignV;
 
 
-      static void NativeFinish();
-
       static Renderer *Current;
 
    private:

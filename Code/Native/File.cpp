@@ -35,8 +35,6 @@ namespace DGE::Code
 // Natives                                                                    |
 //
 
-DGE_Code_NativeLoader(File)
-
 namespace DGE::Code
 {
    //

@@ -20,8 +20,6 @@
 // Natives                                                                    |
 //
 
-DGE_Code_NativeLoader(Memory)
-
 namespace DGE::Code
 {
    //

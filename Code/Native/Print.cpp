@@ -23,8 +23,6 @@
 // Natives                                                                    |
 //
 
-DGE_Code_NativeLoader(Print)
-
 namespace DGE::Code
 {
    //

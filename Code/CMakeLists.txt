@@ -18,7 +18,7 @@
 ##
 ## dge-code-lib
 ##
-add_library(dge-code-lib STATIC
+add_library(dge-code-lib SHARED
    Codedefs.cpp
    Codedefs.hpp
    Function.hpp

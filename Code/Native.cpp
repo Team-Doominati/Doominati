@@ -51,12 +51,6 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
-   void NativeLoad_Debug();
-   void NativeLoad_File();
-   void NativeLoad_Memory();
-   void NativeLoad_Print();
-   void NativeLoad_State();
-
    //
    // NativeAdder constructor
    //
@@ -70,16 +64,6 @@ namespace DGE::Code
    //
    void NativeAdder::Finish()
    {
-      // To ensure that the static objects of a compilation unit in a static
-      // library are actually constructed, a function or object from that
-      // compilation unit must be used.
-      // Other solutions exist, but are overly vendor-specific.
-      NativeLoad_Debug();
-      NativeLoad_File();
-      NativeLoad_Memory();
-      NativeLoad_Print();
-      NativeLoad_State();
-
       auto &vec = NativeVec();
       Natives.alloc(vec->size());
 

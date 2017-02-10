@@ -373,17 +373,6 @@ namespace DGE::GL
             Code::Process::Main->call<2>(callback, {static_cast<Code::Word>(w), static_cast<Code::Word>(h)});
       }
    }
-
-   void NativeLoad_DrawText();
-
-   //
-   // Renderer::NativeFinish
-   //
-   void Renderer::NativeFinish()
-   {
-      // See: Code/Native.cpp
-      NativeLoad_DrawText();
-   }
 }
 
 

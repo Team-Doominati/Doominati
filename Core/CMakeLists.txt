@@ -18,7 +18,7 @@
 ##
 ## dge-core-lib
 ##
-add_library(dge-core-lib STATIC
+add_library(dge-core-lib SHARED
    BitStream.cpp
    BitStream.hpp
    HashMapFixed.hpp

@@ -19,8 +19,6 @@
 // Natives                                                                    |
 //
 
-DGE_Code_NativeLoader(State)
-
 namespace DGE::Code
 {
    //

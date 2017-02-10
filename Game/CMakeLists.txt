@@ -18,7 +18,7 @@
 ##
 ## dge-game-lib
 ##
-add_library(dge-game-lib STATIC
+add_library(dge-game-lib SHARED
    Input.cpp
    Input.hpp
 )
