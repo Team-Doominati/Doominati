@@ -37,9 +37,12 @@ namespace DGE::GL
    //
    enum class AlignHorz
    {
+      Keep,
       Left,
       Right,
-      Center
+      Center,
+      RightBox,
+      CenterBox
    };
 
    //
@@ -47,6 +50,7 @@ namespace DGE::GL
    //
    enum class AlignVert
    {
+      Keep,
       Top,
       Bottom,
       Center
@@ -73,7 +77,7 @@ namespace DGE::GL
       void drawLine(int x1, int y1, int x2, int y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
       void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
-      void drawText(int x, int y, char const *str);
+      void drawText(int x, int y, char const *str, int maxwidth = 0);
       void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
 
       // drawColor
@@ -135,8 +139,6 @@ namespace DGE::GL
       Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
-
-      float textLine(float x, float y, char const *str, char const *end);
 
       int prevw, prevh;
 

@@ -196,7 +196,7 @@ namespace DGE::GL
 
       return addChar(ch, buf.get(), {
          w, h,
-         glyph->advance.x / 64.0f, glyph->advance.y / 64.0f,
+         glyph->advance.x / 64.0f,
          glyph->bitmap_left, -glyph->bitmap_top
       });
    }
@@ -206,8 +206,8 @@ namespace DGE::GL
    //
    FontGlyph &FontFace::getChar_Repl(char32_t ch)
    {
-      GLsizei w = face->size->metrics.max_advance / 64.0f;
-      GLsizei h = face->size->metrics.height      / 64.0f;
+      GLsizei w = height / 2;
+      GLsizei h = height;
 
       std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h]};
 
@@ -218,7 +218,7 @@ namespace DGE::GL
          pixel[0] = pixel[1] = pixel[2] = pixel[3] = 1.0f;
       }
 
-      return addChar(ch, buf.get(), {w, h, float(w), float(h), 0, 0});
+      return addChar(ch, buf.get(), {w, h, float(w), 0, 0});
    }
 }
 

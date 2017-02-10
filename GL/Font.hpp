@@ -50,7 +50,7 @@ namespace DGE::GL
    struct FontGlyphMetr
    {
       GLsizei w,  h;
-      float   ax, ay;
+      float   ax;
       int     ox, oy;
    };
 
@@ -92,14 +92,12 @@ namespace DGE::GL
 
       FontGlyph &getChar(char32_t ch);
 
-      void kernReset() {kernCh = 0;}
-
-      float kernAmt;
-      float height;
+      void  kernReset()           {kernCh = 0;}
+      float getKernAmount() const {return kernAmt;}
+      float getHeight()     const {return height;}
 
    private:
-      using GlyphMap = Core::HashMapKeyMem<char32_t, FontGlyph,
-         &FontGlyph::ch, &FontGlyph::link>;
+      using GlyphMap = Core::HashMapKeyMem<char32_t, FontGlyph, &FontGlyph::ch, &FontGlyph::link>;
       using GlyphVec = std::vector<FontGlyph>;
 
       FontGlyph &addChar(char32_t ch, TexturePixel const *data, FontGlyphMetr &&metr);
@@ -110,8 +108,11 @@ namespace DGE::GL
       GlyphMap glyMap;
       GlyphVec glyVec;
 
-      bool hasKerning : 1;
+      bool     hasKerning : 1;
       char32_t kernCh;
+      float    kernAmt;
+
+      float height;
    };
 }
 
