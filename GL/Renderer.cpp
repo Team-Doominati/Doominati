@@ -370,7 +370,7 @@ namespace DGE::GL
          glViewport(0, 0, w = w_, h = h_);
 
          for(auto const &callback : CallbackResize)
-            Code::Process::Main->call<2>(callback, {static_cast<Code::Word>(w), static_cast<Code::Word>(h)});
+            Code::Process::Main->call<2>(callback, {{static_cast<Code::Word>(w), static_cast<Code::Word>(h)}});
       }
    }
 }
