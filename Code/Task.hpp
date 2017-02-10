@@ -76,6 +76,7 @@ namespace DGE::Code
       OpCode const *codePtr;
       TaskState     state;
       Word          delay;
+      Word          jumpbuf;
       Word          vaaRegC;
 
 

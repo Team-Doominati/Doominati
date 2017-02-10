@@ -38,9 +38,10 @@ namespace DGE::Code
    // Task constructor
    //
    Task::Task() :
-      link{this},
+      link   {this},
       codePtr{nullptr},
-      delay{0}
+      delay  {0},
+      jumpbuf{0}
    {
       callStk.reserve(CallStkSize);
       dataStk.reserve(DataStkSize);
@@ -95,7 +96,8 @@ namespace DGE::Code
 
       task->link.insert(&thrd->tasks);
 
-      task->delay = 0;
+      task->delay   = 0;
+      task->jumpbuf = 0;
 
       return task;
    }

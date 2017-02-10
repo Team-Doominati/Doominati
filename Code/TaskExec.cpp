@@ -423,6 +423,51 @@ namespace DGE::Code
          dataStk.drop();
          ThisCase();
 
+      DeclCase(Jfar_Pro):
+         if(jumpbuf)
+         {
+            dataStk.drop(codePtr->h.h);
+
+         Jfar_propogate:
+            // If in the same call frame as the original Jfar_Set...
+            if(prog->memory.getW(jumpbuf) == callStk.size())
+            {
+               // Push result and branch.
+               for(Word i = 0, e = prog->memory.getW(jumpbuf + 1); i != e; ++i)
+                  dataStk.push(prog->memory.getW(jumpbuf + 3 + i));
+               codePtr = &prog->codes[prog->memory.getW(jumpbuf + 2)];
+
+               // Clear jump state.
+               jumpbuf = 0;
+            }
+            // Otherwise, branch to propogation target.
+            else
+               codePtr = &prog->codes[codePtr->w.w];
+            ThisCase();
+         }
+         else
+            NextCase();
+
+      DeclCase(Jfar_Set):
+         // Initialize jump buffer contents.
+         prog->memory.setW(dataStk[1]+0, callStk.size());
+         prog->memory.setW(dataStk[1]+1, codePtr->h.h);
+         prog->memory.setW(dataStk[1]+2, codePtr->w.w);
+         dataStk.drop();
+         NextCase();
+
+      DeclCase(Jfar_Sta):
+         // Set jump state.
+         jumpbuf = dataStk[1]; dataStk.drop();
+
+         // Set result value.
+         for(Word i = 0, e = codePtr->h.h; i != e; ++i)
+            prog->memory.setW(jumpbuf + 3 + i, dataStk[e - i]);
+         dataStk.drop(codePtr->h.h);
+
+         // Go to Jfar propogation.
+         goto Jfar_propogate;
+
       DeclCase(Jump):
          codePtr = &prog->codes[dataStk[1]];
          dataStk.drop();
