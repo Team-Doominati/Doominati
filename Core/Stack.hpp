@@ -50,7 +50,14 @@ namespace DGE::Core
       T const *begin() const {return stack;}
 
       // clear
-      void clear() {while(stkPtr != stack) (--stkPtr)->~T();}
+      void clear()
+      {
+         // TODO: use if constexpr when we switch to VS2017
+         if(std::is_integral<T>::value)
+            stkPtr = stack;
+         else while(stkPtr != stack)
+            (--stkPtr)->~T();
+      }
 
       // data
       T       *data()       {return stack;}
