@@ -132,23 +132,6 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // Renderer::PrivData constructor
-   //
-   Renderer::PrivData::PrivData() :
-      texBound{nullptr},
-      circleBuff    {VertexXYUV::Layout},
-      circleLineBuff{VertexXY::Layout, GL_LINE_LOOP}
-   {
-   }
-
-   //
-   // Renderer::PrivData destructor
-   //
-   Renderer::PrivData::~PrivData()
-   {
-   }
-
-   //
    // Renderer constructor
    //
    Renderer::Renderer(Window &win_, int w_, int h_) :
@@ -235,7 +218,14 @@ namespace DGE::GL
       }
 
       // Generate the VBO.
-      privdata->circleLineBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);
+      auto &vbo = privdata->circleLineBuffers.emplace(
+         std::piecewise_construct,
+         std::forward_as_tuple(subdivisions),
+         std::forward_as_tuple(VertexXY::Layout, GL_LINE_LOOP)).first->second;
+
+      vbo.setupData(bufarray.size(), bufarray.data(), GL_STATIC_DRAW);
+
+      privdata->circleLineBuff = &vbo;
    }
 
    //
@@ -265,7 +255,14 @@ namespace DGE::GL
          Circle_CalcFaces(subdivisions, Core::Pi2 * i, (Core::Pi2 * i) + Core::Pi2, buf);
 
       // Generate the VBO.
-      privdata->circleBuff.setupData(bufarray.size(), bufarray.data(), GL_DYNAMIC_DRAW);
+      auto &vbo = privdata->circleBuffers.emplace(
+         std::piecewise_construct,
+         std::forward_as_tuple(subdivisions),
+         std::forward_as_tuple(VertexXYUV::Layout)).first->second;
+
+      vbo.setupData(bufarray.size(), bufarray.data(), GL_STATIC_DRAW);
+
+      privdata->circleBuff = &vbo;
    }
 
    //
@@ -273,8 +270,17 @@ namespace DGE::GL
    //
    void Renderer::circlePrecision(int subdivisions)
    {
-      circleCreateTris(subdivisions);
-      circleCreateLines(subdivisions);
+           if(subdivisions > MaxSubdivisions) subdivisions = MaxSubdivisions;
+      else if(subdivisions < 0)               subdivisions = 0;
+
+      // TODO: replace this with if-init when we switch to VS2017
+      auto tri = privdata->circleBuffers.find(subdivisions);
+      if(tri != privdata->circleBuffers.end()) privdata->circleBuff = &tri->second;
+      else                                     circleCreateTris(subdivisions);
+
+      auto lin = privdata->circleLineBuffers.find(subdivisions);
+      if(lin != privdata->circleLineBuffers.end()) privdata->circleLineBuff = &lin->second;
+      else                                         circleCreateLines(subdivisions);
    }
 
    //
@@ -347,7 +353,6 @@ namespace DGE::GL
    void Renderer::renderEnd()
    {
       win.renderEnd();
-
       CallbackDrawEnd();
    }
 
@@ -359,7 +364,6 @@ namespace DGE::GL
       if(w != w_ || h != h_)
       {
          glViewport(0, 0, w = w_, h = h_);
-
          CallbackResize(w, h);
       }
    }

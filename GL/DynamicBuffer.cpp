@@ -64,7 +64,7 @@ namespace DGE::GL
    //
    // DynamicBuffer::bind
    //
-   void DynamicBuffer::bind()
+   void DynamicBuffer::bind() const
    {
       glBindBuffer(GL_ARRAY_BUFFER, buffer);
    }
@@ -72,7 +72,7 @@ namespace DGE::GL
    //
    // DynamicBuffer::draw
    //
-   void DynamicBuffer::draw()
+   void DynamicBuffer::draw() const
    {
       setupPointers();
       glDrawArrays(drawtype, 0, size);
@@ -81,7 +81,7 @@ namespace DGE::GL
    //
    // DynamicBuffer::setupPointers
    //
-   void DynamicBuffer::setupPointers()
+   void DynamicBuffer::setupPointers() const
    {
       GenLayoutPoint(GL_VERTEX_ARRAY,        Vertex,   pnt);
       GenLayoutPoint(GL_TEXTURE_COORD_ARRAY, TexCoord, tex);

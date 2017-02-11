@@ -72,11 +72,11 @@ namespace DGE::GL
       DynamicBuffer(DynamicBuffer &&) = default;
       ~DynamicBuffer();
 
-      void bind();
-      void bindAndDraw() {bind(); draw();}
-      void draw();
+      void bind() const;
+      void bindAndDraw() const {bind(); draw();}
+      void draw() const;
       void setupData(std::size_t arraysize, void *data, GLenum type);
-      void setupPointers();
+      void setupPointers() const;
 
    private:
       GLuint       buffer;

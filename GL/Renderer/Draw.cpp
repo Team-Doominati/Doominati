@@ -34,9 +34,8 @@ namespace DGE::GL
          Eigen::Scaling(float(radius))
       ).data());
 
-      if(!line) privdata->circleBuff.bindAndDraw();
-      else      privdata->circleLineBuff.bindAndDraw();
-
+      if(!line) privdata->circleBuff->bindAndDraw();
+      else      privdata->circleLineBuff->bindAndDraw();
 
       glPopMatrix();
    }
@@ -59,8 +58,8 @@ namespace DGE::GL
          Eigen::Scaling(rx, ry, 1.0f)
       ).data());
 
-      if(!line) privdata->circleBuff.bindAndDraw();
-      else      privdata->circleLineBuff.bindAndDraw();
+      if(!line) privdata->circleBuff->bindAndDraw();
+      else      privdata->circleLineBuff->bindAndDraw();
 
       glPopMatrix();
    }

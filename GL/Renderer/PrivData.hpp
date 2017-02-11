@@ -62,10 +62,8 @@ namespace DGE::GL
          &Texture::name, &Texture::link>;
       using TextureVec = std::vector<Texture>;
 
-      PrivData();
+      PrivData() : texBound{nullptr} {}
       PrivData(PrivData const &other) = delete;
-
-      ~PrivData();
 
       Texture *texAdd(GLsizei texw, GLsizei texh, TexturePixel const *data,
          GDCC::Core::String name);
@@ -73,8 +71,11 @@ namespace DGE::GL
       TextureData const *texBound;
       TextureMap         texMap;
       TextureVec         texVec;
-      DynamicBuffer      circleBuff, circleLineBuff;
       Texture           *texNone;
+
+      DynamicBuffer const *circleBuff, *circleLineBuff;
+
+      std::unordered_map<int, DynamicBuffer> circleBuffers, circleLineBuffers;
    };
 }
 

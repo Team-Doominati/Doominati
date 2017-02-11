@@ -129,6 +129,8 @@ namespace DGE::GL
       class PrivData;
       class Texture;
 
+      static constexpr int MaxSubdivisions = 9;
+
       FontFace *baseFont() const;
 
       void circleCreateLines(int subdivisions);
