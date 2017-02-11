@@ -85,16 +85,16 @@ namespace DGE::GL
       }
 
       float height = fontCurrent->getHeight() * lines.size();
-      float py;
+      float py     = fontCurrent->getHeight();
       float px;
       float origx;
 
       switch(textAlignV)
       {
       default:
-      case AlignVert::Top:    py = y;                   break;
-      case AlignVert::Bottom: py = y -  height;         break;
-      case AlignVert::Center: py = y - (height / 2.0f); break;
+      case AlignVert::Top:    py += y;                   break;
+      case AlignVert::Bottom: py += y -  height;         break;
+      case AlignVert::Center: py += y - (height / 2.0f); break;
       }
 
       auto origtex = textureCurrent();
