@@ -19,6 +19,8 @@
 ## dge-code-lib
 ##
 add_library(dge-code-lib STATIC
+   Callback.cpp
+   Callback.hpp
    Codedefs.cpp
    Codedefs.hpp
    Function.hpp

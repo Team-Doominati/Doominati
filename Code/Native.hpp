@@ -65,6 +65,7 @@ namespace DGE::Code
       NativeAdder(Core::HashedStr name, Native native);
 
 
+      static void Add(Core::HashedStr name, Callback *cb);
       static void Add(Core::HashedStr name, Native native);
 
       static void Finish();
@@ -78,6 +79,7 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   extern Core::HashMapFixed<Core::HashedStr, Callback *> Callbacks;
    extern Core::HashMapFixed<Core::HashedStr, Native> Natives;
 }
 

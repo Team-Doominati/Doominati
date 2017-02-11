@@ -22,6 +22,7 @@
 
 namespace DGE::Code
 {
+   class Callback;
    class Function;
    class OpCode;
    class Process;

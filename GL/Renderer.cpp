@@ -12,6 +12,7 @@
 
 #include "GL/Renderer/PrivData.hpp"
 
+#include "Code/Callback.hpp"
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
 #include "Code/Program.hpp"
@@ -68,9 +69,9 @@ namespace DGE::GL
       }
    )";
 
-   static std::vector<Code::Function *> CallbackRenderBegin;
-   static std::vector<Code::Function *> CallbackRenderEnd;
-   static std::vector<Code::Function *> CallbackResize;
+   static Code::Callback CallbackDrawBegin{"DrawBegin"};
+   static Code::Callback CallbackDrawEnd{"DrawEnd"};
+   static Code::Callback CallbackResize{"Resize"};
 
    static Renderer *CurrentRenderer;
 }
@@ -337,8 +338,7 @@ namespace DGE::GL
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      for(auto const &callback : CallbackRenderBegin)
-         Code::Process::GetMain()->call(callback);
+      CallbackDrawBegin();
    }
 
    //
@@ -348,8 +348,7 @@ namespace DGE::GL
    {
       win.renderEnd();
 
-      for(auto const &callback : CallbackRenderEnd)
-         Code::Process::GetMain()->call(callback);
+      CallbackDrawEnd();
    }
 
    //
@@ -361,8 +360,7 @@ namespace DGE::GL
       {
          glViewport(0, 0, w = w_, h = h_);
 
-         for(auto const &callback : CallbackResize)
-            Code::Process::GetMain()->call<2>(callback, {{static_cast<Code::Word>(w), static_cast<Code::Word>(h)}});
+         CallbackResize(w, h);
       }
    }
 
@@ -390,33 +388,6 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
-   //
-   // void DGE_CallbackDrawBegin(void (*callback)(void))
-   //
-   DGE_Code_NativeDefn(DGE_CallbackDrawBegin)
-   {
-      CallbackRenderBegin.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
-      return false;
-   }
-
-   //
-   // void DGE_CallbackDrawEnd(void (*callback)(void))
-   //
-   DGE_Code_NativeDefn(DGE_CallbackDrawEnd)
-   {
-      CallbackRenderEnd.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
-      return false;
-   }
-
-   //
-   // void DGE_CallbackResize(void (*callback)(int w, int h))
-   //
-   DGE_Code_NativeDefn(DGE_CallbackResize)
-   {
-      CallbackResize.push_back(&Code::Process::GetMain()->prog->funcs[argv[0]]);
-      return false;
-   }
-
    //
    // void DGE_SetVirtualResolution(unsigned w, unsigned h)
    //

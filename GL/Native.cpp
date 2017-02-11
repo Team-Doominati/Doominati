@@ -25,9 +25,6 @@ namespace DGE::GL
    void NativeAdd()
    {
       // Renderer.cpp
-      DGE_Code_NativeAdd(DGE_CallbackDrawBegin);
-      DGE_Code_NativeAdd(DGE_CallbackDrawEnd);
-      DGE_Code_NativeAdd(DGE_CallbackResize);
       DGE_Code_NativeAdd(DGE_SetVirtualResolution);
 
       // Renderer/Draw.cpp

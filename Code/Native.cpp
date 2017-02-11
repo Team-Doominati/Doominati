@@ -25,9 +25,18 @@
 namespace DGE::Code
 {
    //
+   // CallbackVec
+   //
+   static auto &CallbackVec()
+   {
+      static auto *vec = new std::vector<std::pair<Core::HashedStr, Callback *>>;
+      return vec;
+   }
+
+   //
    // NativeVec
    //
-   static std::vector<std::pair<Core::HashedStr, Native>> *&NativeVec()
+   static auto &NativeVec()
    {
       static auto *vec = new std::vector<std::pair<Core::HashedStr, Native>>;
       return vec;
@@ -41,6 +50,7 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   Core::HashMapFixed<Core::HashedStr, Callback *> Callbacks;
    Core::HashMapFixed<Core::HashedStr, Native> Natives;
 }
 
@@ -62,6 +72,14 @@ namespace DGE::Code
    //
    // NativeAdder::Add
    //
+   void NativeAdder::Add(Core::HashedStr name, Callback *cb)
+   {
+      CallbackVec()->push_back({name, cb});
+   }
+
+   //
+   // NativeAdder::Add
+   //
    void NativeAdder::Add(Core::HashedStr name, Native native)
    {
       NativeVec()->push_back({name, native});
@@ -72,6 +90,10 @@ namespace DGE::Code
    //
    void NativeAdder::Finish()
    {
+      // Callback.cpp
+      DGE_Code_NativeAdd(DGE_CallbackRegister);
+      DGE_Code_NativeAdd(DGE_CallbackUnregister);
+
       // Native/Debug.cpp
       DGE_Code_NativeAdd(DGE_DebugCallStk);
       DGE_Code_NativeAdd(DGE_DebugDataStk);
@@ -97,14 +119,29 @@ namespace DGE::Code
       // Native/State.cpp
       DGE_Code_NativeAdd(DGE_Delay);
 
-      auto &vec = NativeVec();
+      // Callbacks.
+      {
+         auto &vec = CallbackVec();
 
-      auto vecItr = vec->begin();
-      Natives.reset(vec->size(),
-         [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
+         auto vecItr = vec->begin();
+         Callbacks.reset(vec->size(),
+            [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
 
-      delete vec;
-      vec = nullptr;
+         delete vec;
+         vec = nullptr;
+      }
+
+      // Natives.
+      {
+         auto &vec = NativeVec();
+
+         auto vecItr = vec->begin();
+         Natives.reset(vec->size(),
+            [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
+
+         delete vec;
+         vec = nullptr;
+      }
    }
 }
 
