@@ -77,7 +77,7 @@ namespace DGE::Code
 namespace DGE::Code
 {
    //
-   // DGE_CallbackRegister(char const *name, void (*callback)(void))
+   // DGE_CallbackRegister(char const *name, void (*cb)(void))
    //
    DGE_Code_NativeDefn(DGE_CallbackRegister)
    {
@@ -91,7 +91,7 @@ namespace DGE::Code
    }
 
    //
-   // DGE_CallbackUnregister(char const *name, void (*callback)(void))
+   // DGE_CallbackUnregister(char const *name, void (*cb)(void))
    //
    DGE_Code_NativeDefn(DGE_CallbackUnregister)
    {

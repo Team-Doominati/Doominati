@@ -37,6 +37,7 @@ namespace DGE::Code
       {
          #define DGE_Code_OpList(op) op,
          #include "Code/OpList.hpp"
+         NumOpCodes
       };
 
 

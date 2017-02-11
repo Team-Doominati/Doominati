@@ -27,24 +27,30 @@
 // DGE_Code_DynamicGoto
 //
 // If nonzero, enables use of dynamic goto labels in core interpreter loop.
-// Currently, only gcc syntax is supported.
+//
+// A value of 1 denotes GCC style.
+// A value of 2 denotes Microsoft Windows assembly using Visual C++ syntax.
 //
 #ifndef DGE_Code_DynamicGoto
 // TODO: Use CMake to determine if GNUC dynamic goto syntax is available.
-#if defined(__GNUC__) && defined(NDEBUG)
-#define DGE_Code_DynamicGoto 1
-#else
-#define DGE_Code_DynamicGoto 0
-#endif
+# if defined(NDEBUG)
+#  if defined(__GNUC__)
+#   define DGE_Code_DynamicGoto 1
+#  elif defined(_MSC_VER) && defined(_WIN32)
+#   define DGE_Code_DynamicGoto 2
+#  else
+#   define DGE_Code_DynamicGoto 0
+#  endif
+# endif
 #endif
 
 //
 // DeclCase
 //
-#if DGE_Code_DynamicGoto
-#define DeclCase(name) case_OpCode##name
+#if DGE_Code_DynamicGoto == 1 || DGE_Code_DynamicGoto == 2
+# define DeclCase(name) case_OpCode##name
 #else
-#define DeclCase(name) case OpCode::name
+# define DeclCase(name) case OpCode::name
 #endif
 
 //
@@ -55,19 +61,23 @@
 //
 // NextCase
 //
-#if DGE_Code_DynamicGoto
-#define NextCase() goto *cases[(++codePtr)->op]
+#if DGE_Code_DynamicGoto == 1
+# define NextCase() goto *cases[(++codePtr)->op]
+#elif DGE_Code_DynamicGoto == 2
+# define NextCase() {auto _addr = cases[(++codePtr)->op]; __asm jmp _addr}
 #else
-#define NextCase() do {++codePtr; goto next_case;} while(0)
+# define NextCase() do {++codePtr; goto next_case;} while(0)
 #endif
 
 //
 // ThisCase
 //
-#if DGE_Code_DynamicGoto
-#define ThisCase() goto *cases[codePtr->op]
+#if DGE_Code_DynamicGoto == 1
+# define ThisCase() goto *cases[codePtr->op]
+#elif DGE_Code_DynamicGoto == 2
+# define ThisCase() {auto _addr = cases[codePtr->op]; __asm jmp _addr}
 #else
-#define ThisCase() goto next_case
+# define ThisCase() goto next_case
 #endif
 
 //
@@ -230,12 +240,38 @@ namespace DGE::Code
          return;
       }
 
-      #if DGE_Code_DynamicGoto
+      #if DGE_Code_DynamicGoto == 1
       static decltype(&&case_OpCodeNop) const cases[] =
       {
          #define DGE_Code_OpList(name, ...) &&case_OpCode##name,
          #include "Code/OpList.hpp"
       };
+      #elif DGE_Code_DynamicGoto == 2
+      static void *cases[OpCode::NumOpCodes];
+      static bool caseInit = false;
+
+      // There's probably a better way of doing this, but the mov+test is so
+      // cheap that it isn't even worth looking into.
+      if(!caseInit)
+      {
+         enum
+         {
+            // We have to define the opcode enum with C names here, so that we
+            // can use it in assembly.
+            #define DGE_Code_OpList(name, ...) _OpCode_##name,
+            #include "Code/OpList.hpp"
+         };
+
+         // Here we initialize the cases array using assembly to get the
+         // address of each case.
+         __asm lea edx, cases
+         #define DGE_Code_OpList(name, ...) \
+            __asm lea eax, case_OpCode##name \
+            __asm mov [edx][_OpCode_##name * TYPE cases], eax
+         #include "Code/OpList.hpp"
+
+         caseInit = true;
+      }
       #endif
 
       #if DGE_Code_DynamicGoto
