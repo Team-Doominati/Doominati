@@ -141,6 +141,7 @@ namespace DGE::GL
       Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
+      Texture *textureGet_NoFi(GDCC::Core::String name);
 
       float cr, cg, cb, ca;
 

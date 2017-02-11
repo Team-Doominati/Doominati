@@ -105,7 +105,7 @@ namespace DGE::GL
          return textureGet_File(name);
 
       std::cerr << "unknown texture: " << name << '\n';
-      return textureGet_None(name);
+      return textureGet_NoFi(name);
    }
 
    //
@@ -119,7 +119,7 @@ namespace DGE::GL
       if(!file)
       {
          std::cerr << "texture file not found: " << filename << '\n';
-         return textureGet_None(name);
+         return textureGet_NoFi(name);
       }
 
       try
@@ -149,6 +149,24 @@ namespace DGE::GL
          {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
 
       return privdata->texAdd(2, 2, data, name);
+   }
+
+   //
+   // Renderer::textureGet_NoFi
+   //
+   Renderer::Texture *Renderer::textureGet_NoFi(GDCC::Core::String name)
+   {
+      TexturePixel data[64*64]{};
+
+      for(int i = 0; i < 4096; i++)
+      {
+         data[i][3] = 1;
+
+         if(((i & 8) == 8) != ((i & 512) == 512))
+            data[i][0] = data[i][2] = 1;
+      }
+
+      return privdata->texAdd(64, 64, data, name);
    }
 
    //
