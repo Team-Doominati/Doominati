@@ -61,6 +61,35 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
+   // Callback.cpp
+   DGE_Code_NativeDecl(DGE_CallbackRegister);
+   DGE_Code_NativeDecl(DGE_CallbackUnregister);
+
+   // Native/Debug.cpp
+   DGE_Code_NativeDecl(DGE_DebugCallStk);
+   DGE_Code_NativeDecl(DGE_DebugDataStk);
+   DGE_Code_NativeDecl(DGE_DebugLocReg);
+
+   // Native/File.cpp
+   DGE_Code_NativeDecl(DGE_FileClose);
+   DGE_Code_NativeDecl(DGE_FileGet);
+   DGE_Code_NativeDecl(DGE_FileOpen);
+   DGE_Code_NativeDecl(DGE_FileRead);
+   DGE_Code_NativeDecl(DGE_FileSize);
+
+   // Native/Memory.cpp
+   DGE_Code_NativeDecl(DGE_FreestoreBegin);
+   DGE_Code_NativeDecl(DGE_FreestoreEnd);
+
+   // Native/Print.cpp
+   DGE_Code_NativeDecl(DGE_PrintChar);
+   DGE_Code_NativeDecl(DGE_PrintWordD);
+   DGE_Code_NativeDecl(DGE_SysWrite);
+   DGE_Code_NativeDecl(DGE_SysWriteErr);
+
+   // Native/State.cpp
+   DGE_Code_NativeDecl(DGE_Delay);
+
    //
    // NativeAdder constructor
    //

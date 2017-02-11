@@ -19,6 +19,27 @@
 
 namespace DGE::GL
 {
+   // Renderer.cpp
+   DGE_Code_NativeDecl(DGE_SetVirtualResolution);
+
+   // Renderer/Draw.cpp
+   DGE_Code_NativeDecl(DGE_DrawColor);
+   DGE_Code_NativeDecl(DGE_DrawCircle);
+   DGE_Code_NativeDecl(DGE_DrawCircleLine);
+   DGE_Code_NativeDecl(DGE_DrawEllipse);
+   DGE_Code_NativeDecl(DGE_DrawEllipseLine);
+   DGE_Code_NativeDecl(DGE_DrawRectangle);
+   DGE_Code_NativeDecl(DGE_DrawRectangleLine);
+   DGE_Code_NativeDecl(DGE_DrawLine);
+   DGE_Code_NativeDecl(DGE_DrawTexture);
+   DGE_Code_NativeDecl(DGE_DrawTriangle);
+   DGE_Code_NativeDecl(DGE_DrawTriangleLine);
+   DGE_Code_NativeDecl(DGE_GetTexture);
+
+   // Renderer/DrawText.cpp
+   DGE_Code_NativeDecl(DGE_DrawText);
+   DGE_Code_NativeDecl(DGE_TextAlignment);
+
    //
    // NativeAdd
    //

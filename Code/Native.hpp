@@ -27,7 +27,6 @@
 // DGE_Code_NativeAdd
 //
 #define DGE_Code_NativeAdd(name) \
-   bool DGE_Code_Native_##name(DGE_Code_NativeArgs()); \
    ::DGE::Code::NativeAdder::Add("_" #name, DGE_Code_Native_##name)
 
 //
@@ -42,6 +41,12 @@
 # define DGE_Code_NativeArgs() ::DGE::Code::Task *task, \
    ::DGE::Code::Word const *argv, ::DGE::Code::Word argc
 #endif
+
+//
+// DGE_Code_NativeDecl
+//
+#define DGE_Code_NativeDecl(name) \
+   bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
 
 //
 // DGE_Code_NativeDefn
