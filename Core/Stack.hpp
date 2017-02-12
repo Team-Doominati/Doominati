@@ -53,7 +53,7 @@ namespace DGE::Core
       void clear()
       {
          // TODO: use if constexpr when we switch to VS2017
-         if(std::is_integral<T>::value)
+         if(std::is_trivially_destructible<T>::value)
             stkPtr = stack;
          else while(stkPtr != stack)
             (--stkPtr)->~T();
@@ -65,7 +65,13 @@ namespace DGE::Core
 
       // drop
       void drop() {(--stkPtr)->~T();}
-      void drop(std::size_t n) {while(n--) (--stkPtr)->~T();}
+      void drop(std::size_t n)
+      {
+         if(std::is_trivially_destructible<T>::value)
+            stkPtr -= n;
+         else while(n--)
+            (--stkPtr)->~T();
+      }
 
       // empty
       bool empty() const {return stkPtr == stack;}
