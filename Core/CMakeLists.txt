@@ -34,7 +34,6 @@ add_library(dge-core-lib STATIC
    Time.hpp
    Types.hpp
    Vector2.hpp
-   Vector4.hpp
    Zip.cpp
    Zip.hpp
 )

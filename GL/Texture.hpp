@@ -15,9 +15,8 @@
 
 #include "GL/OpenGL2.1.h"
 
-#include "Core/Vector4.hpp"
-
 #include <exception>
+#include <stdexcept>
 #include <memory>
 
 

@@ -32,112 +32,34 @@ namespace DGE::Core
       float x, y;
 
       Vector2() = default;
+      constexpr Vector2(float x_, float y_) : x{x_}, y{y_} {}
 
-      //
-      // Vector2 constructor
-      //
-
-      constexpr Vector2(float x_, float y_) :
-         x{x_}, y{y_}
-      {
-      }
-
-      //
-      // Vector2::add
-      //
-
-      Vector2 &add(Vector2 const &other)
-      {
-         x += other.x;
-         y += other.y;
-
-         return *this;
-      }
-
-      //
-      // Vector2::sub
-      //
-
-      Vector2 &sub(Vector2 const &other)
-      {
-         x -= other.x;
-         y -= other.y;
-
-         return *this;
-      }
-
-      //
-      // Vector2::length
-      //
-      // Magnitude of vector.
-      //
-
-      float length() const
-      {
-         return std::sqrt((x * x) + (y * y));
-      }
-
-      //
-      // Vector2::dot
-      //
-      // Dot product of this and other.
-      //
-
-      float dot(Vector2 const &other) const
-      {
-         return (x * other.x) + (y * other.y);
-      }
-
-      //
-      // interpolate
-      //
+      // in-place operations
+      Vector2 &add(Vector2 const &other) {x += other.x; y += other.y; return *this;}
+      Vector2 &sub(Vector2 const &other) {x -= other.x; y -= other.y; return *this;}
 
       Vector2 &interpolate(Vector2 const &other, float amt)
       {
          x = Core::Lerp(x, other.x, amt);
          y = Core::Lerp(y, other.y, amt);
-
          return *this;
       }
 
-      //
-      // Vector2 Unary operators
-      //
+      // functional operations
+      float length()                  const {return std::sqrt((x * x) + (y * y));}
+      float dot(Vector2 const &other) const {return (x * other.x) + (y * other.y);}
 
-      Vector2 operator-() const { return { -x, -y }; }
-      bool operator!() const { return !(x && y); }
+      // operator overloads
+      explicit operator bool() const {return x && y;}
 
-      //
-      // Vector2 Conversion operators
-      //
+      Vector2  operator-() const {return {-x, -y};}
+      bool     operator!() const {return !(x && y);}
 
-      explicit operator bool() const { return x && y; }
-
-      //
-      // Vector2 Infix operators
-      //
-
-      Vector2 operator+(Vector2 const &other) const
-      {
-         return { x + other.x, y + other.y };
-      }
-
-      Vector2 operator-(Vector2 const &other) const
-      {
-         return { x - other.x, y - other.y };
-      }
-
-      float operator*(Vector2 const &other) const
-      {
-         return dot(other);
-      }
-
-      //
-      // Vector2 Assignment operators
-      //
-
-      Vector2 &operator+=(Vector2 const &other) { return add(other); }
-      Vector2 &operator-=(Vector2 const &other) { return sub(other); }
+      Vector2  operator +(Vector2 const &other) const {return {x + other.x, y + other.y};}
+      Vector2  operator -(Vector2 const &other) const {return {x - other.x, y - other.y};}
+      float    operator *(Vector2 const &other) const {return dot(other);}
+      Vector2 &operator+=(Vector2 const &other)       {return add(other);}
+      Vector2 &operator-=(Vector2 const &other)       {return sub(other);}
    };
 }
 
