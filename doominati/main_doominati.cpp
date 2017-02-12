@@ -178,7 +178,11 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 static int Main()
 {
    // Initialize SDL.
-   if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
+   if(SDL_Init(
+      SDL_INIT_VIDEO |
+      SDL_INIT_JOYSTICK |
+      SDL_INIT_GAMECONTROLLER |
+      SDL_INIT_EVENTS) != 0)
    {
       std::cerr << "SDL_Init: " << SDL_GetError() << '\n';
       throw EXIT_FAILURE;
@@ -225,12 +229,15 @@ static int Main()
       timeDelta = timeNext - timeLast;
       timeLast  = timeNext;
 
+      DGE::Game::PumpEvents();
+
       if(timeDelta)
       {
          while(timeDelta--)
          {
             input.poll();
             proc.exec();
+            DGE::Game::EventFrame();
          }
       }
       else

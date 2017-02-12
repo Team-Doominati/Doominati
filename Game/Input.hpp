@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef DGE__Game__Input_H__
 #define DGE__Game__Input_H__
 
+#include "Game/Event.hpp"
+
 #include <cstdint>
 
 
@@ -23,61 +25,24 @@
 namespace DGE::Game
 {
    //
-   // InputButtons
-   //
-
-   class InputButtons
-   {
-   public:
-      bool attack    : 1;
-      bool altattack : 1;
-      bool use       : 1;
-   };
-
-   //
    // InputFrame
    //
-
    class InputFrame
    {
    public:
-      std::int16_t movefwd, moveside;
-      std::int32_t mx,      my;
-      InputButtons buttons;
-   };
-
-   //
-   // InputSink
-   //
-
-   class InputSink
-   {
-   public:
-      virtual ~InputSink() {}
-
-      virtual void sink(InputFrame const &frame) = 0;
-   };
-
-   //
-   // InputSink_Null
-   //
-
-   class InputSink_Null : public InputSink
-   {
-   public:
-      virtual void sink(InputFrame const &frame);
+      std::int16_t ax1x, ax1y;
+      std::int16_t ax2x, ax2y;
+      std::int16_t ax3x, ax3y;
+      std::int16_t buttons;
    };
 
    //
    // InputSource
    //
-
    class InputSource
    {
    public:
       virtual ~InputSource() {}
-
-      virtual bool canPoll() const = 0;
 
       virtual InputFrame const &getLast() const = 0;
       virtual InputFrame const &getNext() const = 0;
@@ -88,19 +53,14 @@ namespace DGE::Game
    //
    // InputSource_Local
    //
-
-   class InputSource_Local : public InputSource
+   class InputSource_Local : public InputSource, EventSink
    {
    public:
-      InputSource_Local();
-      virtual ~InputSource_Local();
-
-      virtual bool canPoll() const;
-
-      virtual InputFrame const &getLast() const;
-      virtual InputFrame const &getNext() const;
+      virtual InputFrame const &getLast() const {return frameLast;}
+      virtual InputFrame const &getNext() const {return frameNext;}
 
       virtual void poll();
+      virtual void sink(Event const &event);
 
    private:
       InputFrame frameLast;

@@ -19,6 +19,8 @@
 ## dge-game-lib
 ##
 add_library(dge-game-lib STATIC
+   Event.cpp
+   Event.hpp
    Input.cpp
    Input.hpp
 )

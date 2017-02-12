@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,12 +12,34 @@
 
 #include "Game/Input.hpp"
 
-#include "GL/Window.hpp"
-
 #include <iostream>
 #include <climits>
 
+#include <GDCC/Core/Option.hpp>
+
+#include <GDCC/Option/Bool.hpp>
+
 #include "SDL.h"
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace DGE::Game
+{
+   //
+   // --input-debug
+   //
+   static bool DebugInput = false;
+   static GDCC::Option::Bool DebugInputOpt{
+      &GDCC::Core::GetOptionList(),
+      GDCC::Option::Base::Info()
+         .setName("input-debug")
+         .setDescS("Enables input debugging output."),
+      &DebugInput
+   };
+}
 
 
 //----------------------------------------------------------------------------|
@@ -27,115 +49,49 @@
 namespace DGE::Game
 {
    //
-   // InputSink_Null::sink
-   //
-
-   void InputSink_Null::sink(InputFrame const &)
-   {
-   }
-
-   //
-   // InputSource_Local constructor
-   //
-
-   InputSource_Local::InputSource_Local() :
-      frameLast{},
-      frameNext{}
-   {
-   }
-
-   //
-   // InputSource_Local destructor
-   //
-
-   InputSource_Local::~InputSource_Local()
-   {
-   }
-
-   //
-   // InputSource_Local::canPoll
-   //
-
-   bool InputSource_Local::canPoll() const
-   {
-      return true;
-   }
-
-   //
-   // InputSource_Local::getLast
-   //
-
-   InputFrame const &InputSource_Local::getLast() const
-   {
-      return frameLast;
-   }
-
-   //
-   // InputSource_Local::getNext
-   //
-
-   InputFrame const &InputSource_Local::getNext() const
-   {
-      return frameNext;
-   }
-
-   //
    // InputSource_Local::poll
    //
-
    void InputSource_Local::poll()
    {
       frameLast = frameNext;
+      ProcessGameEvents(*this);
+   }
 
-      // Poll events.
-      for(SDL_Event event; SDL_PollEvent(&event);)
+   //
+   // InputSource_Local
+   //
+   void InputSource_Local::sink(Event const &event)
+   {
+      if(DebugInput)
       {
-         if(event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+         auto printMouseButton = [](Event const &event)
          {
-            bool down = (event.type == SDL_KEYDOWN);
-            std::int16_t delta = down ? INT16_MAX : 0;
+            switch(event.data.mb)
+            {
+            default:        std::cout << "<unknown button>"; break;
+            case MB_Left:   std::cout << "Left Button";      break;
+            case MB_Right:  std::cout << "Right Button";     break;
+            case MB_Middle: std::cout << "Middle Button";    break;
+            case MB_Extra1: std::cout << "Extra Button 1";   break;
+            case MB_Extra2: std::cout << "Extra Button 2";   break;
+            }
 
-            switch(event.key.keysym.sym)
-            {
-            case SDLK_w: frameNext.movefwd     =  delta; break;
-            case SDLK_s: frameNext.movefwd     = -delta; break;
-            case SDLK_d: frameNext.moveside    =  delta; break;
-            case SDLK_a: frameNext.moveside    = -delta; break;
-            case SDLK_e: frameNext.buttons.use =  down;  break;
-            case SDLK_ESCAPE: throw EXIT_SUCCESS;
-            }
-         }
-         else if(event.type == SDL_MOUSEBUTTONDOWN ||
-                 event.type == SDL_MOUSEBUTTONUP)
-         {
-            bool down = (event.type == SDL_MOUSEBUTTONDOWN);
+            std::cout << std::endl;
+         };
 
-            switch(event.button.button)
-            {
-            case SDL_BUTTON_LEFT:  frameNext.buttons.attack    = down; break;
-            case SDL_BUTTON_RIGHT: frameNext.buttons.altattack = down; break;
-            }
-         }
-         else if(event.type == SDL_CONTROLLERAXISMOTION)
+         auto printAxis = [](Event const &event)
+            {std::cout << "x: " << event.data.axis.x << "\ty: " << event.data.axis.y << std::endl;};
+
+         switch(event.type)
          {
-            switch(event.caxis.axis)
-            {
-            case SDL_CONTROLLER_AXIS_LEFTX:
-               frameNext.moveside = event.caxis.value;
-               break;
-            case SDL_CONTROLLER_AXIS_LEFTY:
-               frameNext.movefwd = -event.caxis.value;
-               break;
-            }
+         case Event::KeyDown:    std::cout << "KeyDown:    " << char32_t(event.data.key) << std::endl; break;
+         case Event::KeyUp:      std::cout << "KeyUp:      " << char32_t(event.data.key) << std::endl; break;
+         case Event::MouseDown:  std::cout << "MouseDown:  "; printMouseButton(event); break;
+         case Event::MouseUp:    std::cout << "MouseUp:    "; printMouseButton(event); break;
+         case Event::MouseMove:  std::cout << "MouseMove:  "; printAxis(event); break;
+         case Event::MouseWheel: std::cout << "MouseWheel: "; printAxis(event); break;
          }
-         else if(event.type == SDL_QUIT)
-            throw EXIT_SUCCESS;
       }
-
-      int mx, my;
-      SDL_GetMouseState(&mx, &my);
-      frameNext.mx = mx;
-      frameNext.my = my;
    }
 }
 
