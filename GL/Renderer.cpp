@@ -71,7 +71,6 @@ namespace DGE::GL
 
    static Code::Callback CallbackDrawBegin{"DrawBegin"};
    static Code::Callback CallbackDrawEnd{"DrawEnd"};
-   static Code::Callback CallbackResize{"Resize"};
 
    static Renderer *CurrentRenderer;
 }
@@ -134,8 +133,7 @@ namespace DGE::GL
    //
    // Renderer constructor
    //
-   Renderer::Renderer(Window &win_, int w_, int h_) :
-      w{w_}, h{h_},
+   Renderer::Renderer(Window &win_) :
       textAlignH{AlignHorz::Left}, textAlignV{AlignVert::Top},
       privdata{new PrivData()},
       win{win_},
@@ -159,8 +157,6 @@ namespace DGE::GL
       lineWidth(1);
 
       // Set up matrices.
-      resize(w, h);
-
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
@@ -339,9 +335,6 @@ namespace DGE::GL
    {
       win.renderBegin();
 
-      if(w != win.w || h != win.h)
-         resize(win.w, win.h);
-
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       CallbackDrawBegin();
@@ -354,18 +347,6 @@ namespace DGE::GL
    {
       win.renderEnd();
       CallbackDrawEnd();
-   }
-
-   //
-   // Renderer::resize
-   //
-   void Renderer::resize(int w_, int h_)
-   {
-      if(w != w_ || h != h_)
-      {
-         glViewport(0, 0, w = w_, h = h_);
-         CallbackResize(w, h);
-      }
    }
 
    //

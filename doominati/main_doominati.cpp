@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -195,7 +195,7 @@ static int Main()
 
    // Initialize rendering.
    DGE::GL::Window window{640, 480};
-   DGE::GL::Renderer renderer{window, 1280, 720};
+   DGE::GL::Renderer renderer{window};
 
    DGE::GL::Window::SetCurrent(&window);
    DGE::GL::Renderer::SetCurrent(&renderer);

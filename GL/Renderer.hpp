@@ -63,7 +63,7 @@ namespace DGE::GL
    {
    public:
       Renderer() = delete;
-      Renderer(Window &win_, int w_, int h_);
+      Renderer(Window &win_);
       Renderer(Renderer const &) = delete;
       Renderer(Renderer &&) = default;
       ~Renderer();
@@ -116,8 +116,6 @@ namespace DGE::GL
 
       void textureUnbind();
 
-      int w, h;
-
       AlignHorz textAlignH;
       AlignVert textAlignV;
 
@@ -135,8 +133,6 @@ namespace DGE::GL
 
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
-
-      void resize(int w, int h);
 
       Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);

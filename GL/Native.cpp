@@ -23,6 +23,8 @@ namespace DGE::GL
    DGE_Code_NativeDecl(DGE_SetVirtualResolution);
 
    // Window.cpp
+   DGE_Code_NativeDecl(DGE_GetScrW);
+   DGE_Code_NativeDecl(DGE_GetScrH);
    DGE_Code_NativeDecl(DGE_SetWindowTitle);
 
    // Renderer/Draw.cpp
@@ -52,6 +54,8 @@ namespace DGE::GL
       DGE_Code_NativeAdd(DGE_SetVirtualResolution);
 
       // Window.cpp
+      DGE_Code_NativeAdd(DGE_GetScrW);
+      DGE_Code_NativeAdd(DGE_GetScrH);
       DGE_Code_NativeAdd(DGE_SetWindowTitle);
 
       // Renderer/Draw.cpp

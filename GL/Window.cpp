@@ -12,10 +12,13 @@
 
 #include "GL/Window.hpp"
 
+#include "Code/Callback.hpp"
 #include "Code/MemStr.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
+
+#include "GL/OpenGL2.1.h"
 
 #include <iostream>
 
@@ -27,6 +30,7 @@
 namespace DGE::GL
 {
    static Window *CurrentWindow;
+   static Code::Callback CallbackResize{"Resize"};
 }
 
 
@@ -85,8 +89,8 @@ namespace DGE::GL
 
       if(w != newW || h != newH)
       {
-         w = newW;
-         h = newH;
+         glViewport(0, 0, w = newW, h = newH);
+         CallbackResize(w, h);
       }
    }
 
@@ -120,6 +124,7 @@ namespace DGE::GL
    void Window::SetCurrent(Window *window)
    {
       CurrentWindow = window;
+      SDL_GL_MakeCurrent(window->window, window->gl);
    }
 }
 
@@ -130,6 +135,24 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
+   //
+   // int DGE_GetScrW(void)
+   //
+   DGE_Code_NativeDefn(DGE_GetScrW)
+   {
+      task->dataStk.push(Window::GetCurrent()->w);
+      return false;
+   }
+
+   //
+   // int DGE_GetScrH(void)
+   //
+   DGE_Code_NativeDefn(DGE_GetScrH)
+   {
+      task->dataStk.push(Window::GetCurrent()->h);
+      return false;
+   }
+
    //
    // void DGE_SetWindowTitle(char const *str)
    //
