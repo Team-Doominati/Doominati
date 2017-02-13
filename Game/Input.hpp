@@ -33,7 +33,7 @@ namespace DGE::Game
       std::int16_t ax1x, ax1y;
       std::int16_t ax2x, ax2y;
       std::int16_t ax3x, ax3y;
-      std::int16_t buttons;
+      std::uint8_t buttons;
    };
 
    //
@@ -48,6 +48,10 @@ namespace DGE::Game
       virtual InputFrame const &getNext() const = 0;
 
       virtual void poll() = 0;
+
+
+      static InputSource *GetCurrent();
+      static void SetCurrent(InputSource *input);
    };
 
    //
@@ -63,8 +67,20 @@ namespace DGE::Game
       virtual void sink(Event const &event);
 
    private:
-      InputFrame frameLast;
-      InputFrame frameNext;
+      enum {A_AxF, A_AxB, A_AxR, A_AxL};
+      enum
+      {
+         A_Ax1, A_Ax1F = A_Ax1, A_Ax1B, A_Ax1R, A_Ax1L,
+         A_Ax2, A_Ax2F = A_Ax2, A_Ax2B, A_Ax2R, A_Ax2L,
+         A_Ax3, A_Ax3F = A_Ax3, A_Ax3B, A_Ax3R, A_Ax3L,
+         A_Buttons, A_Button1 = A_Buttons, A_Button2, A_Button3, A_Button4,
+         A_Max
+      };
+
+      InputFrame frameLast{};
+      InputFrame frameNext{};
+
+      bool actions[A_Max]{};
    };
 }
 

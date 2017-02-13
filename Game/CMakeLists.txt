@@ -23,6 +23,7 @@ add_library(dge-game-lib STATIC
    Event.hpp
    Input.cpp
    Input.hpp
+   Native.cpp
 )
 
 target_link_libraries(dge-game-lib
