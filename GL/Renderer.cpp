@@ -153,6 +153,7 @@ namespace DGE::GL
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glActiveTexture(GL_TEXTURE0);
 
+      glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
       lineSmooth(false);
       lineWidth(1);
 
@@ -373,6 +374,33 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
+   //
+   // void DGE_DrawCirclePrecision(int subdivisions)
+   //
+   DGE_Code_NativeDefn(DGE_DrawCirclePrecision)
+   {
+      Renderer::GetCurrent()->circlePrecision(argv[0]);
+      return false;
+   }
+
+   //
+   // void DGE_DrawLineSmooth(_Bool on)
+   //
+   DGE_Code_NativeDefn(DGE_DrawLineSmooth)
+   {
+      Renderer::GetCurrent()->lineSmooth(argv[0]);
+      return false;
+   }
+
+   //
+   // void DGE_DrawLineWidth(int width)
+   //
+   DGE_Code_NativeDefn(DGE_DrawLineWidth)
+   {
+      Renderer::GetCurrent()->lineWidth(argv[0]);
+      return false;
+   }
+
    //
    // void DGE_SetVirtualResolution(unsigned w, unsigned h)
    //

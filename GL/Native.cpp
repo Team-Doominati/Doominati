@@ -20,6 +20,9 @@
 namespace DGE::GL
 {
    // Renderer.cpp
+   DGE_Code_NativeDecl(DGE_DrawCirclePrecision);
+   DGE_Code_NativeDecl(DGE_DrawLineSmooth);
+   DGE_Code_NativeDecl(DGE_DrawLineWidth);
    DGE_Code_NativeDecl(DGE_SetVirtualResolution);
 
    // Window.cpp
@@ -51,6 +54,9 @@ namespace DGE::GL
    void NativeAdd()
    {
       // Renderer.cpp
+      DGE_Code_NativeAdd(DGE_DrawCirclePrecision);
+      DGE_Code_NativeAdd(DGE_DrawLineSmooth);
+      DGE_Code_NativeAdd(DGE_DrawLineWidth);
       DGE_Code_NativeAdd(DGE_SetVirtualResolution);
 
       // Window.cpp

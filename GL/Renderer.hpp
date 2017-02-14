@@ -87,7 +87,7 @@ namespace DGE::GL
 
       // font
       void fontBind(FontFace &font) {fontCurrent = &font;}
-      void fontUnbind() {fontCurrent = fontBase.get();}
+      void fontUnbind()             {fontCurrent = fontBase.get();}
 
       // line
       void lineSmooth(bool on);
