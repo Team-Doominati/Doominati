@@ -98,8 +98,6 @@ namespace DGE::Game
    //
    void InputSource_Local::sink(Event const &event)
    {
-      auto &frame = frameNext;
-
       switch(event.type)
       {
       case Event::KeyDown:
@@ -139,9 +137,9 @@ namespace DGE::Game
 
       if(DebugInput)
       {
-         auto printMouseButton = [](Event const &event)
+         auto printMouseButton = [](Event const &ev)
          {
-            switch(event.data.mb)
+            switch(ev.data.mb)
             {
             default:        std::cout << "<unknown button>"; break;
             case MB_Left:   std::cout << "Left Button";      break;
@@ -154,8 +152,11 @@ namespace DGE::Game
             std::cout << std::endl;
          };
 
-         auto printAxis = [](Event const &event)
-            {std::cout << "x: " << event.data.axis.x << "\ty: " << event.data.axis.y << std::endl;};
+         auto printAxis = [](Event const &ev)
+         {
+            std::cout << "x: " << ev.data.axis.x <<
+                       "\ty: " << ev.data.axis.y << std::endl;
+         };
 
          switch(event.type)
          {
