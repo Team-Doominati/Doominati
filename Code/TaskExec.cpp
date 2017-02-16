@@ -36,7 +36,9 @@
 # if defined(NDEBUG)
 #  if defined(__GNUC__)
 #   define DGE_Code_DynamicGoto 1
-#  elif defined(_MSC_VER) && defined(_WIN32)
+// Due to complete and utter bullshit, dynamic gotos are only available
+// on x86 builds on Windows.
+#  elif defined(_MSC_VER) && defined(_WIN32) && defined(_M_IX86)
 #   define DGE_Code_DynamicGoto 2
 #  else
 #   define DGE_Code_DynamicGoto 0
