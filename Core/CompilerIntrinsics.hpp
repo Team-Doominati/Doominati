@@ -20,6 +20,8 @@
 # define DGE_ForceInline __forceinline
 #elif defined(__GNUC__)
 # define DGE_ForceInline __attribute__((always_inline))
+#else
+# define DGE_ForceInline
 #endif
 
 //
