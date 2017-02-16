@@ -25,13 +25,10 @@
 namespace DGE::Game
 {
    //
-   // KeyCode
+   // These are special characters outside any usable Unicode range which
+   // represent special keypresses (like F1-F12).
    //
-   // These are special characters -- any virtual keycodes are just stored
-   // in Unicode, some of the specials here are ASCII but most of them are
-   // in a special Unicode range.
-   //
-   enum KeyCode
+   enum : char32_t
    {
       KC_Invalid = '\0',
 
@@ -107,7 +104,7 @@ namespace DGE::Game
 
       union
       {
-         KeyCode     key;
+         char32_t    key;
          MouseButton mb;
          struct {float x, y;} axis;
       } data;

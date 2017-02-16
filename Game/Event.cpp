@@ -66,7 +66,7 @@ namespace DGE::Game
             bool  down = event.type == SDL_KEYDOWN;
             Event pevent{down ? Event::KeyDown : Event::KeyUp};
 
-            pevent.data.key = KeyCode(event.key.keysym.sym);
+            pevent.data.key = char32_t(event.key.keysym.sym);
 
             PushEvent();
          }
