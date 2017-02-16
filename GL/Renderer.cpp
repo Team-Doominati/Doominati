@@ -388,7 +388,7 @@ namespace DGE::GL
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      CallbackDrawBegin();
+      CallbackDrawBegin(Core::GetTickFract<Core::PlayTick<float>>() * 65535);
    }
 
    //
@@ -397,7 +397,7 @@ namespace DGE::GL
    void Renderer::renderEnd()
    {
       win.renderEnd();
-      CallbackDrawEnd();
+      CallbackDrawEnd(Core::GetTickFract<Core::PlayTick<float>>() * 65535);
    }
 
    //
