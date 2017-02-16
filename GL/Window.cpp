@@ -67,6 +67,8 @@ namespace DGE::GL
          std::cerr << "SDL_GL_CreateContext: " << SDL_GetError() << '\n';
          throw EXIT_FAILURE;
       }
+
+      SDL_GL_SetSwapInterval(0);
    }
 
    //
