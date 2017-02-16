@@ -25,6 +25,8 @@
 
 namespace DGE::Code
 {
+   DGE_Code_NativeLoaderDefn(Native_Print);
+
    //
    // void DGE_PrintChar(unsigned c)
    //

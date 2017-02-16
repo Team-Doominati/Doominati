@@ -25,6 +25,8 @@
 
 namespace DGE::Code
 {
+   DGE_Code_NativeLoaderDefn(Native_Debug);
+
    //
    // PrintCallFrame
    //

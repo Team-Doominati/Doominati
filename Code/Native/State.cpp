@@ -21,6 +21,8 @@
 
 namespace DGE::Code
 {
+   DGE_Code_NativeLoaderDefn(Native_State);
+
    //
    // void DGE_Delay(unsigned ticks)
    //

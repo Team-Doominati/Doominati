@@ -61,34 +61,11 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
-   // Callback.cpp
-   DGE_Code_NativeDecl(DGE_CallbackRegister);
-   DGE_Code_NativeDecl(DGE_CallbackUnregister);
-
-   // Native/Debug.cpp
-   DGE_Code_NativeDecl(DGE_DebugCallStk);
-   DGE_Code_NativeDecl(DGE_DebugDataStk);
-   DGE_Code_NativeDecl(DGE_DebugLocReg);
-
-   // Native/File.cpp
-   DGE_Code_NativeDecl(DGE_FileClose);
-   DGE_Code_NativeDecl(DGE_FileGet);
-   DGE_Code_NativeDecl(DGE_FileOpen);
-   DGE_Code_NativeDecl(DGE_FileRead);
-   DGE_Code_NativeDecl(DGE_FileSize);
-
-   // Native/Memory.cpp
-   DGE_Code_NativeDecl(DGE_FreestoreBegin);
-   DGE_Code_NativeDecl(DGE_FreestoreEnd);
-
-   // Native/Print.cpp
-   DGE_Code_NativeDecl(DGE_PrintChar);
-   DGE_Code_NativeDecl(DGE_PrintWordD);
-   DGE_Code_NativeDecl(DGE_SysWrite);
-   DGE_Code_NativeDecl(DGE_SysWriteErr);
-
-   // Native/State.cpp
-   DGE_Code_NativeDecl(DGE_Delay);
+   DGE_Code_NativeLoaderDecl(Native_Debug);
+   DGE_Code_NativeLoaderDecl(Native_File);
+   DGE_Code_NativeLoaderDecl(Native_Memory);
+   DGE_Code_NativeLoaderDecl(Native_Print);
+   DGE_Code_NativeLoaderDecl(Native_State);
 
    //
    // NativeAdder constructor
@@ -119,34 +96,11 @@ namespace DGE::Code
    //
    void NativeAdder::Finish()
    {
-      // Callback.cpp
-      DGE_Code_NativeAdd(DGE_CallbackRegister);
-      DGE_Code_NativeAdd(DGE_CallbackUnregister);
-
-      // Native/Debug.cpp
-      DGE_Code_NativeAdd(DGE_DebugCallStk);
-      DGE_Code_NativeAdd(DGE_DebugDataStk);
-      DGE_Code_NativeAdd(DGE_DebugLocReg);
-
-      // Native/File.cpp
-      DGE_Code_NativeAdd(DGE_FileClose);
-      DGE_Code_NativeAdd(DGE_FileGet);
-      DGE_Code_NativeAdd(DGE_FileOpen);
-      DGE_Code_NativeAdd(DGE_FileRead);
-      DGE_Code_NativeAdd(DGE_FileSize);
-
-      // Native/Memory.cpp
-      DGE_Code_NativeAdd(DGE_FreestoreBegin);
-      DGE_Code_NativeAdd(DGE_FreestoreEnd);
-
-      // Native/Print.cpp
-      DGE_Code_NativeAdd(DGE_PrintChar);
-      DGE_Code_NativeAdd(DGE_PrintWordD);
-      DGE_Code_NativeAdd(DGE_SysWrite);
-      DGE_Code_NativeAdd(DGE_SysWriteErr);
-
-      // Native/State.cpp
-      DGE_Code_NativeAdd(DGE_Delay);
+      DGE_Code_NativeLoaderCall(Native_Debug);
+      DGE_Code_NativeLoaderCall(Native_File);
+      DGE_Code_NativeLoaderCall(Native_Memory);
+      DGE_Code_NativeLoaderCall(Native_Print);
+      DGE_Code_NativeLoaderCall(Native_State);
 
       // Callbacks.
       {

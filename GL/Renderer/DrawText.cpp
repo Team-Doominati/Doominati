@@ -146,6 +146,8 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
+   DGE_Code_NativeLoaderDefn(Renderer_DrawText);
+
    //
    // void DGE_DrawText(int x, int y, char const *str)
    //
