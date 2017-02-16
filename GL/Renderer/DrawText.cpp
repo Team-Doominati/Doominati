@@ -149,27 +149,31 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_DrawText);
 
    //
-   // void DGE_DrawText(int x, int y, char const *str)
+   // void DGE_DrawText(int x, int y, char const *str[, int maxwidth])
    //
    DGE_Code_NativeDefn(DGE_DrawText)
    {
       int x = static_cast<int>(argv[0]);
       int y = static_cast<int>(argv[1]);
       Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
-      Renderer::GetCurrent()->drawText(x, y, MemStrDup(str).get());
+      int maxwidth = argc > 3 ? argv[3] : 0;
+      Renderer::GetCurrent()->drawText(x, y, MemStrDup(str).get(), maxwidth);
       return false;
    }
 
    //
-   // void DGE_TextAlignment(int h, int v)
+   // void DGE_TextAlignment(int h[, int v])
    //
    DGE_Code_NativeDefn(DGE_TextAlignment)
    {
       AlignHorz h = static_cast<AlignHorz>(argv[0]);
-      AlignVert v = static_cast<AlignVert>(argv[1]);
-
       if(h != AlignHorz::Keep) Renderer::GetCurrent()->textAlignH = h;
-      if(v != AlignVert::Keep) Renderer::GetCurrent()->textAlignV = v;
+
+      if(argc > 1)
+      {
+         AlignVert v = static_cast<AlignVert>(argv[1]);
+         if(v != AlignVert::Keep) Renderer::GetCurrent()->textAlignV = v;
+      }
 
       return false;
    }
