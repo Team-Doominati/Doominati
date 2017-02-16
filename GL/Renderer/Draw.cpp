@@ -196,6 +196,8 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
+   DGE_Code_NativeLoaderDefn(Renderer_Draw);
+
    //
    // void DGE_DrawColor(unsigned r, unsigned g, unsigned b, unsigned a)
    //

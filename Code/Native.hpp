@@ -24,12 +24,6 @@
 //
 
 //
-// DGE_Code_NativeAdd
-//
-#define DGE_Code_NativeAdd(name) \
-   ::DGE::Code::NativeAdder::Add("_" #name, DGE_Code_Native_##name)
-
-//
 // DGE_Code_NativeArgs
 //
 #if __GNUC__
@@ -43,16 +37,31 @@
 #endif
 
 //
-// DGE_Code_NativeDecl
-//
-#define DGE_Code_NativeDecl(name) \
-   bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
-
-//
 // DGE_Code_NativeDefn
 //
 #define DGE_Code_NativeDefn(name) \
-   bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
+   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs()); \
+   static ::DGE::Code::NativeAdder DGE_Code_NativeAdder_##name{ \
+      "_" #name, DGE_Code_Native_##name}; \
+   static bool DGE_Code_Native_##name(DGE_Code_NativeArgs())
+
+//
+// DGE_Code_NativeLoaderCall
+//
+#define DGE_Code_NativeLoaderCall(name) \
+   NativeLoader_##name()
+
+//
+// DGE_Code_NativeLoaderDecl
+//
+#define DGE_Code_NativeLoaderDecl(name) \
+   void NativeLoader_##name()
+
+//
+// DGE_Code_NativeLoaderDefn
+//
+#define DGE_Code_NativeLoaderDefn(name) \
+   void NativeLoader_##name() {}
 
 
 //----------------------------------------------------------------------------|
