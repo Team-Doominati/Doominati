@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -23,21 +23,6 @@
 
 namespace DGE::GL
 {
-   //
-   // Renderer::PrivData::texAdd
-   //
-   Renderer::Texture *Renderer::PrivData::texAdd(GLsizei texw, GLsizei texh,
-      TexturePixel const *data, GDCC::Core::String name)
-   {
-      std::size_t idx = texVec.size();
-      texVec.emplace_back(TextureData(texw, texh, data), name, idx);
-      texMap.insert(&texVec.back());
-
-      texNone = &texVec.front();
-
-      return &texVec.back();
-   }
-
    //
    // Renderer::textureBind
    //
@@ -79,10 +64,7 @@ namespace DGE::GL
    //
    TextureData *Renderer::textureGet(std::size_t idx)
    {
-      if(idx < privdata->texVec.size())
-         return &privdata->texVec[idx].data;
-
-      return &privdata->texNone->data;
+      return &privdata->texMan.get(idx)->data;
    }
 
    //
@@ -98,7 +80,7 @@ namespace DGE::GL
    //
    Renderer::Texture *Renderer::textureGetRaw(GDCC::Core::String name)
    {
-      if(auto tex = privdata->texMap.find(name))
+      if(auto tex = privdata->texMan.resMap.find(name))
          return tex;
 
       if(name[0] == '@')
@@ -130,7 +112,7 @@ namespace DGE::GL
          std::unique_ptr<TexturePixel[]> buf{new TexturePixel[width * height]};
          loader->data(buf.get());
 
-         return privdata->texAdd(width, height, buf.get(), name);
+         return privdata->texMan.add({width, height, buf.get()}, name);
       }
       catch(TextureLoaderError const &err)
       {
@@ -148,7 +130,7 @@ namespace DGE::GL
       TexturePixel const data[4] =
          {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
 
-      return privdata->texAdd(2, 2, data, name);
+      return privdata->texMan.add({2, 2, data}, name);
    }
 
    //
@@ -166,7 +148,7 @@ namespace DGE::GL
             data[i][0] = data[i][2] = 1;
       }
 
-      return privdata->texAdd(64, 64, data, name);
+      return privdata->texMan.add({64, 64, data}, name);
    }
 
    //
@@ -174,7 +156,7 @@ namespace DGE::GL
    //
    void Renderer::textureUnbind()
    {
-      TextureData const *tex = &privdata->texNone->data;
+      TextureData const *tex = &privdata->texMan.resNone->data;
       if(!privdata->texBound || privdata->texBound->tex != tex->tex)
          glBindTexture(GL_TEXTURE_2D, (privdata->texBound = tex)->tex);
    }

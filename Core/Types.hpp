@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -22,7 +22,10 @@
 
 namespace DGE::Core
 {
-   using Byte  = unsigned char;
+   using Byte = unsigned char;
+
+   template<typename ResourceData>
+   class Resource;
 }
 
 #endif//DGE__Core__Types_H__

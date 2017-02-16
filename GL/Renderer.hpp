@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,8 @@
 #include "GL/Particle.hpp"
 #include "GL/Shader.hpp"
 #include "GL/Texture.hpp"
+
+#include "Core/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -126,7 +128,7 @@ namespace DGE::GL
 
    private:
       class PrivData;
-      class Texture;
+      using Texture = Core::Resource<TextureData>;
 
       static constexpr int MaxSubdivisions = 9;
 
