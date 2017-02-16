@@ -73,6 +73,7 @@ namespace DGE::GL
 
       // draw
       void drawCircle(int x, int y, int radius, bool line = false) const;
+      void drawDigit(unsigned int dig, int xl, int yl, int xh, int yh) const;
       void drawEllipse(int x1, int y1, int x2, int y2, bool line = false) const;
       void drawLine(int x1, int y1, int x2, int y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
@@ -90,8 +91,8 @@ namespace DGE::GL
       void fontUnbind()             {fontCurrent = fontBase.get();}
 
       // line
-      void lineSmooth(bool on);
-      void lineWidth(int width);
+      void lineSmooth(bool on)  const;
+      void lineWidth(int width) const;
 
       // render
       void renderBegin();

@@ -281,6 +281,56 @@ namespace DGE::GL
    }
 
    //
+   // Renderer::drawDigit
+   //
+   void Renderer::drawDigit(unsigned int dig, int xl, int yl, int xh, int yh) const
+   {
+      static struct
+      {
+         bool           seg0 : 1,
+              seg1 : 1,           seg2 : 1,
+                        seg3 : 1,
+              seg4 : 1,           seg5 : 1,
+                        seg6 : 1;
+      }
+      const digtab[10]{
+         {1,1,1,0,1,1,1},
+         {0,0,1,0,0,1,0},
+         {1,0,1,1,1,0,1},
+         {1,0,1,1,0,1,1},
+         {0,1,1,1,0,1,0},
+         {1,1,0,1,0,1,1},
+         {1,1,0,1,1,1,1},
+         {1,0,1,0,0,1,0},
+         {1,1,1,1,1,1,1},
+         {1,1,1,1,0,1,1},
+      };
+
+      auto &digit = digtab[dig];
+      int ym = (yl + yh) / 2;
+
+      GLfloat   prevwidth;
+      GLboolean prevsmooth;
+
+      glGetFloatv  (GL_LINE_WIDTH,  &prevwidth);
+      glGetBooleanv(GL_LINE_SMOOTH, &prevsmooth);
+
+      glEnable(GL_LINE_SMOOTH);
+      glLineWidth(2);
+
+      if(digit.seg0) drawLine(xl, yh, xh, yh);
+      if(digit.seg1) drawLine(xl, ym, xl, yh);
+      if(digit.seg2) drawLine(xh, ym, xh, yh);
+      if(digit.seg3) drawLine(xl, ym, xh, ym);
+      if(digit.seg4) drawLine(xl, yl, xl, ym);
+      if(digit.seg5) drawLine(xh, yl, xh, ym);
+      if(digit.seg6) drawLine(xl, yl, xh, yl);
+
+                      glLineWidth(prevwidth);
+      if(!prevsmooth) glDisable(GL_LINE_SMOOTH);
+   }
+
+   //
    // Renderer::drawParticleSystem
    //
    void Renderer::drawParticleSystem(ParticleSystem const &ps)
@@ -315,7 +365,7 @@ namespace DGE::GL
    //
    // Renderer:lineSmooth
    //
-   void Renderer::lineSmooth(bool on)
+   void Renderer::lineSmooth(bool on) const
    {
       if(on) glEnable(GL_LINE_SMOOTH);
       else   glDisable(GL_LINE_SMOOTH);
@@ -324,7 +374,7 @@ namespace DGE::GL
    //
    // Renderer::lineWidth
    //
-   void Renderer::lineWidth(int width)
+   void Renderer::lineWidth(int width) const
    {
       glLineWidth(width);
    }

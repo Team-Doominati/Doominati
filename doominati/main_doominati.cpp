@@ -75,58 +75,6 @@ namespace DGE::GL   {void NativeAdd();}
 //
 
 //
-// DrawDigit
-//
-static void DrawDigit(unsigned int dig, int xl, int yl, int xh, int yh)
-{
-   int ym = (yl + yh) / 2;
-
-   static struct
-   {
-      bool seg0 : 1, seg1 : 1, seg2 : 1, seg3 : 1, seg4 : 1, seg5 : 1, seg6 : 1;
-   }
-   const digtab[10]
-   {
-      {1,1,1,0,1,1,1},
-      {0,0,1,0,0,1,0},
-      {1,0,1,1,1,0,1},
-      {1,0,1,1,0,1,1},
-      {0,1,1,1,0,1,0},
-      {1,1,0,1,0,1,1},
-      {1,1,0,1,1,1,1},
-      {1,0,1,0,0,1,0},
-      {1,1,1,1,1,1,1},
-      {1,1,1,1,0,1,1},
-   };
-
-   auto &digit = digtab[dig];
-
-   //  -0-
-   // |   |
-   // 1   2
-   // |   |
-   //  -3-
-   // |   |
-   // 4   5
-   // |   |
-   //  -6-
-
-   auto renderer = DGE::GL::Renderer::GetCurrent();
-
-   renderer->lineSmooth(true);
-   renderer->lineWidth(2);
-   if(digit.seg0) renderer->drawLine(xl, yh, xh, yh);
-   if(digit.seg1) renderer->drawLine(xl, ym, xl, yh);
-   if(digit.seg2) renderer->drawLine(xh, ym, xh, yh);
-   if(digit.seg3) renderer->drawLine(xl, ym, xh, ym);
-   if(digit.seg4) renderer->drawLine(xl, yl, xl, ym);
-   if(digit.seg5) renderer->drawLine(xh, yl, xh, ym);
-   if(digit.seg6) renderer->drawLine(xl, yl, xh, yl);
-   renderer->lineSmooth(false);
-   renderer->lineWidth(1);
-}
-
-//
 // DrawFPS
 //
 static void DrawFPS()
@@ -142,14 +90,16 @@ static void DrawFPS()
 
    unsigned int fps = std::round(1 / timeMean);
 
-   DGE::GL::Renderer::GetCurrent()->drawColorSet(DGE::GL::GetColor("White"));
-   DGE::GL::Renderer::GetCurrent()->textureUnbind();
+   auto renderer = DGE::GL::Renderer::GetCurrent();
+
+   renderer->drawColorSet(DGE::GL::GetColor("White"));
+   renderer->textureUnbind();
 
    if(fps > 999) fps = 999;
 
-   DrawDigit(fps / 100 % 10,  0, 25, 15, 0);
-   DrawDigit(fps /  10 % 10, 20, 25, 35, 0);
-   DrawDigit(fps /   1 % 10, 40, 25, 55, 0);
+   renderer->drawDigit(fps / 100 % 10,  0, 25, 15, 0);
+   renderer->drawDigit(fps /  10 % 10, 20, 25, 35, 0);
+   renderer->drawDigit(fps /   1 % 10, 40, 25, 55, 0);
 }
 
 //
