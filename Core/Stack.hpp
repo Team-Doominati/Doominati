@@ -13,6 +13,8 @@
 #ifndef DGE__Core__Stack_H__
 #define DGE__Core__Stack_H__
 
+#include "Core/CompilerIntrinsics.hpp"
+
 #include <climits>
 #include <iterator>
 #include <new>
@@ -43,6 +45,7 @@ namespace DGE::Core
       ~Stack() {clear(); ::operator delete(stack);}
 
       // operator []
+      DGE_ForceInlineMSVC
       T &operator [] (std::size_t idx) {return *(stkPtr - idx);}
 
       // begin
@@ -77,12 +80,28 @@ namespace DGE::Core
       bool empty() const {return stkPtr == stack;}
 
       // end
-      T       *end()       {return stkPtr;}
-      T const *end() const {return stkPtr;}
+      DGE_ForceInlineMSVC T       *end()       {return stkPtr;}
+      DGE_ForceInlineMSVC T const *end() const {return stkPtr;}
 
       // push
-      void push(T const &value) {new(stkPtr++) T(          value );}
-      void push(T      &&value) {new(stkPtr++) T(std::move(value));}
+      void push(T const &value)
+      {
+         // FUCKING MSVC.
+         // TODO: use if constexpr when we switch to VS2017
+         if(std::is_trivially_assignable<T &, T const &>::value)
+            *stkPtr++ = value;
+         else
+            new(stkPtr++) T(value);
+      }
+
+      void push(T &&value)
+      {
+         // TODO: use if constexpr when we switch to VS2017
+         if(std::is_trivially_assignable<T &, T &&>::value)
+            *stkPtr++ = std::move(value);
+         else
+            new(stkPtr++) T(std::move(value));
+      }
 
       // rbegin
       const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
