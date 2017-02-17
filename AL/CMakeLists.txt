@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 Team Doominati
+## Copyright (C) 2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for doominati.
+## CMake file for dge-al.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,19 +16,25 @@
 ##
 
 ##
-## doominati
+## dge-al-lib
 ##
+add_library(dge-al-lib STATIC
+   AudioRenderer.cpp
+   AudioRenderer.hpp
+   AudioRenderer/Sound.cpp
+   OpenAL.hpp
+   Sound.cpp
+   Sound.hpp
+   Sound/WAVE.cpp
+   SoundSource.cpp
+   SoundSource.hpp
+)
 
-add_executable(doominati ${DGE_MAIN_ENTRY} main_doominati.cpp)
-
-target_link_libraries(doominati
-   dge-al-lib
+target_link_libraries(dge-al-lib
    dge-code-lib
    dge-core-lib
-   dge-fs-lib
-   dge-game-lib
-   dge-gl-lib
-   ${DGE_MAIN_LIBRARIES})
+   ${GDCC_LIBRARIES}
+   ${OPENAL_LIBRARY})
 
 ## EOF
 

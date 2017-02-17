@@ -84,6 +84,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 
 find_package(Eigen3   REQUIRED)
 find_package(GDCC     REQUIRED)
+find_package(OpenAL   REQUIRED)
 find_package(OpenGL   REQUIRED)
 find_package(SDL2     REQUIRED)
 find_package(Freetype REQUIRED)
@@ -104,10 +105,11 @@ endif()
 include_directories(${CMAKE_SOURCE_DIR})
 
 include_directories(SYSTEM
+   ${EIGEN3_INCLUDE_DIRS}
    ${GDCC_INCLUDE_DIRS}
+   ${OPENAL_INCLUDE_DIR}
    ${OPENGL_INCLUDE_DIR}
    ${SDL2_INCLUDE_DIRS}
-   ${EIGEN3_INCLUDE_DIRS}
    ${FREETYPE_INCLUDE_DIRS})
 
 
@@ -115,6 +117,7 @@ include_directories(SYSTEM
 ## Targets                                                                    |
 ##
 
+add_subdirectory(AL)
 add_subdirectory(Code)
 add_subdirectory(Core)
 add_subdirectory(doominati)

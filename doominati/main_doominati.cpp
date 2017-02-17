@@ -17,6 +17,8 @@
 #define DGE_doominati_InitMain()
 #endif
 
+#include "AL/AudioRenderer.hpp"
+
 #include "Code/Codedefs.hpp"
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
@@ -159,6 +161,11 @@ static int Main()
 
    DGE::GL::Window::SetCurrent(&window);
    DGE::GL::Renderer::SetCurrent(&renderer);
+
+   // Initialize audio.
+   DGE::AL::AudioRenderer audio;
+
+   DGE::AL::AudioRenderer::SetCurrent(&audio);
 
    // Initialize input.
    DGE::Game::InputSource_Local input;
