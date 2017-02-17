@@ -35,8 +35,8 @@ namespace DGE::Core
    {
    public:
       Resource() = delete;
-      Resource(Resource &&tex) : data{std::move(tex.data)},
-         link{this, std::move(tex.link)}, name{tex.name}, idx{tex.idx} {}
+      Resource(Resource &&rsrc) : data{std::move(rsrc.data)},
+         link{this, std::move(rsrc.link)}, name{rsrc.name}, idx{rsrc.idx} {}
       Resource(ResourceData &&data_, GDCC::Core::String name_, std::size_t idx_) :
          data{std::move(data_)}, link{this}, name{name_}, idx{idx_} {}
 
