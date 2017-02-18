@@ -212,7 +212,7 @@ namespace DGE::AL
    {
       auto *audio = AudioRenderer::GetCurrent();
       auto *src =
-      #define Cast static_cast<int> // うざい
+      #define Cast static_cast<int> /* うざい */
          audio->soundSrcCreate(Cast(argv[0]), Cast(argv[1]), Cast(argv[2]));
       #undef Cast
 
