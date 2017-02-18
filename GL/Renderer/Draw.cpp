@@ -12,6 +12,7 @@
 
 #include "GL/Renderer/PrivData.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
@@ -203,10 +204,10 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_DrawColor)
    {
-      float r =            argv[0] / 4294967295.0;
-      float g =            argv[1] / 4294967295.0;
-      float b =            argv[2] / 4294967295.0;
-      float a = argc > 3 ? argv[3] / 4294967295.0 : 1.0f;
+      float r =            Code::ULFractToHost(argv[0]);
+      float g =            Code::ULFractToHost(argv[1]);
+      float b =            Code::ULFractToHost(argv[2]);
+      float a = argc > 3 ? Code::ULFractToHost(argv[3]) : 1.0f;
 
       Renderer::GetCurrent()->drawColorSet(r, g, b, a);
 
