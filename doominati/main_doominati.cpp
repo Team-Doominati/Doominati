@@ -94,6 +94,11 @@ static void DrawFPS()
 
    auto renderer = DGE::GL::Renderer::GetCurrent();
 
+   glMatrixMode(GL_PROJECTION);
+   glPushMatrix();
+   glLoadIdentity();
+   glOrtho(0, 640, 480, 0, 0, 0.01f);
+
    renderer->drawColorSet(DGE::GL::GetColor("White"));
    renderer->textureUnbind();
 
@@ -102,6 +107,8 @@ static void DrawFPS()
    renderer->drawDigit(fps / 100 % 10,  0, 25, 15, 0);
    renderer->drawDigit(fps /  10 % 10, 20, 25, 35, 0);
    renderer->drawDigit(fps /   1 % 10, 40, 25, 55, 0);
+
+   glPopMatrix();
 }
 
 //
