@@ -23,6 +23,7 @@ add_library(dge-code-lib STATIC
    Callback.hpp
    Codedefs.cpp
    Codedefs.hpp
+   Convert.hpp
    Function.hpp
    Memory.cpp
    Memory.hpp
