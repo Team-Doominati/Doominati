@@ -102,9 +102,8 @@ namespace DGE::GL
       void renderEnd();
 
       // shader
-      void shaderSwap(Shader &s) {(shaderCurrent = &s)->setCurrent();}
-      void shaderDrop()          {shaderSwap(shaderBase);}
-      void shaderUpdate()        {shaderCurrent->update();}
+      void shaderUnbind() {shaderBind(shdBase.get());}
+      void shaderBind(Shader *shd);
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
@@ -148,8 +147,8 @@ namespace DGE::GL
       std::unique_ptr<PrivData> privdata;
       Window &win;
 
-      Shader  shaderBase;
-      Shader *shaderCurrent;
+      std::unique_ptr<Shader> shdBase;
+      Shader                 *shdCur;
 
       std::unique_ptr<FontFace> fontBase;
       FontFace                 *fontCurrent;

@@ -17,10 +17,6 @@
 
 #include "FS/File.hpp"
 
-#define GenCompile(handle, type, ...) \
-   if(glIsShader(handle)) throw ShaderError(#type " already open"); \
-   handle = CompileShader<type>(__VA_ARGS__)
-
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -31,32 +27,13 @@ namespace DGE::GL
    //
    // ThrowGLError
    //
+   [[noreturn]]
    static void ThrowGLError(GLuint &handle)
    {
       thread_local GLchar err[1024];
       glGetShaderInfoLog(handle, 1024, nullptr, err);
       handle = 0;
       throw ShaderError{err};
-   }
-
-   //
-   // CompileShader
-   //
-   template<GLenum Type>
-   static GLuint CompileShader(char const *data, GLint size = -1)
-   {
-      GLuint handle = glCreateShader(Type);
-
-      glShaderSource(handle, 1, &data, &size);
-      glCompileShader(handle);
-
-      GLint compiled;
-      glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
-
-      if(compiled != GL_TRUE)
-         ThrowGLError(handle);
-
-      return handle;
    }
 }
 
@@ -68,41 +45,56 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
+   // Shader constructor
+   //
+   Shader::Shader(char const *f, char const *v) : Shader{}
+   {
+      compile(frag, f, GL_FRAGMENT_SHADER);
+      compile(vert, v, GL_VERTEX_SHADER);
+      link();
+   }
+
+   //
+   // Shader constructor
+   //
+   Shader::Shader(FS::File *f, FS::File *v) : Shader{}
+   {
+      if(!f || !v) throw ShaderError{"invalid file"};
+
+      compile(frag, f->data, GL_FRAGMENT_SHADER, f->size);
+      compile(vert, v->data, GL_VERTEX_SHADER,   v->size);
+      link();
+   }
+
+   //
    // Shader destructor
    //
    Shader::~Shader()
    {
       if(glIsProgram(prog)) glDeleteProgram(prog);
-      if(glIsShader(frag))  glDeleteShader(frag);
-      if(glIsShader(vert))  glDeleteShader(vert);
+      if( glIsShader(frag))  glDeleteShader(frag);
+      if( glIsShader(vert))  glDeleteShader(vert);
    }
 
    //
-   // Shader::compileFrag
+   // Shader::compile
    //
-   void Shader::compileFrag(char const *data)
+   void Shader::compile(GLuint &handle, char const *data, GLenum type,
+      GLint size)
    {
-      GenCompile(frag, GL_FRAGMENT_SHADER, data);
-   }
+      if(!glIsShader(handle))
+      {
+         handle = glCreateShader(type);
 
-   void Shader::compileFrag(FS::File *fp)
-   {
-      if(!fp) throw ShaderError{"bad file"};
-      GenCompile(frag, GL_FRAGMENT_SHADER, fp->data, fp->size);
-   }
+         glShaderSource(handle, 1, &data, &size);
+         glCompileShader(handle);
 
-   //
-   // Shader::compileVert
-   //
-   void Shader::compileVert(char const *data)
-   {
-      GenCompile(vert, GL_VERTEX_SHADER, data);
-   }
+         GLint compiled;
+         glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);
 
-   void Shader::compileVert(FS::File *fp)
-   {
-      if(!fp) throw ShaderError{"bad file"};
-      GenCompile(vert, GL_VERTEX_SHADER, fp->data, fp->size);
+         if(compiled != GL_TRUE)
+            ThrowGLError(handle);
+      }
    }
 
    //
@@ -145,11 +137,10 @@ namespace DGE::GL
       glUniform1i(glGetUniformLocation(prog, "dge_texture"), 0);
 
       // Get device data locations.
-      u_ticks    = glGetUniformLocation(prog, "dge_ticks");
-      u_mseconds = glGetUniformLocation(prog, "dge_mseconds");
-      u_seconds  = glGetUniformLocation(prog, "dge_seconds");
+      u_ticks   = glGetUniformLocation(prog, "dge_ticks");
+      u_seconds = glGetUniformLocation(prog, "dge_seconds");
 
-      // Done -- go back to previous program.
+      // Go back to previous program.
       glUseProgram(idprev);
    }
 
@@ -158,17 +149,8 @@ namespace DGE::GL
    //
    void Shader::update()
    {
-      glUniform1i(u_ticks,    Core::GetTicks<Core::PlayTick<GLint>>());
-      glUniform1i(u_mseconds, static_cast<GLint>(Core::GetTicks<Core::Second<double>>() * 1000.0));
-      glUniform1i(u_seconds,  Core::GetTicks<Core::Second<GLint>>());
-   }
-
-   //
-   // Shader::setCurrent
-   //
-   void Shader::setCurrent()
-   {
-      glUseProgram(prog);
+      glUniform1i(u_ticks,   Core::GetTicks<Core::PlayTick<GLint>>());
+      glUniform1f(u_seconds, Core::GetTicks<Core::Second<GLfloat>>());
    }
 }
 

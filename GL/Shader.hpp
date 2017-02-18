@@ -44,37 +44,33 @@ namespace DGE::GL
    class Shader
    {
    public:
-      Shader() = delete;
-      Shader(char const *f, char const *v) :
-         frag{}, vert{}, prog{}, u_ticks{}, u_mseconds{}, u_seconds{}
-         {compileFrag(f); compileVert(v); link();}
-      Shader(FS::File *f, FS::File *v) :
-         frag{}, vert{}, prog{}, u_ticks{}, u_mseconds{}, u_seconds{}
-         {compileFrag(f); compileVert(v); link();}
+      Shader() :
+         prog{}, frag{}, vert{}, u_ticks{}, u_seconds{} {}
+
       Shader(Shader const &) = delete;
+      Shader(char const *f, char const *v);
+      Shader(FS::File *f, FS::File *v);
+
       Shader(Shader &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
          {s.frag = s.vert = s.prog = 0; postLink();}
+
       ~Shader();
 
       void update();
-      void setCurrent();
+
+      GLuint prog;
 
    private:
-      void compileFrag(char const *data);
-      void compileFrag(FS::File *fp);
-
-      void compileVert(char const *data);
-      void compileVert(FS::File *fp);
+      void compile(GLuint &handle, char const *data, GLenum type,
+         GLint size = -1);
 
       void link();
       void postLink();
 
       GLuint frag;
       GLuint vert;
-      GLuint prog;
 
       GLint u_ticks;
-      GLint u_mseconds;
       GLint u_seconds;
    };
 }
