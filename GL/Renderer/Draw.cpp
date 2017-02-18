@@ -26,7 +26,7 @@ namespace DGE::GL
    //
    // Renderer::drawCircle
    //
-   void Renderer::drawCircle(int x, int y, int radius, bool line) const
+   void Renderer::drawCircle(float x, float y, float radius, bool line) const
    {
       glPushMatrix();
 
@@ -44,7 +44,8 @@ namespace DGE::GL
    //
    // Renderer::drawEllipse
    //
-   void Renderer::drawEllipse(int x1, int y1, int x2, int y2, bool line) const
+   void Renderer::drawEllipse(float x1, float y1, float x2, float y2,
+      bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
       if(y1 > y2) std::swap(y1, y2);
@@ -68,7 +69,7 @@ namespace DGE::GL
    //
    // Renderer::drawLine
    //
-   void Renderer::drawLine(int x1, int y1, int x2, int y2) const
+   void Renderer::drawLine(float x1, float y1, float x2, float y2) const
    {
       glBegin(GL_LINES);
 
@@ -81,19 +82,13 @@ namespace DGE::GL
    //
    // Renderer::drawRectangle
    //
-   void Renderer::drawRectangle(int x1, int y1, int x2, int y2, float rot,
-      bool line) const
+   void Renderer::drawRectangle(float x1, float y1, float x2, float y2,
+      float rot, bool line) const
    {
       if(x1 > x2) std::swap(x1, x2);
       if(y1 > y2) std::swap(y1, y2);
 
-      Core::Vector2 v[4] = {
-         { float(x1), float(y1) },
-         { float(x2), float(y1) },
-         { float(x2), float(y2) },
-         { float(x1), float(y2) }
-      };
-
+      Core::Vector2 v[4] = {{x1, y1}, {x2, y1}, {x2, y2}, {x1, y2}};
       if(rot)
       {
          float c = std::cos(rot);
@@ -148,8 +143,8 @@ namespace DGE::GL
    //
    // Renderer::drawTriangle
    //
-   void Renderer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
-      bool line) const
+   void Renderer::drawTriangle(float x1, float y1, float x2, float y2,
+      float x3, float y3, bool line) const
    {
       if(!line) glBegin(GL_TRIANGLES);
       else      glBegin(GL_LINE_LOOP);
@@ -200,14 +195,14 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_Draw);
 
    //
-   // void DGE_DrawColor(unsigned r, unsigned g, unsigned b, unsigned a)
+   // void DGE_DrawColor(unsigned long _Fract r, g, b, a)
    //
    DGE_Code_NativeDefn(DGE_DrawColor)
    {
-      float r =            Code::ULFractToHost(argv[0]);
-      float g =            Code::ULFractToHost(argv[1]);
-      float b =            Code::ULFractToHost(argv[2]);
-      float a = argc > 3 ? Code::ULFractToHost(argv[3]) : 1.0f;
+      auto r =            Code::ULFractToHost(argv[0]);
+      auto g =            Code::ULFractToHost(argv[1]);
+      auto b =            Code::ULFractToHost(argv[2]);
+      auto a = argc > 3 ? Code::ULFractToHost(argv[3]) : 1.0f;
 
       Renderer::GetCurrent()->drawColorSet(r, g, b, a);
 
@@ -215,13 +210,13 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawCircle(int x, int y, int radius)
+   // void DGE_DrawCircle(short _Accum x, y, radius)
    //
    DGE_Code_NativeDefn(DGE_DrawCircle)
    {
-      int x = static_cast<int>(argv[0]);
-      int y = static_cast<int>(argv[1]);
-      int r = static_cast<int>(argv[2]);
+      auto x = Code::SAccumToHost(argv[0]);
+      auto y = Code::SAccumToHost(argv[1]);
+      auto r = Code::SAccumToHost(argv[2]);
 
       Renderer::GetCurrent()->drawCircle(x, y, r);
 
@@ -229,13 +224,13 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawCircleLine(int x, int y, int radius)
+   // void DGE_DrawCircleLine(short _Accum x, y, radius)
    //
    DGE_Code_NativeDefn(DGE_DrawCircleLine)
    {
-      int x = static_cast<int>(argv[0]);
-      int y = static_cast<int>(argv[1]);
-      int r = static_cast<int>(argv[2]);
+      auto x = Code::SAccumToHost(argv[0]);
+      auto y = Code::SAccumToHost(argv[1]);
+      auto r = Code::SAccumToHost(argv[2]);
 
       Renderer::GetCurrent()->drawCircle(x, y, r, true);
 
@@ -243,14 +238,14 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawEllipse(int x1, int y1, int x2, int y2)
+   // void DGE_DrawEllipse(short _Accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_DrawEllipse)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2);
 
@@ -258,14 +253,14 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawEllipseLine(int x1, int y1, int x2, int y2)
+   // void DGE_DrawEllipseLine(short _Accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_DrawEllipseLine)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2, true);
 
@@ -273,14 +268,14 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawRectangle(int x1, int y1, int x2, int y2)
+   // void DGE_DrawRectangle(short _Accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_DrawRectangle)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2);
 
@@ -288,14 +283,14 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawRectangleLine(int x1, int y1, int x2, int y2)
+   // void DGE_DrawRectangleLine(short _Accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_DrawRectangleLine)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, 0, true);
 
@@ -303,14 +298,14 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawLine(int x1, int y1, int x2, int y2)
+   // void DGE_DrawLine(short _Accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_DrawLine)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawLine(x1, y1, x2, y2);
 
@@ -318,29 +313,16 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawTexture(unsigned tex)
-   //
-   DGE_Code_NativeDefn(DGE_DrawTexture)
-   {
-      if(argv[0])
-         Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));
-      else
-         Renderer::GetCurrent()->textureUnbind();
-
-      return false;
-   }
-
-   //
-   // void DGE_DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3)
+   // void DGE_DrawTriangle(short _Accum x1, y1, x2, y2, x3, y3)
    //
    DGE_Code_NativeDefn(DGE_DrawTriangle)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
-      int x3 = static_cast<int>(argv[4]);
-      int y3 = static_cast<int>(argv[5]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
+      auto x3 = Code::SAccumToHost(argv[4]);
+      auto y3 = Code::SAccumToHost(argv[5]);
 
       Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3);
 
@@ -348,16 +330,16 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawTriangleLine(int x1, int y1, int x2, int y2, int x3, int y3)
+   // void DGE_DrawTriangleLine(short _Accum x1, y1, x2, y2, x3, y3)
    //
    DGE_Code_NativeDefn(DGE_DrawTriangleLine)
    {
-      int x1 = static_cast<int>(argv[0]);
-      int y1 = static_cast<int>(argv[1]);
-      int x2 = static_cast<int>(argv[2]);
-      int y2 = static_cast<int>(argv[3]);
-      int x3 = static_cast<int>(argv[4]);
-      int y3 = static_cast<int>(argv[5]);
+      auto x1 = Code::SAccumToHost(argv[0]);
+      auto y1 = Code::SAccumToHost(argv[1]);
+      auto x2 = Code::SAccumToHost(argv[2]);
+      auto y2 = Code::SAccumToHost(argv[3]);
+      auto x3 = Code::SAccumToHost(argv[4]);
+      auto y3 = Code::SAccumToHost(argv[5]);
 
       Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3, true);
 
@@ -371,6 +353,19 @@ namespace DGE::GL
    {
       GDCC::Core::String str{argv[0]};
       task->dataStk.push(Renderer::GetCurrent()->textureGetIdx(str));
+      return false;
+   }
+
+   //
+   // void DGE_DrawTexture(unsigned tex)
+   //
+   DGE_Code_NativeDefn(DGE_DrawTexture)
+   {
+      if(argv[0])
+         Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));
+      else
+         Renderer::GetCurrent()->textureUnbind();
+
       return false;
    }
 }

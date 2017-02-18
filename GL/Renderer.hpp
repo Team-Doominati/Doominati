@@ -74,14 +74,14 @@ namespace DGE::GL
       void circlePrecision(int subdivisions);
 
       // draw
-      void drawCircle(int x, int y, int radius, bool line = false) const;
-      void drawDigit(unsigned int dig, int xl, int yl, int xh, int yh) const;
-      void drawEllipse(int x1, int y1, int x2, int y2, bool line = false) const;
-      void drawLine(int x1, int y1, int x2, int y2) const;
+      void drawCircle(float x, float y, float radius, bool line = false) const;
+      void drawDigit(unsigned int dig, float xl, float yl, float xh, float yh) const;
+      void drawEllipse(float x1, float y1, float x2, float y2, bool line = false) const;
+      void drawLine(float x1, float y1, float x2, float y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
-      void drawRectangle(int x1, int y1, int x2, int y2, float rot = 0, bool line = false) const;
-      void drawText(int x, int y, char const *str, int maxwidth = 0);
-      void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, bool line = false) const;
+      void drawRectangle(float x1, float y1, float x2, float y2, float rot = 0, bool line = false) const;
+      void drawText(float x, float y, char const *str, float maxwidth = 0);
+      void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, bool line = false) const;
 
       // drawColor
       void drawColorSet(float r, float g, float b, float a = 1.0f);

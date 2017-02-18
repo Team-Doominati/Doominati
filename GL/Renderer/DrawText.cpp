@@ -12,6 +12,7 @@
 
 #include "GL/Renderer/PrivData.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/MemStr.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
@@ -47,7 +48,7 @@ namespace DGE::GL
    //
    // Renderer::drawText
    //
-   void Renderer::drawText(int x, int y, char const *str, int maxwidth)
+   void Renderer::drawText(float x, float y, char const *str, float maxwidth)
    {
       if(!fontCurrent || !str || !*str) return;
 
@@ -149,14 +150,17 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_DrawText);
 
    //
-   // void DGE_DrawText(int x, int y, char const *str[, int maxwidth])
+   // void DGE_DrawText(short _Accum x, y, char const *str[,
+   //    short _Accum maxwidth])
    //
    DGE_Code_NativeDefn(DGE_DrawText)
    {
-      int x = static_cast<int>(argv[0]);
-      int y = static_cast<int>(argv[1]);
+      auto x        =            Code::SAccumToHost(argv[0]);
+      auto y        =            Code::SAccumToHost(argv[1]);
+      auto maxwidth = argc > 3 ? Code::SAccumToHost(argv[3]) : 0;
+
       Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
-      int maxwidth = argc > 3 ? argv[3] : 0;
+
       Renderer::GetCurrent()->drawText(x, y, MemStrDup(str).get(), maxwidth);
       return false;
    }

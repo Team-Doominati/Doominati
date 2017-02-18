@@ -284,7 +284,7 @@ namespace DGE::GL
    //
    // Renderer::drawDigit
    //
-   void Renderer::drawDigit(unsigned int dig, int xl, int yl, int xh, int yh) const
+   void Renderer::drawDigit(unsigned int dig, float xl, float yl, float xh, float yh) const
    {
       static struct
       {
@@ -308,7 +308,7 @@ namespace DGE::GL
       };
 
       auto &digit = digtab[dig];
-      int ym = (yl + yh) / 2;
+      float ym = (yl + yh) / 2;
 
       GLfloat   prevwidth;
       GLboolean prevsmooth;
