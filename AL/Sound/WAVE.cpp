@@ -16,6 +16,8 @@
 
 #include "FS/File.hpp"
 
+#include <cstring>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -35,7 +37,7 @@ namespace DGE::AL
    //
    // SoundLoader_WAV
    //
-   class SoundLoader_WAV : SoundLoader
+   class SoundLoader_WAV : public SoundLoader
    {
    public:
       SoundLoader_WAV(FS::File *file_) :
