@@ -15,6 +15,7 @@
 #include "AL/AudioRenderer.hpp"
 #include "AL/Sound.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
@@ -206,15 +207,17 @@ namespace DGE::AL
    }
 
    //
-   // unsigned DGE_SoundSource(int x, int y, int z[, unsigned flags])
+   // unsigned DGE_SoundSource(short _Accum x, y, z[, unsigned flags])
    //
    DGE_Code_NativeDefn(DGE_SoundSource)
    {
       auto *audio = AudioRenderer::GetCurrent();
-      auto *src =
-      #define Cast static_cast<int> /* うざい */
-         audio->soundSrcCreate(Cast(argv[0]), Cast(argv[1]), Cast(argv[2]));
-      #undef Cast
+
+      auto x = Code::SAccumToHost(argv[0]);
+      auto y = Code::SAccumToHost(argv[1]);
+      auto z = Code::SAccumToHost(argv[2]);
+
+      auto *src = audio->soundSrcCreate(x, y, z);
 
       if(src) task->dataStk.push(src->id);
       else    task->dataStk.push(0);
@@ -257,7 +260,15 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrcPosition)
    {
-      IfSrc() src->setPos(argv[1] / 128.0, argv[2] / 128.0, argv[3] / 128.0);
+      IfSrc()
+      {
+         auto x = Code::SAccumToHost(argv[1]);
+         auto y = Code::SAccumToHost(argv[2]);
+         auto z = Code::SAccumToHost(argv[3]);
+
+         src->setPos(x, y, z);
+      }
+
       return false;
    }
 
@@ -266,7 +277,15 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrcVelocity)
    {
-      IfSrc() src->setVel(argv[1] / 128.0, argv[2] / 128.0, argv[3] / 128.0);
+      IfSrc()
+      {
+         auto velx = Code::SAccumToHost(argv[1]);
+         auto vely = Code::SAccumToHost(argv[2]);
+         auto velz = Code::SAccumToHost(argv[3]);
+
+         src->setVel(velx, vely, velz);
+      }
+
       return false;
    }
 
@@ -302,7 +321,24 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundChanPosition)
    {
-      IfSrc() src->setPos(argv[1], argv[2] / 128.0, argv[3] / 128.0, argv[4] / 128.0);
+      IfSrc()
+      {
+         auto x = Code::SAccumToHost(argv[2]);
+         auto y = Code::SAccumToHost(argv[3]);
+         auto z = Code::SAccumToHost(argv[4]);
+
+         src->setPos(argv[1], x, y, z);
+      }
+
+      return false;
+   }
+
+   //
+   // void DGE_SoundChanVolume(src, chan, unsigned long _Fract volume)
+   //
+   DGE_Code_NativeDefn(DGE_SoundChanVolume)
+   {
+      IfSrc() src->setVolume(argv[1], Code::ULFractToHost(argv[2]));
       return false;
    }
 
@@ -313,23 +349,14 @@ namespace DGE::AL
    {
       IfSrc()
       {
-         task->dataStk.push(src->getPitch(argv[1]) * 128.0);
+         task->dataStk.push(Code::HostToSAccum(src->getPitch(argv[1])));
 
          if(argc > 2)
-            src->setPitch(argv[1], argv[2] / 128.0);
+            src->setPitch(argv[1], Code::SAccumToHost(argv[2]));
       }
       else
          task->dataStk.push(0);
 
-      return false;
-   }
-
-   //
-   // void DGE_SoundChanVolume(src, chan, unsigned long _Fract volume)
-   //
-   DGE_Code_NativeDefn(DGE_SoundChanVolume)
-   {
-      IfSrc() src->setVolume(argv[1], argv[2] / 4294967295.0);
       return false;
    }
 

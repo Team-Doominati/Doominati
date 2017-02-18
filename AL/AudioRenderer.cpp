@@ -15,6 +15,7 @@
 #include "AL/Sound.hpp"
 #include "AL/SoundSourceFixed.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
@@ -174,7 +175,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_DopplerSpeed)
    {
-      AudioRenderer::GetCurrent()->dopplerSpeed(argv[0] / 128.0);
+      AudioRenderer::GetCurrent()->dopplerSpeed(Code::SAccumToHost(argv[0]));
       return false;
    }
 
@@ -195,23 +196,23 @@ namespace DGE::AL
    {
       auto *audio = AudioRenderer::GetCurrent();
 
-      float x = argv[0] / 128.0;
-      float y = argv[1] / 128.0;
-      float z = argv[2] / 128.0;
+      auto x = Code::SAccumToHost(argv[0]);
+      auto y = Code::SAccumToHost(argv[1]);
+      auto z = Code::SAccumToHost(argv[2]);
 
       audio->listenerPos(x, y, z);
 
       if(argc > 3)
       {
-         float velx =            argv[3] / 128.0;
-         float vely = argc > 4 ? argv[4] / 128.0 : 0;
-         float velz = argc > 5 ? argv[5] / 128.0 : 0;
+         auto velx =            Code::SAccumToHost(argv[3]);
+         auto vely = argc > 4 ? Code::SAccumToHost(argv[4]) : 0;
+         auto velz = argc > 5 ? Code::SAccumToHost(argv[5]) : 0;
 
          audio->listenerVel(velx, vely, velz);
       }
 
       if(argc > 6)
-         audio->listenerAng(argv[6] / 128.0);
+         audio->listenerAng(Code::SAccumToHost(argv[6]));
 
       return false;
    }
