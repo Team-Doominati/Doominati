@@ -10,8 +10,9 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Renderer/PrivData.hpp"
+#include "GL/Renderer.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/Callback.hpp"
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
@@ -136,10 +137,14 @@ namespace DGE::GL
    //
    Renderer::Renderer(Window &win_) :
       textAlignH{AlignHorz::Left}, textAlignV{AlignVert::Top},
-      privdata{new PrivData()},
+
       win{win_},
-      shaderBase{BaseFragShader, BaseVertShader},
-      shaderCurrent{&shaderBase},
+
+      texBound{nullptr},
+
+      shdBase{new ShaderData{BaseFragShader, BaseVertShader}},
+      shdCur{shdBase.get()},
+
       fontBase{baseFont()},
       fontCurrent{fontBase.get()}
    {
@@ -216,14 +221,14 @@ namespace DGE::GL
       }
 
       // Generate the VBO.
-      auto &vbo = privdata->circleLineBuffers.emplace(
+      auto &vbo = circleLineBuffers.emplace(
          std::piecewise_construct,
          std::forward_as_tuple(subdivisions),
          std::forward_as_tuple(VertexXY::Layout, GL_LINE_LOOP)).first->second;
 
       vbo.setupData(bufarray.size(), bufarray.data(), GL_STATIC_DRAW);
 
-      privdata->circleLineBuff = &vbo;
+      circleLineBuff = &vbo;
    }
 
    //
@@ -253,14 +258,14 @@ namespace DGE::GL
          Circle_CalcFaces(subdivisions, Core::Pi2 * i, (Core::Pi2 * i) + Core::Pi2, buf);
 
       // Generate the VBO.
-      auto &vbo = privdata->circleBuffers.emplace(
+      auto &vbo = circleBuffers.emplace(
          std::piecewise_construct,
          std::forward_as_tuple(subdivisions),
          std::forward_as_tuple(VertexXYUV::Layout)).first->second;
 
       vbo.setupData(bufarray.size(), bufarray.data(), GL_STATIC_DRAW);
 
-      privdata->circleBuff = &vbo;
+      circleBuff = &vbo;
    }
 
    //
@@ -272,13 +277,13 @@ namespace DGE::GL
       else if(subdivisions < 0)               subdivisions = 0;
 
       // TODO: replace this with if-init when we switch to VS2017
-      auto tri = privdata->circleBuffers.find(subdivisions);
-      if(tri != privdata->circleBuffers.end()) privdata->circleBuff = &tri->second;
-      else                                     circleCreateTris(subdivisions);
+      auto tri = circleBuffers.find(subdivisions);
+      if(tri != circleBuffers.end()) circleBuff = &tri->second;
+      else                           circleCreateTris(subdivisions);
 
-      auto lin = privdata->circleLineBuffers.find(subdivisions);
-      if(lin != privdata->circleLineBuffers.end()) privdata->circleLineBuff = &lin->second;
-      else                                         circleCreateLines(subdivisions);
+      auto lin = circleLineBuffers.find(subdivisions);
+      if(lin != circleLineBuffers.end()) circleLineBuff = &lin->second;
+      else                               circleCreateLines(subdivisions);
    }
 
    //
@@ -387,7 +392,7 @@ namespace DGE::GL
    {
       win.renderBegin();
 
-      CallbackDrawPre(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
+      CallbackDrawPre(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
    }
 
    //
@@ -396,8 +401,9 @@ namespace DGE::GL
    void Renderer::render()
    {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      shdCur->update();
 
-      CallbackDraw(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
+      CallbackDraw(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
    }
 
    //
@@ -405,9 +411,17 @@ namespace DGE::GL
    //
    void Renderer::renderEnd()
    {
-      CallbackDrawPost(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
+      CallbackDrawPost(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
 
       win.renderEnd();
+   }
+
+   //
+   // Renderer::shaderBind
+   //
+   void Renderer::shaderBind(ShaderData *shd)
+   {
+      glUseProgram((shdCur = shd)->prog);
    }
 
    //

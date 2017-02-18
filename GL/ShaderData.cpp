@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Shader.hpp"
+#include "GL/ShaderData.hpp"
 #include "GL/OpenGL2.1.h"
 
 #include "Core/Time.hpp"
@@ -45,9 +45,9 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // Shader constructor
+   // ShaderData constructor
    //
-   Shader::Shader(char const *f, char const *v) : Shader{}
+   ShaderData::ShaderData(char const *f, char const *v) : ShaderData{}
    {
       compile(frag, f, GL_FRAGMENT_SHADER);
       compile(vert, v, GL_VERTEX_SHADER);
@@ -55,9 +55,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader constructor
+   // ShaderData constructor
    //
-   Shader::Shader(FS::File *f, FS::File *v) : Shader{}
+   ShaderData::ShaderData(FS::File *f, FS::File *v) : ShaderData{}
    {
       if(!f || !v) throw ShaderError{"invalid file"};
 
@@ -67,9 +67,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader destructor
+   // ShaderData destructor
    //
-   Shader::~Shader()
+   ShaderData::~ShaderData()
    {
       if(glIsProgram(prog)) glDeleteProgram(prog);
       if( glIsShader(frag))  glDeleteShader(frag);
@@ -77,9 +77,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader::compile
+   // ShaderData::compile
    //
-   void Shader::compile(GLuint &handle, char const *data, GLenum type,
+   void ShaderData::compile(GLuint &handle, char const *data, GLenum type,
       GLint size)
    {
       if(!glIsShader(handle))
@@ -98,9 +98,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader::link
+   // ShaderData::link
    //
-   void Shader::link()
+   void ShaderData::link()
    {
       if(!glIsShader(frag) || !glIsShader(vert))
          throw ShaderError{"fragment or vertex handle is invalid"};
@@ -125,9 +125,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader::postLink
+   // ShaderData::postLink
    //
-   void Shader::postLink()
+   void ShaderData::postLink()
    {
       // Temporarily change programs to get locations.
       GLint idprev; glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
@@ -145,9 +145,9 @@ namespace DGE::GL
    }
 
    //
-   // Shader::update
+   // ShaderData::update
    //
-   void Shader::update()
+   void ShaderData::update()
    {
       glUniform1i(u_ticks,   Core::GetTicks<Core::PlayTick<GLint>>());
       glUniform1f(u_seconds, Core::GetTicks<Core::Second<GLfloat>>());

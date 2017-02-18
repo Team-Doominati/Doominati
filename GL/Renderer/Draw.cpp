@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Renderer/PrivData.hpp"
+#include "GL/Renderer.hpp"
 
 #include "Code/Convert.hpp"
 #include "Code/Native.hpp"
@@ -35,8 +35,8 @@ namespace DGE::GL
          Eigen::Scaling(float(radius))
       ).data());
 
-      if(!line) privdata->circleBuff->bindAndDraw();
-      else      privdata->circleLineBuff->bindAndDraw();
+      if(!line) circleBuff->bindAndDraw();
+      else      circleLineBuff->bindAndDraw();
 
       glPopMatrix();
    }
@@ -60,8 +60,8 @@ namespace DGE::GL
          Eigen::Scaling(rx, ry, 1.0f)
       ).data());
 
-      if(!line) privdata->circleBuff->bindAndDraw();
-      else      privdata->circleLineBuff->bindAndDraw();
+      if(!line) circleBuff->bindAndDraw();
+      else      circleLineBuff->bindAndDraw();
 
       glPopMatrix();
    }

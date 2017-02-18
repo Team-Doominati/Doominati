@@ -26,12 +26,9 @@
 #include "Code/Thread.hpp"
 
 #include "Core/Time.hpp"
-#include "Core/Math.hpp"
 
 #include "FS/Dir.hpp"
 
-#include "GL/Particle.hpp"
-#include "GL/Shader.hpp"
 #include "GL/Window.hpp"
 #include "GL/Renderer.hpp"
 

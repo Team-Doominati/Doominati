@@ -24,8 +24,6 @@
 
 namespace DGE::GL
 {
-   class Shader;
-
    //
    // VertexLayout
    //

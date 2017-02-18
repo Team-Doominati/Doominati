@@ -13,11 +13,13 @@
 #ifndef DGE__GL__Renderer_H__
 #define DGE__GL__Renderer_H__
 
+#include "GL/DynamicBuffer.hpp"
 #include "GL/Font.hpp"
 #include "GL/Particle.hpp"
-#include "GL/Shader.hpp"
+#include "GL/ShaderData.hpp"
 #include "GL/Texture.hpp"
 
+#include "Core/ResourceManager.hpp"
 #include "Core/Types.hpp"
 
 
@@ -103,13 +105,13 @@ namespace DGE::GL
 
       // shader
       void shaderUnbind() {shaderBind(shdBase.get());}
-      void shaderBind(Shader *shd);
+      void shaderBind(ShaderData *shd);
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
       void textureBind(TextureData const *tex);
 
-      TextureData const *textureCurrent();
+      TextureData const *textureCurrent() {return texBound;}
 
       TextureData *textureGet(GDCC::Core::String name);
       TextureData *textureGet(char const *name);
@@ -127,7 +129,6 @@ namespace DGE::GL
       static void SetCurrent(Renderer *renderer);
 
    private:
-      class PrivData;
       using Texture = Core::Resource<TextureData>;
 
       static constexpr int MaxSubdivisions = 9;
@@ -144,14 +145,20 @@ namespace DGE::GL
 
       float cr, cg, cb, ca;
 
-      std::unique_ptr<PrivData> privdata;
       Window &win;
 
-      std::unique_ptr<Shader> shdBase;
-      Shader                 *shdCur;
+      Core::ResourceManager<TextureData> texMan;
+      TextureData                 const *texBound;
+
+      std::unique_ptr<ShaderData> shdBase;
+      ShaderData                 *shdCur;
 
       std::unique_ptr<FontFace> fontBase;
       FontFace                 *fontCurrent;
+
+      DynamicBuffer const *circleBuff, *circleLineBuff;
+
+      std::unordered_map<int, DynamicBuffer> circleBuffers, circleLineBuffers;
    };
 }
 

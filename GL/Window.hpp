@@ -24,9 +24,6 @@
 
 namespace DGE::GL
 {
-   class Shader;
-   class TextureData;
-
    //
    // Window
    //

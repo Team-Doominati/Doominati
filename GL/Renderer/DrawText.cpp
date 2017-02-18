@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Renderer/PrivData.hpp"
+#include "GL/Renderer.hpp"
 
 #include "Code/Convert.hpp"
 #include "Code/MemStr.hpp"

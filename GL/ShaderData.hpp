@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__GL__Shader_H__
-#define DGE__GL__Shader_H__
+#ifndef DGE__GL__ShaderData_H__
+#define DGE__GL__ShaderData_H__
 
 #include "GL/OpenGL2.1.h"
 
@@ -39,22 +39,22 @@ namespace DGE::GL
    };
 
    //
-   // Shader
+   // ShaderData
    //
-   class Shader
+   class ShaderData
    {
    public:
-      Shader() :
+      ShaderData() :
          prog{}, frag{}, vert{}, u_ticks{}, u_seconds{} {}
 
-      Shader(Shader const &) = delete;
-      Shader(char const *f, char const *v);
-      Shader(FS::File *f, FS::File *v);
+      ShaderData(ShaderData const &) = delete;
+      ShaderData(char const *f, char const *v);
+      ShaderData(FS::File *f, FS::File *v);
 
-      Shader(Shader &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
+      ShaderData(ShaderData &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
          {s.frag = s.vert = s.prog = 0; postLink();}
 
-      ~Shader();
+      ~ShaderData();
 
       void update();
 
@@ -75,4 +75,4 @@ namespace DGE::GL
    };
 }
 
-#endif//DGE__GL__Shader_H__
+#endif//DGE__GL__ShaderData_H__
