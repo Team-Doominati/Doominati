@@ -213,6 +213,7 @@ static int Main()
 
       // Rendering actions.
       renderer.renderBegin();
+      renderer.render();
       if(FpsCounterOn) DrawFPS();
       renderer.renderEnd();
    }

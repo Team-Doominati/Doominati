@@ -69,8 +69,9 @@ namespace DGE::GL
       }
    )";
 
-   static Code::Callback CallbackDrawBegin{"DrawBegin"};
-   static Code::Callback CallbackDrawEnd{"DrawEnd"};
+   static Code::Callback CallbackDrawPre{"DrawPre"};
+   static Code::Callback CallbackDraw{"Draw"};
+   static Code::Callback CallbackDrawPost{"DrawPost"};
 
    static Renderer *CurrentRenderer;
 }
@@ -386,9 +387,17 @@ namespace DGE::GL
    {
       win.renderBegin();
 
+      CallbackDrawPre(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
+   }
+
+   //
+   // Renderer::render
+   //
+   void Renderer::render()
+   {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      CallbackDrawBegin(Core::GetTickFract<Core::PlayTick<float>>() * 65535);
+      CallbackDraw(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
    }
 
    //
@@ -396,8 +405,9 @@ namespace DGE::GL
    //
    void Renderer::renderEnd()
    {
+      CallbackDrawPost(Core::GetTickFract<Core::PlayTick<float>>() * 4294967295.0);
+
       win.renderEnd();
-      CallbackDrawEnd(Core::GetTickFract<Core::PlayTick<float>>() * 65535);
    }
 
    //

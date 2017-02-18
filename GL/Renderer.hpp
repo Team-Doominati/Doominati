@@ -98,6 +98,7 @@ namespace DGE::GL
 
       // render
       void renderBegin();
+      void render();
       void renderEnd();
 
       // shader
