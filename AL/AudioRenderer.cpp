@@ -207,7 +207,7 @@ namespace DGE::AL
          float vely = argc > 4 ? argv[4] / 128.0 : 0;
          float velz = argc > 5 ? argv[5] / 128.0 : 0;
 
-         audio->listenerVel(x, y, z);
+         audio->listenerVel(velx, vely, velz);
       }
 
       if(argc > 6)
