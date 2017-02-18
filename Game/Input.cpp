@@ -12,6 +12,7 @@
 
 #include "Game/Input.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
@@ -195,7 +196,7 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // _Fract DGE_GetInputAxis(unsigned num, unsigned axis)
+   // long _Fract DGE_GetInputAxis(unsigned num, unsigned axis)
    //
    DGE_Code_NativeDefn(DGE_GetInputAxis)
    {
@@ -212,7 +213,7 @@ namespace DGE::Game
       case 3: ret = y ? frame.ax3y : frame.ax3x; break;
       }
 
-      task->dataStk.push(ret);
+      task->dataStk.push(Code::SFractToSLFract(ret));
       return false;
    }
 
