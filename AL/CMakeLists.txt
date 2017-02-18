@@ -28,6 +28,8 @@ add_library(dge-al-lib STATIC
    Sound/WAVE.cpp
    SoundSource.cpp
    SoundSource.hpp
+   SoundSourceDynamic.hpp
+   SoundSourceFixed.hpp
 )
 
 target_link_libraries(dge-al-lib

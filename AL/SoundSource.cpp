@@ -26,21 +26,13 @@
 namespace DGE::AL
 {
    //
-   // SoundSource constructor
-   //
-   SoundSource::SoundSource(unsigned id_) :
-      id{id_},
-      link{this}
-   {
-      alGenSources(MaxSourceChannels, sources.data());
-   }
-
-   //
    // SoundSource destructor
    //
    SoundSource::~SoundSource()
    {
-      alDeleteSources(MaxSourceChannels, sources.data());
+      for(std::size_t i = 0; i < channelC; i++)
+         if(channelV[i].alloc)
+            alDeleteSources(1, &channelV[i].src);
    }
 
    //
@@ -48,17 +40,21 @@ namespace DGE::AL
    //
    unsigned SoundSource::getFreeChannel()
    {
-      for(unsigned i = 0; i < MaxSourceChannels; i++)
+      for(std::size_t i = 0; i < channelC; i++)
       {
+         auto &channel = getChannelIdx(i);
+
+         if(channel.bound) continue;
+
          ALenum state;
 
-         alGetSourcei(sources[i], AL_SOURCE_STATE, &state);
+         alGetSourcei(channel.src, AL_SOURCE_STATE, &state);
 
          if(state != AL_PLAYING)
             return i + 1;
       }
 
-      return 0;
+      return requestChannels() && getFreeChannel();
    }
 
    //
@@ -66,7 +62,27 @@ namespace DGE::AL
    //
    void SoundSource::bind(unsigned channel, SoundData *snd)
    {
-      alSourcei(getSource(channel), AL_BUFFER, snd->buf);
+      auto &chan = getChannel(channel);
+      chan.bound = true;
+      alSourcei(chan.src, AL_BUFFER, snd->buf);
+   }
+
+   //
+   // SoundSource::play
+   //
+   void SoundSource::play(unsigned channel)
+   {
+      auto &chan = getChannel(channel);
+      chan.bound = false;
+      alSourcePlay(chan.src);
+   }
+
+   //
+   // SoundSource::stop
+   //
+   void SoundSource::stop(unsigned channel)
+   {
+      alSourceStop(getChannel(channel).src);
    }
 
    //
@@ -75,24 +91,8 @@ namespace DGE::AL
    float SoundSource::getPitch(unsigned channel)
    {
       ALfloat ret;
-      alGetSourcef(getSource(channel), AL_PITCH, &ret);
+      alGetSourcef(getChannel(channel).src, AL_PITCH, &ret);
       return ret;
-   }
-
-   //
-   // SoundSource::play
-   //
-   void SoundSource::play(unsigned channel)
-   {
-      alSourcePlay(getSource(channel));
-   }
-
-   //
-   // SoundSource::stop
-   //
-   void SoundSource::stop(unsigned channel)
-   {
-      alSourceStop(getSource(channel));
    }
 
    //
@@ -100,7 +100,7 @@ namespace DGE::AL
    //
    void SoundSource::setLoop(unsigned channel, bool loop)
    {
-      alSourcei(getSource(channel), AL_LOOPING, loop);
+      alSourcei(getChannel(channel).src, AL_LOOPING, loop);
    }
 
    //
@@ -108,7 +108,23 @@ namespace DGE::AL
    //
    void SoundSource::setPitch(unsigned channel, float pitch)
    {
-      alSourcef(getSource(channel), AL_PITCH, pitch);
+      alSourcef(getChannel(channel).src, AL_PITCH, pitch);
+   }
+
+   //
+   // SoundSource::setVolume
+   //
+   void SoundSource::setVolume(unsigned channel, float volume)
+   {
+      alSourcef(getChannel(channel).src, AL_GAIN, volume);
+   }
+
+   //
+   // SoundSource::setPos
+   //
+   void SoundSource::setPos(unsigned channel, float x, float y, float z)
+   {
+      alSource3f(getChannel(channel).src, AL_POSITION, x, y, z);
    }
 
    //
@@ -116,8 +132,8 @@ namespace DGE::AL
    //
    void SoundSource::setPos(float x, float y, float z)
    {
-      for(unsigned i = 0; i < MaxSourceChannels; i++)
-         alSource3f(sources[i], AL_POSITION, x, y, z);
+      for(std::size_t i = 0; i < channelC; i++)
+         alSource3f(getChannelIdx(i).src, AL_POSITION, x, y, z);
    }
 
    //
@@ -125,19 +141,35 @@ namespace DGE::AL
    //
    void SoundSource::setVel(float x, float y, float z)
    {
-      for(unsigned i = 0; i < MaxSourceChannels; i++)
-         alSource3f(sources[i], AL_VELOCITY, x, y, z);
+      for(std::size_t i = 0; i < channelC; i++)
+         alSource3f(getChannelIdx(i).src, AL_VELOCITY, x, y, z);
    }
 
    //
-   // SoundSource::getSource
+   // SoundSource::getChannel
    //
-   ALuint SoundSource::getSource(unsigned channel)
+   SoundChannel &SoundSource::getChannel(unsigned channel)
    {
-      if(channel && channel <= MaxSourceChannels)
-         return sources[channel - 1];
-      else
-         return sources[0];
+      if(!channelV)
+         requestChannels();
+
+      return getChannelIdx(channel && channel <= channelC ? channel - 1 : 0);
+   }
+
+   //
+   // SoundSource::getChannelIdx
+   //
+   SoundChannel &SoundSource::getChannelIdx(std::size_t idx)
+   {
+      auto &channel = channelV[idx];
+
+      if(!channel.alloc)
+      {
+         alGenSources(1, &channel.src);
+         channel.alloc = true;
+      }
+
+      return channel;
    }
 }
 
@@ -150,8 +182,6 @@ namespace DGE::AL
 {
    // AUDIO_TODO: accum[gain] DGE_SoundChanGain(src, chan, minmax[, gain])
    //             for attenuation
-   // AUDIO_TODO: accum[volume] DGE_SoundChanVolume(src, chan[, volume])
-   //             NB: gain == volume in openal
 
    //
    // SrcBind
@@ -227,7 +257,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrcPosition)
    {
-      IfSrc() src->setPos(argv[1] / 127.0, argv[2] / 127.0, argv[3] / 127.0);
+      IfSrc() src->setPos(argv[1] / 128.0, argv[2] / 128.0, argv[3] / 128.0);
       return false;
    }
 
@@ -236,7 +266,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrcVelocity)
    {
-      IfSrc() src->setVel(argv[1] / 127.0, argv[2] / 127.0, argv[3] / 127.0);
+      IfSrc() src->setVel(argv[1] / 128.0, argv[2] / 128.0, argv[3] / 128.0);
       return false;
    }
 
@@ -268,20 +298,38 @@ namespace DGE::AL
    }
 
    //
+   // void DGE_SoundChanPosition(src, chan, short _Accum x, y, z)
+   //
+   DGE_Code_NativeDefn(DGE_SoundChanPosition)
+   {
+      IfSrc() src->setPos(argv[1], argv[2] / 128.0, argv[3] / 128.0, argv[4] / 128.0);
+      return false;
+   }
+
+   //
    // short _Accum DGE_SoundChanPitch(src, chan[, short _Accum pitch])
    //
    DGE_Code_NativeDefn(DGE_SoundChanPitch)
    {
       IfSrc()
       {
-         task->dataStk.push(src->getPitch(argv[1]) * 127.0);
+         task->dataStk.push(src->getPitch(argv[1]) * 128.0);
 
          if(argc > 2)
-            src->setPitch(argv[1], argv[2] / 127.0);
+            src->setPitch(argv[1], argv[2] / 128.0);
       }
       else
          task->dataStk.push(0);
 
+      return false;
+   }
+
+   //
+   // void DGE_SoundChanVolume(src, chan, unsigned long _Fract volume)
+   //
+   DGE_Code_NativeDefn(DGE_SoundChanVolume)
+   {
+      IfSrc() src->setVolume(argv[1], argv[2] / 4294967295.0);
       return false;
    }
 

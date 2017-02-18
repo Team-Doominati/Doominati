@@ -15,12 +15,15 @@
 
 #include "AL/Sound.hpp"
 #include "AL/SoundSource.hpp"
+#include "AL/SoundSourceDynamic.hpp"
 #include "AL/OpenAL.hpp"
 
 #include "Core/ResourceManager.hpp"
 
 #include <stdexcept>
 #include <forward_list>
+
+#define DGE_AL_GlobalSound 1
 
 
 //----------------------------------------------------------------------------|
@@ -59,7 +62,9 @@ namespace DGE::AL
 
       SoundSource *soundSrcCreate(float x, float y, float z);
       void soundSrcDestroy(unsigned id);
-      SoundSource *soundSrcGet(unsigned id) {return sndSrcMap.find(id);}
+      SoundSource *soundSrcGet(unsigned id);
+
+      void dopplerSpeed(float speed);
 
 
       static AudioRenderer *GetCurrent();
@@ -70,18 +75,15 @@ namespace DGE::AL
 
       using SoundSourceMap = Core::HashMapKeyMem<unsigned, SoundSource,
          &SoundSource::id, &SoundSource::link>;
-      using SoundSourceLst = std::forward_list<SoundSource>;
 
       Sound *soundGetRaw(GDCC::Core::String name);
 
       Sound *soundGet_File(GDCC::Core::String name);
       Sound *soundGet_None(GDCC::Core::String name);
 
-      // AUDIO_TODO: global SoundSource that has like 128 channels for
-      //             nonlocal sound
-      SoundSourceMap sndSrcMap;
-      SoundSourceLst sndSrcLst;
-      unsigned       sndSrcId;
+      SoundSourceDynamic sndSrcGbl;
+      SoundSourceMap     sndSrcMap;
+      unsigned           sndSrcId;
 
       Core::ResourceManager<SoundData> sndMan;
 

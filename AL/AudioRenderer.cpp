@@ -13,6 +13,7 @@
 #include "AL/AudioRenderer.hpp"
 
 #include "AL/Sound.hpp"
+#include "AL/SoundSourceFixed.hpp"
 
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
@@ -40,9 +41,9 @@ namespace DGE::AL
    // AudioRenderer::AudioRenderer
    //
    AudioRenderer::AudioRenderer() :
+      sndSrcGbl{DGE_AL_GlobalSound},
       sndSrcMap{},
-      sndSrcLst{},
-      sndSrcId{1},
+      sndSrcId{DGE_AL_GlobalSound + 1},
 
       sndMan{},
 
@@ -105,11 +106,10 @@ namespace DGE::AL
    //
    SoundSource *AudioRenderer::soundSrcCreate(float x, float y, float z)
    {
-      auto &src = (sndSrcLst.emplace_front(sndSrcId++), sndSrcLst.front());
-      src.setPos(x, y, z);
-
-      sndSrcMap.insert(&src);
-      return &src;
+      auto src = new SoundSourceFixed<8>(sndSrcId++);
+      src->setPos(x, y, z);
+      sndSrcMap.insert(src);
+      return src;
    }
 
    //
@@ -120,8 +120,25 @@ namespace DGE::AL
       if(auto *src = sndSrcMap.find(id))
       {
          sndSrcMap.unlink(src);
-         sndSrcLst.remove_if([id](SoundSource const &a){return a.id == id;});
+         delete src;
       }
+   }
+
+   //
+   // AudioRenderer::soundSrcGet
+   //
+   SoundSource *AudioRenderer::soundSrcGet(unsigned id)
+   {
+      if(id == DGE_AL_GlobalSound) return &sndSrcGbl;
+      else                         return sndSrcMap.find(id);
+   }
+
+   //
+   // AudioRenderer::dopplerSpeed
+   //
+   void AudioRenderer::dopplerSpeed(float speed)
+   {
+      alSpeedOfSound(speed);
    }
 
    //
@@ -153,6 +170,15 @@ namespace DGE::AL
    // AUDIO_TODO: think of something for reverb and sound modulation
 
    //
+   // void DGE_DopplerSpeed(short _Accum meterspersecond)
+   //
+   DGE_Code_NativeDefn(DGE_DopplerSpeed)
+   {
+      AudioRenderer::GetCurrent()->dopplerSpeed(argv[0] / 128.0);
+      return false;
+   }
+
+   //
    // unsigned DGE_GetSound(__str_ent *name)
    //
    DGE_Code_NativeDefn(DGE_GetSound)
@@ -169,23 +195,23 @@ namespace DGE::AL
    {
       auto *audio = AudioRenderer::GetCurrent();
 
-      float x = argv[0] / 127.0;
-      float y = argv[1] / 127.0;
-      float z = argv[2] / 127.0;
+      float x = argv[0] / 128.0;
+      float y = argv[1] / 128.0;
+      float z = argv[2] / 128.0;
 
       audio->listenerPos(x, y, z);
 
       if(argc > 3)
       {
-         float velx =            argv[3] / 127.0;
-         float vely = argc > 4 ? argv[4] / 127.0 : 0;
-         float velz = argc > 5 ? argv[5] / 127.0 : 0;
+         float velx =            argv[3] / 128.0;
+         float vely = argc > 4 ? argv[4] / 128.0 : 0;
+         float velz = argc > 5 ? argv[5] / 128.0 : 0;
 
          audio->listenerVel(x, y, z);
       }
 
       if(argc > 6)
-         audio->listenerAng(argv[6] / 127.0);
+         audio->listenerAng(argv[6] / 128.0);
 
       return false;
    }

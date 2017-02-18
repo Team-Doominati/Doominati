@@ -17,18 +17,7 @@
 
 #include "Core/List.hpp"
 
-#include <array>
 #include <utility>
-
-
-//----------------------------------------------------------------------------|
-// Static Objects                                                             |
-//
-
-namespace DGE::AL
-{
-   static constexpr unsigned MaxSourceChannels = 8;
-}
 
 
 //----------------------------------------------------------------------------|
@@ -40,36 +29,50 @@ namespace DGE::AL
    class SoundData;
 
    //
+   // SoundChannel
+   //
+   struct SoundChannel
+   {
+      ALuint src;
+      bool   bound;
+      bool   alloc;
+   };
+
+   //
    // SoundSource
    //
    class SoundSource
    {
    public:
-      SoundSource(unsigned id_);
-      SoundSource(SoundSource const &) = delete;
-      SoundSource(SoundSource &&src) :
-         id{src.id}, link{this, std::move(src.link)},
-         sources{std::move(src.sources)}
-         {src.id = 0;}
       ~SoundSource();
 
       unsigned getFreeChannel();
-      void  bind    (unsigned channel, SoundData *snd);
-      float getPitch(unsigned channel);
-      void  play    (unsigned channel);
-      void  stop    (unsigned channel);
-      void  setLoop (unsigned channel, bool loop);
-      void  setPitch(unsigned channel, float pitch);
-      void  setPos  (float x, float y, float z);
-      void  setVel  (float x, float y, float z);
+      void  bind     (unsigned channel, SoundData *snd);
+      void  play     (unsigned channel);
+      void  stop     (unsigned channel);
+      float getPitch (unsigned channel);
+      void  setLoop  (unsigned channel, bool loop);
+      void  setPitch (unsigned channel, float pitch);
+      void  setVolume(unsigned channel, float volume);
+      void  setPos   (unsigned channel, float x, float y, float z);
+      void  setPos   (float x, float y, float z);
+      void  setVel   (float x, float y, float z);
 
       unsigned id;
       Core::ListLink<SoundSource> link;
 
-   private:
-      ALuint getSource(unsigned channel);
+   protected:
+      SoundSource(unsigned id_) :
+         id{id_}, link{this}, channelV{nullptr}, channelC{0} {}
 
-      std::array<ALuint, MaxSourceChannels> sources;
+      virtual bool requestChannels() = 0;
+
+      SoundChannel *channelV;
+      std::size_t   channelC;
+
+   private:
+      SoundChannel &getChannel(unsigned channel);
+      SoundChannel &getChannelIdx(std::size_t idx);
    };
 }
 
