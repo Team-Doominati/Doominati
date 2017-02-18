@@ -46,7 +46,7 @@ namespace DGE::GL
    //
    // Renderer::textureGet
    //
-   TextureData *Renderer::textureGet(char const *name)
+   TextureData *Renderer::textureGet(GDCC::Core::String name)
    {
       return &textureGetRaw(name)->data;
    }
@@ -54,7 +54,7 @@ namespace DGE::GL
    //
    // Renderer::textureGet
    //
-   TextureData *Renderer::textureGet(GDCC::Core::String name)
+   TextureData *Renderer::textureGet(char const *name)
    {
       return &textureGetRaw(name)->data;
    }
@@ -86,7 +86,7 @@ namespace DGE::GL
       if(name[0] == '@')
          return textureGet_File(name);
 
-      std::cerr << "unknown texture: " << name << '\n';
+      std::cerr << "unknown texture: " << name << std::endl;
       return textureGet_NoFi(name);
    }
 
@@ -95,12 +95,12 @@ namespace DGE::GL
    //
    Renderer::Texture *Renderer::textureGet_File(GDCC::Core::String name)
    {
-      char const *filename = name.data() + 1;
-      FS::File *file = FS::Dir::FindFile(filename);
+      auto filename = name.data() + 1;
+      auto file = FS::Dir::FindFile(filename);
 
       if(!file)
       {
-         std::cerr << "texture file not found: " << filename << '\n';
+         std::cerr << "texture file not found: " << filename << std::endl;
          return textureGet_NoFi(name);
       }
 
@@ -117,7 +117,7 @@ namespace DGE::GL
       catch(TextureLoaderError const &err)
       {
          std::cerr << "TextureLoaderError: " << filename
-            << ": " << err.what() << '\n';
+            << ": " << err.what() << std::endl;
          return textureGet_None(name);
       }
    }

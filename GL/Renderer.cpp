@@ -184,7 +184,7 @@ namespace DGE::GL
    //
    FontFace *Renderer::baseFont() const
    {
-      // TODO: don't hardcode this
+      // FONT_TODO: don't hardcode this
       try
          {return new FontFace(FS::Dir::FindFile("Fonts/base.ttf"), 72);}
       catch(FontLoadError const &exc)

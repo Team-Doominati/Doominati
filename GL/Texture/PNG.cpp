@@ -136,7 +136,7 @@ namespace DGE::GL
    private:
       GDCC::Core::Array<PNGChunk> chunkArray;
 
-      std::size_t  dataLength;
+      std::size_t dataLength;
 
       FS::File *file;
 
