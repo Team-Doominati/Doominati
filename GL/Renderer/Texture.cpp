@@ -12,6 +12,11 @@
 
 #include "GL/Renderer.hpp"
 
+#include "Code/MemStr.hpp"
+#include "Code/Program.hpp"
+#include "Code/Native.hpp"
+#include "Code/Task.hpp"
+
 #include "FS/Dir.hpp"
 
 #include <iostream>
@@ -33,38 +38,6 @@ namespace DGE::GL
 
       else if(!texBound || texBound->tex != tex->tex)
          glBindTexture(GL_TEXTURE_2D, (texBound = tex)->tex);
-   }
-
-   //
-   // Renderer::textureGet
-   //
-   TextureData *Renderer::textureGet(GDCC::Core::String name)
-   {
-      return &textureGetRaw(name)->data;
-   }
-
-   //
-   // Renderer::textureGet
-   //
-   TextureData *Renderer::textureGet(char const *name)
-   {
-      return &textureGetRaw(name)->data;
-   }
-
-   //
-   // Renderer::textureGet
-   //
-   TextureData *Renderer::textureGet(std::size_t idx)
-   {
-      return &texMan.get(idx)->data;
-   }
-
-   //
-   // Renderer::textureGetIdx
-   //
-   std::size_t Renderer::textureGetIdx(GDCC::Core::String name)
-   {
-      return textureGetRaw(name)->idx;
    }
 
    //
@@ -149,8 +122,40 @@ namespace DGE::GL
    void Renderer::textureUnbind()
    {
       TextureData const *tex = &texMan.resNone->data;
+
       if(!texBound || texBound->tex != tex->tex)
          glBindTexture(GL_TEXTURE_2D, (texBound = tex)->tex);
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::GL
+{
+   //
+   // unsigned DGE_GetTexture(__str_ent *name)
+   //
+   DGE_Code_NativeDefn(DGE_GetTexture)
+   {
+      GDCC::Core::String str{argv[0]};
+      task->dataStk.push(Renderer::GetCurrent()->textureGetIdx(str));
+      return false;
+   }
+
+   //
+   // void DGE_DrawTexture(unsigned tex)
+   //
+   DGE_Code_NativeDefn(DGE_DrawTexture)
+   {
+      if(argv[0])
+         Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));
+      else
+         Renderer::GetCurrent()->textureUnbind();
+
+      return false;
    }
 }
 

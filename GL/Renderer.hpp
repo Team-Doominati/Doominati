@@ -113,11 +113,11 @@ namespace DGE::GL
 
       TextureData const *textureCurrent() {return texBound;}
 
-      TextureData *textureGet(GDCC::Core::String name);
-      TextureData *textureGet(char const *name);
-      TextureData *textureGet(std::size_t idx);
+      TextureData *textureGet(GDCC::Core::String name) {return &textureGetRaw(name)->data;}
+      TextureData *textureGet(char const *name)        {return &textureGetRaw(name)->data;}
+      TextureData *textureGet(std::size_t idx)         {return &texMan.get(idx)->data;}
 
-      std::size_t textureGetIdx(GDCC::Core::String name);
+      std::size_t textureGetIdx(GDCC::Core::String name) {return textureGetRaw(name)->idx;}
 
       void textureUnbind();
 

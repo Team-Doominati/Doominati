@@ -16,6 +16,8 @@
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
+#include "Core/Time.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -39,6 +41,56 @@ namespace DGE::GL
       else      circleLineBuff->bindAndDraw();
 
       glPopMatrix();
+   }
+
+   //
+   // Renderer::drawDigit
+   //
+   void Renderer::drawDigit(unsigned int dig, float xl, float yl, float xh, float yh) const
+   {
+      static struct
+      {
+         bool           seg0 : 1,
+              seg1 : 1,           seg2 : 1,
+                        seg3 : 1,
+              seg4 : 1,           seg5 : 1,
+                        seg6 : 1;
+      }
+      const digtab[10]{
+         {1,1,1,0,1,1,1},
+         {0,0,1,0,0,1,0},
+         {1,0,1,1,1,0,1},
+         {1,0,1,1,0,1,1},
+         {0,1,1,1,0,1,0},
+         {1,1,0,1,0,1,1},
+         {1,1,0,1,1,1,1},
+         {1,0,1,0,0,1,0},
+         {1,1,1,1,1,1,1},
+         {1,1,1,1,0,1,1},
+      };
+
+      auto &digit = digtab[dig];
+      float ym = (yl + yh) / 2;
+
+      GLfloat   prevwidth;
+      GLboolean prevsmooth;
+
+      glGetFloatv  (GL_LINE_WIDTH,  &prevwidth);
+      glGetBooleanv(GL_LINE_SMOOTH, &prevsmooth);
+
+      glEnable(GL_LINE_SMOOTH);
+      glLineWidth(2);
+
+      if(digit.seg0) drawLine(xl, yh, xh, yh);
+      if(digit.seg1) drawLine(xl, ym, xl, yh);
+      if(digit.seg2) drawLine(xh, ym, xh, yh);
+      if(digit.seg3) drawLine(xl, ym, xh, ym);
+      if(digit.seg4) drawLine(xl, yl, xl, ym);
+      if(digit.seg5) drawLine(xh, yl, xh, ym);
+      if(digit.seg6) drawLine(xl, yl, xh, yl);
+
+                      glLineWidth(prevwidth);
+      if(!prevsmooth) glDisable(GL_LINE_SMOOTH);
    }
 
    //
@@ -77,6 +129,38 @@ namespace DGE::GL
       glVertex2f(x2, y2);
 
       glEnd();
+   }
+
+   //
+   // Renderer::drawParticleSystem
+   //
+   void Renderer::drawParticleSystem(ParticleSystem const &ps)
+   {
+      glPushMatrix();
+
+      glMultMatrixf(ps.mat.data());
+
+      float frac = Core::GetTickFract<Core::PlayTick<float>>();
+
+      auto origtex = textureCurrent();
+
+      textureBind(ps.texname.get());
+
+      for(auto &p : ps.particles)
+      {
+         float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
+         float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
+
+         float sx = 8 * p.scale.x;
+         float sy = 8 * p.scale.y;
+
+         drawColorSet(p.color);
+         drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
+      }
+
+      textureBind(origtex);
+
+      glPopMatrix();
    }
 
    //
@@ -342,29 +426,6 @@ namespace DGE::GL
       auto y3 = Code::SAccumToHost(argv[5]);
 
       Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3, true);
-
-      return false;
-   }
-
-   //
-   // unsigned DGE_GetTexture(__str_ent *name)
-   //
-   DGE_Code_NativeDefn(DGE_GetTexture)
-   {
-      GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Renderer::GetCurrent()->textureGetIdx(str));
-      return false;
-   }
-
-   //
-   // void DGE_DrawTexture(unsigned tex)
-   //
-   DGE_Code_NativeDefn(DGE_DrawTexture)
-   {
-      if(argv[0])
-         Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));
-      else
-         Renderer::GetCurrent()->textureUnbind();
 
       return false;
    }
