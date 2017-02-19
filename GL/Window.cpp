@@ -51,6 +51,10 @@ namespace DGE::GL
       int x = SDL_WINDOWPOS_UNDEFINED;
       int y = SDL_WINDOWPOS_UNDEFINED;
 
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+      SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+
       // Set up window.
       if(!(window = SDL_CreateWindow("Doominati Confirmed", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
       {

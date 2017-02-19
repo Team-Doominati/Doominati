@@ -50,7 +50,7 @@ namespace DGE::GL
    //
    void Renderer::drawText(float x, float y, char const *str, float maxwidth)
    {
-      if(!fontCurrent || !str || !*str) return;
+      if(!fontBound || !str || !*str) return;
 
       char const *end = str + std::strlen(str);
 
@@ -62,7 +62,7 @@ namespace DGE::GL
          char const *beg = itr, *lend;
          float width = 0;
 
-         fontCurrent->kernReset();
+         fontBound->kernReset();
 
          for(;;)
          {
@@ -71,8 +71,8 @@ namespace DGE::GL
 
             if(ch == '\n') {lend = itr; itr = nex; break;}
 
-            auto &gly = fontCurrent->getChar(ch);
-            auto glyphw = gly.ax + fontCurrent->getKernAmount();
+            auto &gly = fontBound->getChar(ch);
+            auto glyphw = gly.ax + fontBound->getKernAmount();
 
             if(maxwidth && width +  glyphw > maxwidth) {lend = itr; break;}
             else           width += glyphw;
@@ -85,8 +85,8 @@ namespace DGE::GL
          lines.emplace_back(width, beg, lend);
       }
 
-      float height = fontCurrent->getHeight() * lines.size();
-      float py     = fontCurrent->getHeight();
+      float height = fontBound->getHeight() * lines.size();
+      float py     = fontBound->getHeight();
       float px;
       float origx;
 
@@ -102,7 +102,7 @@ namespace DGE::GL
 
       for(auto &line : lines)
       {
-         fontCurrent->kernReset();
+         fontBound->kernReset();
 
          switch(textAlignH)
          {
@@ -121,9 +121,9 @@ namespace DGE::GL
             if(ch == '\r')
                {px = origx; continue;}
 
-            auto &gly = fontCurrent->getChar(ch);
+            auto &gly = fontBound->getChar(ch);
 
-            auto kern = fontCurrent->getKernAmount();
+            auto kern = fontBound->getKernAmount();
             auto dx = px + gly.ox + kern;
             auto dy = py + gly.oy;
 
@@ -133,7 +133,7 @@ namespace DGE::GL
             px += gly.ax + kern;
          }
 
-         py += fontCurrent->getHeight();
+         py += fontBound->getHeight();
       }
 
       textureBind(origtex);

@@ -45,14 +45,15 @@ namespace DGE::GL
    {
    public:
       ShaderData() :
-         prog{}, frag{}, vert{}, u_ticks{}, u_seconds{} {}
+         prog{}, frag{}, vert{}, u_ticks{-1}, u_seconds{-1} {}
 
       ShaderData(ShaderData const &) = delete;
       ShaderData(char const *f, char const *v);
       ShaderData(FS::File *f, FS::File *v);
 
-      ShaderData(ShaderData &&s) : frag{s.frag}, vert{s.vert}, prog{s.prog}
-         {s.frag = s.vert = s.prog = 0; postLink();}
+      ShaderData(ShaderData &&s) :
+         prog{s.prog}, frag{s.frag}, vert{s.vert}, u_ticks{-1}, u_seconds{-1}
+         {s.prog = s.frag = s.vert = 0; postLink();}
 
       ~ShaderData();
 

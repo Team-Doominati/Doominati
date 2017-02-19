@@ -102,12 +102,6 @@ namespace DGE::GL
    //
    void ShaderData::link()
    {
-      if(!glIsShader(frag) || !glIsShader(vert))
-         throw ShaderError{"fragment or vertex handle is invalid"};
-
-      if(glIsProgram(prog))
-         throw ShaderError{"program already created"};
-
       // Create the program and attach shaders.
       prog = glCreateProgram();
 
@@ -130,18 +124,18 @@ namespace DGE::GL
    void ShaderData::postLink()
    {
       // Temporarily change programs to get locations.
-      GLint idprev; glGetIntegerv(GL_CURRENT_PROGRAM, &idprev);
+      GLint prev; glGetIntegerv(GL_CURRENT_PROGRAM, &prev);
 
       glUseProgram(prog);
 
-      glUniform1i(glGetUniformLocation(prog, "dge_texture"), 0);
+      glUniform1i(glGetUniformLocation(prog, "DGE_Texture"), 0);
 
       // Get device data locations.
-      u_ticks   = glGetUniformLocation(prog, "dge_ticks");
-      u_seconds = glGetUniformLocation(prog, "dge_seconds");
+      u_ticks   = glGetUniformLocation(prog, "DGE_Ticks");
+      u_seconds = glGetUniformLocation(prog, "DGE_Seconds");
 
       // Go back to previous program.
-      glUseProgram(idprev);
+      glUseProgram(prev);
    }
 
    //

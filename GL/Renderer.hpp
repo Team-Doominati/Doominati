@@ -91,8 +91,8 @@ namespace DGE::GL
       Color drawColorGet() const;
 
       // font
-      void fontBind(FontFace &font) {fontCurrent = &font;}
-      void fontUnbind()             {fontCurrent = fontBase.get();}
+      void fontBind(FontFace &font) {fontBound = &font;}
+      void fontUnbind()             {fontBound = fontBase.get();}
 
       // line
       void lineSmooth(bool on)  const;
@@ -104,8 +104,20 @@ namespace DGE::GL
       void renderEnd();
 
       // shader
-      void shaderUnbind() {shaderBind(shdBase.get());}
+      std::size_t shaderAdd(GDCC::Core::String name, char const *f, char const *v);
+      std::size_t shaderAdd(GDCC::Core::String name, FS::File *f, FS::File *v);
+
       void shaderBind(ShaderData *shd);
+
+      ShaderData const *shaderCurrent() {return shdBound;}
+
+      ShaderData *shaderGet(GDCC::Core::String name) {return &shaderGetRaw(name)->data;}
+      ShaderData *shaderGet(char const *name)        {return &shaderGetRaw(name)->data;}
+      ShaderData *shaderGet(std::size_t idx)         {return &shdMan.get(idx)->data;}
+
+      std::size_t shaderGetIdx(GDCC::Core::String name) {return shaderGetRaw(name)->idx;}
+
+      void shaderUnbind() {shaderBind(&shdMan.resNone->data);}
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
@@ -130,31 +142,38 @@ namespace DGE::GL
 
    private:
       using Texture = Core::Resource<TextureData>;
+      using Shader  = Core::Resource<ShaderData>;
 
       static constexpr int MaxSubdivisions = 9;
 
       FontFace *baseFont() const;
 
+      // circle
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
 
+      // shader
+      Shader *shaderGetRaw(GDCC::Core::String name);
+      Shader *shaderGet_Base(GDCC::Core::String name);
+
+      // texture
       Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
       Texture *textureGet_NoFi(GDCC::Core::String name);
 
-      float cr, cg, cb, ca;
-
       Window &win;
+
+      float cr, cg, cb, ca;
 
       Core::ResourceManager<TextureData> texMan;
       TextureData                 const *texBound;
 
-      std::unique_ptr<ShaderData> shdBase;
-      ShaderData                 *shdCur;
+      Core::ResourceManager<ShaderData> shdMan;
+      ShaderData                       *shdBound;
 
       std::unique_ptr<FontFace> fontBase;
-      FontFace                 *fontCurrent;
+      FontFace                 *fontBound;
 
       DynamicBuffer const *circleBuff, *circleLineBuff;
 

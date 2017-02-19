@@ -34,42 +34,6 @@
 
 namespace DGE::GL
 {
-   //
-   // BaseFragShader
-   //
-   static char const BaseFragShader[] = R"(
-      #version 120
-
-      uniform sampler2D dge_texture;
-
-      varying vec4 color;
-      varying vec4 texcoord;
-
-      void main(void)
-      {
-         gl_FragColor = texture2D(dge_texture, texcoord.xy) * color;
-//       gl_FragColor = vec4(texcoord.xy, 0.0, 1.0);
-      }
-   )";
-
-   //
-   // BaseVertShader
-   //
-   static char const BaseVertShader[] = R"(
-      #version 120
-
-      varying vec4 color;
-      varying vec4 texcoord;
-
-      void main(void)
-      {
-         gl_Position = ftransform();
-
-         texcoord = gl_MultiTexCoord0;
-         color = gl_Color;
-      }
-   )";
-
    static Code::Callback CallbackDrawPre{"DrawPre"};
    static Code::Callback CallbackDraw{"Draw"};
    static Code::Callback CallbackDrawPost{"DrawPost"};
@@ -141,12 +105,10 @@ namespace DGE::GL
       win{win_},
 
       texBound{nullptr},
-
-      shdBase{new ShaderData{BaseFragShader, BaseVertShader}},
-      shdCur{shdBase.get()},
+      shdBound{nullptr},
 
       fontBase{baseFont()},
-      fontCurrent{fontBase.get()}
+      fontBound{fontBase.get()}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
@@ -168,7 +130,9 @@ namespace DGE::GL
       glLoadIdentity();
 
       // Set up base shader.
-      drawColorSet(1.0, 1.0, 1.0);
+      drawColorSet(1.0, 1.0, 1.0, 1.0);
+      shaderGet_Base("SHDNULL");
+      shaderUnbind();
 
       // Set up basic no-texture.
       textureGet_None("TEXNULL");
@@ -319,7 +283,6 @@ namespace DGE::GL
    void Renderer::render()
    {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      shdCur->update();
 
       CallbackDraw(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
    }
@@ -332,14 +295,6 @@ namespace DGE::GL
       CallbackDrawPost(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
 
       win.renderEnd();
-   }
-
-   //
-   // Renderer::shaderBind
-   //
-   void Renderer::shaderBind(ShaderData *shd)
-   {
-      glUseProgram((shdCur = shd)->prog);
    }
 
    //
