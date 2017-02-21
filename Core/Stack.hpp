@@ -55,7 +55,6 @@ namespace DGE::Core
       // clear
       void clear()
       {
-         // TODO: use if constexpr when we switch to VS2017
          if(std::is_trivially_destructible<T>::value)
             stkPtr = stack;
          else while(stkPtr != stack)
@@ -87,7 +86,6 @@ namespace DGE::Core
       void push(T const &value)
       {
          // FUCKING MSVC.
-         // TODO: use if constexpr when we switch to VS2017
          if(std::is_trivially_assignable<T &, T const &>::value)
             *stkPtr++ = value;
          else
@@ -96,7 +94,6 @@ namespace DGE::Core
 
       void push(T &&value)
       {
-         // TODO: use if constexpr when we switch to VS2017
          if(std::is_trivially_assignable<T &, T &&>::value)
             *stkPtr++ = std::move(value);
          else

@@ -240,7 +240,6 @@ namespace DGE::GL
            if(subdivisions > MaxSubdivisions) subdivisions = MaxSubdivisions;
       else if(subdivisions < 0)               subdivisions = 0;
 
-      // TODO: replace this with if-init when we switch to VS2017
       auto tri = circleBuffers.find(subdivisions);
       if(tri != circleBuffers.end()) circleBuff = &tri->second;
       else                           circleCreateTris(subdivisions);

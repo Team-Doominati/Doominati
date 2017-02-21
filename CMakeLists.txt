@@ -131,7 +131,7 @@ include_directories(SYSTEM
 ##
 ## Optional libraries
 ##
-Add_Optional_Library(DGE_GL_LIBRARIES DGE_USE_JPEG JPEG LIBRARY INCLUDE_DIR)
+Add_Optional_Library(DGE_GL_LIBRARIES DGE_USE_JPEG JPEG LIBRARIES INCLUDE_DIR)
 
 ##
 ## Entry point

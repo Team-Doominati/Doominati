@@ -203,7 +203,6 @@ namespace DGE::Game
       auto const &frame = InputSource::GetCurrent()->getNext();
       int ret;
 
-      // TODO: change to switch-init statement when we switch to VS2017
       bool y = argv[1];
       switch(argv[0])
       {
