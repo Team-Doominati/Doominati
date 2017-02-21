@@ -131,7 +131,7 @@ namespace DGE::GL
       void readChunks();
       std::uint32_t readU32_BE(char const *data);
 
-      virtual std::pair<GLsizei, GLsizei> size() {return {width, height};}
+      virtual std::pair<TextureDim, TextureDim> size() {return {width, height};}
 
    private:
       GDCC::Core::Array<PNGChunk> chunkArray;

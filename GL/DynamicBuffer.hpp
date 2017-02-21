@@ -29,12 +29,12 @@ namespace DGE::GL
    //
    struct VertexLayout
    {
-      GLsizei size;
-      GLsizei pntLen, pntPos; // Point
-      GLsizei texLen, texPos; // Texture
-      GLsizei colLen, colPos; // Color
-      bool    nrmUse;
-      GLsizei nrmPos; // Normal
+      std::size_t size;
+      std::size_t pntLen, pntPos; // Point
+      std::size_t texLen, texPos; // Texture
+      std::size_t colLen, colPos; // Color
+      bool        nrmUse;
+      std::size_t nrmPos; // Normal
    };
 
    //

@@ -26,7 +26,8 @@ namespace DGE::GL
    //
    // TextureData constructor
    //
-   TextureData::TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata)
+   TextureData::TextureData(TextureDim width, TextureDim height,
+      TexturePixel const *texdata)
    {
       glGenTextures(1, &tex);
       glBindTexture(GL_TEXTURE_2D, tex);
@@ -49,6 +50,9 @@ namespace DGE::GL
          glDeleteTextures(1, &tex);
    }
 
+   #if DGE_USE_JPEG
+   std::unique_ptr<TextureLoader> CreateTextureLoader_JPEG(FS::File *file);
+   #endif
    std::unique_ptr<TextureLoader> CreateTextureLoader_PAM(FS::File *file);
    std::unique_ptr<TextureLoader> CreateTextureLoader_PBM(FS::File *file);
    std::unique_ptr<TextureLoader> CreateTextureLoader_PGM(FS::File *file);
@@ -62,6 +66,9 @@ namespace DGE::GL
    {
       switch(file->format)
       {
+      #if DGE_USE_JPEG
+      case FS::Format::JPEG: return CreateTextureLoader_JPEG(file);
+      #endif
       case FS::Format::PAM: return CreateTextureLoader_PAM(file);
       case FS::Format::PBM: return CreateTextureLoader_PBM(file);
       case FS::Format::PGM: return CreateTextureLoader_PGM(file);

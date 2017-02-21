@@ -30,9 +30,9 @@ namespace DGE::FS
       None,
 
       DGE_NTS, // Doominati Game Engine Null-Terminated Strings
-      gzip,    // gzip compressed data
+      JPEG,    // Joint Photograpic Experts Group Interchange Format
       Pak,     // PAK archive
-      PAM,     // Portable Arbitrary Map
+      PAM,     // Portable Any Map
       PBM,     // Portable Bit Map
       PGM,     // Portable Gray Map
       PNG,     // Portable Network Graphics

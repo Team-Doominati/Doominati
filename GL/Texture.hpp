@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 #define DGE__GL__Texture_H__
 
 #include "GL/OpenGL2.1.h"
+#include "GL/Types.hpp"
 
 #include <exception>
 #include <stdexcept>
@@ -31,8 +32,6 @@ namespace DGE::FS
 
 namespace DGE::GL
 {
-   using TexturePixel = GLfloat[4];
-
    //
    // TextureData
    //
@@ -42,7 +41,8 @@ namespace DGE::GL
       TextureData() : tex{static_cast<GLuint>(-1)} {}
       TextureData(TextureData const &) = delete;
       TextureData(TextureData &&t) : tex{t.tex} {t.tex = 0;}
-      TextureData(GLsizei width, GLsizei height, TexturePixel const *texdata);
+      TextureData(TextureDim width, TextureDim height,
+         TexturePixel const *texdata);
       ~TextureData();
 
       TextureData &operator = (TextureData const &) = delete;
@@ -62,7 +62,7 @@ namespace DGE::GL
 
       virtual void data(TexturePixel *buf) = 0;
 
-      virtual std::pair<GLsizei, GLsizei> size() = 0;
+      virtual std::pair<TextureDim, TextureDim> size() = 0;
    };
 
    //

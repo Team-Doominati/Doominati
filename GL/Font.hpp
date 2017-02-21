@@ -17,6 +17,7 @@
 #include "Core/HashMap.hpp"
 
 #include "GL/Texture.hpp"
+#include "GL/Types.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -49,9 +50,9 @@ namespace DGE::GL
    //
    struct FontGlyphMetr
    {
-      GLsizei w,  h;
-      float   ax;
-      int     ox, oy;
+      TextureDim w,  h;
+      float      ax;
+      int        ox, oy;
    };
 
    //

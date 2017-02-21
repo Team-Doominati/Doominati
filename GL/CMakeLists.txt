@@ -40,8 +40,10 @@ add_library(dge-gl-lib STATIC
    ShaderData.hpp
    Texture.cpp
    Texture.hpp
+   Texture/JPEG.cpp
    Texture/PAM.cpp
    Texture/PNG.cpp
+   Types.hpp
    Window.cpp
    Window.hpp
 )
@@ -52,7 +54,8 @@ target_link_libraries(dge-gl-lib
    ${GDCC_LIBRARIES}
    ${OPENGL_LIBRARIES}
    ${SDL2_LIBRARIES}
-   ${FREETYPE_LIBRARIES})
+   ${FREETYPE_LIBRARIES}
+   ${DGE_GL_LIBRARIES})
 
 ## EOF
 

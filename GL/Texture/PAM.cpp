@@ -65,7 +65,7 @@ namespace DGE::GL
 
       float readValue();
 
-      virtual std::pair<GLsizei, GLsizei> size() {return {width, height};}
+      virtual std::pair<TextureDim, TextureDim> size() {return {width, height};}
 
    private:
       FS::File *file;

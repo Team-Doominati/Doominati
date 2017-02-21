@@ -178,15 +178,15 @@ namespace DGE::GL
       if(FT_Load_Char(face, FT_ULong(ch), FT_LOAD_RENDER))
          return getChar_Repl(ch);
 
-      auto glyph = face->glyph;
-      GLsizei w  = glyph->bitmap.width;
-      GLsizei h  = glyph->bitmap.rows;
-      auto pitch = glyph->bitmap.pitch;
+      auto glyph   = face->glyph;
+      TextureDim w = glyph->bitmap.width;
+      TextureDim h = glyph->bitmap.rows;
+      auto pitch   = glyph->bitmap.pitch;
 
       std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h]};
 
-      for(GLsizei y = 0; y < h; y++)
-         for(GLsizei x = 0; x < w; x++)
+      for(TextureDim y = 0; y < h; y++)
+         for(TextureDim x = 0; x < w; x++)
       {
          auto g = glyph->bitmap.buffer[x + y * pitch];
          auto &pixel = buf[x + y * w];
@@ -206,13 +206,13 @@ namespace DGE::GL
    //
    FontGlyph &FontFace::getChar_Repl(char32_t ch)
    {
-      GLsizei w = height / 2;
-      GLsizei h = height;
+      TextureDim w = height / 2;
+      TextureDim h = height;
 
       std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h]};
 
-      for(GLsizei y = 0; y < h; y++)
-         for(GLsizei x = 0; x < w; x++)
+      for(TextureDim y = 0; y < h; y++)
+         for(TextureDim x = 0; x < w; x++)
       {
          auto &pixel = buf[x + y * w];
          pixel[0] = pixel[1] = pixel[2] = pixel[3] = 1.0f;

@@ -78,11 +78,6 @@ namespace DGE::FS
    //
    Format DetectFormat(char const *data, std::size_t size)
    {
-      if(size < 2) return Format::Unknown;
-
-      if(data[0] == '\037' && data[1] == '\213')
-         return Format::gzip;
-
       if(size < 3) return Format::Unknown;
 
       // Portable * Map
@@ -95,6 +90,11 @@ namespace DGE::FS
       }
 
       if(size < 8) return Format::Unknown;
+
+      // Joint Photograpic Experts Group Interchange Format
+      if(data[0] == '\xFF' && data[1] == '\xD8' &&
+         data[2] == '\xFF' && data[3] >= '\xE0')
+         return Format::JPEG;
 
       // Doominati Game Engine Null-Terminated Strings
       if(data[0] == 'D' && data[1] == 'G' && data[2] == 'E' && data[3] == '_' &&
@@ -112,7 +112,7 @@ namespace DGE::FS
       if(data[0] == 'P' && data[1] == 'A' && data[2] == 'C' && data[3] == 'K')
          return Format::Pak;
 
-      // WAD Archive
+      // WAD archive
       if((data[0] == 'I' || data[0] == 'P') && data[1] == 'W' && data[2] == 'A' && data[3] == 'D')
          return Format::Wad;
 
@@ -123,7 +123,7 @@ namespace DGE::FS
 
       if(size < 22) return Format::Unknown;
 
-      // ZIP archive.
+      // ZIP archive
       if(data[0] == 'P' && data[1] == 'K' &&
          ((data[2] == '\x01' && data[3] == '\x02') ||
           (data[2] == '\x03' && data[3] == '\x04') ||

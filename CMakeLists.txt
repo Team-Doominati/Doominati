@@ -10,11 +10,28 @@
 ##
 ##-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.4)
 
 project(doominati)
 
 include(CheckCXXCompilerFlag)
+
+
+##----------------------------------------------------------------------------|
+## Options                                                                    |
+##
+
+set(DGE_CONSOLE_APPLICATION ON  CACHE BOOL   "Build as a console application.")
+set(DGE_OUT_DIR             bin CACHE STRING "Directory for target output.")
+
+
+##----------------------------------------------------------------------------|
+## CMake Configuration                                                        |
+##
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake)
 
@@ -28,13 +45,26 @@ endif()
 ##
 
 ##
-## TRY_CXX_COMPILER_FLAG
+## Try_CXX_Compiler_Flag
 ##
-function(TRY_CXX_COMPILER_FLAG flag name)
+function(Try_CXX_Compiler_Flag flag name)
    CHECK_CXX_COMPILER_FLAG(${flag} ${name})
 
    if(${name})
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
+   endif()
+endfunction()
+
+##
+## Add_Optional_Library
+##
+function(Add_Optional_Library out def lib libout libinc)
+   find_package(${lib} QUIET)
+
+   if(${${lib}_FOUND})
+      set(${out} "${${out}};${${lib}_${libout}}" PARENT_SCOPE)
+      include_directories(SYSTEM ${${lib}_${libinc}})
+      add_definitions("-D${def}=1")
    endif()
 endfunction()
 
@@ -45,25 +75,27 @@ endfunction()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-   TRY_CXX_COMPILER_FLAG(-Wall       FLAG_CXX_Wall)
-   TRY_CXX_COMPILER_FLAG(-Wextra     FLAG_CXX_Wextra)
-   TRY_CXX_COMPILER_FLAG(-Wshadow    FLAG_CXX_Wshadow)
-   TRY_CXX_COMPILER_FLAG(-ffast-math FLAG_CXX_ffast_math)
+   Try_CXX_Compiler_Flag(-Wall       FLAG_CXX_Wall)
+   Try_CXX_Compiler_Flag(-Wextra     FLAG_CXX_Wextra)
+   Try_CXX_Compiler_Flag(-Wshadow    FLAG_CXX_Wshadow)
+   Try_CXX_Compiler_Flag(-ffast-math FLAG_CXX_ffast_math)
 
-   TRY_CXX_COMPILER_FLAG(-std=c++1z FLAG_CXX_STD_CXX17)
+   Try_CXX_Compiler_Flag(-std=c++1z FLAG_CXX_STD_CXX17)
 endif()
 
 if(MSVC)
-   # Fucking MSVC.
-   add_definitions(/fp:fast /std:c++latest)
-   add_definitions(-D_SCL_SECURE_NO_WARNINGS # Stupid deprecation warnings
-                   /wd4996 # Ditto
-                   /wd4800 # Boolean casting
-                   /wd4244 # Forcing argument to correct type
-                   /wd4146 # Unary minus on unsigned
-                   /wd4805 # Stupid casting
-                   /wd4819 # Unicode bullshit
-                  )
+   ## Fucking MSVC.
+   add_definitions(
+      /fp:fast
+      /std:c++latest
+      -D_SCL_SECURE_NO_WARNINGS
+      /wd4996  ## Deprecation warnings
+      /wd4800  ## Boolean casting
+      /wd4244  ## Forcing argument to correct type
+      /wd4146  ## Unary minus on unsigned
+      /wd4805  ## Casting issues
+      /wd4819) ## Unicode bullshit
+
    set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/MP4 /MTd /Zi /Od /Ob0 /RTC1 /D_DEBUG")
    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MP4 /MT      /O1 /Ob1       /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MP4 /MT      /O2 /Ob2       /D NDEBUG")
@@ -75,13 +107,9 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-set(DGE_CONSOLE_APPLICATION TRUE CACHE BOOL "Build as a console application.")
-set(DGE_OUT_DIR Bin CACHE STRING "Directory for targets to output to.")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
-
+##
+## Required libraries
+##
 find_package(Eigen3   REQUIRED)
 find_package(GDCC     REQUIRED)
 find_package(OpenAL   REQUIRED)
@@ -89,6 +117,25 @@ find_package(OpenGL   REQUIRED)
 find_package(SDL2     REQUIRED)
 find_package(Freetype REQUIRED)
 
+## Global includes
+include_directories(${CMAKE_SOURCE_DIR})
+
+include_directories(SYSTEM
+   ${EIGEN3_INCLUDE_DIRS}
+   ${GDCC_INCLUDE_DIRS}
+   ${OPENAL_INCLUDE_DIR}
+   ${OPENGL_INCLUDE_DIR}
+   ${SDL2_INCLUDE_DIRS}
+   ${FREETYPE_INCLUDE_DIRS})
+
+##
+## Optional libraries
+##
+Add_Optional_Library(DGE_GL_LIBRARIES DGE_USE_JPEG JPEG LIBRARY INCLUDE_DIR)
+
+##
+## Entry point
+##
 if(NOT DGE_CONSOLE_APPLICATION AND NOT SDL2_MAIN_FOUND)
    set(DGE_CONSOLE_APPLICATION TRUE)
 endif()
@@ -101,16 +148,6 @@ else()
    unset(DGE_MAIN_LIBRARIES)
    unset(DGE_MAIN_ENTRY)
 endif()
-
-include_directories(${CMAKE_SOURCE_DIR})
-
-include_directories(SYSTEM
-   ${EIGEN3_INCLUDE_DIRS}
-   ${GDCC_INCLUDE_DIRS}
-   ${OPENAL_INCLUDE_DIR}
-   ${OPENGL_INCLUDE_DIR}
-   ${SDL2_INCLUDE_DIRS}
-   ${FREETYPE_INCLUDE_DIRS})
 
 
 ##----------------------------------------------------------------------------|
