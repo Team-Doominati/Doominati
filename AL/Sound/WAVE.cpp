@@ -35,12 +35,12 @@ namespace DGE::AL
    };
 
    //
-   // SoundLoader_WAV
+   // SoundLoader_WAVE
    //
-   class SoundLoader_WAV : public SoundLoader
+   class SoundLoader_WAVE : public SoundLoader
    {
    public:
-      SoundLoader_WAV(FS::File *file_) :
+      SoundLoader_WAVE(FS::File *file_) :
          dataChunk{},
 
          samprate{},
@@ -85,9 +85,9 @@ namespace DGE::AL
 namespace DGE::AL
 {
    //
-   // SoundLoader_WAV::data
+   // SoundLoader_WAVE::data
    //
-   void SoundLoader_WAV::data(SoundSample *buf)
+   void SoundLoader_WAVE::data(SoundSample *buf)
    {
       for(std::size_t i = 0; i < samples; i++)
       {
@@ -104,19 +104,19 @@ namespace DGE::AL
                buf[i] =  static_cast<SoundSample>(  sample & 0x7FFF);
             break;
          case 8:
-            buf[i++] = ((sample & 0x000000FF) >> 0 ) * 128;
-            buf[i++] = ((sample & 0x0000FF00) >> 8 ) * 128;
-            buf[i++] = ((sample & 0x00FF0000) >> 16) * 128;
-            buf[i  ] = ((sample & 0xFF000000) >> 24) * 128;
+            buf[i++] = ((sample & 0x000000FF) >> 0 ) << 8;
+            buf[i++] = ((sample & 0x0000FF00) >> 8 ) << 8;
+            buf[i++] = ((sample & 0x00FF0000) >> 16) << 8;
+            buf[i  ] = ((sample & 0xFF000000) >> 24) << 8;
             break;
          }
       }
    }
 
    //
-   // SoundLoader_WAV::findChunk
+   // SoundLoader_WAVE::findChunk
    //
-   IFFChunk SoundLoader_WAV::findChunk(char const *name)
+   IFFChunk SoundLoader_WAVE::findChunk(char const *name)
    {
       auto end = file->data + file->size;
 
@@ -135,9 +135,9 @@ namespace DGE::AL
    }
 
    //
-   // SoundLoader_WAV::loadHeader
+   // SoundLoader_WAVE::loadHeader
    //
-   void SoundLoader_WAV::loadHeader()
+   void SoundLoader_WAVE::loadHeader()
    {
       // Parse format chunk.
       auto chunk = findChunk("fmt ");
@@ -159,18 +159,18 @@ namespace DGE::AL
    }
 
    //
-   // SoundLoader_WAV::readU16_LE
+   // SoundLoader_WAVE::readU16_LE
    //
-   std::uint16_t SoundLoader_WAV::readU16_LE(char const *data)
+   std::uint16_t SoundLoader_WAVE::readU16_LE(char const *data)
    {
       auto udata = reinterpret_cast<Core::Byte const *>(data);
       return (udata[1] << 8) | udata[0];
    }
 
    //
-   // SoundLoader_WAV::readU32_LE
+   // SoundLoader_WAVE::readU32_LE
    //
-   std::uint32_t SoundLoader_WAV::readU32_LE(char const *data)
+   std::uint32_t SoundLoader_WAVE::readU32_LE(char const *data)
    {
       auto udata = reinterpret_cast<Core::Byte const *>(data);
       return (udata[3] << 24) | (udata[2] << 16) | (udata[1] << 8) | udata[0];
@@ -181,7 +181,7 @@ namespace DGE::AL
    //
    std::unique_ptr<SoundLoader> CreateSoundLoader_WAVE(FS::File *file)
    {
-      std::unique_ptr<SoundLoader_WAV> loader{new SoundLoader_WAV{file}};
+      std::unique_ptr<SoundLoader_WAVE> loader{new SoundLoader_WAVE{file}};
       loader->loadHeader();
       return std::unique_ptr<SoundLoader>{loader.release()};
    }

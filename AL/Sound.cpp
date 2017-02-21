@@ -48,6 +48,9 @@ namespace DGE::AL
          alDeleteBuffers(1, &buf);
    }
 
+   #if DGE_USE_FLAC
+   std::unique_ptr<SoundLoader> CreateSoundLoader_FLAC(FS::File *file);
+   #endif
    std::unique_ptr<SoundLoader> CreateSoundLoader_WAVE(FS::File *file);
 
    //
@@ -57,6 +60,9 @@ namespace DGE::AL
    {
       switch(file->format)
       {
+      #if DGE_USE_FLAC
+      case FS::Format::FLAC: return CreateSoundLoader_FLAC(file);
+      #endif
       case FS::Format::WAVE: return CreateSoundLoader_WAVE(file);
 
       default:

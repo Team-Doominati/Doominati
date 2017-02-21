@@ -25,6 +25,7 @@ add_library(dge-al-lib STATIC
    OpenAL.hpp
    Sound.cpp
    Sound.hpp
+   Sound/FLAC.cpp
    Sound/WAVE.cpp
    SoundSource.cpp
    SoundSource.hpp
@@ -36,7 +37,8 @@ target_link_libraries(dge-al-lib
    dge-code-lib
    dge-core-lib
    ${GDCC_LIBRARIES}
-   ${OPENAL_LIBRARY})
+   ${OPENAL_LIBRARY}
+   ${DGE_AL_LIBRARIES})
 
 ## EOF
 
