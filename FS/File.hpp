@@ -30,9 +30,10 @@ namespace DGE::FS
       None,
 
       DGE_NTS, // Doominati Game Engine Null-Terminated Strings
-      JPEG,    // Joint Photograpic Experts Group Interchange Format
+      FLAC,    // Free Lossless Audio Codec
+      JPEG,    // Joint Photographic Experts Group Interchange Format
       Pak,     // PAK archive
-      PAM,     // Portable Any Map
+      PAM,     // Portable Arbitrary Map
       PBM,     // Portable Bit Map
       PGM,     // Portable Gray Map
       PNG,     // Portable Network Graphics
