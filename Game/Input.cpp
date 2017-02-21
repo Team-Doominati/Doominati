@@ -29,26 +29,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Options                                                                    |
-//
-
-namespace DGE::Game
-{
-   //
-   // --input-debug
-   //
-   static bool DebugInput = false;
-   static GDCC::Option::Bool DebugInputOpt{
-      &GDCC::Core::GetOptionList(),
-      GDCC::Option::Base::Info()
-         .setName("input-debug")
-         .setDescS("Enables input debugging output."),
-      &DebugInput
-   };
-}
-
-
-//----------------------------------------------------------------------------|
 // Static Objects                                                             |
 //
 
@@ -86,12 +66,11 @@ namespace DGE::Game
          return std::pair<std::int16_t, std::int16_t>{axf, axr};
       };
 
-      std::tie(frameNext.ax1y, frameNext.ax1x) = getAxis(A_Ax1);
-      std::tie(frameNext.ax2y, frameNext.ax2x) = getAxis(A_Ax2);
-      std::tie(frameNext.ax3y, frameNext.ax3x) = getAxis(A_Ax3);
+      std::tie(frameNext.ax1y, frameNext.ax1x) = getAxis(A_Ax1S);
+      std::tie(frameNext.ax2y, frameNext.ax2x) = getAxis(A_Ax2S);
 
       for(int i = 0; i < 4; i++)
-         frameNext.buttons |= actions[A_Buttons + i] << i;
+         frameNext.buttons |= actions[A_ButtonS + i] << i;
    }
 
    //
@@ -104,70 +83,36 @@ namespace DGE::Game
       case Event::KeyDown:
          switch(event.data.key)
          {
-         case 'w': actions[A_Ax1F] = true; break;
-         case 'a': actions[A_Ax1L] = true; break;
-         case 's': actions[A_Ax1B] = true; break;
-         case 'd': actions[A_Ax1R] = true; break;
+         case 'w': actions[A_Ax1S + A_AxF] = true; break;
+         case 'a': actions[A_Ax1S + A_AxL] = true; break;
+         case 's': actions[A_Ax1S + A_AxB] = true; break;
+         case 'd': actions[A_Ax1S + A_AxR] = true; break;
          }
          break;
       case Event::KeyUp:
          switch(event.data.key)
          {
-         case 'w': actions[A_Ax1F] = false; break;
-         case 'a': actions[A_Ax1L] = false; break;
-         case 's': actions[A_Ax1B] = false; break;
-         case 'd': actions[A_Ax1R] = false; break;
+         case 'w': actions[A_Ax1S + A_AxF] = false; break;
+         case 'a': actions[A_Ax1S + A_AxL] = false; break;
+         case 's': actions[A_Ax1S + A_AxB] = false; break;
+         case 'd': actions[A_Ax1S + A_AxR] = false; break;
          case KC_Escape: throw EXIT_SUCCESS;
          }
          break;
       case Event::MouseDown:
          switch(event.data.mb)
          {
-         case MB_Left:  actions[A_Button1] = true; break;
-         case MB_Right: actions[A_Button2] = true; break;
+         case MB_Left:  actions[A_ButtonS + 0] = true; break;
+         case MB_Right: actions[A_ButtonS + 1] = true; break;
          }
          break;
       case Event::MouseUp:
          switch(event.data.mb)
          {
-         case MB_Left:  actions[A_Button1] = false; break;
-         case MB_Right: actions[A_Button2] = false; break;
+         case MB_Left:  actions[A_ButtonS + 0] = false; break;
+         case MB_Right: actions[A_ButtonS + 1] = false; break;
          }
          break;
-      }
-
-      if(DebugInput)
-      {
-         auto printMouseButton = [](Event const &ev)
-         {
-            switch(ev.data.mb)
-            {
-            default:        std::cout << "<unknown button>"; break;
-            case MB_Left:   std::cout << "Left Button";      break;
-            case MB_Right:  std::cout << "Right Button";     break;
-            case MB_Middle: std::cout << "Middle Button";    break;
-            case MB_Extra1: std::cout << "Extra Button 1";   break;
-            case MB_Extra2: std::cout << "Extra Button 2";   break;
-            }
-
-            std::cout << std::endl;
-         };
-
-         auto printAxis = [](Event const &ev)
-         {
-            std::cout << "x: " << ev.data.axis.x <<
-                       "\ty: " << ev.data.axis.y << std::endl;
-         };
-
-         switch(event.type)
-         {
-         case Event::KeyDown:    std::cout << "KeyDown:    " << char32_t(event.data.key) << std::endl; break;
-         case Event::KeyUp:      std::cout << "KeyUp:      " << char32_t(event.data.key) << std::endl; break;
-         case Event::MouseDown:  std::cout << "MouseDown:  "; printMouseButton(event); break;
-         case Event::MouseUp:    std::cout << "MouseUp:    "; printMouseButton(event); break;
-         case Event::MouseMove:  std::cout << "MouseMove:  "; printAxis(event); break;
-         case Event::MouseWheel: std::cout << "MouseWheel: "; printAxis(event); break;
-         }
       }
    }
 
@@ -209,7 +154,6 @@ namespace DGE::Game
       default:
       case 1: ret = y ? frame.ax1y : frame.ax1x; break;
       case 2: ret = y ? frame.ax2y : frame.ax2x; break;
-      case 3: ret = y ? frame.ax3y : frame.ax3x; break;
       }
 
       task->dataStk.push(Code::SFractToSLFract(ret));
