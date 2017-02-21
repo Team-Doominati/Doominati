@@ -18,7 +18,7 @@
 #include "FLAC/stream_decoder.h"
 
 #include <memory>
-#include <iostream>
+#include <cstring>
 
 
 //----------------------------------------------------------------------------|
