@@ -23,6 +23,7 @@ add_library(dge-core-lib STATIC
    BitStream.hpp
    HashMapFixed.hpp
    HashMap.hpp
+   IDAllocator.hpp
    List.hpp
    Math.hpp
    NTS.cpp

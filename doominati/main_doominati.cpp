@@ -33,6 +33,7 @@
 #include "GL/Renderer.hpp"
 
 #include "Game/Input.hpp"
+#include "Game/Thinker.hpp"
 
 #include <GDCC/Core/Option.hpp>
 
@@ -208,6 +209,7 @@ static int Main()
          while(timeDelta--)
          {
             input.poll();
+            DGE::Game::Thinker::ThinkAll();
             proc.exec();
             DGE::Game::EventFrame();
          }
