@@ -58,7 +58,6 @@ namespace DGE::GL
       // Set up window.
       if(!(window = SDL_CreateWindow("Doominati Confirmed", x, y, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)))
       {
-         SDL_QuitSubSystem(SDL_INIT_VIDEO);
          std::cerr << "SDL_CreateWindow: " << SDL_GetError() << '\n';
          throw EXIT_FAILURE;
       }
@@ -67,7 +66,6 @@ namespace DGE::GL
       if(!(gl = SDL_GL_CreateContext(window)))
       {
          SDL_DestroyWindow(window);
-         SDL_QuitSubSystem(SDL_INIT_VIDEO);
          std::cerr << "SDL_GL_CreateContext: " << SDL_GetError() << '\n';
          throw EXIT_FAILURE;
       }

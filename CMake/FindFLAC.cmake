@@ -1,12 +1,17 @@
 find_package(Ogg)
 
 if(OGG_FOUND)
-   find_path(FLAC_INCLUDE_DIRS FLAC/all.h)
-   find_library(FLAC_LIBRARIES NAMES flac FLAC)
+   find_path(FLAC_INCLUDE_DIR FLAC/all.h)
+   find_library(FLAC_LIBRARY NAMES flac FLAC)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(FLAC REQUIRED_VARS FLAC_LIBRARIES FLAC_INCLUDE_DIRS)
+find_package_handle_standard_args(FLAC REQUIRED_VARS OGG_LIBRARIES OGG_INCLUDE_DIRS FLAC_LIBRARY FLAC_INCLUDE_DIR)
+
+if(FLAC_FOUND)
+   set(FLAC_LIBRARIES ${FLAC_LIBRARY} ${OGG_LIBRARIES})
+   set(FLAC_INCLUDE_DIRS ${FLAC_INCLUDE_DIR} ${OGG_INCLUDE_DIRS})
+endif()
 
 ## EOF
 

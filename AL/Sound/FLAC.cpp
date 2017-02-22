@@ -10,12 +10,12 @@
 //
 //-----------------------------------------------------------------------------
 
-#if DGE_USE_FLAC
+#if DGE_Use_FLAC
 #include "AL/Sound.hpp"
 
 #include "FS/File.hpp"
 
-#include "FLAC/stream_decoder.h"
+#include <FLAC/stream_decoder.h>
 
 #include <memory>
 #include <cstring>
@@ -245,5 +245,5 @@ namespace DGE::AL
    }
 }
 
-#endif//DGE_USE_FLAC
+#endif//DGE_Use_FLAC
 

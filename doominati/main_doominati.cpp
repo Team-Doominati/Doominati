@@ -141,15 +141,25 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 static int Main()
 {
    // Initialize SDL.
-   if(SDL_Init(
-      SDL_INIT_VIDEO |
-      SDL_INIT_JOYSTICK |
-      SDL_INIT_GAMECONTROLLER |
-      SDL_INIT_EVENTS) != 0)
+   class SDLHandler
    {
-      std::cerr << "SDL_Init: " << SDL_GetError() << '\n';
-      throw EXIT_FAILURE;
-   }
+   public:
+      SDLHandler()
+      {
+         if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
+         {
+            std::cerr << "SDL_Init: " << SDL_GetError() << std::endl;
+            throw EXIT_FAILURE;
+         }
+      }
+
+      ~SDLHandler()
+      {
+         SDL_Quit();
+      }
+   };
+
+   SDLHandler sdl;
 
    // Initialize filesystem.
    if(GDCC::Core::GetOptionArgs().size())

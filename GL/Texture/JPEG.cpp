@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#if DGE_USE_JPEG
+#if DGE_Use_JPEG
 #include "GL/Texture.hpp"
 
 #include "FS/File.hpp"
@@ -137,5 +137,5 @@ namespace DGE::GL
    }
 }
 
-#endif//DGE_USE_JPEG
+#endif//DGE_Use_JPEG
 
