@@ -111,6 +111,19 @@ namespace DGE::Core
       T *const obj;
       ListLink<T> *prev, *next;
    };
+
+   //
+   // ListHead
+   //
+   template<typename T>
+   class ListHead
+   {
+   public:
+      ListHead() : head{nullptr} {}
+      ~ListHead() {while(head.next->obj) delete head.next->obj;}
+
+      ListLink<T> head;
+   };
 }
 
 #endif//DGE__Core__List_H__

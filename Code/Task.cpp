@@ -14,8 +14,8 @@
 
 #include "Code/Thread.hpp"
 
-#include <iostream>
 #include <algorithm>
+#include <memory>
 
 
 //----------------------------------------------------------------------------|
@@ -24,7 +24,7 @@
 
 namespace DGE::Code
 {
-   static Core::ListLink<Task> TaskFree;
+   static Core::ListHead<Task> TaskFree;
 }
 
 
@@ -58,7 +58,7 @@ namespace DGE::Code
       locReg.clear();
 
       // Move to free list.
-      link.relink(&TaskFree);
+      link.relink(&TaskFree.head);
    }
 
    //
@@ -82,9 +82,9 @@ namespace DGE::Code
    Task *Task::Create(Thread *thrd)
    {
       Task *task;
-      if(TaskFree.next->obj)
+      if(TaskFree.head.next->obj)
       {
-         task = TaskFree.next->obj;
+         task = TaskFree.head.next->obj;
          task->link.unlink();
       }
       else
