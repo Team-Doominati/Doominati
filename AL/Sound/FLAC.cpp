@@ -196,14 +196,16 @@ namespace DGE::AL
       FLAC__int32 const *const buffer[], void *userdata)
    {
       auto *self = static_cast<SoundLoader_FLAC *>(userdata);
-      std::size_t channels = self->stereo ? 2 : 1;
+      int channels = self->stereo ? 2 : 1;
 
       for(std::size_t i = 0; i < frame->header.blocksize; i++)
-         for(std::size_t j = 0; j < channels; j++)
-            if(self->bitsamp < 16)
-               *self->buf++ = buffer[j][i] << (16 - self->bitsamp);
-            else
-               *self->buf++ = buffer[j][i] >> (self->bitsamp - 16);
+         for(int j = 0; j < channels; j++)
+      {
+         if(self->bitsamp < 16)
+            *self->buf++ = buffer[j][i] << (16 - self->bitsamp);
+         else
+            *self->buf++ = buffer[j][i] >> (self->bitsamp - 16);
+      }
 
       return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
    }

@@ -51,6 +51,9 @@ namespace DGE::AL
    #if DGE_Use_FLAC
    std::unique_ptr<SoundLoader> CreateSoundLoader_FLAC(FS::File *file);
    #endif
+   #if DGE_Use_Vorbis
+   std::unique_ptr<SoundLoader> CreateSoundLoader_Vorbis(FS::File *file);
+   #endif
    std::unique_ptr<SoundLoader> CreateSoundLoader_WAVE(FS::File *file);
 
    //
@@ -62,6 +65,9 @@ namespace DGE::AL
       {
       #if DGE_Use_FLAC
       case FS::Format::FLAC: return CreateSoundLoader_FLAC(file);
+      #endif
+      #if DGE_Use_Vorbis
+      case FS::Format::Ogg:  return CreateSoundLoader_Vorbis(file);
       #endif
       case FS::Format::WAVE: return CreateSoundLoader_WAVE(file);
 

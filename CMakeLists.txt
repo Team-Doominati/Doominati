@@ -132,6 +132,7 @@ include_directories(SYSTEM
 ## Optional libraries
 ##
 Add_Optional_Library(DGE_AL_LIBRARIES DGE_Use_FLAC FLAC LIBRARIES INCLUDE_DIRS)
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_Use_Vorbis Vorbis LIBRARIES INCLUDE_DIRS)
 
 Add_Optional_Library(DGE_GL_LIBRARIES DGE_Use_JPEG JPEG LIBRARIES INCLUDE_DIR)
 

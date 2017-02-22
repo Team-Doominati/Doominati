@@ -21,6 +21,7 @@ Optionally, you can compile and link with these libraries as well:
 - [libjpeg](http://www.ijg.org/) for JPEG image support
 - [libFLAC](https://xiph.org/flac/download.html) for FLAC sound support
 - [libogg](https://www.xiph.org/downloads/) is required for FLAC and Vorbis
+- [libvorbis](https://www.xiph.org/downloads/) for Ogg Vorbis sound support
 
 
 ### Project Credits

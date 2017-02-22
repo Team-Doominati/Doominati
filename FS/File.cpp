@@ -90,6 +90,11 @@ namespace DGE::FS
       case '7':           return Format::PAM;
       }
 
+      if(size < 4) return Format::Unknown;
+
+      if(data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S')
+         return Format::Ogg;
+
       if(size < 8) return Format::Unknown;
 
       // Doominati Game Engine Null-Terminated Strings
