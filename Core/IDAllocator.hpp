@@ -34,6 +34,7 @@ namespace DGE::Core
    {
    public:
       IDAllocator() : freeE{nullptr}, freeP{nullptr}, freeV{nullptr}, itemV{nullptr} {}
+      ~IDAllocator() {::operator delete(itemV);}
 
       T *operator [] (ID id) {return itemV[id];}
 
