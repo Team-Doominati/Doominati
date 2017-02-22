@@ -13,6 +13,8 @@
 #if DGE_Use_Vorbis
 #include "AL/Sound.hpp"
 
+#include "Core/Math.hpp"
+
 #include "FS/File.hpp"
 
 #include <vorbis/codec.h>
@@ -109,7 +111,7 @@ namespace DGE::AL
             for(long i = 0; i < blocksize; i++)
                for(int j = 0; j < channels; j++)
             {
-               float clamped = std::clamp(buffer[j][i], -1.0f, 1.0f);
+               float clamped = Core::Clamp(buffer[j][i], -1.0f, 1.0f);
                buf[iter++] = static_cast<SoundSample>(clamped * 32767);
             }
          }
@@ -168,7 +170,7 @@ namespace DGE::AL
    {
       auto self = static_cast<SoundLoader_Vorbis *>(userdata);
 
-      if(self->pos > self->file->size)
+      if(self->pos > static_cast<ogg_int64_t>(self->file->size))
          return EOF;
       else
          return self->pos;

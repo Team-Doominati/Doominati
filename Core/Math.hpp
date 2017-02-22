@@ -16,6 +16,9 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include <algorithm>
+
+
 //----------------------------------------------------------------------------|
 // Type Definitions                                                           |
 //
@@ -33,9 +36,29 @@ namespace DGE::Core
 namespace DGE::Core
 {
    //
+   // Clamp
+   //
+   // STDC_TODO: replace this with std::clamp when GCC 7 is mainline
+   //
+   template<class T, class Compare>
+   constexpr T const &Clamp(T const &v, T const &lo, T const &hi, Compare comp)
+   {
+      return comp(v, lo) ? lo : comp(hi, v) ? hi : v;
+   }
+
+   //
+   // Clamp
+   //
+   template<class T>
+   constexpr T const &Clamp(T const &v, T const &lo, T const &hi)
+   {
+      return Clamp(v, lo, hi, std::less<>());
+   }
+
+   //
    // Lerp
    //
-   static constexpr float Lerp(float x, float y, float amt)
+   constexpr float Lerp(float x, float y, float amt)
    {
       return ((1.0f - amt) * x) + (amt * y);
    }
@@ -48,10 +71,10 @@ namespace DGE::Core
 
 namespace DGE::Core
 {
-   static constexpr float Pi = 3.14159265359f;
-   static constexpr float Pi2 = Pi / 2.0f;
-   static constexpr float Pi4 = Pi / 4.0f;
-   static constexpr float Tau = Pi * 2.0f;
+   constexpr float Pi = 3.14159265359f;
+   constexpr float Pi2 = Pi / 2.0f;
+   constexpr float Pi4 = Pi / 4.0f;
+   constexpr float Tau = Pi * 2.0f;
 }
 
 #endif//DGE__Core__Math_H__

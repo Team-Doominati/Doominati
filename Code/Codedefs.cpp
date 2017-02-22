@@ -340,7 +340,10 @@ namespace DGE::Code
       Word ret = jumps.size();
 
       jumps.emplace_back(jumpc, [&](auto elem)
-         {elem->key = evalExp(*jumpv++); elem->val = evalExp(*jumpv++);});
+      {
+         elem->key = this->evalExp(*jumpv++);
+         elem->val = this->evalExp(*jumpv++);
+      });
 
       return ret;
    }
@@ -557,7 +560,7 @@ namespace DGE::Code
       auto func = funcs.begin();
       prog->funcs.reset(funcs.size(), [&](auto elem)
       {
-         OpCode *entry = &prog->codes[getLabel(func->label)];
+         OpCode *entry = &prog->codes[this->getLabel(func->label)];
 
          elem->key = {func->glyph.str, func->glyph.len, func->glyph.hash};
          elem->val = {entry, func->local, func->param};

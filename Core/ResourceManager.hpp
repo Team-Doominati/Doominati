@@ -53,10 +53,10 @@ namespace DGE::Core
    class ResourceManager
    {
    public:
-      using Resource    = Resource<ResourceData>;
-      using ResourceMap = Core::HashMapKeyMem<GDCC::Core::String, Resource,
-         &Resource::name, &Resource::link>;
-      using ResourceVec = std::vector<Resource>;
+      using ResourceT   = Resource<ResourceData>;
+      using ResourceMap = Core::HashMapKeyMem<GDCC::Core::String, ResourceT,
+         &ResourceT::name, &ResourceT::link>;
+      using ResourceVec = std::vector<ResourceT>;
 
       ResourceManager() : resNone{nullptr} {}
       ResourceManager(ResourceManager const &) = delete;
@@ -64,7 +64,7 @@ namespace DGE::Core
       //
       // add
       //
-      Resource *add(ResourceData &&data, GDCC::Core::String name)
+      ResourceT *add(ResourceData &&data, GDCC::Core::String name)
       {
          std::size_t idx = resVec.size();
          resVec.emplace_back(std::move(data), name, idx);
@@ -78,7 +78,7 @@ namespace DGE::Core
       //
       // get
       //
-      Resource *get(std::size_t idx)
+      ResourceT *get(std::size_t idx)
       {
          if(idx < resVec.size())
             return &resVec[idx];
@@ -88,7 +88,7 @@ namespace DGE::Core
 
       ResourceMap resMap;
       ResourceVec resVec;
-      Resource   *resNone;
+      ResourceT  *resNone;
    };
 }
 
