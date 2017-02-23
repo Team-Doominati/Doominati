@@ -102,12 +102,11 @@ namespace DGE::AL
    void SoundLoader_Vorbis::data(SoundSample *buf)
    {
       float **buffer   = nullptr;
-      int     frame    = 0;
       int     channels = stereo ? 2 : 1;
 
-      for(std::size_t iter = 0; iter < samples;)
+      for(std::size_t iter = 0; iter < samples * channels;)
       {
-         long blocksize = ov_read_float(&vorbis, &buffer, 1024, &frame);
+         long blocksize = ov_read_float(&vorbis, &buffer, 1024, nullptr);
 
          if(blocksize > 0)
          {
