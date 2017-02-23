@@ -69,8 +69,8 @@ namespace DGE::GL
          tex{gly.tex}, link{this, std::move(gly.link)}, ch{gly.ch}
       {}
 
-      FontGlyph(char32_t ch_, std::size_t tex, FontGlyphMetr &&metr) :
-         FontGlyphMetr{std::move(metr)}, tex{tex}, link{this}, ch{ch_} {}
+      FontGlyph(char32_t ch_, std::size_t tex_, FontGlyphMetr &&metr) :
+         FontGlyphMetr{std::move(metr)}, tex{tex_}, link{this}, ch{ch_} {}
 
       FontGlyph(FontGlyph const &) = delete;
 

@@ -142,7 +142,7 @@ namespace DGE::GL
 
       float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
-      auto origtex = textureCurrent();
+      Core::ResourceSaver<TextureData> texSave{texMan, texBound};
 
       textureBind(ps.texname.get());
 
@@ -157,8 +157,6 @@ namespace DGE::GL
          drawColorSet(p.color);
          drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
       }
-
-      textureBind(origtex);
 
       glPopMatrix();
    }

@@ -120,8 +120,6 @@ namespace DGE::GL
       void textureBind(char const *name) {textureBind(textureGet(name));}
       void textureBind(Texture const *tex);
 
-      Texture const *textureCurrent() {return texBound;}
-
       Texture *textureGet(GDCC::Core::String name);
       Texture *textureGet(std::size_t idx) {return texMan.get(idx);}
 
