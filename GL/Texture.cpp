@@ -27,7 +27,8 @@ namespace DGE::GL
    // TextureData constructor
    //
    TextureData::TextureData(TextureDim width, TextureDim height,
-      TexturePixel const *texdata)
+      TexturePixel const *texdata) :
+      tex{0}
    {
       glGenTextures(1, &tex);
       glBindTexture(GL_TEXTURE_2D, tex);
@@ -46,7 +47,7 @@ namespace DGE::GL
    //
    TextureData::~TextureData()
    {
-      if(glIsTexture(tex))
+      if(tex && glIsTexture(tex))
          glDeleteTextures(1, &tex);
    }
 

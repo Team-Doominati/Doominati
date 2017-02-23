@@ -46,6 +46,9 @@ namespace DGE::AL
 
          auto inf = ov_info(&vorbis, -1);
 
+         if(!inf)
+            throw SoundLoaderError("couldn't get info from bitstream");
+
          stereo   = inf->channels > 1;
          samprate = inf->rate;
 

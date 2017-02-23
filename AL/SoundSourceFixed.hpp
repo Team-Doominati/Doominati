@@ -33,6 +33,8 @@ namespace DGE::AL
          SoundSource(id_), cdata{}
          {channelC = NumChannels; channelV = cdata;}
 
+      virtual ~SoundSourceFixed() {freeChannels();}
+
       // requestChannels
       virtual bool requestChannels() {return false;}
 

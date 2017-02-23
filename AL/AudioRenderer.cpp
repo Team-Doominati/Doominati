@@ -42,11 +42,11 @@ namespace DGE::AL
    // AudioRenderer::AudioRenderer
    //
    AudioRenderer::AudioRenderer() :
+      sndMan{},
+
       sndSrcGbl{DGE_AL_GlobalSound},
       sndSrcMap{},
       sndSrcId{DGE_AL_GlobalSound + 1},
-
-      sndMan{},
 
       device{},
       context{}

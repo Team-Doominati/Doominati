@@ -27,9 +27,9 @@
 namespace DGE::AL
 {
    //
-   // SoundSource destructor
+   // SoundSource::freeChannels
    //
-   SoundSource::~SoundSource()
+   void SoundSource::freeChannels()
    {
       for(std::size_t i = 0; i < channelC; i++)
          if(channelV[i].alloc)

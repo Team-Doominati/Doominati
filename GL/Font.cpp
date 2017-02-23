@@ -183,13 +183,15 @@ namespace DGE::GL
       TextureDim h = glyph->bitmap.rows;
       auto pitch   = glyph->bitmap.pitch;
 
-      std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h]};
+      // We need to allocate an extra pixel due to a weird bug (feature?)
+      // in GLu that causes an invalid read otherwise.
+      std::unique_ptr<TexturePixel[]> buf{new TexturePixel[(w * h) + 1]{}};
 
       for(TextureDim y = 0; y < h; y++)
          for(TextureDim x = 0; x < w; x++)
       {
          auto g = glyph->bitmap.buffer[x + y * pitch];
-         auto &pixel = buf[x + y * w];
+         auto &pixel = buf[x + (y * w)];
          pixel[0] = pixel[1] = pixel[2] = 1.0f;
          pixel[3] = g / 255.0f;
       }

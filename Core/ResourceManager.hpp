@@ -58,7 +58,7 @@ namespace DGE::Core
          &ResourceT::name, &ResourceT::link>;
       using ResourceVec = std::vector<ResourceT>;
 
-      ResourceManager() : resNone{nullptr} {}
+      ResourceManager() : resMap{}, resVec{}, resNone{nullptr} {}
       ResourceManager(ResourceManager const &) = delete;
 
       //

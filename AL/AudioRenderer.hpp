@@ -81,11 +81,11 @@ namespace DGE::AL
       Sound *soundGet_File(GDCC::Core::String name);
       Sound *soundGet_None(GDCC::Core::String name);
 
+      Core::ResourceManager<SoundData> sndMan;
+
       SoundSourceDynamic sndSrcGbl;
       SoundSourceMap     sndSrcMap;
       unsigned           sndSrcId;
-
-      Core::ResourceManager<SoundData> sndMan;
 
       ALCdevice  *device;
       ALCcontext *context;

@@ -104,7 +104,10 @@ namespace DGE::GL
 
       win{win_},
 
+      texMan{},
       texBound{nullptr},
+
+      shdMan{},
       shdBound{nullptr},
 
       fontBase{baseFont()},

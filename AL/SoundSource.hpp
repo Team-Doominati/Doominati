@@ -44,7 +44,7 @@ namespace DGE::AL
    class SoundSource
    {
    public:
-      virtual ~SoundSource();
+      virtual ~SoundSource() {}
 
       unsigned getFreeChannel();
       void  bind     (unsigned channel, SoundData *snd);
@@ -65,6 +65,7 @@ namespace DGE::AL
       SoundSource(unsigned id_) :
          id{id_}, link{this}, channelV{nullptr}, channelC{0} {}
 
+      void freeChannels();
       virtual bool requestChannels() = 0;
 
       SoundChannel *channelV;

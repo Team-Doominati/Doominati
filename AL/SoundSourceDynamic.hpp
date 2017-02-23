@@ -30,9 +30,12 @@ namespace DGE::AL
    class SoundSourceDynamic : public SoundSource
    {
    public:
-      SoundSourceDynamic(unsigned id_) : SoundSource(id_) {}
+      SoundSourceDynamic(unsigned id_) : SoundSource(id_), cdata{} {}
+      ~SoundSourceDynamic() {freeChannels();}
 
+      //
       // requestChannels
+      //
       virtual bool requestChannels()
       {
          cdata.resize(cdata.size() + 32);
