@@ -130,10 +130,12 @@ include_directories(SYSTEM
 ## Optional libraries
 ##
 find_package(FLAC)
+find_package(Opus)
 find_package(Vorbis)
 
 ## Optional defs for target AL
 Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_FLAC   FLAC)
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Opus   OPUS)
 Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Vorbis VORBIS)
 
 ## Optional defs for target GL

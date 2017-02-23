@@ -26,6 +26,7 @@ add_library(dge-al-lib STATIC
    Sound.cpp
    Sound.hpp
    Sound/FLAC.cpp
+   Sound/Opus.cpp
    Sound/Vorbis.cpp
    Sound/WAVE.cpp
    SoundSource.cpp
