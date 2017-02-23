@@ -31,22 +31,24 @@ namespace DGE::GL
    //
    // Renderer::textureBind
    //
-   void Renderer::textureBind(TextureData const *tex)
+   void Renderer::textureBind(Texture const *tex)
    {
       if(!tex)
          textureUnbind();
 
-      else if(!texBound || texBound->tex != tex->tex)
-         glBindTexture(GL_TEXTURE_2D, (texBound = tex)->tex);
+      else if(texBound != tex)
+         glBindTexture(GL_TEXTURE_2D, (texBound = tex)->data.tex);
    }
 
    //
-   // Renderer::textureGetRaw
+   // Renderer::textureGet
    //
-   Renderer::Texture *Renderer::textureGetRaw(GDCC::Core::String name)
+   Texture *Renderer::textureGet(GDCC::Core::String name)
    {
       if(auto tex = texMan.resMap.find(name))
          return tex;
+
+      Core::ResourceSaver<TextureData> texSave{texMan, texBound};
 
       if(name[0] == '@')
          return textureGet_File(name);
@@ -58,7 +60,7 @@ namespace DGE::GL
    //
    // Renderer::textureGet_File
    //
-   Renderer::Texture *Renderer::textureGet_File(GDCC::Core::String name)
+   Texture *Renderer::textureGet_File(GDCC::Core::String name)
    {
       auto filename = name.data() + 1;
       auto file = FS::Dir::FindFile(filename);
@@ -90,7 +92,7 @@ namespace DGE::GL
    //
    // Renderer::textureGet_None
    //
-   Renderer::Texture *Renderer::textureGet_None(GDCC::Core::String name)
+   Texture *Renderer::textureGet_None(GDCC::Core::String name)
    {
       TexturePixel const data[4] =
          {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}};
@@ -101,7 +103,7 @@ namespace DGE::GL
    //
    // Renderer::textureGet_NoFi
    //
-   Renderer::Texture *Renderer::textureGet_NoFi(GDCC::Core::String name)
+   Texture *Renderer::textureGet_NoFi(GDCC::Core::String name)
    {
       TexturePixel data[64*64]{};
 
@@ -114,17 +116,6 @@ namespace DGE::GL
       }
 
       return texMan.add({64, 64, data}, name);
-   }
-
-   //
-   // Renderer::textureUnbind
-   //
-   void Renderer::textureUnbind()
-   {
-      TextureData const *tex = &texMan.resNone->data;
-
-      if(!texBound || texBound->tex != tex->tex)
-         glBindTexture(GL_TEXTURE_2D, (texBound = tex)->tex);
    }
 }
 
@@ -141,7 +132,7 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_GetTexture)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Renderer::GetCurrent()->textureGetIdx(str));
+      task->dataStk.push(Renderer::GetCurrent()->textureGet(str)->idx);
       return false;
    }
 

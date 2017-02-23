@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 #define DGE__GL__ShaderData_H__
 
 #include "GL/OpenGL2.1.h"
+
+#include "Core/Types.hpp"
 
 #include <stdexcept>
 
@@ -29,6 +31,10 @@ namespace DGE::FS
 
 namespace DGE::GL
 {
+   class ShaderData;
+
+   using Shader = Core::Resource<ShaderData>;
+
    //
    // ShaderError
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -155,11 +155,11 @@ namespace DGE::GL
    //
    // Renderer::baseFont
    //
-   FontFace *Renderer::baseFont() const
+   FontFace *Renderer::baseFont()
    {
       // FONT_TODO: don't hardcode this
       try
-         {return new FontFace(FS::Dir::FindFile("Fonts/base.ttf"), 72);}
+         {return new FontFace(texMan, FS::Dir::FindFile("Fonts/base.ttf"), 72);}
       catch(FontLoadError const &exc)
       {
          std::cerr << "couldn't load base font: " << exc.what() << std::endl;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -179,13 +179,15 @@ namespace DGE::Core
       //
       // insert
       //
-      void insert(T *obj)
+      T *insert(T *obj)
       {
          if(objC >= chainV.size())
             resize(chainV.size() + chainV.size() / 2 + growC);
 
          ++objC;
          (obj->*LinkMem).insert(&chainV[hasher(GetKey::Get(obj)) % chainV.size()]);
+
+         return obj;
       }
 
       //

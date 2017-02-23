@@ -127,7 +127,7 @@ namespace DGE::GL
             auto dx = px + gly.ox + kern;
             auto dy = py + gly.oy;
 
-            textureBind(&gly.data);
+            textureBind(texMan.get(gly.tex));
             drawRectangle(dx, dy, dx + gly.w, dy + gly.h);
 
             px += gly.ax + kern;

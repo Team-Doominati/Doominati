@@ -53,10 +53,11 @@ namespace DGE::Core
    class ResourceManager
    {
    public:
-      using ResourceT   = Resource<ResourceData>;
-      using ResourceMap = Core::HashMapKeyMem<GDCC::Core::String, ResourceT,
-         &ResourceT::name, &ResourceT::link>;
-      using ResourceVec = std::vector<ResourceT>;
+      using Res    = Resource<ResourceData>;
+      using ResMan = Core::HashMapKeyMem<GDCC::Core::String, Res,
+         &Res::name, &Res::link>;
+      using ResVec = std::vector<Res>;
+
 
       ResourceManager() : resMap{}, resVec{}, resNone{nullptr} {}
       ResourceManager(ResourceManager const &) = delete;
@@ -64,7 +65,7 @@ namespace DGE::Core
       //
       // add
       //
-      ResourceT *add(ResourceData &&data, GDCC::Core::String name)
+      Res *add(ResourceData &&data, GDCC::Core::String name)
       {
          std::size_t idx = resVec.size();
          resVec.emplace_back(std::move(data), name, idx);
@@ -78,7 +79,7 @@ namespace DGE::Core
       //
       // get
       //
-      ResourceT *get(std::size_t idx)
+      Res *get(std::size_t idx)
       {
          if(idx < resVec.size())
             return &resVec[idx];
@@ -86,9 +87,32 @@ namespace DGE::Core
          return resNone;
       }
 
-      ResourceMap resMap;
-      ResourceVec resVec;
-      ResourceT  *resNone;
+      ResMan resMap;
+      ResVec resVec;
+      Res   *resNone;
+   };
+
+   //
+   // ResourceSaver
+   //
+   template<typename ResourceData>
+   class ResourceSaver
+   {
+   public:
+      using Res    = Resource<ResourceData>;
+      using ResMan = ResourceManager<ResourceData>;
+
+
+      ResourceSaver(ResMan &man_, Res *&res_) :
+         man{man_}, res{res_}, idx{res ? res->idx : SIZE_MAX} {}
+      ResourceSaver(ResMan &man_, Res const *&res_) :
+         man{man_}, res{const_cast<Res *&>(res_)}, idx{res ? res->idx : SIZE_MAX} {}
+      ~ResourceSaver() {if(idx != SIZE_MAX) res = man.get(idx);}
+
+   private:
+      ResMan     &man;
+      Res       *&res;
+      std::size_t idx;
    };
 }
 

@@ -76,6 +76,8 @@ namespace DGE::GL
    //
    std::size_t Renderer::shaderAdd(GDCC::Core::String name, char const *f, char const *v)
    {
+      Core::ResourceSaver<ShaderData> shdSave{shdMan, shdBound};
+
       try
          {return shdMan.add({f, v}, name)->idx;}
 
@@ -91,6 +93,8 @@ namespace DGE::GL
    //
    std::size_t Renderer::shaderAdd(GDCC::Core::String name, FS::File *f, FS::File *v)
    {
+      Core::ResourceSaver<ShaderData> shdSave{shdMan, shdBound};
+
       try
          {return shdMan.add({f, v}, name)->idx;}
 
@@ -104,27 +108,29 @@ namespace DGE::GL
    //
    // Renderer::shaderBind
    //
-   void Renderer::shaderBind(ShaderData *shd)
+   void Renderer::shaderBind(Shader *shd)
    {
       if(!shd)
          shaderUnbind();
 
       else
       {
-         if(!shdBound || shdBound->prog != shd->prog)
-            glUseProgram((shdBound = shd)->prog);
+         if(shdBound != shd)
+            glUseProgram((shdBound = shd)->data.prog);
 
-         shdBound->update();
+         shdBound->data.update();
       }
    }
 
    //
-   // Renderer::shaderGetRaw
+   // Renderer::shaderGet
    //
-   Renderer::Shader *Renderer::shaderGetRaw(GDCC::Core::String name)
+   Shader *Renderer::shaderGet(GDCC::Core::String name)
    {
       if(auto shd = shdMan.resMap.find(name))
          return shd;
+
+      Core::ResourceSaver<ShaderData> shdSave{shdMan, shdBound};
 
       std::cerr << "unknown shader: " << name << std::endl;
       return shaderGet_Base(name);
@@ -133,7 +139,7 @@ namespace DGE::GL
    //
    // Renderer::shaderGet_Base
    //
-   Renderer::Shader *Renderer::shaderGet_Base(GDCC::Core::String name)
+   Shader *Renderer::shaderGet_Base(GDCC::Core::String name)
    {
       return shdMan.add({BaseFragShader, BaseVertShader}, name);
    }
@@ -147,35 +153,35 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // unsigned DGE_CreateShaderData(__str_ent *name, char const *frag, *vert)
+   // unsigned DGE_CreateShaderData(__str_ent *name, char const *frag, char const *vert)
    //
    DGE_Code_NativeDefn(DGE_CreateShaderData)
    {
       GDCC::Core::String str{argv[0]};
-      
+
       auto fragD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
       auto vertD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[2]});
-      
+
       task->dataStk.push(Renderer::GetCurrent()->shaderAdd(str, fragD.get(), vertD.get()));
-      
+
       return false;
    }
 
    //
-   // unsigned DGE_CreateShaderFile(__str_ent *name, char const *frag, *vert)
+   // unsigned DGE_CreateShaderFile(__str_ent *name, char const *frag, char const *vert)
    //
    DGE_Code_NativeDefn(DGE_CreateShaderFile)
    {
       GDCC::Core::String str{argv[0]};
-      
+
       auto fragD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
       auto vertD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[2]});
-      
+
       auto fragF = FS::Dir::FindFile(fragD.get());
       auto vertF = FS::Dir::FindFile(vertD.get());
-      
+
       task->dataStk.push(Renderer::GetCurrent()->shaderAdd(str, fragF, vertF));
-      
+
       return false;
    }
 
@@ -185,7 +191,7 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_GetShader)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Renderer::GetCurrent()->shaderGetIdx(str));
+      task->dataStk.push(Renderer::GetCurrent()->shaderGet(str)->idx);
       return false;
    }
 

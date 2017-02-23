@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,11 +13,12 @@
 #ifndef DGE__GL__Font_H__
 #define DGE__GL__Font_H__
 
-#include "Core/List.hpp"
-#include "Core/HashMap.hpp"
-
 #include "GL/Texture.hpp"
 #include "GL/Types.hpp"
+
+#include "Core/HashMap.hpp"
+#include "Core/List.hpp"
+#include "Core/ResourceManager.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -65,16 +66,15 @@ namespace DGE::GL
 
       FontGlyph(FontGlyph &&gly) :
          FontGlyphMetr{std::move(gly)},
-         data{std::move(gly.data)}, link{this, std::move(gly.link)}, ch{gly.ch}
+         tex{gly.tex}, link{this, std::move(gly.link)}, ch{gly.ch}
       {}
 
-      FontGlyph(char32_t ch_, TextureData &&data_, FontGlyphMetr &&metr) :
-         FontGlyphMetr{std::move(metr)},
-         data{std::move(data_)}, link{this}, ch{ch_} {}
+      FontGlyph(char32_t ch_, std::size_t tex, FontGlyphMetr &&metr) :
+         FontGlyphMetr{std::move(metr)}, tex{tex}, link{this}, ch{ch_} {}
 
       FontGlyph(FontGlyph const &) = delete;
 
-      TextureData data;
+      std::size_t tex;
       Core::ListLink<FontGlyph> link;
       char32_t ch;
    };
@@ -86,7 +86,7 @@ namespace DGE::GL
    {
    public:
       FontFace() = delete;
-      FontFace(FS::File *fp, int ptsize);
+      FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize);
       FontFace(FontFace const &) = delete;
       FontFace(FontFace &&) = default;
       ~FontFace();
@@ -108,6 +108,8 @@ namespace DGE::GL
 
       GlyphMap glyMap;
       GlyphVec glyVec;
+
+      Core::ResourceManager<TextureData> &texMan;
 
       bool     hasKerning : 1;
       char32_t kernCh;

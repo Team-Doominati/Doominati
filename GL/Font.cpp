@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -92,10 +92,11 @@ namespace DGE::GL
    //
    // FontFace constructor
    //
-   FontFace::FontFace(FS::File *fp, int ptsize) :
+   FontFace::FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize) :
       face{nullptr},
       glyMap{},
       glyVec{},
+      texMan{man},
       kernCh{},
       kernAmt{}
    {
@@ -147,9 +148,8 @@ namespace DGE::GL
          std::cout <<
             "Glyph " << ch << ": W " << metr.w << " H " << metr.h << std::endl;
 
-      glyVec.emplace_back(ch, TextureData{metr.w, metr.h, data}, std::move(metr));
-      glyMap.insert(&glyVec.back());
-      return glyVec.back();
+      glyVec.emplace_back(ch, texMan.add({metr.w, metr.h, data}, nullptr)->idx, std::move(metr));
+      return *glyMap.insert(&glyVec.back());
    }
 
    //

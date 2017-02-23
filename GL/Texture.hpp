@@ -16,6 +16,8 @@
 #include "GL/OpenGL2.1.h"
 #include "GL/Types.hpp"
 
+#include "Core/Types.hpp"
+
 #include <exception>
 #include <stdexcept>
 #include <memory>
@@ -32,6 +34,10 @@ namespace DGE::FS
 
 namespace DGE::GL
 {
+   class TextureData;
+
+   using Texture = Core::Resource<TextureData>;
+
    //
    // TextureData
    //

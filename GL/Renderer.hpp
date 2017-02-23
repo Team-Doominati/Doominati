@@ -107,31 +107,25 @@ namespace DGE::GL
       std::size_t shaderAdd(GDCC::Core::String name, char const *f, char const *v);
       std::size_t shaderAdd(GDCC::Core::String name, FS::File *f, FS::File *v);
 
-      void shaderBind(ShaderData *shd);
+      void shaderBind(Shader *shd);
 
-      ShaderData const *shaderCurrent() {return shdBound;}
+      Shader const *shaderCurrent() {return shdBound;}
 
-      ShaderData *shaderGet(GDCC::Core::String name) {return &shaderGetRaw(name)->data;}
-      ShaderData *shaderGet(char const *name)        {return &shaderGetRaw(name)->data;}
-      ShaderData *shaderGet(std::size_t idx)         {return &shdMan.get(idx)->data;}
+      Shader *shaderGet(GDCC::Core::String name);
+      Shader *shaderGet(std::size_t idx) {return shdMan.get(idx);}
 
-      std::size_t shaderGetIdx(GDCC::Core::String name) {return shaderGetRaw(name)->idx;}
-
-      void shaderUnbind() {shaderBind(&shdMan.resNone->data);}
+      void shaderUnbind() {shaderBind(shdMan.resNone);}
 
       // texture
       void textureBind(char const *name) {textureBind(textureGet(name));}
-      void textureBind(TextureData const *tex);
+      void textureBind(Texture const *tex);
 
-      TextureData const *textureCurrent() {return texBound;}
+      Texture const *textureCurrent() {return texBound;}
 
-      TextureData *textureGet(GDCC::Core::String name) {return &textureGetRaw(name)->data;}
-      TextureData *textureGet(char const *name)        {return &textureGetRaw(name)->data;}
-      TextureData *textureGet(std::size_t idx)         {return &texMan.get(idx)->data;}
+      Texture *textureGet(GDCC::Core::String name);
+      Texture *textureGet(std::size_t idx) {return texMan.get(idx);}
 
-      std::size_t textureGetIdx(GDCC::Core::String name) {return textureGetRaw(name)->idx;}
-
-      void textureUnbind();
+      void textureUnbind() {textureBind(texMan.resNone);}
 
       AlignHorz textAlignH;
       AlignVert textAlignV;
@@ -141,23 +135,18 @@ namespace DGE::GL
       static void SetCurrent(Renderer *renderer);
 
    private:
-      using Texture = Core::Resource<TextureData>;
-      using Shader  = Core::Resource<ShaderData>;
-
       static constexpr int MaxSubdivisions = 9;
 
-      FontFace *baseFont() const;
+      FontFace *baseFont();
 
       // circle
       void circleCreateLines(int subdivisions);
       void circleCreateTris(int subdivisions);
 
       // shader
-      Shader *shaderGetRaw(GDCC::Core::String name);
       Shader *shaderGet_Base(GDCC::Core::String name);
 
       // texture
-      Texture *textureGetRaw(GDCC::Core::String name);
       Texture *textureGet_File(GDCC::Core::String name);
       Texture *textureGet_None(GDCC::Core::String name);
       Texture *textureGet_NoFi(GDCC::Core::String name);
@@ -167,10 +156,10 @@ namespace DGE::GL
       float cr, cg, cb, ca;
 
       Core::ResourceManager<TextureData> texMan;
-      TextureData                 const *texBound;
+      Texture                     const *texBound;
 
       Core::ResourceManager<ShaderData> shdMan;
-      ShaderData                       *shdBound;
+      Shader                           *shdBound;
 
       std::unique_ptr<FontFace> fontBase;
       FontFace                 *fontBound;
