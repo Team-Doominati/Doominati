@@ -90,11 +90,6 @@ namespace DGE::FS
       case '7':           return Format::PAM;
       }
 
-      if(size < 4) return Format::Unknown;
-
-      if(data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S')
-         return Format::Ogg;
-
       if(size < 8) return Format::Unknown;
 
       // Doominati Game Engine Null-Terminated Strings
@@ -146,6 +141,12 @@ namespace DGE::FS
           (data[2] == '\x03' && data[3] == '\x04') ||
           (data[2] == '\x05' && data[3] == '\x06')))
          return Format::Zip;
+
+      if(size < 47) return Format::Unknown;
+
+      // Ogg
+      if(data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S')
+         return Format::Ogg;
 
       return Format::Unknown;
    }

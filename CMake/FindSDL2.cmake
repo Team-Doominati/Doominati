@@ -1,3 +1,17 @@
+##-----------------------------------------------------------------------------
+##
+## Copyright (C) 2017 Team Doominati
+##
+## See COPYING for license information.
+##
+##-----------------------------------------------------------------------------
+##
+## Find package for SDL2.
+##
+## A platform independence layer library.
+##
+##-----------------------------------------------------------------------------
+
 find_path(SDL2_INCLUDE_DIRS SDL.h
    HINTS ENV SDL2DIR
    PATH_SUFFIXES SDL2 include include/SDL2)

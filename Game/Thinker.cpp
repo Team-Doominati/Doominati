@@ -19,14 +19,8 @@
 
 namespace DGE::Game
 {
-   //
-   // ThinkerVec
-   //
    Core::IDAllocator<Thinker, Code::Word> Thinker::ThinkerVec;
 
-   //
-   // ThinkerCap
-   //
    Thinker Thinker::ThinkerCap{0};
 }
 
@@ -67,7 +61,9 @@ namespace DGE::Game
       ThinkerVec.free(id);
    }
 
+   //
    // Thinker::getMember
+   //
    Code::Word Thinker::getMember(ThinkerMember mem)
    {
       switch(mem)

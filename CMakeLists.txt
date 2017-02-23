@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 Team Doominati
+## Copyright (C) 2016-2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -58,12 +58,10 @@ endfunction()
 ##
 ## Add_Optional_Library
 ##
-function(Add_Optional_Library out def lib libout libinc)
-   find_package(${lib} QUIET)
-
+function(Add_Optional_Library out def lib)
    if(${${lib}_FOUND})
-      set(${out} "${${out}};${${lib}_${libout}}" PARENT_SCOPE)
-      include_directories(SYSTEM ${${lib}_${libinc}})
+      set(${out} "${${out}};${${lib}_LIBRARIES}" PARENT_SCOPE)
+      include_directories(SYSTEM ${${lib}_INCLUDE_DIRS})
       add_definitions("-D${def}=1")
    endif()
 endfunction()
@@ -111,30 +109,35 @@ endif()
 ## Required libraries
 ##
 find_package(Eigen3   REQUIRED)
+find_package(Freetype REQUIRED)
 find_package(GDCC     REQUIRED)
 find_package(OpenAL   REQUIRED)
 find_package(OpenGL   REQUIRED)
 find_package(SDL2     REQUIRED)
-find_package(Freetype REQUIRED)
 
 ## Global includes
 include_directories(${CMAKE_SOURCE_DIR})
 
 include_directories(SYSTEM
    ${EIGEN3_INCLUDE_DIRS}
+   ${FREETYPE_INCLUDE_DIRS}
    ${GDCC_INCLUDE_DIRS}
    ${OPENAL_INCLUDE_DIR}
    ${OPENGL_INCLUDE_DIR}
-   ${SDL2_INCLUDE_DIRS}
-   ${FREETYPE_INCLUDE_DIRS})
+   ${SDL2_INCLUDE_DIRS})
 
 ##
 ## Optional libraries
 ##
-Add_Optional_Library(DGE_AL_LIBRARIES DGE_Use_FLAC FLAC LIBRARIES INCLUDE_DIRS)
-Add_Optional_Library(DGE_AL_LIBRARIES DGE_Use_Vorbis Vorbis LIBRARIES INCLUDE_DIRS)
+find_package(FLAC)
+find_package(Vorbis)
 
-Add_Optional_Library(DGE_GL_LIBRARIES DGE_Use_JPEG JPEG LIBRARIES INCLUDE_DIR)
+## Optional defs for target AL
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_FLAC   FLAC)
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Vorbis VORBIS)
+
+## Optional defs for target GL
+Add_Optional_Library(DGE_GL_LIBRARIES DGE_GL_Use_JPEG JPEG)
 
 ##
 ## Entry point

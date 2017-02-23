@@ -51,10 +51,10 @@ add_library(dge-gl-lib STATIC
 target_link_libraries(dge-gl-lib
    dge-code-lib
    dge-core-lib
+   ${FREETYPE_LIBRARIES}
    ${GDCC_LIBRARIES}
    ${OPENGL_LIBRARIES}
    ${SDL2_LIBRARIES}
-   ${FREETYPE_LIBRARIES}
    ${DGE_GL_LIBRARIES})
 
 ## EOF

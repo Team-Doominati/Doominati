@@ -1,3 +1,17 @@
+##-----------------------------------------------------------------------------
+##
+## Copyright (C) 2017 Team Doominati
+##
+## See COPYING for license information.
+##
+##-----------------------------------------------------------------------------
+##
+## Find package for libFLAC.
+##
+## An audio library by Xiph which handles FLAC and Ogg FLAC.
+##
+##-----------------------------------------------------------------------------
+
 find_package(Ogg)
 
 if(OGG_FOUND)

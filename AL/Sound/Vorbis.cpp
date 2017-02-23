@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#if DGE_Use_Vorbis
+#if DGE_AL_Use_Vorbis
 #include "AL/Sound.hpp"
 
 #include "Core/Math.hpp"
@@ -188,5 +188,5 @@ namespace DGE::AL
    }
 }
 
-#endif//DGE_Use_Vorbis
+#endif//DGE_AL_Use_Vorbis
 

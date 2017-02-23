@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#if DGE_Use_FLAC
+#if DGE_AL_Use_FLAC
 #include "AL/Sound.hpp"
 
 #include "FS/File.hpp"
@@ -247,5 +247,5 @@ namespace DGE::AL
    }
 }
 
-#endif//DGE_Use_FLAC
+#endif//DGE_AL_Use_FLAC
 

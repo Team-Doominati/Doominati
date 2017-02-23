@@ -48,10 +48,10 @@ namespace DGE::AL
          alDeleteBuffers(1, &buf);
    }
 
-   #if DGE_Use_FLAC
+   #if DGE_AL_Use_FLAC
    std::unique_ptr<SoundLoader> CreateSoundLoader_FLAC(FS::File *file);
    #endif
-   #if DGE_Use_Vorbis
+   #if DGE_AL_Use_Vorbis
    std::unique_ptr<SoundLoader> CreateSoundLoader_Vorbis(FS::File *file);
    #endif
    std::unique_ptr<SoundLoader> CreateSoundLoader_WAVE(FS::File *file);
@@ -63,14 +63,15 @@ namespace DGE::AL
    {
       switch(file->format)
       {
-      #if DGE_Use_FLAC
+      #if DGE_AL_Use_FLAC
       case FS::Format::FLAC: return CreateSoundLoader_FLAC(file);
-      #endif
-      #if DGE_Use_Vorbis
-      case FS::Format::Ogg:  return CreateSoundLoader_Vorbis(file);
       #endif
       case FS::Format::WAVE: return CreateSoundLoader_WAVE(file);
 
+      case FS::Format::Ogg:
+         #if DGE_AL_Use_Vorbis
+         return CreateSoundLoader_Vorbis(file);
+         #endif
       default:
          throw SoundLoaderError("unknown format");
       }

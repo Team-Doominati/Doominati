@@ -51,7 +51,7 @@ namespace DGE::GL
          glDeleteTextures(1, &tex);
    }
 
-   #if DGE_Use_JPEG
+   #if DGE_GL_Use_JPEG
    std::unique_ptr<TextureLoader> CreateTextureLoader_JPEG(FS::File *file);
    #endif
    std::unique_ptr<TextureLoader> CreateTextureLoader_PAM(FS::File *file);
@@ -67,7 +67,7 @@ namespace DGE::GL
    {
       switch(file->format)
       {
-      #if DGE_Use_JPEG
+      #if DGE_GL_Use_JPEG
       case FS::Format::JPEG: return CreateTextureLoader_JPEG(file);
       #endif
       case FS::Format::PAM: return CreateTextureLoader_PAM(file);

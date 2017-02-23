@@ -19,11 +19,6 @@
 
 #include <GDCC/Core/Counter.hpp>
 
-
-//----------------------------------------------------------------------------|
-// Macros                                                                     |
-//
-
 //
 // DGE_Game_ThinkerMemberCases
 //

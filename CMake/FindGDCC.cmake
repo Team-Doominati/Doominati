@@ -1,3 +1,19 @@
+##-----------------------------------------------------------------------------
+##
+## Copyright (C) 2017 Team Doominati
+##
+## See COPYING for license information.
+##
+##-----------------------------------------------------------------------------
+##
+## Find package for gdcc-core-lib and gdcc-option-lib.
+##
+## Utility libraries from the Game Data Compiler Collection.
+##
+## Written by the best catgirl waifu, so you know it's good.
+##
+##-----------------------------------------------------------------------------
+
 find_path(GDCC_INCLUDE_DIRS GDCC/Option/Base.hpp)
 find_library(GDCC_LIBRARY_option gdcc-option-lib)
 find_library(GDCC_LIBRARY_core gdcc-core-lib)
