@@ -32,7 +32,7 @@
 // A value of 2 denotes Microsoft Windows assembly using Visual C++ syntax.
 //
 #if !defined(DGE_Code_DynamicGoto) && defined(NDEBUG)
-# if defined(__GNUC__)
+# if defined(__GNUC__) && DGE_Code_GNUC_DynamicGoto
 #  define DGE_Code_DynamicGoto 1
 // Due to complete bullshit, MSVC only allows you to use assembly on i686.
 // This can be worked around with asm files, but we're not going to do that.

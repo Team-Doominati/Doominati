@@ -115,7 +115,7 @@ check_cxx_source_compiles("
    Has_GNU_Dynamic_Goto)
 
 if(Has_GNU_Dynamic_Goto)
-   add_definitions(-DDGE_Code_DynamicGoto=1)
+   add_definitions(-DDGE_Code_GNUC_DynamicGoto=1)
 endif()
 
 
