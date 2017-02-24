@@ -15,6 +15,7 @@ cmake_minimum_required(VERSION 3.4)
 project(doominati)
 
 include(CheckCXXCompilerFlag)
+include(CheckCXXSourceCompiles)
 
 
 ##----------------------------------------------------------------------------|
@@ -48,7 +49,7 @@ endif()
 ## Try_CXX_Compiler_Flag
 ##
 function(Try_CXX_Compiler_Flag flag name)
-   CHECK_CXX_COMPILER_FLAG(${flag} ${name})
+   check_cxx_compiler_flag(${flag} ${name})
 
    if(${name})
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
@@ -98,6 +99,23 @@ if(MSVC)
    set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MP4 /MT      /O1 /Ob1       /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MP4 /MT      /O2 /Ob2       /D NDEBUG")
    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "/MP4 /MT  /Zi /O2 /Ob1       /D NDEBUG")
+endif()
+
+check_cxx_source_compiles("
+   int main()
+   {
+      auto ptr = &&label;
+
+      goto *ptr;
+      return 1;
+
+   label:
+      return 0;
+   }"
+   Has_GNU_Dynamic_Goto)
+
+if(Has_GNU_Dynamic_Goto)
+   add_definitions(-DDGE_Code_DynamicGoto=1)
 endif()
 
 

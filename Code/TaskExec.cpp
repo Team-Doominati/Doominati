@@ -31,18 +31,15 @@
 // A value of 1 denotes GCC style.
 // A value of 2 denotes Microsoft Windows assembly using Visual C++ syntax.
 //
-#ifndef DGE_Code_DynamicGoto
-// TODO: Use CMake to determine if GNUC dynamic goto syntax is available.
-# if defined(NDEBUG)
-#  if defined(__GNUC__)
-#   define DGE_Code_DynamicGoto 1
-// Due to complete and utter bullshit, dynamic gotos are only available
-// on x86 builds on Windows.
-#  elif defined(_MSC_VER) && defined(_WIN32) && defined(_M_IX86)
-#   define DGE_Code_DynamicGoto 2
-#  else
-#   define DGE_Code_DynamicGoto 0
-#  endif
+#if !defined(DGE_Code_DynamicGoto) && defined(NDEBUG)
+# if defined(__GNUC__)
+#  define DGE_Code_DynamicGoto 1
+// Due to complete bullshit, MSVC only allows you to use assembly on i686.
+// This can be worked around with asm files, but we're not going to do that.
+# elif defined(_MSC_VER) && defined(_WIN32) && defined(_M_IX86)
+#  define DGE_Code_DynamicGoto 2
+# else
+#  define DGE_Code_DynamicGoto 0
 # endif
 #endif
 
