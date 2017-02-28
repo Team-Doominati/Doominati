@@ -24,6 +24,8 @@ add_library(dge-game-lib STATIC
    Input.cpp
    Input.hpp
    Native.cpp
+   PointThinker.cpp
+   PointThinker.hpp
    Thinker.cpp
    Thinker.hpp
 )

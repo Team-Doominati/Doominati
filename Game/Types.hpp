@@ -6,29 +6,25 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Scripting native adder.
+// Common typedefs.
 //
 //-----------------------------------------------------------------------------
 
-#include "Code/Native.hpp"
+#ifndef DGE__Game__Types_H__
+#define DGE__Game__Types_H__
+
+#include "Core/Fixed.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Extern Functions                                                           |
+// Types                                                                      |
 //
 
 namespace DGE::Game
 {
-   void PointThinker_NativeAdd();
-
-   //
-   // NativeAdd
-   //
-   void NativeAdd()
-   {
-      PointThinker_NativeAdd();
-   }
+   using Angle = Core::Fixed<std::uint32_t, 32>;
+   using Coord = Core::Fixed<std:: int32_t,  7>;
 }
 
-// EOF
+#endif//DGE__Game__Types_H__
 

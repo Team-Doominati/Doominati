@@ -6,11 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Scripting native adder.
+// Positioned Thinkers.
 //
 //-----------------------------------------------------------------------------
 
+#include "Game/PointThinker.hpp"
+
 #include "Code/Native.hpp"
+#include "Code/Task.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -19,14 +22,25 @@
 
 namespace DGE::Game
 {
-   void PointThinker_NativeAdd();
+   void PointThinker_NativeAdd() {}
+}
 
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::Game
+{
    //
-   // NativeAdd
+   // unsigned DGE_CreatePointThinker(unsigned ext)
    //
-   void NativeAdd()
+   DGE_Code_NativeDefn(DGE_CreatePointThinker)
    {
-      PointThinker_NativeAdd();
+      std::size_t ext = argv[0];
+
+      task->dataStk.push((new(ext) PointThinker)->id);
+      return false;
    }
 }
 

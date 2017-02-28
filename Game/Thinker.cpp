@@ -12,6 +12,9 @@
 
 #include "Game/Thinker.hpp"
 
+#include "Code/Native.hpp"
+#include "Code/Task.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Objects                                                             |
@@ -62,17 +65,18 @@ namespace DGE::Game
    }
 
    //
-   // Thinker::getMember
+   // Thinker::unlink
    //
-   Code::Word Thinker::getMember(ThinkerMember mem)
+   void Thinker::unlink()
    {
-      switch(mem)
-      {
-         DGE_Game_ThinkerMemberCases();
+      // Hold a reference to self while unlinking,
+      Ref self(this);
 
-      default:
-         return 0;
-      }
+      prev->next = next;
+      next->prev = prev;
+
+      next = nullptr;
+      prev = nullptr;
    }
 
    //
@@ -88,6 +92,75 @@ namespace DGE::Game
          next = static_cast<Ref>(th->next);
          th->think();
       }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::Game
+{
+   //
+   // T DGE_ThinkerMemberGet*(unsigned id, unsigned mem)
+   //
+   #define DGE_Game_ThinkerMemberGetDefn(suffix) \
+      DGE_Code_NativeDefn(DGE_ThinkerMemberGet##suffix) \
+      { \
+         Thinker *th  = Thinker::Get(argv[0]); \
+         auto     mem = static_cast<ThinkerMember>(argv[1]); \
+         \
+         task->dataStk.push(th ? th->getMember(mem) : 0); \
+         return false; \
+      }
+
+   DGE_Game_ThinkerMemberGetDefn(LA)
+   DGE_Game_ThinkerMemberGetDefn(U)
+   DGE_Game_ThinkerMemberGetDefn(X)
+
+   //
+   // void DGE_ThinkerMemberSet*(unsigned id, unsigned mem, T val)
+   //
+   #define DGE_Game_ThinkerMemberSetDefn(suffix) \
+      DGE_Code_NativeDefn(DGE_ThinkerMemberSet##suffix) \
+      { \
+         Thinker *th  = Thinker::Get(argv[0]); \
+         auto     mem = static_cast<ThinkerMember>(argv[1]); \
+         \
+         if(th) th->setMember(mem, argv[2]); \
+         return false; \
+      }
+
+   DGE_Game_ThinkerMemberSetDefn(LA)
+   DGE_Game_ThinkerMemberSetDefn(U)
+   DGE_Game_ThinkerMemberSetDefn(X)
+
+   //
+   // void DGE_ThinkerRefAdd(unsigned id)
+   //
+   DGE_Code_NativeDefn(DGE_ThinkerRefAdd)
+   {
+      if(Thinker *th = Thinker::Get(argv[0])) th->refAdd();
+      return false;
+   }
+
+   //
+   // void DGE_ThinkerRefSub(unsigned id)
+   //
+   DGE_Code_NativeDefn(DGE_ThinkerRefSub)
+   {
+      if(Thinker *th = Thinker::Get(argv[0])) th->refSub();
+      return false;
+   }
+
+   //
+   // void DGE_ThinkerUnlink(unsigned id)
+   //
+   DGE_Code_NativeDefn(DGE_ThinkerUnlink)
+   {
+      if(Thinker *th = Thinker::Get(argv[0])) th->unlink();
+      return false;
    }
 }
 
