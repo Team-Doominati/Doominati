@@ -73,6 +73,17 @@ namespace DGE::Core
          reset(count, std::move(ctor));
       }
 
+      //
+      // constructor
+      //
+      HashMapFixed(std::initializer_list<std::pair<Key, T>> init) :
+         hasher{}, table{nullptr}, elemV{nullptr}, elemC{0}
+      {
+         auto itr = init.begin();
+         reset(init.size(),[&itr](Elem *elem)
+            {new(elem) Elem{itr->first, itr->second, nullptr}; ++itr;});
+      }
+
       ~HashMapFixed() {reset();}
 
       // operator [ std::size_t ]

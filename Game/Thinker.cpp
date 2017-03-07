@@ -12,8 +12,11 @@
 
 #include "Game/Thinker.hpp"
 
+#include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
+
+#include <string>
 
 
 //----------------------------------------------------------------------------|
@@ -92,6 +95,31 @@ namespace DGE::Game
          next = static_cast<Ref>(th->next);
          th->think();
       }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Glyph Types                                                                |
+//
+
+namespace DGE::Game
+{
+   //
+   // {ThinkerMember}
+   //
+   DGE_Code_GlyphTypeDefn(ThinkerMember)
+   {
+      static Core::HashMapFixed<Core::HashedStr, ThinkerMember> members
+      {
+         #define DGE_Game_ThinkerMemberList(name) {#name, ThinkerMember::name},
+         #include "Game/ThinkerMemberList.hpp"
+      };
+
+      if(auto *mem = members.find(glyph))
+         return static_cast<Code::Word>(*mem);
+
+      throw Code::GlyphError{"ThinkerMember", glyph};
    }
 }
 

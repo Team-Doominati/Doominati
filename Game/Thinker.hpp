@@ -84,14 +84,8 @@ namespace DGE::Game
    //
    enum class ThinkerMember : Code::Word
    {
-      id,
-      next,
-      pitch,
-      prev,
-      x,
-      y,
-      yaw,
-      z,
+      #define DGE_Game_ThinkerMemberList(name) name,
+      #include "Game/ThinkerMemberList.hpp"
 
       MAX
    };

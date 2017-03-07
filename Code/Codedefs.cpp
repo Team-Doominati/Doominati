@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "Code/Codedefs.hpp"
 
+#include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
 #include "Code/Program.hpp"
 
@@ -421,27 +422,27 @@ namespace DGE::Code
          char *valEnd;
          Word res = std::strtoul(val, &valEnd, 16);
 
-         // TODO: Throw parse exception.
          if(!valEnd || *valEnd)
-            return 0;
+            throw GDCC::Core::ParseExceptExpect{{}, "number", val, false};
 
          return res;
       }
 
-      // Special.
+      // Typed glyph.
       if(val[0] == '{')
       {
-         // TODO: Scan for closing brace and perform table lookup.
+         auto close = std::strchr(val + 1, '}');
+         if(!close)
+            throw GDCC::Core::ParseExceptExpect{{}, "glyph type", val, false};
 
-         if(!std::memcmp(val + 1, "s}", 2))
-            return static_cast<std::size_t>(GDCC::Core::String::Get(val + 3));
+         auto type = GlyphType::Find({val + 1, close});
+         if(!type)
+            throw GDCC::Core::ParseExceptExpect{{}, "known glyph type", val, false};
 
-         // TODO: Throw parse exception.
-         std::cerr << "unrecognized special: '" << val << "'\n";
-         return 0;
+         return type->resolve(*this, close + 1);
       }
 
-      // Glyph.
+      // Generic glyph.
       if(std::isalpha(val[0]) || val[0] == '_')
       {
          Core::HashedStr glyph = val;
@@ -461,14 +462,10 @@ namespace DGE::Code
          if(auto fn = findFunction(glyph))
             return fn->index;
 
-         // TODO: Throw parse exception.
-         std::cerr << "unrecognized glyph: '" << val << "'\n";
-         return 0;
+         throw GDCC::Core::ParseExceptExpect{{}, "glyph", val, false};
       }
 
-      // TODO: Throw parse exception.
-      std::cerr << "unrecognized val: '" << val << "'\n";
-      return 0;
+      throw GDCC::Core::ParseExceptExpect{{}, "val", val, false};
    }
 
    //
