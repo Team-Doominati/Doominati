@@ -19,15 +19,22 @@
 ## dge-game-lib
 ##
 add_library(dge-game-lib STATIC
+   Entity.cpp
+   Entity.hpp
    Event.cpp
    Event.hpp
    Input.cpp
    Input.hpp
    Native.cpp
+   PhysicsThinker.cpp
+   PhysicsThinker.hpp
    PointThinker.cpp
    PointThinker.hpp
+   RenderThinker.hpp
    Thinker.cpp
    Thinker.hpp
+   ThinkerMemberList.hpp
+   Types.hpp
 )
 
 target_link_libraries(dge-game-lib

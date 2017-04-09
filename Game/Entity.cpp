@@ -6,11 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Scripting native adder.
+// Reactive Thinkers.
 //
 //-----------------------------------------------------------------------------
 
+#include "Game/Entity.hpp"
+
 #include "Code/Native.hpp"
+#include "Code/Task.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -19,16 +22,33 @@
 
 namespace DGE::Game
 {
-   void Entity_NativeAdd();
-   void PointThinker_NativeAdd();
+   void Entity_NativeAdd() {}
 
    //
-   // NativeAdd
+   // Entity::think
    //
-   void NativeAdd()
+   void Entity::think()
    {
-      Entity_NativeAdd();
-      PointThinker_NativeAdd();
+      Super::think();
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::Game
+{
+   //
+   // unsigned DGE_CreateEntity(unsigned ext)
+   //
+   DGE_Code_NativeDefn(DGE_CreateEntity)
+   {
+      std::size_t ext = argv[0];
+
+      task->dataStk.push((new(ext) Entity)->id);
+      return false;
    }
 }
 
