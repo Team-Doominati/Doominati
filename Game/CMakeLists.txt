@@ -28,6 +28,8 @@ add_library(dge-game-lib STATIC
    Input.cpp
    Input.hpp
    Native.cpp
+   Object.cpp
+   Object.hpp
    PhysicsThinker.cpp
    PhysicsThinker.hpp
    PointThinker.cpp

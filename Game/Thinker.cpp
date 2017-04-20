@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Playsim state advancement.
+// Objects that change over time.
 //
 //-----------------------------------------------------------------------------
 
@@ -25,8 +25,6 @@
 
 namespace DGE::Game
 {
-   Core::IDAllocator<Thinker, Code::Word> Thinker::ThinkerVec;
-
    Thinker Thinker::ThinkerCap{0};
 }
 
@@ -42,8 +40,7 @@ namespace DGE::Game
    //
    Thinker::Thinker() :
       next{ThinkerCap.next},
-      prev{&ThinkerCap},
-      id{ThinkerVec.alloc(this)}
+      prev{&ThinkerCap}
    {
       prev->next = next->prev = this;
    }
@@ -53,8 +50,7 @@ namespace DGE::Game
    //
    Thinker::Thinker(int) :
       next{this},
-      prev{this},
-      id{ThinkerVec.alloc(this)} // This should give TID 0.
+      prev{this}
    {
       ++refCount; // Must never free ThinkerCap.
    }
@@ -64,7 +60,6 @@ namespace DGE::Game
    //
    Thinker::~Thinker()
    {
-      ThinkerVec.free(id);
    }
 
    //
@@ -163,24 +158,6 @@ namespace DGE::Game
    DGE_Game_ThinkerMemberSetDefn(LA)
    DGE_Game_ThinkerMemberSetDefn(U)
    DGE_Game_ThinkerMemberSetDefn(X)
-
-   //
-   // void DGE_ThinkerRefAdd(unsigned id)
-   //
-   DGE_Code_NativeDefn(DGE_ThinkerRefAdd)
-   {
-      if(Thinker *th = Thinker::Get(argv[0])) th->refAdd();
-      return false;
-   }
-
-   //
-   // void DGE_ThinkerRefSub(unsigned id)
-   //
-   DGE_Code_NativeDefn(DGE_ThinkerRefSub)
-   {
-      if(Thinker *th = Thinker::Get(argv[0])) th->refSub();
-      return false;
-   }
 
    //
    // void DGE_ThinkerUnlink(unsigned id)

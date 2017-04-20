@@ -6,18 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Playsim state advancement.
+// Objects that change over time.
 //
 //-----------------------------------------------------------------------------
 
 #ifndef DGE__Game__Thinker_H__
 #define DGE__Game__Thinker_H__
 
-#include "Code/Types.hpp"
-
-#include "Core/IDAllocator.hpp"
-
-#include <GDCC/Core/Counter.hpp>
+#include "Game/Object.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -44,7 +40,7 @@
 // DGE_Game_ThinkerPreamble
 //
 #define DGE_Game_ThinkerPreamble(name, base) \
-   GDCC_Core_CounterPreambleNoClone(DGE::Game::name, DGE::Game::base); \
+   DGE_Game_ObjectPreamble(name, base) \
    DGE_Game_ThinkerPreambleCommon(name); \
    \
 public: \
@@ -67,9 +63,6 @@ public: \
    virtual void setMember(ThinkerMember mem, Code::Word val) \
       {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
          default: This::extMember()[mem - ThinkerMember::MAX] = val;}} \
-   \
-   static name *Get(Code::Word id) \
-      {return dynamic_cast<name *>(ThinkerVec[id]);} \
    \
    static inline std::size_t ExtMemC; \
    static inline std::size_t ExtMemCF
@@ -97,9 +90,9 @@ namespace DGE::Game
    //
    // Thinker
    //
-   class Thinker : public GDCC::Core::Counter
+   class Thinker : public Object
    {
-      GDCC_Core_CounterPreambleNoClone(DGE::Game::Thinker, GDCC::Core::Counter);
+      DGE_Game_ObjectPreamble(Thinker, Object);
       DGE_Game_ThinkerPreambleCommon(Thinker);
 
    public:
@@ -107,16 +100,10 @@ namespace DGE::Game
       template<typename T> class Range;
 
 
-      void refAdd() {++refCount;}
-
-      void refSub() {if(!--refCount) delete this;}
-
       void unlink();
 
       Ptr      next;
       Thinker *prev;
-
-      Code::Word id;
 
 
       template<typename T> static T *Begin();
@@ -134,9 +121,6 @@ namespace DGE::Game
       virtual ~Thinker();
 
       virtual void think() {}
-
-
-      static Core::IDAllocator<Thinker, Code::Word> ThinkerVec;
 
    private:
       explicit Thinker(int); // ThinkerCap constructor.
