@@ -14,6 +14,7 @@
 #define DGE__Core__Fixed_H__
 
 #include <cstdint>
+#include <cstdlib>
 #include <type_traits>
 
 
@@ -52,10 +53,11 @@ namespace DGE::Core
    //
    // Fixed
    //
-   template<typename I, unsigned FB>
+   template<typename I_, unsigned FB>
    class Fixed
    {
    public:
+      using I    = I_;
       using Eval = typename FixedEvalT<I>::Eval;
       using F    = typename FixedFloatT<I>::FloatT;
 
@@ -67,7 +69,7 @@ namespace DGE::Core
       constexpr Fixed(F f) : data{f * FUL} {}
       constexpr Fixed(typename FixedIntT<I>::Int i) : Fixed{static_cast<I>(i)} {}
 
-      constexpr operator I () const {return data / FU;}
+      constexpr explicit operator I () const {return data / FU;}
       constexpr operator F () const {return static_cast<F>(data) / FUL;}
 
       constexpr Fixed operator + () const {return *this;}
@@ -80,8 +82,12 @@ namespace DGE::Core
 
       constexpr Fixed operator * (Fixed const &r) const
          {return {Mul(data, r.data), FixedRawT{}};}
+      constexpr Fixed operator * (I const &r) const
+         {return {data * r, FixedRawT{}};}
       constexpr Fixed operator / (Fixed const &r) const
          {return {Div(data, r.data), FixedRawT{}};}
+      constexpr Fixed operator / (I const &r) const
+         {return {data / r, FixedRawT{}};}
       constexpr Fixed operator % (Fixed const &r) const
          {return {data % r.data, FixedRawT{}};}
 
@@ -92,6 +98,14 @@ namespace DGE::Core
 
       constexpr Fixed operator << (unsigned r) const {return {data << r, FixedRawT{}};}
       constexpr Fixed operator >> (unsigned r) const {return {data >> r, FixedRawT{}};}
+
+      constexpr bool operator <  (Fixed const &r) const {return data <  r.data;}
+      constexpr bool operator >  (Fixed const &r) const {return data >  r.data;}
+      constexpr bool operator <= (Fixed const &r) const {return data <= r.data;}
+      constexpr bool operator >= (Fixed const &r) const {return data >= r.data;}
+
+      constexpr bool operator == (Fixed const &r) {return data == r.data;}
+      constexpr bool operator != (Fixed const &r) {return data != r.data;}
 
       constexpr Fixed &operator *= (Fixed const &r) {return data = Mul(data, r.data), *this;}
       constexpr Fixed &operator /= (Fixed const &r) {return data = Div(data, r.data), *this;}
@@ -111,6 +125,7 @@ namespace DGE::Core
 
       static constexpr Eval FUL = static_cast<Eval>(1) << FB;
       static constexpr I    FU  = static_cast<I>(FUL);
+      static constexpr I    FM  = FU - 1;
 
    private:
       I data;
@@ -125,6 +140,42 @@ namespace DGE::Core
 namespace DGE::Core
 {
    constexpr FixedRawT FixedRaw;
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace std
+{
+   //
+   // abs
+   //
+   template<typename I, unsigned FB>
+   ::DGE::Core::Fixed<I, FB> abs(::DGE::Core::Fixed<I, FB> const &x)
+   {
+      return x < ::DGE::Core::Fixed<I, FB>{0} ? -x : x;
+   }
+
+   //
+   // ceil
+   //
+   template<typename I, unsigned FB>
+   ::DGE::Core::Fixed<I, FB> ceil(::DGE::Core::Fixed<I, FB> const &x)
+   {
+      I i = x.raw();
+
+      if(i & x.FM)
+      {
+         if(i < 0)
+            i = (i & ~x.FM) - x.FU;
+         else
+            i = (i & ~x.FM) + x.FU;
+      }
+
+      return {i, ::DGE::Core::FixedRaw};
+   }
 }
 
 #endif//DGE__Core__Fixed_H__

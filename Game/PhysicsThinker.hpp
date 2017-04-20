@@ -15,6 +15,8 @@
 
 #include "Game/RenderThinker.hpp"
 
+#include "Core/ListLinkVector.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -38,7 +40,7 @@
 //
 #define DGE_Game_PhysicsThinker_SetMemberCases() \
    DGE_Game_RenderThinker_SetMemberCases(); \
-   case ThinkerMember::mass: mass =val; break; \
+   case ThinkerMember::mass: mass = val;  break; \
    case ThinkerMember::vx:   vx.raw(val); break; \
    case ThinkerMember::vy:   vy.raw(val); break; \
    case ThinkerMember::vz:   vz.raw(val); break; \
@@ -61,9 +63,12 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(PhysicsThinker, RenderThinker);
 
    public:
-      PhysicsThinker() : mass{0}, vx{0}, vy{0}, vz{0}, wx{0}, wy{0}, wz{0} {}
+      PhysicsThinker() : blockLinks{this},
+         mass{0}, vx{0}, vy{0}, vz{0}, wx{0}, wy{0}, wz{0} {}
 
       virtual void think();
+
+      Core::ListLinkVector<PhysicsThinker> blockLinks;
 
       Code::Word mass;
 
@@ -73,6 +78,13 @@ namespace DGE::Game
       Coord wx;
       Coord wy;
       Coord wz;
+
+
+      static bool Collide(PhysicsThinker *th, Coord &x, Coord &y, Coord &z);
+
+      static bool TryMoveX(PhysicsThinker *th, Coord x);
+      static bool TryMoveY(PhysicsThinker *th, Coord y);
+      static bool TryMoveZ(PhysicsThinker *th, Coord z);
    };
 }
 

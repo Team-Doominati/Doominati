@@ -19,6 +19,8 @@
 ## dge-game-lib
 ##
 add_library(dge-game-lib STATIC
+   BlockMap.cpp
+   BlockMap.hpp
    Entity.cpp
    Entity.hpp
    Event.cpp

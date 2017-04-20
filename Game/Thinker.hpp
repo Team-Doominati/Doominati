@@ -68,6 +68,8 @@ public: \
       {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
          default: This::extMember()[mem - ThinkerMember::MAX] = val;}} \
    \
+   static name *Get(Code::Word id) \
+      {return dynamic_cast<name *>(ThinkerVec[id]);} \
    \
    static inline std::size_t ExtMemC; \
    static inline std::size_t ExtMemCF
@@ -119,11 +121,6 @@ namespace DGE::Game
 
       template<typename T> static T *Begin();
 
-      static Thinker *Get(Code::Word id) {return ThinkerVec[id];}
-
-      template<typename T>
-      static T *Get(Code::Word id) {return dynamic_cast<T *>(ThinkerVec[id]);}
-
       static std::size_t GetExtMemCF() {return ExtMemCF = ExtMemC;}
 
       template<typename T> static T *Next(T *th);
@@ -138,11 +135,11 @@ namespace DGE::Game
 
       virtual void think() {}
 
-   private:
-      explicit Thinker(int); // ThinkerCap constructor.
-
 
       static Core::IDAllocator<Thinker, Code::Word> ThinkerVec;
+
+   private:
+      explicit Thinker(int); // ThinkerCap constructor.
    };
 
    //
