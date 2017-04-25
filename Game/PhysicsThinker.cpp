@@ -39,13 +39,13 @@ namespace DGE::Game
       auto avx = std::abs(vx);
       auto avy = std::abs(vy);
       auto avz = std::abs(vz);
-      if(avx >= wx || avy >= wy || avz >= wz)
+      if(avx >= sx || avy >= sy || avz >= sz)
       {
          Coord stepx, stepy, stepz;
          Coord::I steps;
 
          // Never move more than one width at a time.
-         steps = static_cast<Coord::I>(std::ceil(std::max({avx / wx, avy / wy, avz / wz}))) + 1;
+         steps = static_cast<Coord::I>(std::ceil(std::max({avx / sx, avy / sy, avz / sz}))) + 1;
          stepx = vx / steps;
          stepy = vy / steps;
          stepz = vz / steps;
@@ -78,9 +78,9 @@ namespace DGE::Game
       {
          for(auto &oth : node->listTh)
          {
-            if(std::abs(th->x - oth.x) < th->wx + oth.wx &&
-               std::abs(th->y - oth.y) < th->wy + oth.wy &&
-               std::abs(th->z - oth.z) < th->wz + oth.wz)
+            if(std::abs(th->x - oth.x) < th->sx + oth.sx &&
+               std::abs(th->y - oth.y) < th->sy + oth.sy &&
+               std::abs(th->z - oth.z) < th->sz + oth.sz)
             {
                // TODO: Snap position.
 

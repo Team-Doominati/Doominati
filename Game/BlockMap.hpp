@@ -46,14 +46,14 @@ namespace DGE::Game
 
       template<typename Iter>
       void forNode(PhysicsThinker *th, Iter &&iter)
-         {return forNode(th->x - th->wx, th->y - th->wy, th->x + th->wx, th->y + th->wy, iter);}
+         {return forNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
 
       template<typename Iter>
       void forNodeAll(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
 
       template<typename Iter>
       void forNodeAll(PhysicsThinker *th, Iter &&iter)
-         {return forNodeAll(th->x - th->wx, th->y - th->wy, th->x + th->wx, th->y + th->wy, iter);}
+         {return forNodeAll(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
 
       void insert(PhysicsThinker *th);
 

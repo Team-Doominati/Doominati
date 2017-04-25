@@ -31,9 +31,9 @@
    case ThinkerMember::vx:   return vx.raw(); \
    case ThinkerMember::vy:   return vy.raw(); \
    case ThinkerMember::vz:   return vz.raw(); \
-   case ThinkerMember::wx:   return wx.raw(); \
-   case ThinkerMember::wy:   return wy.raw(); \
-   case ThinkerMember::wz:   return wz.raw()
+   case ThinkerMember::sx:   return sx.raw(); \
+   case ThinkerMember::sy:   return sy.raw(); \
+   case ThinkerMember::sz:   return sz.raw()
 
 //
 // DGE_Game_PhysicsThinker_SetMemberCases
@@ -44,9 +44,9 @@
    case ThinkerMember::vx:   vx.raw(val); break; \
    case ThinkerMember::vy:   vy.raw(val); break; \
    case ThinkerMember::vz:   vz.raw(val); break; \
-   case ThinkerMember::wx:   wx.raw(val); break; \
-   case ThinkerMember::wy:   wy.raw(val); break; \
-   case ThinkerMember::wz:   wz.raw(val); break
+   case ThinkerMember::sx:   sx.raw(val); break; \
+   case ThinkerMember::sy:   sy.raw(val); break; \
+   case ThinkerMember::sz:   sz.raw(val); break
 
 
 //----------------------------------------------------------------------------|
@@ -64,7 +64,7 @@ namespace DGE::Game
 
    public:
       PhysicsThinker() : blockLinks{this},
-         mass{0}, vx{0}, vy{0}, vz{0}, wx{0}, wy{0}, wz{0} {}
+         mass{0}, vx{0}, vy{0}, vz{0}, sx{0}, sy{0}, sz{0} {}
 
       virtual void think();
 
@@ -75,9 +75,9 @@ namespace DGE::Game
       Coord vx;
       Coord vy;
       Coord vz;
-      Coord wx;
-      Coord wy;
-      Coord wz;
+      Coord sx;
+      Coord sy;
+      Coord sz;
 
 
       static bool Collide(PhysicsThinker *th, Coord &x, Coord &y, Coord &z);
