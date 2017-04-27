@@ -24,50 +24,32 @@
 // DGE_Game_Thinker_GetMemberCases
 //
 #define DGE_Game_Thinker_GetMemberCases() \
-   case ThinkerMember::id:   return id; \
-   case ThinkerMember::next: return next->id; \
-   case ThinkerMember::prev: return prev->id
+   DGE_Game_Object_GetMemberCases(); \
+   case ObjectMember::next: return next->id; \
+   case ObjectMember::prev: return prev->id
 
 //
 // DGE_Game_Thinker_SetMemberCases
 //
 #define DGE_Game_Thinker_SetMemberCases() \
-   case ThinkerMember::id:   (void)val; break; \
-   case ThinkerMember::next: (void)val; break; \
-   case ThinkerMember::prev: (void)val; break
+   DGE_Game_Object_SetMemberCases(); \
+   case ObjectMember::next: (void)val; break; \
+   case ObjectMember::prev: (void)val; break
 
 //
 // DGE_Game_ThinkerPreamble
 //
 #define DGE_Game_ThinkerPreamble(name, base) \
-   DGE_Game_ObjectPreamble(name, base) \
+   DGE_Game_ObjectPreamble(name, base); \
    DGE_Game_ThinkerPreambleCommon(name); \
    \
 public: \
-   using Range = RangeT<name>; \
-   \
-   static std::size_t GetExtMemCF() \
-      {return ExtMemCF = Super::GetExtMemCF() + ExtMemC;}
+   using Range = RangeT<name>
 
 //
 // DGE_Game_ThinkerPreambleCommon
 //
-#define DGE_Game_ThinkerPreambleCommon(name) \
-public: \
-   void *operator new(std::size_t size, std::size_t ext = 0) \
-      {return ::operator new(size + (ExtMemCF + ext) * sizeof(Code::Word));} \
-   \
-   virtual Code::Word *extMember() \
-      {return reinterpret_cast<Code::Word *>(this + 1);} \
-   virtual Code::Word getMember(ThinkerMember mem) \
-      {switch(mem) {DGE_Game_##name##_GetMemberCases(); \
-         default: return This::extMember()[mem - ThinkerMember::MAX];}} \
-   virtual void setMember(ThinkerMember mem, Code::Word val) \
-      {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
-         default: This::extMember()[mem - ThinkerMember::MAX] = val;}} \
-   \
-   static inline std::size_t ExtMemC; \
-   static inline std::size_t ExtMemCF
+#define DGE_Game_ThinkerPreambleCommon(name)
 
 
 //----------------------------------------------------------------------------|
@@ -76,19 +58,6 @@ public: \
 
 namespace DGE::Game
 {
-   //
-   // ThinkerMember
-   //
-   enum class ThinkerMember : Code::Word
-   {
-      #define DGE_Game_ThinkerMemberList(name) name,
-      #include "Game/ThinkerMemberList.hpp"
-
-      MAX
-   };
-
-   constexpr Code::Word operator - (ThinkerMember l, ThinkerMember r);
-
    //
    // Thinker
    //
@@ -111,8 +80,6 @@ namespace DGE::Game
 
 
       template<typename T> static T *Begin();
-
-      static std::size_t GetExtMemCF() {return ExtMemCF = ExtMemC;}
 
       template<typename T> static T *Next(T *th);
 
@@ -203,14 +170,6 @@ namespace DGE::Game
       }
 
       return nullptr;
-   }
-
-   //
-   // operator ThinkerMember - ThinkerMember
-   //
-   constexpr Code::Word operator - (ThinkerMember l, ThinkerMember r)
-   {
-      return static_cast<Code::Word>(l) - static_cast<Code::Word>(r);
    }
 }
 

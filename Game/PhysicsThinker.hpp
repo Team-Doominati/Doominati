@@ -27,26 +27,26 @@
 //
 #define DGE_Game_PhysicsThinker_GetMemberCases() \
    DGE_Game_RenderThinker_GetMemberCases(); \
-   case ThinkerMember::mass: return mass; \
-   case ThinkerMember::sx:   return sx.raw(); \
-   case ThinkerMember::sy:   return sy.raw(); \
-   case ThinkerMember::sz:   return sz.raw(); \
-   case ThinkerMember::vx:   return vx.raw(); \
-   case ThinkerMember::vy:   return vy.raw(); \
-   case ThinkerMember::vz:   return vz.raw()
+   case ObjectMember::mass: return mass; \
+   case ObjectMember::sx:   return sx.raw(); \
+   case ObjectMember::sy:   return sy.raw(); \
+   case ObjectMember::sz:   return sz.raw(); \
+   case ObjectMember::vx:   return vx.raw(); \
+   case ObjectMember::vy:   return vy.raw(); \
+   case ObjectMember::vz:   return vz.raw()
 
 //
 // DGE_Game_PhysicsThinker_SetMemberCases
 //
 #define DGE_Game_PhysicsThinker_SetMemberCases() \
    DGE_Game_RenderThinker_SetMemberCases(); \
-   case ThinkerMember::mass: mass = val;  break; \
-   case ThinkerMember::sx:   sx.raw(val); break; \
-   case ThinkerMember::sy:   sy.raw(val); break; \
-   case ThinkerMember::sz:   sz.raw(val); break; \
-   case ThinkerMember::vx:   vx.raw(val); break; \
-   case ThinkerMember::vy:   vy.raw(val); break; \
-   case ThinkerMember::vz:   vz.raw(val); break
+   case ObjectMember::mass: mass = val;  break; \
+   case ObjectMember::sx:   sx.raw(val); break; \
+   case ObjectMember::sy:   sy.raw(val); break; \
+   case ObjectMember::sz:   sz.raw(val); break; \
+   case ObjectMember::vx:   vx.raw(val); break; \
+   case ObjectMember::vy:   vy.raw(val); break; \
+   case ObjectMember::vz:   vz.raw(val); break
 
 
 //----------------------------------------------------------------------------|

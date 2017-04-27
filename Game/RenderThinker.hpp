@@ -27,18 +27,18 @@
 //
 #define DGE_Game_RenderThinker_GetMemberCases() \
    DGE_Game_PointThinker_GetMemberCases(); \
-   case ThinkerMember::rsx:    return Code::HostToSAccum(rsx); \
-   case ThinkerMember::rsy:    return Code::HostToSAccum(rsy); \
-   case ThinkerMember::sprite: return sprite
+   case ObjectMember::rsx:    return Code::HostToSAccum(rsx); \
+   case ObjectMember::rsy:    return Code::HostToSAccum(rsy); \
+   case ObjectMember::sprite: return sprite
 
 //
 // DGE_Game_RenderThinker_SetMemberCases
 //
 #define DGE_Game_RenderThinker_SetMemberCases() \
    DGE_Game_PointThinker_SetMemberCases(); \
-   case ThinkerMember::rsx:    rsx = Code::SAccumToHost(val); break; \
-   case ThinkerMember::rsy:    rsy = Code::SAccumToHost(val); break; \
-   case ThinkerMember::sprite: sprite = val; break
+   case ObjectMember::rsx:    rsx = Code::SAccumToHost(val); break; \
+   case ObjectMember::rsy:    rsy = Code::SAccumToHost(val); break; \
+   case ObjectMember::sprite: sprite = val; break
 
 
 //----------------------------------------------------------------------------|

@@ -12,9 +12,7 @@
 
 #include "Game/Thinker.hpp"
 
-#include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
-#include "Code/Task.hpp"
 
 #include <string>
 
@@ -97,70 +95,11 @@ namespace DGE::Game
 
 
 //----------------------------------------------------------------------------|
-// Glyph Types                                                                |
-//
-
-namespace DGE::Game
-{
-   //
-   // {ThinkerMember}
-   //
-   DGE_Code_GlyphTypeDefn(ThinkerMember)
-   {
-      static Core::HashMapFixed<Core::HashedStr, ThinkerMember> members
-      {
-         #define DGE_Game_ThinkerMemberList(name) {#name, ThinkerMember::name},
-         #include "Game/ThinkerMemberList.hpp"
-      };
-
-      if(auto *mem = members.find(glyph))
-         return static_cast<Code::Word>(*mem);
-
-      throw Code::GlyphError{"ThinkerMember", glyph};
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Natives                                                                    |
 //
 
 namespace DGE::Game
 {
-   //
-   // T DGE_ThinkerMemberGet*(unsigned id, unsigned mem)
-   //
-   #define DGE_Game_ThinkerMemberGetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_ThinkerMemberGet##suffix) \
-      { \
-         Thinker *th  = Thinker::Get(argv[0]); \
-         auto     mem = static_cast<ThinkerMember>(argv[1]); \
-         \
-         task->dataStk.push(th ? th->getMember(mem) : 0); \
-         return false; \
-      }
-
-   DGE_Game_ThinkerMemberGetDefn(LA)
-   DGE_Game_ThinkerMemberGetDefn(U)
-   DGE_Game_ThinkerMemberGetDefn(X)
-
-   //
-   // void DGE_ThinkerMemberSet*(unsigned id, unsigned mem, T val)
-   //
-   #define DGE_Game_ThinkerMemberSetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_ThinkerMemberSet##suffix) \
-      { \
-         Thinker *th  = Thinker::Get(argv[0]); \
-         auto     mem = static_cast<ThinkerMember>(argv[1]); \
-         \
-         if(th) th->setMember(mem, argv[2]); \
-         return false; \
-      }
-
-   DGE_Game_ThinkerMemberSetDefn(LA)
-   DGE_Game_ThinkerMemberSetDefn(U)
-   DGE_Game_ThinkerMemberSetDefn(X)
-
    //
    // void DGE_ThinkerUnlink(unsigned id)
    //

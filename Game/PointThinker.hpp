@@ -26,22 +26,22 @@
 //
 #define DGE_Game_PointThinker_GetMemberCases() \
    DGE_Game_Thinker_GetMemberCases(); \
-   case ThinkerMember::pitch: return pitch.raw(); \
-   case ThinkerMember::x:     return x.raw(); \
-   case ThinkerMember::y:     return y.raw(); \
-   case ThinkerMember::yaw:   return yaw.raw(); \
-   case ThinkerMember::z:     return z.raw()
+   case ObjectMember::pitch: return pitch.raw(); \
+   case ObjectMember::x:     return x.raw(); \
+   case ObjectMember::y:     return y.raw(); \
+   case ObjectMember::yaw:   return yaw.raw(); \
+   case ObjectMember::z:     return z.raw()
 
 //
 // DGE_Game_PointThinker_SetMemberCases
 //
 #define DGE_Game_PointThinker_SetMemberCases() \
    DGE_Game_Thinker_SetMemberCases(); \
-   case ThinkerMember::pitch: pitch.raw(val); break; \
-   case ThinkerMember::x:     x.raw(val);     break; \
-   case ThinkerMember::y:     y.raw(val);     break; \
-   case ThinkerMember::yaw:   yaw.raw(val);   break; \
-   case ThinkerMember::z:     z.raw(val);     break
+   case ObjectMember::pitch: pitch.raw(val); break; \
+   case ObjectMember::x:     x.raw(val);     break; \
+   case ObjectMember::y:     y.raw(val);     break; \
+   case ObjectMember::yaw:   yaw.raw(val);   break; \
+   case ObjectMember::z:     z.raw(val);     break
 
 
 //----------------------------------------------------------------------------|
