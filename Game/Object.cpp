@@ -21,7 +21,7 @@
 
 namespace DGE::Game
 {
-   Core::IDAllocator<Object, Code::Word> Object::ObjectVec;
+   Core::IDAllocator<Object, Code::Word> &Object::ObjectVec = GetObjectVec();
 }
 
 
@@ -35,7 +35,7 @@ namespace DGE::Game
    // Object constructor
    //
    Object::Object() :
-      id{ObjectVec.alloc(this)}
+      id{GetObjectVec().alloc(this)}
    {
    }
 
@@ -45,6 +45,15 @@ namespace DGE::Game
    Object::~Object()
    {
       ObjectVec.free(id);
+   }
+
+   //
+   // Object::GetObjectVec
+   //
+   Core::IDAllocator<Object, Code::Word> &Object::GetObjectVec()
+   {
+      static Core::IDAllocator<Object, Code::Word> vec;
+      return vec;
    }
 }
 

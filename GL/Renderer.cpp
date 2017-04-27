@@ -12,6 +12,9 @@
 
 #include "GL/Renderer.hpp"
 
+#include "GL/OpenGL2.1.h"
+#include "GL/Window.hpp"
+
 #include "Code/Convert.hpp"
 #include "Code/Callback.hpp"
 #include "Code/Native.hpp"
@@ -22,8 +25,7 @@
 
 #include "FS/Dir.hpp"
 
-#include "GL/OpenGL2.1.h"
-#include "GL/Window.hpp"
+#include "Game/RenderThinker.hpp"
 
 #include <iostream>
 
@@ -287,6 +289,20 @@ namespace DGE::GL
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       CallbackDraw(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
+
+      // TODO: Derive render coordinates from a PointThinker or CameraThinker.
+      float rx = -win.w / 2, ry = -win.h / 2;
+
+      // TODO: Render floors.
+
+      // Render RenderThinkers.
+      drawColorSet(1.0f, 1.0f, 1.0f);
+      for(auto &th : Game::RenderThinker::Range())
+      {
+         textureBind(textureGet(th.sprite));
+         float tx = th.x - rx, ty = th.y - ry;
+         drawRectangle(tx - th.rsx, ty - th.rsy, tx + th.rsx, ty + th.rsy);
+      }
    }
 
    //

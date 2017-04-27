@@ -60,6 +60,8 @@ namespace DGE::Game
    //
    Thinker::~Thinker()
    {
+      if(next)
+         unlink();
    }
 
    //

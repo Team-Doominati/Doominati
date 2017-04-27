@@ -66,11 +66,12 @@ namespace DGE::Core
       constexpr Fixed(Fixed const &) = default;
       constexpr Fixed(I i) : data{i * FU} {}
       constexpr Fixed(I i, FixedRawT) : data{i} {}
-      constexpr Fixed(F f) : data{f * FUL} {}
+      constexpr explicit Fixed(F f) : data{f * FUL} {}
       constexpr Fixed(typename FixedIntT<I>::Int i) : Fixed{static_cast<I>(i)} {}
 
+      constexpr explicit operator bool () const {return static_cast<bool>(data);}
       constexpr explicit operator I () const {return data / FU;}
-      constexpr operator F () const {return static_cast<F>(data) / FUL;}
+      constexpr explicit operator F () const {return static_cast<F>(data) / FUL;}
 
       constexpr Fixed operator + () const {return *this;}
       constexpr Fixed operator - () const {return {-data, FixedRawT{}};}
@@ -146,6 +147,29 @@ namespace DGE::Core
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
+
+namespace DGE::Core
+{
+   //
+   // operator Fixed - Fixed::F
+   //
+   template<typename I, unsigned FB>
+   constexpr typename Fixed<I, FB>::F operator -
+      (Fixed<I, FB> const &l, typename Fixed<I, FB>::F const &r)
+   {
+      return static_cast<typename Fixed<I, FB>::F>(l) - r;
+   }
+
+   //
+   // operator Fixed::F - Fixed
+   //
+   template<typename I, unsigned FB>
+   constexpr typename Fixed<I, FB>::F operator -
+      (typename Fixed<I, FB>::F const &l, Fixed<I, FB> const &r)
+   {
+      return l - static_cast<typename Fixed<I, FB>::F>(r);
+   }
+}
 
 namespace std
 {

@@ -66,7 +66,9 @@ namespace DGE::Game
       virtual ~Object();
 
 
-      static Core::IDAllocator<Object, Code::Word> ObjectVec;
+      static Core::IDAllocator<Object, Code::Word> &GetObjectVec();
+
+      static Core::IDAllocator<Object, Code::Word> &ObjectVec;
    };
 }
 

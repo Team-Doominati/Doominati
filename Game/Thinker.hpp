@@ -44,6 +44,8 @@
    DGE_Game_ThinkerPreambleCommon(name); \
    \
 public: \
+   using Range = RangeT<name>; \
+   \
    static std::size_t GetExtMemCF() \
       {return ExtMemCF = Super::GetExtMemCF() + ExtMemC;}
 
@@ -97,7 +99,9 @@ namespace DGE::Game
 
    public:
       template<typename T> class Iterator;
-      template<typename T> class Range;
+      template<typename T> class RangeT;
+
+      using Range = RangeT<Thinker>;
 
 
       void unlink();
@@ -144,7 +148,7 @@ namespace DGE::Game
       bool operator != (Iterator<T> const &i) {return th != i.th;}
 
 
-      friend class Range<T>;
+      friend class RangeT<T>;
 
    private:
       explicit Iterator(T *th_) : th{th_} {}
@@ -153,10 +157,10 @@ namespace DGE::Game
    };
 
    //
-   // Thinker::Range
+   // Thinker::RangeT
    //
    template<typename T>
-   class Thinker::Range
+   class Thinker::RangeT
    {
    public:
       Iterator<T> begin() {return Iterator<T>(Begin<T>());}

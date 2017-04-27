@@ -15,6 +15,8 @@
 
 #include "Game/PointThinker.hpp"
 
+#include "Code/Convert.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -24,13 +26,19 @@
 // DGE_Game_RenderThinker_GetMemberCases
 //
 #define DGE_Game_RenderThinker_GetMemberCases() \
-   DGE_Game_PointThinker_GetMemberCases()
+   DGE_Game_PointThinker_GetMemberCases(); \
+   case ThinkerMember::rsx:    return Code::HostToSAccum(rsx); \
+   case ThinkerMember::rsy:    return Code::HostToSAccum(rsy); \
+   case ThinkerMember::sprite: return sprite
 
 //
 // DGE_Game_RenderThinker_SetMemberCases
 //
 #define DGE_Game_RenderThinker_SetMemberCases() \
-   DGE_Game_PointThinker_SetMemberCases()
+   DGE_Game_PointThinker_SetMemberCases(); \
+   case ThinkerMember::rsx:    rsx = Code::SAccumToHost(val); break; \
+   case ThinkerMember::rsy:    rsy = Code::SAccumToHost(val); break; \
+   case ThinkerMember::sprite: sprite = val; break
 
 
 //----------------------------------------------------------------------------|
@@ -47,9 +55,11 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(RenderThinker, PointThinker);
 
    public:
-      RenderThinker() {}
+      RenderThinker() : sprite{0}, rsx{0}, rsy{0} {}
 
-      // TODO: Rendering information.
+      Code::Word sprite;
+
+      std::float_t rsx, rsy;
    };
 }
 
