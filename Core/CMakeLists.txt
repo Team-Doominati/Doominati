@@ -28,6 +28,7 @@ add_library(dge-core-lib STATIC
    Math.hpp
    NTS.cpp
    NTS.hpp
+   Point.hpp
    Search.hpp
    Stack.hpp
    Store.hpp

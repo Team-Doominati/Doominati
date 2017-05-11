@@ -6,28 +6,43 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Common typedefs.
+// Generic coordinate set handling.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__Game__Types_H__
-#define DGE__Game__Types_H__
-
-#include "Core/Fixed.hpp"
-#include "Core/Point.hpp"
+#ifndef DGE__Core__Point_H__
+#define DGE__Core__Point_H__
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace DGE::Game
+namespace DGE::Core
 {
-   using Angle = Core::Fixed<std::uint32_t, 32>;
-   using Coord = Core::Fixed<std:: int32_t,  7>;
+   template<typename T, unsigned I>
+   class Point;
 
-   using Point2 = Core::Point<Coord, 2>;
+   //
+   // Point<T, 2>
+   //
+   template<typename T>
+   class Point<T, 2>
+   {
+   public:
+      T x, y;
+   };
+
+   //
+   // Point<T, 3>
+   //
+   template<typename T>
+   class Point<T, 3>
+   {
+   public:
+      T x, y, z;
+   };
 }
 
-#endif//DGE__Game__Types_H__
+#endif//DGE__Core__Point_H__
 

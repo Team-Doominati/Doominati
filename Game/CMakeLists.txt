@@ -27,17 +27,20 @@ add_library(dge-game-lib STATIC
    Event.hpp
    Input.cpp
    Input.hpp
+   MemInfo.hpp
    Native.cpp
    Object.cpp
    Object.hpp
+   ObjectMemberList.hpp
    PhysicsThinker.cpp
    PhysicsThinker.hpp
    PointThinker.cpp
    PointThinker.hpp
    RenderThinker.hpp
+   Sector.cpp
+   Sector.hpp
    Thinker.cpp
    Thinker.hpp
-   ThinkerMemberList.hpp
    Types.hpp
 )
 

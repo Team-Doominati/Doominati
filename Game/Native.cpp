@@ -21,6 +21,7 @@ namespace DGE::Game
 {
    void Entity_NativeAdd();
    void PointThinker_NativeAdd();
+   void Sector_NativeAdd();
 
    //
    // NativeAdd
@@ -29,6 +30,7 @@ namespace DGE::Game
    {
       Entity_NativeAdd();
       PointThinker_NativeAdd();
+      Sector_NativeAdd();
    }
 }
 

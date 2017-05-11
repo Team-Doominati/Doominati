@@ -31,6 +31,9 @@ namespace DGE::Code
    class Task;
    class Thread;
 
+   template<typename T>
+   class MemPtr;
+
    using Byte  = std::uint8_t;
    using DWord = std::uint64_t;
    using HWord = std::uint16_t;

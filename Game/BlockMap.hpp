@@ -14,6 +14,7 @@
 #define DGE__Game__BlockMap_H__
 
 #include "Game/PhysicsThinker.hpp"
+#include "Game/Sector.hpp"
 
 #include <memory>
 
@@ -41,6 +42,7 @@ namespace DGE::Game
       BlockMap *getNode(Coord x, Coord y);
       BlockMap *getNode(Coord xl, Coord yl, Coord xh, Coord yh);
 
+      // forNode
       template<typename Iter>
       void forNode(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
 
@@ -49,18 +51,30 @@ namespace DGE::Game
          {return forNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
 
       template<typename Iter>
+      void forNode(Sector *sec, Iter &&iter)
+         {return forNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+
+      // forNodeAll
+      template<typename Iter>
       void forNodeAll(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
 
       template<typename Iter>
       void forNodeAll(PhysicsThinker *th, Iter &&iter)
          {return forNodeAll(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
 
+      template<typename Iter>
+      void forNodeAll(Sector *sec, Iter &&iter)
+         {return forNodeAll(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+
       void insert(PhysicsThinker *th);
+      void insert(Sector *sec);
 
       void split();
 
       void unlink(PhysicsThinker *th);
+      void unlink(Sector *sec);
 
+      Core::ListLink<Sector>         listSec;
       Core::ListLink<PhysicsThinker> listTh;
 
 

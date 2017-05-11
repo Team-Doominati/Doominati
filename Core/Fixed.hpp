@@ -105,8 +105,8 @@ namespace DGE::Core
       constexpr bool operator <= (Fixed const &r) const {return data <= r.data;}
       constexpr bool operator >= (Fixed const &r) const {return data >= r.data;}
 
-      constexpr bool operator == (Fixed const &r) {return data == r.data;}
-      constexpr bool operator != (Fixed const &r) {return data != r.data;}
+      constexpr bool operator == (Fixed const &r) const {return data == r.data;}
+      constexpr bool operator != (Fixed const &r) const {return data != r.data;}
 
       constexpr Fixed &operator *= (Fixed const &r) {return data = Mul(data, r.data), *this;}
       constexpr Fixed &operator /= (Fixed const &r) {return data = Div(data, r.data), *this;}

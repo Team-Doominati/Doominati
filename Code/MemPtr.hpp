@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,8 @@
 
 #include "Code/Memory.hpp"
 
+#include <iterator>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -23,60 +25,63 @@
 namespace DGE::Code
 {
    //
-   // MemFuncs
+   // MemInfo
    //
    template<typename T>
-   struct MemFuncs;
+   struct MemInfo;
 
    //
-   // MemFuncs<Byte>
+   // MemInfo<Byte>
    //
    template<>
-   struct MemFuncs<Byte const>
+   struct MemInfo<Byte const>
    {
-      constexpr static Byte (Memory::*Get)(Word) = &Memory::getB;
+      static Byte Get(Memory *mem, Word idx) {return mem->getB(idx);}
 
       constexpr static unsigned int Shift = 0;
+      constexpr static unsigned int Step  = 1;
    };
 
    template<>
-   struct MemFuncs<Byte> : MemFuncs<Byte const>
+   struct MemInfo<Byte> : MemInfo<Byte const>
    {
-      constexpr static void (Memory::*Set)(Word, Byte) = &Memory::setB;
+      static void Set(Memory *mem, Word idx, Byte val) {mem->setB(idx, val);}
    };
 
    //
-   // MemFuncs<HWord>
+   // MemInfo<HWord>
    //
    template<>
-   struct MemFuncs<HWord const>
+   struct MemInfo<HWord const>
    {
-      constexpr static HWord (Memory::*Get)(Word) = &Memory::getH;
+      static HWord Get(Memory *mem, Word idx) {return mem->getH(idx);}
 
       constexpr static unsigned int Shift = 1;
+      constexpr static unsigned int Step  = 1;
    };
 
    template<>
-   struct MemFuncs<HWord> : MemFuncs<HWord const>
+   struct MemInfo<HWord> : MemInfo<HWord const>
    {
-      constexpr static void (Memory::*Set)(Word, HWord) = &Memory::setH;
+      static void Set(Memory *mem, Word idx, HWord val) {mem->setH(idx, val);}
    };
 
    //
-   // MemFuncs<Word>
+   // MemInfo<Word>
    //
    template<>
-   struct MemFuncs<Word const>
+   struct MemInfo<Word const>
    {
-      constexpr static Word (Memory::*Get)(Word) = &Memory::getW;
+      static Word Get(Memory *mem, Word idx) {return mem->getW(idx);}
 
       constexpr static unsigned int Shift = 2;
+      constexpr static unsigned int Step  = 1;
    };
 
    template<>
-   struct MemFuncs<Word> : MemFuncs<Word const>
+   struct MemInfo<Word> : MemInfo<Word const>
    {
-      constexpr static void (Memory::*Set)(Word, Word) = &Memory::setW;
+      static void Set(Memory *mem, Word idx, Word val) {mem->setW(idx, val);}
    };
 
    //
@@ -88,11 +93,11 @@ namespace DGE::Code
    public:
       MemRef(Memory *mem_, Word idx_) : mem{mem_}, idx{idx_} {}
 
-      operator T () const {return (mem->*MemFuncs<T>::Get)(idx);}
+      operator T () const {return MemInfo<T>::Get(mem, idx);}
 
       MemRef &operator = (MemRef const &) = delete;
       MemRef const &operator = (T val) const
-         {(mem->*MemFuncs<T>::Set)(idx, val); return *this;}
+         {MemInfo<T>::Set(mem, idx, val); return *this;}
 
    private:
       Memory *const mem;
@@ -107,34 +112,50 @@ namespace DGE::Code
    {
    public:
       MemPtr(Memory *mem_, Word idx_ = 0) :
-         mem{mem_}, idx{idx_ >> MemFuncs<T>::Shift} {}
+         mem{mem_}, idx{idx_ >> MemInfo<T>::Shift} {}
 
       explicit operator bool () const {return idx != 0;}
 
-      MemPtr &operator ++ () {++idx; return *this;}
-      MemPtr  operator ++ (int) {return {mem, idx++};}
-      MemPtr &operator -- () {--idx; return *this;}
-      MemPtr  operator -- (int) {return {mem, idx--};}
+      MemPtr &operator ++ () {idx += MemInfo<T>::Step; return *this;}
+      MemPtr  operator ++ (int) {auto p = *this; return ++*this, p;}
+      MemPtr &operator -- () {idx += MemInfo<T>::Step; return *this;}
+      MemPtr  operator -- (int) {auto p = *this; return --*this, p;}
 
       MemRef<T> operator * () const {return {mem, idx};}
 
-      MemPtr operator + (Word off) {return {mem, idx + off};}
-      Word operator - (MemPtr const &r) {return idx - r.idx;}
-      MemPtr operator - (Word off) {return {mem, idx - off};}
+      MemPtr operator + (Word off) {return {mem, idx + off * MemInfo<T>::Step};}
+      Word operator - (MemPtr const &r) {return (idx - r.idx) / MemInfo<T>::Step;}
+      MemPtr operator - (Word off) {return {mem, idx - off * MemInfo<T>::Step};}
 
       bool operator == (MemPtr const &r) {return idx == r.idx;}
       bool operator != (MemPtr const &r) {return idx != r.idx;}
 
       MemPtr &operator = (MemPtr const &) = default;
       MemPtr &operator = (Word idx_)
-         {idx = idx_ >> MemFuncs<T>::Shift; return *this;}
+         {idx = idx_ >> MemInfo<T>::Shift; return *this;}
 
-      MemPtr &operator += (Word off) {idx += off; return *this;}
-      MemPtr *operator -= (Word off) {idx -= off; return *this;}
+      MemPtr &operator += (Word off) {idx += off * MemInfo<T>::Step; return *this;}
+      MemPtr *operator -= (Word off) {idx -= off * MemInfo<T>::Step; return *this;}
 
    private:
       Memory *mem;
       Word    idx;
+   };
+}
+
+namespace std
+{
+   //
+   // iterator_traits<::DGE::Code::MemPtr>
+   //
+   template<typename T>
+   struct iterator_traits<::DGE::Code::MemPtr<T>>
+   {
+      using difference_type   = typename iterator_traits<T *>::difference_type;
+      using value_type        = T;
+      using pointer           = T *;
+      using reference         = T &;
+      using iterator_category = typename iterator_traits<T *>::iterator_category;
    };
 }
 

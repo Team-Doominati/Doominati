@@ -25,7 +25,9 @@
 
 #include "FS/Dir.hpp"
 
+#include "Game/BlockMap.hpp"
 #include "Game/RenderThinker.hpp"
+#include "Game/Sector.hpp"
 
 #include <iostream>
 
@@ -293,16 +295,28 @@ namespace DGE::GL
       // TODO: Derive render coordinates from a PointThinker or CameraThinker.
       float rx = -win.w / 2, ry = -win.h / 2;
 
-      // TODO: Render floors.
-
-      // Render RenderThinkers.
       drawColorSet(1.0f, 1.0f, 1.0f);
+
+      // Render floors.
+      for(auto &sec : Game::BlockMap::Root.listSec)
+      {
+         // TODO: Non-rectangular sector rendering.
+
+         textureBind(textureGet(sec.texf));
+         float sxl = sec.xl - rx, sxh = sec.xh - rx;
+         float syl = sec.yl - ry, syh = sec.yh - ry;
+         drawRectangle(sxl, syl, sxh, syh);
+      }
+
+      // Render thinkers.
       for(auto &th : Game::RenderThinker::Range())
       {
          textureBind(textureGet(th.sprite));
          float tx = th.x - rx, ty = th.y - ry;
          drawRectangle(tx - th.rsx, ty - th.rsy, tx + th.rsx, ty + th.rsy);
       }
+
+      // TODO: Render ceilings.
    }
 
    //

@@ -54,6 +54,7 @@ public: \
 public: \
    void *operator new(std::size_t size, std::size_t ext = 0) \
       {return ::operator new(size + (ExtMemCF + ext) * sizeof(Code::Word));} \
+   void *operator new(std::size_t, void *ptr) {return ptr;} \
    \
    virtual Code::Word *extMember() \
       {return reinterpret_cast<Code::Word *>(this + 1);} \

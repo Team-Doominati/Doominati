@@ -76,6 +76,30 @@ namespace DGE::Game
 
       BlockMap::Root.forNode(th, [&](BlockMap *node)
       {
+         // Collide with sectors.
+         for(auto &sec : node->listSec)
+         {
+            // If inside sector's opening, no collision.
+            if(th->z - th->sz >= sec.zl && th->z + th->sz <= sec.zh)
+               continue;
+
+            // If outside sector's outer box, no collision.
+            if((th->x - th->sx >= sec.xh || th->x + th->sx <= sec.xl) ||
+               (th->y - th->sy >= sec.yh || th->y + th->sy <= sec.yl))
+               continue;
+
+            // If not a rectangle, check against lines.
+            if(!sec.rect)
+            {
+               // TODO
+            }
+
+            // TODO: Snap position.
+
+            collided = true;
+         }
+
+         // Collide with thinkers.
          for(auto &oth : node->listTh)
          {
             if(std::abs(th->x - oth.x) < th->sx + oth.sx &&

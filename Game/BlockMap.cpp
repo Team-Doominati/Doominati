@@ -52,11 +52,33 @@ namespace DGE::Game
    }
 
    //
+   // BlockMap::insert
+   //
+   void BlockMap::insert(Sector *sec)
+   {
+      std::size_t count = 0;
+      forNodeAll(sec, [&count](BlockMap *){++count;});
+
+      sec->blockLinks.resize(count);
+
+      auto itr = sec->blockLinks.begin();
+      forNodeAll(sec, [&itr](BlockMap *node){itr++->insert(&node->listSec);});
+   }
+
+   //
    // BlockMap::unlink
    //
    void BlockMap::unlink(PhysicsThinker *th)
    {
       th->blockLinks.unlink();
+   }
+
+   //
+   // BlockMap::unlink
+   //
+   void BlockMap::unlink(Sector *sec)
+   {
+      sec->blockLinks.unlink();
    }
 }
 
