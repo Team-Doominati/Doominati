@@ -26,6 +26,7 @@
 #include "FS/Dir.hpp"
 
 #include "Game/BlockMap.hpp"
+#include "Game/Event.hpp"
 #include "Game/RenderThinker.hpp"
 #include "Game/Sector.hpp"
 
@@ -385,11 +386,16 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_SetVirtualResolution)
    {
+      unsigned w = argv[0];
+      unsigned h = argv[1];
+
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
-      glOrtho(0, argv[0], argv[1], 0, 0, 0.01f);
+      glOrtho(0, w, h, 0, 0, 0.01f);
 
       glMatrixMode(GL_MODELVIEW);
+
+      Game::SetResolutionVirt(w, h);
 
       return false;
    }

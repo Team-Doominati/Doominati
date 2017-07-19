@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,15 @@
 
 #include "GL/Window.hpp"
 
+#include "GL/OpenGL2.1.h"
+
 #include "Code/Callback.hpp"
 #include "Code/MemStr.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
-#include "GL/OpenGL2.1.h"
+#include "Game/Event.hpp"
 
 #include <iostream>
 
@@ -48,6 +50,8 @@ namespace DGE::GL
       window{},
       gl{}
    {
+      Game::SetResolutionReal(w, h);
+
       int x = SDL_WINDOWPOS_UNDEFINED;
       int y = SDL_WINDOWPOS_UNDEFINED;
 
@@ -95,6 +99,7 @@ namespace DGE::GL
       {
          glViewport(0, 0, w = newW, h = newH);
          CallbackResize(w, h);
+         Game::SetResolutionReal(w, h);
       }
    }
 

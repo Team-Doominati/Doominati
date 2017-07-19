@@ -142,6 +142,10 @@ namespace DGE::Game
    void PumpEvents();
    void ProcessEvents(EventSink &sink);
    void ProcessGameEvents(EventSink &sink);
+
+   // These are used to scale screen coordinates.
+   void SetResolutionReal(unsigned w, unsigned h);
+   void SetResolutionVirt(unsigned w, unsigned h);
 }
 
 #endif//DGE__Game__Event_H__

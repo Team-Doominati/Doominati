@@ -19,8 +19,8 @@
 #include <vector>
 
 #define PushEvent() \
-   EventStack.emplace_back(std::move(pevent)); \
-   GameEventStack.emplace_back(std::move(pevent))
+   EventStack.push_back(pevent); \
+   GameEventStack.push_back(pevent)
 
 
 //----------------------------------------------------------------------------|
@@ -31,6 +31,8 @@ namespace DGE::Game
 {
    static std::vector<Event> EventStack;
    static std::vector<Event> GameEventStack;
+
+   static unsigned ResRH, ResRW, ResVH, ResVW;
 }
 
 
@@ -100,8 +102,8 @@ namespace DGE::Game
          {
             Event pevent{Event::MouseMove};
 
-            pevent.data.axis.x = event.motion.xrel;
-            pevent.data.axis.y = event.motion.yrel;
+            pevent.data.axis.x = event.motion.x * ResVW / ResRW;
+            pevent.data.axis.y = event.motion.y * ResVH / ResRH;
 
             PushEvent();
          }
@@ -128,6 +130,24 @@ namespace DGE::Game
    {
       for(auto const &evt : GameEventStack)
          sink.sink(evt);
+   }
+
+   //
+   // SetResolutionReal
+   //
+   void SetResolutionReal(unsigned w, unsigned h)
+   {
+      ResRH = h;
+      ResRW = w;
+   }
+
+   //
+   // SetResolutionVirt
+   //
+   void SetResolutionVirt(unsigned w, unsigned h)
+   {
+      ResVH = h;
+      ResVW = w;
    }
 }
 

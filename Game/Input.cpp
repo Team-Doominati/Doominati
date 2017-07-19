@@ -50,7 +50,6 @@ namespace DGE::Game
    void InputSource_Local::poll()
    {
       frameLast = frameNext;
-      frameNext = InputFrame{};
 
       // Process events into actions.
       ProcessGameEvents(*this);
@@ -69,6 +68,7 @@ namespace DGE::Game
       std::tie(frameNext.ax1y, frameNext.ax1x) = getAxis(A_Ax1S);
       std::tie(frameNext.ax2y, frameNext.ax2x) = getAxis(A_Ax2S);
 
+      frameNext.buttons = 0;
       for(int i = 0; i < 4; i++)
          frameNext.buttons |= actions[A_ButtonS + i] << i;
    }
@@ -112,6 +112,11 @@ namespace DGE::Game
          case MB_Left:  actions[A_ButtonS + 0] = false; break;
          case MB_Right: actions[A_ButtonS + 1] = false; break;
          }
+         break;
+
+      case Event::MouseMove:
+         frameNext.curx = event.data.axis.x;
+         frameNext.cury = event.data.axis.y;
          break;
       }
    }
@@ -166,6 +171,17 @@ namespace DGE::Game
    DGE_Code_NativeDefn(DGE_GetInputButtons)
    {
       task->dataStk.push(InputSource::GetCurrent()->getNext().buttons);
+      return false;
+   }
+
+   //
+   // DGE_Point2I DGE_GetInputCursor(void)
+   //
+   DGE_Code_NativeDefn(DGE_GetInputCursor)
+   {
+      auto const &frame = InputSource::GetCurrent()->getNext();
+      task->dataStk.push(frame.curx);
+      task->dataStk.push(frame.cury);
       return false;
    }
 }

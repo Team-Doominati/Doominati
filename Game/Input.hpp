@@ -33,6 +33,7 @@ namespace DGE::Game
       std::int16_t  ax1x, ax1y;
       std::int16_t  ax2x, ax2y;
       std::uint16_t buttons;
+      std::uint16_t curx, cury;
    };
 
    //
