@@ -52,6 +52,11 @@ public: \
 //
 #define DGE_Game_ObjectPreambleCommon(name) \
 public: \
+   void operator delete(void *ptr) \
+      {return ::operator delete(ptr);} \
+   void operator delete(void *ptr, std::size_t, std::size_t) \
+      {return ::operator delete(ptr);} \
+   \
    void *operator new(std::size_t size, std::size_t ext = 0) \
       {return ::operator new(size + (ExtMemCF + ext) * sizeof(Code::Word));} \
    void *operator new(std::size_t, void *ptr) {return ptr;} \
