@@ -28,6 +28,8 @@ add_library(dge-game-lib STATIC
    Input.cpp
    Input.hpp
    MemInfo.hpp
+   MissileEntity.cpp
+   MissileEntity.hpp
    Native.cpp
    Object.cpp
    Object.hpp

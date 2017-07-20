@@ -25,6 +25,30 @@
 namespace DGE::Game
 {
    //
+   // PhysicsThinker::collideFrom
+   //
+   bool PhysicsThinker::collideFrom(PhysicsThinker *)
+   {
+      return true;
+   }
+
+   //
+   // PhysicsThinker::collideInto
+   //
+   bool PhysicsThinker::collideInto(PhysicsThinker *)
+   {
+      return true;
+   }
+
+   //
+   // PhysicsThinker::collideInto
+   //
+   bool PhysicsThinker::collideInto(Sector *)
+   {
+      return true;
+   }
+
+   //
    // PhysicsThinker::think
    //
    void PhysicsThinker::think()
@@ -94,9 +118,12 @@ namespace DGE::Game
                // TODO
             }
 
-            // TODO: Snap position.
+            if(th->collideInto(&sec))
+            {
+               // TODO: Snap position.
 
-            collided = true;
+               collided = true;
+            }
          }
 
          // Collide with thinkers.
@@ -106,9 +133,13 @@ namespace DGE::Game
                std::abs(th->y - oth.y) < th->sy + oth.sy &&
                std::abs(th->z - oth.z) < th->sz + oth.sz)
             {
-               // TODO: Snap position.
+               // Always perform both collisions for side effects.
+               if(th->collideInto(&oth) & oth.collideFrom(th))
+               {
+                  // TODO: Snap position.
 
-               collided = true;
+                  collided = true;
+               }
             }
          }
       });

@@ -55,6 +55,8 @@
 
 namespace DGE::Game
 {
+   class Sector;
+
    //
    // PhysicsThinker
    //
@@ -66,7 +68,17 @@ namespace DGE::Game
       PhysicsThinker() : blockLinks{this},
          mass{0}, vx{0}, vy{0}, vz{0}, sx{0}, sy{0}, sz{0} {}
 
-      virtual void think();
+      // Called when another PhysicsThinker is colliding into this.
+      // Returns true if this can be collided into.
+      virtual bool collideFrom(PhysicsThinker *th);
+
+      // Called when this is colliding with another PhysicsThinker.
+      // Returns true if this can collide into.
+      virtual bool collideInto(PhysicsThinker *th);
+
+      // Called when this is colliding with a Sector.
+      // Returns true if this can collide into.
+      virtual bool collideInto(Sector *sec);
 
       Core::ListLinkVector<PhysicsThinker> blockLinks;
 
@@ -85,6 +97,9 @@ namespace DGE::Game
       static bool TryMoveX(PhysicsThinker *th, Coord x);
       static bool TryMoveY(PhysicsThinker *th, Coord y);
       static bool TryMoveZ(PhysicsThinker *th, Coord z);
+
+   protected:
+      virtual void think();
    };
 }
 

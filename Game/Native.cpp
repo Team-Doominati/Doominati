@@ -19,7 +19,7 @@
 
 namespace DGE::Game
 {
-   void Entity_NativeAdd();
+   void MissileEntity_NativeAdd();
    void PointThinker_NativeAdd();
    void Sector_NativeAdd();
 
@@ -28,7 +28,7 @@ namespace DGE::Game
    //
    void NativeAdd()
    {
-      Entity_NativeAdd();
+      MissileEntity_NativeAdd();
       PointThinker_NativeAdd();
       Sector_NativeAdd();
    }

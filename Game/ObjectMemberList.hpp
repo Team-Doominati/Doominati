@@ -11,9 +11,12 @@
 //-----------------------------------------------------------------------------
 
 
+DGE_Game_ObjectMemberList(damage)
+DGE_Game_ObjectMemberList(health)
 DGE_Game_ObjectMemberList(id)
 DGE_Game_ObjectMemberList(mass)
 DGE_Game_ObjectMemberList(next)
+DGE_Game_ObjectMemberList(owner)
 DGE_Game_ObjectMemberList(pc)
 DGE_Game_ObjectMemberList(pitch)
 DGE_Game_ObjectMemberList(prev)

@@ -12,6 +12,8 @@
 
 #include "Game/Entity.hpp"
 
+#include "Game/BlockMap.hpp"
+
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
@@ -22,14 +24,19 @@
 
 namespace DGE::Game
 {
-   void Entity_NativeAdd() {}
-
    //
    // Entity::think
    //
    void Entity::think()
    {
       Super::think();
+
+      // If no health remaining, die.
+      if(health <= 0)
+      {
+         BlockMap::Root.unlink(this);
+         unlink();
+      }
    }
 }
 

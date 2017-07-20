@@ -24,13 +24,15 @@
 // DGE_Game_Entity_GetMemberCases
 //
 #define DGE_Game_Entity_GetMemberCases() \
-   DGE_Game_PhysicsThinker_GetMemberCases()
+   DGE_Game_PhysicsThinker_GetMemberCases(); \
+   case ObjectMember::health: return health
 
 //
 // DGE_Game_Entity_SetMemberCases
 //
 #define DGE_Game_Entity_SetMemberCases() \
-   DGE_Game_PhysicsThinker_SetMemberCases()
+   DGE_Game_PhysicsThinker_SetMemberCases(); \
+   case ObjectMember::health: health = val; break
 
 
 //----------------------------------------------------------------------------|
@@ -47,8 +49,11 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(Entity, PhysicsThinker);
 
    public:
-      Entity() {}
+      Entity() : health{0} {}
 
+      std::int32_t health;
+
+   protected:
       virtual void think();
    };
 }
