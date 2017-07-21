@@ -54,7 +54,7 @@ namespace DGE::Game
    //
    Core::IDAllocator<Object, Code::Word> &Object::GetObjectVec()
    {
-      static Core::IDAllocator<Object, Code::Word> vec;
+      static Core::IDAllocator<Object, Code::Word> vec{1};
       return vec;
    }
 }

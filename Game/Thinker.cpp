@@ -13,6 +13,7 @@
 #include "Game/Thinker.hpp"
 
 #include "Code/Native.hpp"
+#include "Code/Task.hpp"
 
 #include <string>
 
@@ -100,6 +101,15 @@ namespace DGE::Game
 
 namespace DGE::Game
 {
+   //
+   // unsigned DGE_ThinkerCap(void)
+   //
+   DGE_Code_NativeDefn(DGE_ThinkerCap)
+   {
+      task->dataStk.push(Thinker::ThinkerCap.id);
+      return false;
+   }
+
    //
    // void DGE_ThinkerUnlink(unsigned id)
    //
