@@ -293,8 +293,16 @@ namespace DGE::GL
 
       CallbackDraw(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
 
-      // TODO: Derive render coordinates from a PointThinker or CameraThinker.
-      float rx = -win.w / 2, ry = -win.h / 2;
+      // Calculate render focus.
+      float rx, ry;
+
+      // If viewPoint set, focus on that.
+      if(viewPoint)
+         rx = viewPoint->x.toF() - win.w / 2, ry = viewPoint->y.toF() - win.h / 2;
+
+      // Otherwise, focus on center of world.
+      else
+         rx = -win.w / 2, ry = -win.h / 2;
 
       drawColorSet(1.0f, 1.0f, 1.0f);
 
@@ -378,6 +386,15 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_DrawLineWidth)
    {
       Renderer::GetCurrent()->lineWidth(argv[0]);
+      return false;
+   }
+
+   //
+   // void DGE_SetViewpoint(unsigned id)
+   //
+   DGE_Code_NativeDefn(DGE_SetViewpoint)
+   {
+      Renderer::GetCurrent()->viewPoint = Game::PointThinker::Get(argv[0]);
       return false;
    }
 

@@ -22,6 +22,8 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/Types.hpp"
 
+#include <GDCC/Core/Counter.hpp>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -30,6 +32,11 @@
 namespace GDCC::Core
 {
    class String;
+}
+
+namespace DGE::Game
+{
+   class PointThinker;
 }
 
 namespace DGE::GL
@@ -124,6 +131,8 @@ namespace DGE::GL
       Texture *textureGet(std::size_t idx) {return texMan.get(idx);}
 
       void textureUnbind() {textureBind(texMan.resNone);}
+
+      GDCC::Core::CounterPtr<Game::PointThinker> viewPoint;
 
       AlignHorz textAlignH;
       AlignVert textAlignV;

@@ -119,6 +119,9 @@ namespace DGE::Core
       constexpr I raw() const {return data;}
       Fixed &raw(I i) {return data = i, *this;}
 
+      constexpr F toF() const {return static_cast<F>(data) / FUL;}
+      constexpr I toI() const {return data / FU;}
+
 
       static constexpr I Div(I l, I r) {return (static_cast<Eval>(l) << FB) / r;}
       static constexpr I Mul(I l, I r) {return (static_cast<Eval>(l) * r) >> FB;}
