@@ -298,11 +298,11 @@ namespace DGE::GL
 
       // If viewPoint set, focus on that.
       if(viewPoint)
-         rx = viewPoint->x.toF() - win.w / 2, ry = viewPoint->y.toF() - win.h / 2;
+         rx = viewPoint->x.toF() - w / 2, ry = viewPoint->y.toF() - h / 2;
 
       // Otherwise, focus on center of world.
       else
-         rx = -win.w / 2, ry = -win.h / 2;
+         rx = -w / 2, ry = -h / 2;
 
       drawColorSet(1.0f, 1.0f, 1.0f);
 
@@ -412,6 +412,7 @@ namespace DGE::GL
 
       glMatrixMode(GL_MODELVIEW);
 
+      Renderer::GetCurrent()->setSize(w, h);
       Game::SetResolutionVirt(w, h);
 
       return false;

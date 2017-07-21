@@ -110,6 +110,8 @@ namespace DGE::GL
       void render();
       void renderEnd();
 
+      void setSize(int w_, int h_) {w = w_; h = h_;}
+
       // shader
       std::size_t shaderAdd(GDCC::Core::String name, char const *f, char const *v);
       std::size_t shaderAdd(GDCC::Core::String name, FS::File *f, FS::File *v);
@@ -174,6 +176,8 @@ namespace DGE::GL
       DynamicBuffer const *circleBuff, *circleLineBuff;
 
       std::unordered_map<int, DynamicBuffer> circleBuffers, circleLineBuffers;
+
+      int w, h;
    };
 }
 
