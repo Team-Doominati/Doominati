@@ -71,9 +71,16 @@ namespace DGE::Code
    //
    DGE_Code_NativeDefn(DGE_DebugLocReg)
    {
-      std::cerr << &task->locReg[0] << "+" << task->locReg.size() << '\n';
+      std::cerr << &task->locReg[0] << "+" << task->locReg.size() << '+' << task->vaaRegC << '\n';
+
+      // Print variadic register contents.
+      for(auto end = task->locReg.begin(), itr = end - task->vaaRegC; itr != end; ++itr)
+         std::cerr << "  ..." << *itr << '\n';
+
+      // Print normal register contents.
       for(auto const &reg : task->locReg)
          std::cerr << "  " << reg << '\n';
+
       return false;
    }
 }

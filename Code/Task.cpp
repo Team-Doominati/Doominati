@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -41,6 +41,7 @@ namespace DGE::Code
       link   {this},
       codePtr{nullptr},
       delay  {0},
+      id     {0}, // TODO: Allocate ids.
       jumpbuf{0}
    {
       callStk.reserve(CallStkSize);

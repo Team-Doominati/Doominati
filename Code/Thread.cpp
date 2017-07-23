@@ -41,7 +41,7 @@ namespace DGE::Code
    Thread::~Thread()
    {
       while(tasks.next->obj)
-         delete tasks.next->obj;
+         tasks.next->obj->stop();
    }
 
    //

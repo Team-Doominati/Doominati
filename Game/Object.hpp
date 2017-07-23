@@ -109,7 +109,7 @@ namespace DGE::Game
 
       void refSub() {if(!--refCount) delete this;}
 
-      Code::Word id;
+      Code::Word const id;
 
 
       static std::size_t GetExtMemCF() {return ExtMemCF = ExtMemC;}

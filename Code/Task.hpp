@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -76,6 +76,7 @@ namespace DGE::Code
       OpCode const *codePtr;
       TaskState     state;
       Word          delay;
+      Word const    id;
       Word          jumpbuf;
       Word          vaaRegC;
 

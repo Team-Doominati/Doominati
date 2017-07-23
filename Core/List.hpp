@@ -120,7 +120,7 @@ namespace DGE::Core
    {
    public:
       ListHead() : head{nullptr} {}
-      ~ListHead() {while(head.next->obj) delete head.next->obj;}
+      ~ListHead() {while(T *o = head.next->obj) delete o;}
 
       ListLink<T> head;
    };
