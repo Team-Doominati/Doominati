@@ -98,51 +98,50 @@ namespace DGE::Game
    {
       bool collided = false;
 
-      BlockMap::Root.forNode(th, [&](BlockMap *node)
+      auto const &findRes = BlockMap::Root.find(th);
+
+      // Collide with sectors.
+      for(auto sec : findRes.sec)
       {
-         // Collide with sectors.
-         for(auto &sec : node->listSec)
+         // If inside sector's opening, no collision.
+         if(th->z - th->sz >= sec->zl && th->z + th->sz <= sec->zh)
+            continue;
+
+         // If outside sector's outer box, no collision.
+         if((th->x - th->sx >= sec->xh || th->x + th->sx <= sec->xl) ||
+            (th->y - th->sy >= sec->yh || th->y + th->sy <= sec->yl))
+            continue;
+
+         // If not a rectangle, check against lines.
+         if(!sec->rect)
          {
-            // If inside sector's opening, no collision.
-            if(th->z - th->sz >= sec.zl && th->z + th->sz <= sec.zh)
-               continue;
+            // TODO
+         }
 
-            // If outside sector's outer box, no collision.
-            if((th->x - th->sx >= sec.xh || th->x + th->sx <= sec.xl) ||
-               (th->y - th->sy >= sec.yh || th->y + th->sy <= sec.yl))
-               continue;
+         if(th->collideInto(sec))
+         {
+            // TODO: Snap position.
 
-            // If not a rectangle, check against lines.
-            if(!sec.rect)
-            {
-               // TODO
-            }
+            collided = true;
+         }
+      }
 
-            if(th->collideInto(&sec))
+      // Collide with thinkers.
+      for(auto oth : findRes.th)
+      {
+         if(std::abs(th->x - oth->x) < th->sx + oth->sx &&
+            std::abs(th->y - oth->y) < th->sy + oth->sy &&
+            std::abs(th->z - oth->z) < th->sz + oth->sz)
+         {
+            // Always perform both collisions for side effects.
+            if(th->collideInto(oth) & oth->collideFrom(th))
             {
                // TODO: Snap position.
 
                collided = true;
             }
          }
-
-         // Collide with thinkers.
-         for(auto &oth : node->listTh)
-         {
-            if(std::abs(th->x - oth.x) < th->sx + oth.sx &&
-               std::abs(th->y - oth.y) < th->sy + oth.sy &&
-               std::abs(th->z - oth.z) < th->sz + oth.sz)
-            {
-               // Always perform both collisions for side effects.
-               if(th->collideInto(&oth) & oth.collideFrom(th))
-               {
-                  // TODO: Snap position.
-
-                  collided = true;
-               }
-            }
-         }
-      });
+      }
 
       return collided;
    }

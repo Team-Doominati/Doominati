@@ -17,6 +17,7 @@
 #include "Game/Sector.hpp"
 
 #include <memory>
+#include <unordered_set>
 
 
 //----------------------------------------------------------------------------|
@@ -37,34 +38,23 @@ namespace DGE::Game
    class BlockMap
    {
    public:
+      //
+      // FindRes
+      //
+      class FindRes
+      {
+      public:
+         std::unordered_set<Sector *>         sec;
+         std::unordered_set<PhysicsThinker *> th;
+      };
+
       BlockMap(Coord x, Coord y, Coord w) : cx{x}, cy{y}, width{w} {}
 
-      BlockMap *getNode(Coord x, Coord y);
-      BlockMap *getNode(Coord xl, Coord yl, Coord xh, Coord yh);
-
-      // forNode
-      template<typename Iter>
-      void forNode(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
-
-      template<typename Iter>
-      void forNode(PhysicsThinker *th, Iter &&iter)
-         {return forNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
-
-      template<typename Iter>
-      void forNode(Sector *sec, Iter &&iter)
-         {return forNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
-
-      // forNodeAll
-      template<typename Iter>
-      void forNodeAll(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
-
-      template<typename Iter>
-      void forNodeAll(PhysicsThinker *th, Iter &&iter)
-         {return forNodeAll(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
-
-      template<typename Iter>
-      void forNodeAll(Sector *sec, Iter &&iter)
-         {return forNodeAll(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+      FindRes const &find(Coord xl, Coord yl, Coord xh, Coord yh);
+      FindRes const &find(PhysicsThinker *th)
+         {return find(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
+      FindRes const &find(Sector *sec)
+         {return find(sec->xl, sec->yl, sec->xh, sec->yh);}
 
       void insert(PhysicsThinker *th);
       void insert(Sector *sec);
@@ -81,6 +71,40 @@ namespace DGE::Game
       static BlockMap Root;
 
    private:
+      // countNode
+      std::size_t countNode(Coord xl, Coord yl, Coord xh, Coord yh);
+
+      std::size_t countNode(PhysicsThinker *th)
+         {return countNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
+
+      std::size_t countNode(Sector *sec)
+         {return countNode(sec->xl, sec->yl, sec->xh, sec->yh);}
+
+      // forNode
+      template<typename Iter>
+      void forNode(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
+
+      template<typename Iter>
+      void forNode(PhysicsThinker *th, Iter &&iter)
+         {return forNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
+
+      template<typename Iter>
+      void forNode(Sector *sec, Iter &&iter)
+         {return forNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+
+      // insertNode
+      template<typename T>
+      void insertNode(Coord xl, Coord yl, Coord xh, Coord yh, Core::ListLink<T> *&iter);
+
+      void insertNode(PhysicsThinker *th, Core::ListLink<PhysicsThinker> *&iter)
+         {insertNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
+
+      void insertNode(Sector *sec, Core::ListLink<Sector> *&iter)
+         {insertNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+
+      template<typename T>
+      Core::ListLink<T> &listHead();
+
       std::unique_ptr<BlockMap[]> subs;
 
       Coord const cx, cy;
@@ -108,42 +132,34 @@ namespace DGE::Game
       if(xl <= cx - width && xh >= cx + width && yl <= cy - width && yh >= cy + width)
          return (void)iter(this);
 
-      if(xl < cx && yh > cy)
-         subs[0].forNode(xl, yl, xh, yh, iter);
-
-      if(xl < cx && yl < cy)
-         subs[2].forNode(xl, yl, xh, yh, iter);
-
-      if(xh > cx && yh > cy)
-         subs[1].forNode(xl, yl, xh, yh, iter);
-
-      if(xh > cx && yl < cy)
-         subs[3].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yh > cy) subs[0].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[2].forNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yh > cy) subs[1].forNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yl < cy) subs[3].forNode(xl, yl, xh, yh, iter);
    }
 
    //
-   // BlockMap::forNodeAll
+   // BlockMap::insertNode
    //
-   template<typename Iter>
-   void BlockMap::forNodeAll(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter)
+   template<typename T>
+   void BlockMap::insertNode(Coord xl, Coord yl, Coord xh, Coord yh, Core::ListLink<T> *&iter)
    {
-      iter(this);
+      iter++->insert(&listHead<T>());
 
       if(!subs)
          return;
 
-      if(xl < cx && yh > cy)
-         subs[0].forNode(xl, yl, xh, yh, iter);
-
-      if(xl < cx && yl < cy)
-         subs[2].forNode(xl, yl, xh, yh, iter);
-
-      if(xh > cx && yh > cy)
-         subs[1].forNode(xl, yl, xh, yh, iter);
-
-      if(xh > cx && yl < cy)
-         subs[3].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yh > cy) subs[0].insertNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[2].insertNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yh > cy) subs[1].insertNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yl < cy) subs[3].insertNode(xl, yl, xh, yh, iter);
    }
+
+   //
+   // BlockMap::listHead
+   //
+   template<> inline Core::ListLink<PhysicsThinker> &BlockMap::listHead<PhysicsThinker>() {return listTh;}
+   template<> inline Core::ListLink<Sector> &BlockMap::listHead<Sector>() {return listSec;}
 }
 
 #endif//DGE__Game__BlockMap_H__
