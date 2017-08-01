@@ -16,7 +16,6 @@
 #include "Game/PhysicsThinker.hpp"
 #include "Game/Sector.hpp"
 
-#include <memory>
 #include <unordered_set>
 
 
@@ -48,7 +47,8 @@ namespace DGE::Game
          std::unordered_set<PhysicsThinker *> th;
       };
 
-      BlockMap(Coord x, Coord y, Coord w) : cx{x}, cy{y}, width{w} {}
+      BlockMap(Coord x, Coord y, Coord s) : subs{nullptr}, cx{x}, cy{y}, size{s} {}
+      ~BlockMap();
 
       FindRes const &find(Coord xl, Coord yl, Coord xh, Coord yh);
       FindRes const &find(PhysicsThinker *th)
@@ -59,7 +59,7 @@ namespace DGE::Game
       void insert(PhysicsThinker *th);
       void insert(Sector *sec);
 
-      void split();
+      void split(Coord minW, std::size_t maxObj);
 
       void unlink(PhysicsThinker *th);
       void unlink(Sector *sec);
@@ -79,6 +79,9 @@ namespace DGE::Game
 
       std::size_t countNode(Sector *sec)
          {return countNode(sec->xl, sec->yl, sec->xh, sec->yh);}
+
+      // countObj
+      std::size_t countObj() {return listSec.size() + listTh.size();}
 
       // forNode
       template<typename Iter>
@@ -105,10 +108,14 @@ namespace DGE::Game
       template<typename T>
       Core::ListLink<T> &listHead();
 
-      std::unique_ptr<BlockMap[]> subs;
+      // relink
+      void relink(PhysicsThinker *th) {unlink(th); insert(th);}
+      void relink(Sector *sec) {unlink(sec); insert(sec);}
+
+      BlockMap *subs;
 
       Coord const cx, cy;
-      Coord const width;
+      Coord const size;
    };
 }
 
@@ -129,13 +136,13 @@ namespace DGE::Game
          return (void)iter(this);
 
       // Check if box fully contains node.
-      if(xl <= cx - width && xh >= cx + width && yl <= cy - width && yh >= cy + width)
+      if(xl <= cx - size && xh >= cx + size && yl <= cy - size && yh >= cy + size)
          return (void)iter(this);
 
-      if(xl < cx && yh > cy) subs[0].forNode(xl, yl, xh, yh, iter);
-      if(xl < cx && yl < cy) subs[2].forNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yh > cy) subs[1].forNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yl < cy) subs[3].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[0].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yh > cy) subs[2].forNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yl < cy) subs[1].forNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yh > cy) subs[3].forNode(xl, yl, xh, yh, iter);
    }
 
    //
@@ -149,10 +156,10 @@ namespace DGE::Game
       if(!subs)
          return;
 
-      if(xl < cx && yh > cy) subs[0].insertNode(xl, yl, xh, yh, iter);
-      if(xl < cx && yl < cy) subs[2].insertNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yh > cy) subs[1].insertNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yl < cy) subs[3].insertNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[0].insertNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yh > cy) subs[2].insertNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yl < cy) subs[1].insertNode(xl, yl, xh, yh, iter);
+      if(xh > cx && yh > cy) subs[3].insertNode(xl, yl, xh, yh, iter);
    }
 
    //

@@ -113,6 +113,21 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
+   // BlockMap destructor
+   //
+   BlockMap::~BlockMap()
+   {
+      if(subs)
+      {
+         subs[3].~BlockMap();
+         subs[2].~BlockMap();
+         subs[1].~BlockMap();
+         subs[0].~BlockMap();
+         ::operator delete(subs);
+      }
+   }
+
+   //
    // BlockMap::countNode
    //
    std::size_t BlockMap::countNode(Coord xl, Coord yl, Coord xh, Coord yh)
@@ -122,10 +137,10 @@ namespace DGE::Game
 
       std::size_t count = 1;
 
-      if(xl < cx && yh > cy) count += subs[0].countNode(xl, yl, xh, yh);
-      if(xl < cx && yl < cy) count += subs[2].countNode(xl, yl, xh, yh);
-      if(xh > cx && yh > cy) count += subs[1].countNode(xl, yl, xh, yh);
-      if(xh > cx && yl < cy) count += subs[3].countNode(xl, yl, xh, yh);
+      if(xl < cx && yl < cy) count += subs[0].countNode(xl, yl, xh, yh);
+      if(xl < cx && yh > cy) count += subs[2].countNode(xl, yl, xh, yh);
+      if(xh > cx && yl < cy) count += subs[1].countNode(xl, yl, xh, yh);
+      if(xh > cx && yh > cy) count += subs[3].countNode(xl, yl, xh, yh);
 
       return count;
    }
@@ -168,6 +183,38 @@ namespace DGE::Game
       sec->blockLinks.resize(countNode(sec));
       auto iter = sec->blockLinks.begin();
       insertNode(sec, iter);
+   }
+
+   //
+   // BlockMap::split
+   //
+   void BlockMap::split(Coord minSize, std::size_t maxObj)
+   {
+      // If no children, consider splitting.
+      if(!subs)
+      {
+         // Check for minimum size and maximum objects.
+         if(size <= minSize || countObj() < maxObj) return;
+
+         // Create child nodes.
+         subs = static_cast<BlockMap *>(::operator new(sizeof(BlockMap) * 4));
+         auto newSize = size / 2;
+
+         new(subs+0) BlockMap{cx - newSize, cy - newSize, newSize};
+         new(subs+1) BlockMap{cx + newSize, cy - newSize, newSize};
+         new(subs+2) BlockMap{cx - newSize, cy + newSize, newSize};
+         new(subs+3) BlockMap{cx + newSize, cy + newSize, newSize};
+
+         // Relink contained objects.
+         for(auto li = std::move(listSec); auto o = li.next->obj;) Root.relink(o);
+         for(auto li = std::move(listTh);  auto o = li.next->obj;) Root.relink(o);
+      }
+
+      // Check child nodes for split.
+      subs[0].split(minSize, maxObj);
+      subs[1].split(minSize, maxObj);
+      subs[2].split(minSize, maxObj);
+      subs[3].split(minSize, maxObj);
    }
 
    //
@@ -253,6 +300,15 @@ namespace DGE::Game
    DGE_Code_NativeDefn(DGE_BlockMap_FindGetThinker)
    {
       task->dataStk.push(FindResNative::Get(argv[0]).getTh(argv[1]));
+      return false;
+   }
+
+   //
+   // void DGE_BlockMap_Split(accum minSize, unsigned maxObj)
+   //
+   DGE_Code_NativeDefn(DGE_BlockMap_Split)
+   {
+      BlockMap::Root.split({static_cast<Code::SWord>(argv[0]), Core::FixedRaw}, argv[1]);
       return false;
    }
 }
