@@ -40,15 +40,19 @@ namespace DGE::Game
       //
       // init
       //
+      void init(BlockMap const *node)
+      {
+         auto itr = alloc(node->listSec.size(), node->listTh.size());
+         for(auto &o : node->listSec) *itr++ = o.id;
+         for(auto &o : node->listTh)  *itr++ = o.id;
+      }
+
+      //
+      // init
+      //
       void init(BlockMap::FindRes const &res)
       {
-         secC = res.sec.size();
-         thC  = res.th.size();
-         id.resize(secC + thC);
-         sec = &id[0];
-         th  = &id[secC];
-
-         auto itr = id.begin();
+         auto itr = alloc(res.sec.size(), res.th.size());
          for(auto o : res.sec) *itr++ = o->id;
          for(auto o : res.th)  *itr++ = o->id;
       }
@@ -80,6 +84,21 @@ namespace DGE::Game
       }
 
       static std::vector<FindResNative> Buf;
+
+   private:
+      //
+      // alloc
+      //
+      std::vector<Code::Word>::iterator alloc(std::size_t secCount, std::size_t thCount)
+      {
+         secC = secCount;
+         thC  = thCount;
+         id.resize(secC + thC);
+         sec = &id[0];
+         th  = &id[secC];
+
+         return id.begin();
+      }
    };
 }
 
@@ -253,6 +272,18 @@ namespace DGE::Game
 
       auto &res = FindResNative::GetFree();
       res.init(BlockMap::Root.find(xl, yl, xh, yh));
+      task->dataStk.push(&res - FindResNative::Buf.data());
+
+      return false;
+   }
+
+   //
+   // unsigned DGE_BlockMap_FindAll(void)
+   //
+   DGE_Code_NativeDefn(DGE_BlockMap_FindAll)
+   {
+      auto &res = FindResNative::GetFree();
+      res.init(&BlockMap::Root);
       task->dataStk.push(&res - FindResNative::Buf.data());
 
       return false;
