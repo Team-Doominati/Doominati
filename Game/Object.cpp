@@ -92,10 +92,10 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // T DGE_ObjectMemberGet*(unsigned id, unsigned mem)
+   // T DGE_Object_MemberGet*(unsigned id, unsigned mem)
    //
-   #define DGE_Game_ObjectMemberGetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_ObjectMemberGet##suffix) \
+   #define DGE_Game_Object_MemberGetDefn(suffix) \
+      DGE_Code_NativeDefn(DGE_Object_MemberGet##suffix) \
       { \
          Object *obj = Object::Get(argv[0]); \
          auto    mem = static_cast<ObjectMember>(argv[1]); \
@@ -104,16 +104,16 @@ namespace DGE::Game
          return false; \
       }
 
-   DGE_Game_ObjectMemberGetDefn(I)
-   DGE_Game_ObjectMemberGetDefn(LA)
-   DGE_Game_ObjectMemberGetDefn(U)
-   DGE_Game_ObjectMemberGetDefn(X)
+   DGE_Game_Object_MemberGetDefn(I)
+   DGE_Game_Object_MemberGetDefn(LA)
+   DGE_Game_Object_MemberGetDefn(U)
+   DGE_Game_Object_MemberGetDefn(X)
 
    //
-   // void DGE_ObjectMemberSet*(unsigned id, unsigned mem, T val)
+   // void DGE_Object_MemberSet*(unsigned id, unsigned mem, T val)
    //
-   #define DGE_Game_ObjectMemberSetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_ObjectMemberSet##suffix) \
+   #define DGE_Game_Object_MemberSetDefn(suffix) \
+      DGE_Code_NativeDefn(DGE_Object_MemberSet##suffix) \
       { \
          Object *obj = Object::Get(argv[0]); \
          auto    mem = static_cast<ObjectMember>(argv[1]); \
@@ -122,24 +122,24 @@ namespace DGE::Game
          return false; \
       }
 
-   DGE_Game_ObjectMemberSetDefn(I)
-   DGE_Game_ObjectMemberSetDefn(LA)
-   DGE_Game_ObjectMemberSetDefn(U)
-   DGE_Game_ObjectMemberSetDefn(X)
+   DGE_Game_Object_MemberSetDefn(I)
+   DGE_Game_Object_MemberSetDefn(LA)
+   DGE_Game_Object_MemberSetDefn(U)
+   DGE_Game_Object_MemberSetDefn(X)
 
    //
-   // void DGE_ObjectRefAdd(unsigned id)
+   // void DGE_Object_RefAdd(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_ObjectRefAdd)
+   DGE_Code_NativeDefn(DGE_Object_RefAdd)
    {
       if(auto obj = Object::Get(argv[0])) obj->refAdd();
       return false;
    }
 
    //
-   // void DGE_ObjectRefSub(unsigned id)
+   // void DGE_Object_RefSub(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_ObjectRefSub)
+   DGE_Code_NativeDefn(DGE_Object_RefSub)
    {
       if(auto obj = Object::Get(argv[0])) obj->refSub();
       return false;

@@ -100,9 +100,18 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_CreateSector(unsigned pc, unsigned ext)
+   // void DGE_Sector_Block(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_CreateSector)
+   DGE_Code_NativeDefn(DGE_Sector_Block)
+   {
+      if(auto sec = Sector::Get(argv[0])) BlockMap::Root.insert(sec);
+      return false;
+   }
+
+   //
+   // unsigned DGE_Sector_Create(unsigned pc, unsigned ext)
+   //
+   DGE_Code_NativeDefn(DGE_Sector_Create)
    {
       std::size_t pc  = argv[0];
       std::size_t ext = argv[1];
@@ -112,27 +121,18 @@ namespace DGE::Game
    }
 
    //
-   // void DGE_SectorBlock(unsigned id)
+   // void DGE_Sector_CalcBounds(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_SectorBlock)
-   {
-      if(auto sec = Sector::Get(argv[0])) BlockMap::Root.insert(sec);
-      return false;
-   }
-
-   //
-   // void DGE_SectorCalcBounds(unsigned id)
-   //
-   DGE_Code_NativeDefn(DGE_SectorCalcBounds)
+   DGE_Code_NativeDefn(DGE_Sector_CalcBounds)
    {
       if(auto sec = Sector::Get(argv[0])) sec->calcBounds();
       return false;
    }
 
    //
-   // DGE_Point2 DGE_SectorPointGet(unsigned id, unsigned p)
+   // DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p)
    //
-   DGE_Code_NativeDefn(DGE_SectorPointGet)
+   DGE_Code_NativeDefn(DGE_Sector_PointGet)
    {
       auto const &p = Sector::Get(argv[0])->pv[argv[1]];
       task->dataStk.push(p.x.raw());
@@ -141,9 +141,9 @@ namespace DGE::Game
    }
 
    //
-   // void DGE_SectorPointSet(unsigned id, unsigned p, DGE_Point2 val)
+   // void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val)
    //
-   DGE_Code_NativeDefn(DGE_SectorPointSet)
+   DGE_Code_NativeDefn(DGE_Sector_PointSet)
    {
       auto &p = Sector::Get(argv[0])->pv[argv[1]];
       p.x.raw(argv[2]);
@@ -152,9 +152,9 @@ namespace DGE::Game
    }
 
    //
-   // void DGE_SectorUnblock(unsigned id)
+   // void DGE_Sector_Unblock(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_SectorUnblock)
+   DGE_Code_NativeDefn(DGE_Sector_Unblock)
    {
       if(auto sec = Sector::Get(argv[0])) BlockMap::Root.unlink(sec);
       return false;
