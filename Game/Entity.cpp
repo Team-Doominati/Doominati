@@ -25,6 +25,16 @@
 namespace DGE::Game
 {
    //
+   // Entity::setTeam
+   //
+   void Entity::setTeam(Code::Word teamID)
+   {
+      teamLink.unlink();
+      if((team = Team::Get(teamID)))
+         teamLink.insert(&team->listEnt);
+   }
+
+   //
    // Entity::think
    //
    void Entity::think()

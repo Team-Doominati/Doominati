@@ -15,6 +15,8 @@
 
 #include "Game/PhysicsThinker.hpp"
 
+#include "Game/Team.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -25,14 +27,20 @@
 //
 #define DGE_Game_Entity_GetMemberCases() \
    DGE_Game_PhysicsThinker_GetMemberCases(); \
-   case ObjectMember::health: return health
+   case ObjectMember::health: return health; \
+   case ObjectMember::team:   return team ? team->id : 0; \
+   case ObjectMember::teamne: return teamLink.next->obj ? teamLink.next->obj->id : 0; \
+   case ObjectMember::teampr: return teamLink.prev->obj ? teamLink.prev->obj->id : 0
 
 //
 // DGE_Game_Entity_SetMemberCases
 //
 #define DGE_Game_Entity_SetMemberCases() \
    DGE_Game_PhysicsThinker_SetMemberCases(); \
-   case ObjectMember::health: health = val; break
+   case ObjectMember::health: health = val; break; \
+   case ObjectMember::team:   setTeam(val); break; \
+   case ObjectMember::teamne: (void)val;    break; \
+   case ObjectMember::teampr: (void)val;    break
 
 
 //----------------------------------------------------------------------------|
@@ -49,7 +57,13 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(Entity, PhysicsThinker);
 
    public:
-      Entity() : health{0} {}
+      Entity() : teamLink{this}, health{0} {}
+
+      void setTeam(Code::Word id);
+
+      Core::ListLink<Entity> teamLink;
+
+      Team::Ptr team;
 
       std::int32_t health;
 

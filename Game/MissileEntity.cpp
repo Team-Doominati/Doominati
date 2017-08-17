@@ -42,8 +42,15 @@ namespace DGE::Game
       if(th == owner)
          return false;
 
+      // Entity-specific handling.
       if(auto ent = dynamic_cast<Entity *>(th))
+      {
+         // Don't collide with same team.
+         if(team && ent->team && *team == *ent->team)
+            return false;
+
          ent->health -= damage;
+      }
 
       health = 0;
 

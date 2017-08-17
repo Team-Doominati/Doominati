@@ -23,6 +23,11 @@
 
 namespace DGE::Game
 {
+   class Entity;
+   class Object;
+   class Team;
+   class Thinker;
+
    using Angle = Core::Fixed<std::uint32_t, 32>;
    using Coord = Core::Fixed<std:: int32_t,  7>;
 

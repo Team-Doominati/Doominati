@@ -41,6 +41,8 @@ add_library(dge-game-lib STATIC
    RenderThinker.hpp
    Sector.cpp
    Sector.hpp
+   Team.cpp
+   Team.hpp
    Thinker.cpp
    Thinker.hpp
    Types.hpp
