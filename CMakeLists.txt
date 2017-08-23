@@ -59,10 +59,10 @@ endfunction()
 ##
 ## Add_Optional_Library
 ##
-function(Add_Optional_Library out def lib)
-   if(${${lib}_FOUND})
-      set(${out} "${${out}};${${lib}_LIBRARIES}" PARENT_SCOPE)
-      include_directories(SYSTEM ${${lib}_INCLUDE_DIRS})
+function(Add_Optional_Library out def found lib inc)
+   if(${found})
+      set(${out} "${${out}};${lib}" PARENT_SCOPE)
+      include_directories(SYSTEM ${inc})
       add_definitions("-D${def}=1")
    endif()
 endfunction()
@@ -150,14 +150,19 @@ include_directories(SYSTEM
 find_package(FLAC)
 find_package(Opus)
 find_package(Vorbis)
+find_package(JPEG)
 
 ## Optional defs for target AL
-Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_FLAC   FLAC)
-Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Opus   OPUS)
-Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Vorbis VORBIS)
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_FLAC
+   "${FLAC_FOUND}" "${FLAC_LIBRARIES}" "${FLAC_INCLUDE_DIRS}")
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Opus
+   "${OPUS_FOUND}" "${OPUS_LIBRARIES}" "${OPUS_INCLUDE_DIRS}")
+Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Vorbis
+   "${VORBIS_FOUND}" "${VORBIS_LIBRARIES}" "${VORBIS_INCLUDE_DIRS}")
 
 ## Optional defs for target GL
-Add_Optional_Library(DGE_GL_LIBRARIES DGE_GL_Use_JPEG JPEG)
+Add_Optional_Library(DGE_GL_LIBRARIES DGE_GL_Use_JPEG
+   "${JPEG_FOUND}" "${JPEG_LIBRARIES}" "${JPEG_INCLUDE_DIR}")
 
 ##
 ## Entry point
