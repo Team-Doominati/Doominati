@@ -11,9 +11,15 @@
 //-----------------------------------------------------------------------------
 
 
+DGE_Game_ObjectMemberList(bvx)
+DGE_Game_ObjectMemberList(bvy)
+DGE_Game_ObjectMemberList(bvz)
 DGE_Game_ObjectMemberList(damage)
 DGE_Game_ObjectMemberList(entfi)
 DGE_Game_ObjectMemberList(entla)
+DGE_Game_ObjectMemberList(grabx)
+DGE_Game_ObjectMemberList(graby)
+DGE_Game_ObjectMemberList(grabz)
 DGE_Game_ObjectMemberList(health)
 DGE_Game_ObjectMemberList(id)
 DGE_Game_ObjectMemberList(mass)

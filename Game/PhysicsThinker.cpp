@@ -76,16 +76,44 @@ namespace DGE::Game
 
          while(steps--)
          {
-            if(stepx && !TryMoveX(this, x + stepx)) stepx = vx = 0;
-            if(stepy && !TryMoveY(this, y + stepy)) stepy = vy = 0;
-            if(stepz && !TryMoveZ(this, z + stepz)) stepz = vz = 0;
+            if(stepx && !TryMoveX(this, x + stepx))
+            {
+               if(bvx && avx >= bvz) vx = -vx, stepx = -stepx;
+               else {stepx = vx = 0; if(avy + avz <= grabx) stepy = stepz = vy = vz = 0;}
+            }
+
+            if(stepy && !TryMoveY(this, y + stepy))
+            {
+               if(bvy && avy >= bvy) vy = -vy, stepy = -stepy;
+               else {stepy = vy = 0; if(avx + avz <= graby) stepx = stepz = vx = vz = 0;}
+            }
+
+            if(stepz && !TryMoveZ(this, z + stepz))
+            {
+               if(bvz && avz >= bvz) vz = -vz, stepz = -stepz;
+               else {stepz = vz = 0; if(avx + avy <= grabz) stepx = stepy = vx = vy = 0;}
+            }
          }
       }
       else
       {
-         if(!TryMoveX(this, x + vx)) vx = 0;
-         if(!TryMoveY(this, y + vy)) vy = 0;
-         if(!TryMoveZ(this, z + vz)) vz = 0;
+         if(vx && !TryMoveX(this, x + vx))
+         {
+            if(bvx && avx >= bvx) vx = -vx;
+            else {vx = 0; if(avy + avz <= grabx) vy = vz = 0;}
+         }
+
+         if(vy && !TryMoveY(this, y + vy))
+         {
+            if(bvy && avy >= bvy) vy = -vy;
+            else {vy = 0; if(avx + avz <= graby) vx = vz = 0;}
+         }
+
+         if(vz && !TryMoveZ(this, z + vz))
+         {
+            if(bvz && avz >= bvz) vz = -vz;
+            else {vz = 0; if(avx + avy <= grabz) vx = vy = 0;}
+         }
       }
 
       BlockMap::Root.insert(this);
