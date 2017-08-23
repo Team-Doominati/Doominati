@@ -16,12 +16,13 @@ This project depends on the following libraries:
 - [SDL 2](http://libsdl.org/download-2.0.php)
 - [FreeType](https://www.freetype.org/download.html)
 
-Optionally, you can compile and link with any or none of these libraries as well:
+Optionally, you can link any of these libraries:
 
-- [libjpeg](http://www.ijg.org/) ([libjpeg-turbo](http://libjpeg-turbo.virtualgl.org/) recommended) for JPEG image support
 - [libFLAC](https://xiph.org/flac/download.html) for FLAC sound support
+- [libjpeg](http://www.ijg.org/) ([libjpeg-turbo](http://libjpeg-turbo.virtualgl.org/) recommended) for JPEG image support
+- [libogg](https://www.xiph.org/downloads/) is required for any of FLAC, Vorbis and/or Opus
+- [libopus](http://opus-codec.org/downloads/) for Ogg Opus sound support
 - [libvorbis](https://www.xiph.org/downloads/) for Ogg Vorbis sound support
-- [libogg](https://www.xiph.org/downloads/) is required for FLAC and Vorbis
 
 
 ### Project Credits
