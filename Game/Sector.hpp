@@ -30,30 +30,40 @@
 //
 #define DGE_Game_Sector_GetMemberCases() \
    DGE_Game_Object_GetMemberCases(); \
-   case ObjectMember::pc:   return pc; \
-   case ObjectMember::texc: return texc; \
-   case ObjectMember::texf: return texf; \
-   case ObjectMember::xh:   return xh.raw(); \
-   case ObjectMember::xl:   return xl.raw(); \
-   case ObjectMember::yh:   return yh.raw(); \
-   case ObjectMember::yl:   return yl.raw(); \
-   case ObjectMember::zh:   return zh.raw(); \
-   case ObjectMember::zl:   return zl.raw()
+   case ObjectMember::frictair: return frictair.raw(); \
+   case ObjectMember::friction: return friction.raw(); \
+   case ObjectMember::gx:       return gx.raw(); \
+   case ObjectMember::gy:       return gy.raw(); \
+   case ObjectMember::gz:       return gz.raw(); \
+   case ObjectMember::pc:       return pc; \
+   case ObjectMember::texc:     return texc; \
+   case ObjectMember::texf:     return texf; \
+   case ObjectMember::xh:       return xh.raw(); \
+   case ObjectMember::xl:       return xl.raw(); \
+   case ObjectMember::yh:       return yh.raw(); \
+   case ObjectMember::yl:       return yl.raw(); \
+   case ObjectMember::zh:       return zh.raw(); \
+   case ObjectMember::zl:       return zl.raw()
 
 //
 // DGE_Game_Sector_SetMemberCases
 //
 #define DGE_Game_Sector_SetMemberCases() \
    DGE_Game_Object_SetMemberCases(); \
-   case ObjectMember::pc:   (void)val;   break; \
-   case ObjectMember::texc: texc = val;  break; \
-   case ObjectMember::texf: texf = val;  break; \
-   case ObjectMember::xh:   (void)val;   break; \
-   case ObjectMember::xl:   (void)val;   break; \
-   case ObjectMember::yh:   (void)val;   break; \
-   case ObjectMember::yl:   (void)val;   break; \
-   case ObjectMember::zh:   zh.raw(val); break; \
-   case ObjectMember::zl:   zl.raw(val); break
+   case ObjectMember::frictair: frictair.raw(val); break; \
+   case ObjectMember::friction: friction.raw(val); break; \
+   case ObjectMember::gx:       gx.raw(val);       break; \
+   case ObjectMember::gy:       gy.raw(val);       break; \
+   case ObjectMember::gz:       gz.raw(val);       break; \
+   case ObjectMember::pc:       (void)val;         break; \
+   case ObjectMember::texc:     texc = val;        break; \
+   case ObjectMember::texf:     texf = val;        break; \
+   case ObjectMember::xh:       (void)val;         break; \
+   case ObjectMember::xl:       (void)val;         break; \
+   case ObjectMember::yh:       (void)val;         break; \
+   case ObjectMember::yl:       (void)val;         break; \
+   case ObjectMember::zh:       zh.raw(val);       break; \
+   case ObjectMember::zl:       zl.raw(val);       break
 
 
 //----------------------------------------------------------------------------|
@@ -79,6 +89,10 @@ namespace DGE::Game
 
       Code::Word texc, texf;
 
+      Fract frictair;
+      Fract friction;
+
+      Coord gx, gy, gz; // Gravity (X/Y/Z)
       Coord xl, yl, xh, yh;
       Coord zl, zh;
 

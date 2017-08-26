@@ -185,6 +185,30 @@ namespace DGE::Game
    }
 
    //
+   // BlockMap::findSector
+   //
+   Sector::Ptr BlockMap::findSector(Coord x, Coord y)
+   {
+      auto node = getNode(x, y);
+
+      for(auto &sec : node->listSec)
+      {
+         if(sec.xl <= x && x <= sec.xh && sec.yl <= y && y <= sec.yh)
+            return &sec;
+      }
+
+      return nullptr;
+   }
+
+   //
+   // BlockMap::getNode
+   //
+   BlockMap *BlockMap::getNode(Coord x, Coord y)
+   {
+      return subs ? subs[(x > cx) | ((y > cy) << 1)].getNode(x, y) : this;
+   }
+
+   //
    // BlockMap::insert
    //
    void BlockMap::insert(PhysicsThinker *th)

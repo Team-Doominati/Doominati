@@ -38,6 +38,9 @@ namespace DGE::Game
       blockLinks{this},
       pc{pc_}, pv{pv_},
       texc{0}, texf{0},
+      frictair{0},
+      friction{0},
+      gx{0}, gy{0}, gz{0},
       xl{0}, yl{0}, xh{0}, yh{0},
       zl{0}, zh{0},
       rect{false}

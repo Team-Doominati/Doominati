@@ -127,6 +127,18 @@ namespace DGE::Core
       static constexpr I Mul(I l, I r) {return (static_cast<Eval>(l) * r) >> FB;}
       static constexpr Fixed Raw(I i) {return {i, FixedRawT{}};}
 
+      template<unsigned FBl, unsigned FBr>
+      static constexpr I MulFB(I const &l, I const &r)
+      {
+         return (static_cast<Eval>(l) * r) >> (FBl + FBr - FB);
+      }
+
+      template<unsigned FBl, unsigned FBr>
+      static constexpr Fixed MulFB(Fixed<I, FBl> const &l, Fixed<I, FBr> const &r)
+      {
+         return Raw(MulFB<FBl, FBr>(l.raw(), r.raw()));
+      }
+
       static constexpr Eval FUL = static_cast<Eval>(1) << FB;
       static constexpr I    FU  = static_cast<I>(FUL);
       static constexpr I    FM  = FU - 1;

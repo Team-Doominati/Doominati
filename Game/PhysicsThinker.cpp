@@ -25,6 +25,24 @@
 namespace DGE::Game
 {
    //
+   // PhysicsThinker::applyFriction
+   //
+   void PhysicsThinker::applyFriction(Fract f)
+   {
+      if(!(f *= friction))
+         return;
+
+      if(mass)
+      {
+         vx -= Coord::MulFB(vx, f) / mass;
+         vy -= Coord::MulFB(vy, f) / mass;
+         vz -= Coord::MulFB(vz, f) / mass;
+      }
+      else
+         vx = vy = vz = 0;
+   }
+
+   //
    // PhysicsThinker::collideFrom
    //
    bool PhysicsThinker::collideFrom(PhysicsThinker *)
@@ -55,11 +73,20 @@ namespace DGE::Game
    {
       Super::think();
 
-      // TODO: Gravity.
+      // Gravity and air friction.
+      if(auto sec = BlockMap::Root.findSector(this))
+      {
+         vx += sec->gx;
+         vy += sec->gy;
+         vz += sec->gz;
+
+         applyFriction(sec->frictair);
+      }
 
       // Apply velocity.
       BlockMap::Root.unlink(this);
 
+      Fract frict{0};
       auto avx = std::abs(vx);
       auto avy = std::abs(vy);
       auto avz = std::abs(vz);
@@ -76,19 +103,19 @@ namespace DGE::Game
 
          while(steps--)
          {
-            if(stepx && !TryMoveX(this, x + stepx))
+            if(stepx && !TryMoveX(this, x + stepx, frict))
             {
                if(bvx && avx >= bvz) vx = -vx, stepx = -stepx;
                else {stepx = vx = 0; if(avy + avz <= grabx) stepy = stepz = vy = vz = 0;}
             }
 
-            if(stepy && !TryMoveY(this, y + stepy))
+            if(stepy && !TryMoveY(this, y + stepy, frict))
             {
                if(bvy && avy >= bvy) vy = -vy, stepy = -stepy;
                else {stepy = vy = 0; if(avx + avz <= graby) stepx = stepz = vx = vz = 0;}
             }
 
-            if(stepz && !TryMoveZ(this, z + stepz))
+            if(stepz && !TryMoveZ(this, z + stepz, frict))
             {
                if(bvz && avz >= bvz) vz = -vz, stepz = -stepz;
                else {stepz = vz = 0; if(avx + avy <= grabz) stepx = stepy = vx = vy = 0;}
@@ -97,24 +124,26 @@ namespace DGE::Game
       }
       else
       {
-         if(vx && !TryMoveX(this, x + vx))
+         if(vx && !TryMoveX(this, x + vx, frict))
          {
             if(bvx && avx >= bvx) vx = -vx;
             else {vx = 0; if(avy + avz <= grabx) vy = vz = 0;}
          }
 
-         if(vy && !TryMoveY(this, y + vy))
+         if(vy && !TryMoveY(this, y + vy, frict))
          {
             if(bvy && avy >= bvy) vy = -vy;
             else {vy = 0; if(avx + avz <= graby) vx = vz = 0;}
          }
 
-         if(vz && !TryMoveZ(this, z + vz))
+         if(vz && !TryMoveZ(this, z + vz, frict))
          {
             if(bvz && avz >= bvz) vz = -vz;
             else {vz = 0; if(avx + avy <= grabz) vx = vy = 0;}
          }
       }
+
+      applyFriction(frict);
 
       BlockMap::Root.insert(this);
    }
@@ -122,7 +151,7 @@ namespace DGE::Game
    //
    // PhysicsThinker::Collide
    //
-   bool PhysicsThinker::Collide(PhysicsThinker *th, Coord &oldx, Coord &oldy, Coord &oldz)
+   bool PhysicsThinker::Collide(PhysicsThinker *th, Coord &oldx, Coord &oldy, Coord &oldz, Fract &friction)
    {
       bool collided = false;
 
@@ -150,6 +179,9 @@ namespace DGE::Game
          {
             // TODO: Snap position.
 
+            if(friction < sec->friction)
+               friction = sec->friction;
+
             collided = true;
          }
       }
@@ -166,6 +198,9 @@ namespace DGE::Game
             {
                // TODO: Snap position.
 
+               if(friction < oth->friction)
+                  friction = oth->friction;
+
                collided = true;
             }
          }
@@ -177,13 +212,13 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveX
    //
-   bool PhysicsThinker::TryMoveX(PhysicsThinker *th, Coord x)
+   bool PhysicsThinker::TryMoveX(PhysicsThinker *th, Coord x, Fract &friction)
    {
       Coord oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->x = x;
 
-      if(Collide(th, oldx, oldy, oldz))
+      if(Collide(th, oldx, oldy, oldz, friction))
       {
          th->x = oldx;
          return false;
@@ -195,13 +230,13 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveY
    //
-   bool PhysicsThinker::TryMoveY(PhysicsThinker *th, Coord y)
+   bool PhysicsThinker::TryMoveY(PhysicsThinker *th, Coord y, Fract &friction)
    {
       Coord oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->y = y;
 
-      if(Collide(th, oldx, oldy, oldz))
+      if(Collide(th, oldx, oldy, oldz, friction))
       {
          th->y = oldy;
          return false;
@@ -213,13 +248,13 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveZ
    //
-   bool PhysicsThinker::TryMoveZ(PhysicsThinker *th, Coord z)
+   bool PhysicsThinker::TryMoveZ(PhysicsThinker *th, Coord z, Fract &friction)
    {
       Coord oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->z = z;
 
-      if(Collide(th, oldx, oldy, oldz))
+      if(Collide(th, oldx, oldy, oldz, friction))
       {
          th->z = oldz;
          return false;

@@ -106,6 +106,7 @@ namespace DGE::Game
 
    DGE_Game_Object_MemberGetDefn(I)
    DGE_Game_Object_MemberGetDefn(LA)
+   DGE_Game_Object_MemberGetDefn(LR)
    DGE_Game_Object_MemberGetDefn(U)
    DGE_Game_Object_MemberGetDefn(X)
 
@@ -124,6 +125,7 @@ namespace DGE::Game
 
    DGE_Game_Object_MemberSetDefn(I)
    DGE_Game_Object_MemberSetDefn(LA)
+   DGE_Game_Object_MemberSetDefn(LR)
    DGE_Game_Object_MemberSetDefn(U)
    DGE_Game_Object_MemberSetDefn(X)
 

@@ -56,6 +56,9 @@ namespace DGE::Game
       FindRes const &find(Sector *sec)
          {return find(sec->xl, sec->yl, sec->xh, sec->yh);}
 
+      Sector::Ptr findSector(Coord x, Coord y);
+      Sector::Ptr findSector(PhysicsThinker *th) {return findSector(th->x, th->y);}
+
       void insert(PhysicsThinker *th);
       void insert(Sector *sec);
 
@@ -94,6 +97,8 @@ namespace DGE::Game
       template<typename Iter>
       void forNode(Sector *sec, Iter &&iter)
          {return forNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+
+      BlockMap *getNode(Coord x, Coord y);
 
       // insertNode
       template<typename T>
