@@ -153,7 +153,10 @@ namespace DGE::Game
    //
    bool PhysicsThinker::Collide(PhysicsThinker *th, Coord &oldx, Coord &oldy, Coord &oldz, Fract &friction)
    {
-      bool collided = false;
+      Coord snapx    = th->x;
+      Coord snapy    = th->y;
+      Coord snapz    = th->z;
+      bool  collided = false;
 
       auto const &findRes = BlockMap::Root.find(th);
 
@@ -177,7 +180,20 @@ namespace DGE::Game
 
          if(th->collideInto(sec))
          {
-            // TODO: Snap position.
+            // Snap position.
+            if(sec->rect)
+            {
+               if(oldx < th->x) snapx = std::min(snapx, sec->xl - th->sx);
+               if(oldx > th->x) snapx = std::max(snapx, sec->xh + th->sx);
+               if(oldy < th->y) snapy = std::min(snapy, sec->yl - th->sy);
+               if(oldy > th->y) snapy = std::max(snapy, sec->yh + th->sy);
+               if(oldz < th->z) snapz = std::max(snapz, sec->zl + th->sz);
+               if(oldz > th->z) snapz = std::min(snapz, sec->zh - th->sz);
+            }
+            else
+            {
+               // TODO
+            }
 
             if(friction < sec->friction)
                friction = sec->friction;
@@ -196,7 +212,13 @@ namespace DGE::Game
             // Always perform both collisions for side effects.
             if(th->collideInto(oth) & oth->collideFrom(th))
             {
-               // TODO: Snap position.
+               // Snap position.
+               if(oldx < th->x) snapx = std::min(snapx, oth->x - oth->sx - th->sx);
+               if(oldx > th->x) snapx = std::max(snapx, oth->x + oth->sx + th->sx);
+               if(oldy < th->y) snapy = std::min(snapy, oth->y - oth->sy - th->sy);
+               if(oldy > th->y) snapy = std::max(snapy, oth->y + oth->sy + th->sy);
+               if(oldz < th->z) snapz = std::min(snapz, oth->z - oth->sz - th->sz);
+               if(oldz > th->z) snapz = std::max(snapz, oth->z + oth->sz + th->sz);
 
                if(friction < oth->friction)
                   friction = oth->friction;
@@ -205,6 +227,10 @@ namespace DGE::Game
             }
          }
       }
+
+      oldx = snapx;
+      oldy = snapy;
+      oldz = snapz;
 
       return collided;
    }
