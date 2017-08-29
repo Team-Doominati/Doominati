@@ -29,7 +29,8 @@
 
 namespace DGE::Game
 {
-   void Sector_NativeAdd() {}
+   DGE_Code_NativeLoaderDefn(Sector);
+   DGE_Game_ObjectImplement(Sector);
 
    //
    // Sector constructor

@@ -37,6 +37,18 @@
    case ObjectMember::prev: (void)val; break
 
 //
+// DGE_Game_ThinkerImplement
+//
+#define DGE_Game_ThinkerImplement(name) \
+   DGE_Game_ThinkerImplementCommon(name)
+
+//
+// DGE_Game_ThinkerImplementCommon
+//
+#define DGE_Game_ThinkerImplementCommon(name) \
+   DGE_Game_ObjectImplement(name)
+
+//
 // DGE_Game_ThinkerPreamble
 //
 #define DGE_Game_ThinkerPreamble(name, base) \

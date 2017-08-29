@@ -6,11 +6,11 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Scripting native adder.
+// Rendered Thinkers.
 //
 //-----------------------------------------------------------------------------
 
-#include "Code/Native.hpp"
+#include "Game/RenderThinker.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -19,17 +19,7 @@
 
 namespace DGE::Game
 {
-   DGE_Code_NativeLoaderDecl(MissileEntity);
-   DGE_Code_NativeLoaderDecl(Sector);
-
-   //
-   // NativeAdd
-   //
-   void NativeAdd()
-   {
-      DGE_Code_NativeLoaderCall(MissileEntity);
-      DGE_Code_NativeLoaderCall(Sector);
-   }
+   DGE_Game_ThinkerImplement(RenderThinker);
 }
 
 // EOF

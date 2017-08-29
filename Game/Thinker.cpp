@@ -34,6 +34,8 @@ namespace DGE::Game
 
 namespace DGE::Game
 {
+   DGE_Game_ThinkerImplementCommon(Thinker);
+
    //
    // Thinker constructor
    //

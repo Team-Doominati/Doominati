@@ -22,7 +22,8 @@
 
 namespace DGE::Game
 {
-   void MissileEntity_NativeAdd() {}
+   DGE_Code_NativeLoaderDefn(MissileEntity);
+   DGE_Game_ThinkerImplement(MissileEntity);
 
    //
    // MissileEntity::collideFrom

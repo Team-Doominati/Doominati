@@ -24,21 +24,7 @@
 
 namespace DGE::Game
 {
-   //
-   // Team::getEntFirst
-   //
-   Code::Word Team::getEntFirst() const
-   {
-      return listEnt.next->obj ? listEnt.next->obj->id : 0;
-   }
-
-   //
-   // Team::getEntLast
-   //
-   Code::Word Team::getEntLast() const
-   {
-      return listEnt.prev->obj ? listEnt.prev->obj->id : 0;
-   }
+   DGE_Game_ObjectImplement(Team);
 
    //
    // Team::getOwnerTop

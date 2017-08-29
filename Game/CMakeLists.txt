@@ -38,6 +38,7 @@ add_library(dge-game-lib STATIC
    PhysicsThinker.hpp
    PointThinker.cpp
    PointThinker.hpp
+   RenderThinker.cpp
    RenderThinker.hpp
    Sector.cpp
    Sector.hpp

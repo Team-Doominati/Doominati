@@ -192,6 +192,7 @@ static int Main()
    DGE::GL::NativeAdd();
 
    DGE::Code::NativeAdder::Finish();
+   DGE::Game::Object::ObjectTypeAdder::Finish();
 
    DGE::Code::Program prog;
    LoadCodedefs(&prog);

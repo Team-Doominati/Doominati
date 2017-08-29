@@ -14,6 +14,7 @@
 #define DGE__Game__Object_H__
 
 #include "Core/IDAllocator.hpp"
+#include "Core/String.hpp"
 
 #include "Code/Types.hpp"
 
@@ -35,6 +36,29 @@
 //
 #define DGE_Game_Object_SetMemberCases() \
    case ObjectMember::id: (void)val; break
+
+//
+// DGE_Game_ObjectImplement
+//
+#define DGE_Game_ObjectImplement(name) \
+   DGE_Game_ObjectImplementCommon(name)
+
+//
+// DGE_Game_ObjectImplementCommon
+//
+#define DGE_Game_ObjectImplementCommon(name) \
+   Code::Word name::getMember(ObjectMember mem) \
+      {switch(mem) {DGE_Game_##name##_GetMemberCases(); \
+         default: return This::extMember()[mem - ObjectMember::MAX];}} \
+   void name::setMember(ObjectMember mem, Code::Word val) \
+      {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
+         default: This::extMember()[mem - ObjectMember::MAX] = val;}} \
+   \
+   static Object::ObjectTypeAdder name##TypeAdd{#name, \
+      [](Object *o) {return dynamic_cast<name *>(o) ? o->id : 0;}}; \
+   \
+   std::size_t name::ExtMemC; \
+   std::size_t name::ExtMemCF
 
 //
 // DGE_Game_ObjectPreamble
@@ -63,15 +87,11 @@ public: \
    \
    virtual Code::Word *extMember() \
       {return reinterpret_cast<Code::Word *>(this + 1);} \
-   virtual Code::Word getMember(ObjectMember mem) \
-      {switch(mem) {DGE_Game_##name##_GetMemberCases(); \
-         default: return This::extMember()[mem - ObjectMember::MAX];}} \
-   virtual void setMember(ObjectMember mem, Code::Word val) \
-      {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
-         default: This::extMember()[mem - ObjectMember::MAX] = val;}} \
+   virtual Code::Word getMember(ObjectMember mem); \
+   virtual void setMember(ObjectMember mem, Code::Word val); \
    \
-   static inline std::size_t ExtMemC; \
-   static inline std::size_t ExtMemCF; \
+   static std::size_t ExtMemC; \
+   static std::size_t ExtMemCF; \
    \
    static This *Get(Code::Word id) \
       {return dynamic_cast<This *>(ObjectVec[id]);}
@@ -105,6 +125,18 @@ namespace DGE::Game
       DGE_Game_ObjectPreambleCommon(Object);
 
    public:
+      //
+      // ObjectTypeAdder
+      //
+      struct ObjectTypeAdder
+      {
+         ObjectTypeAdder(Core::HashedStr name, Code::Word (*func)(Object *));
+
+
+         static void Finish();
+      };
+
+
       void refAdd() {++refCount;}
 
       void refSub() {if(!--refCount) delete this;}

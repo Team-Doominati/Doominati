@@ -16,6 +16,18 @@
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
 
+#include <vector>
+
+
+//----------------------------------------------------------------------------|
+// Static Objects                                                             |
+//
+
+namespace DGE::Game
+{
+   Core::HashMapFixed<Core::HashedStr, Code::Word (*)(Object *)> ObjectTypes;
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Objects                                                             |
@@ -28,11 +40,30 @@ namespace DGE::Game
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace DGE::Game
+{
+   //
+   // ObjectTypeVec
+   //
+   static auto &ObjectTypeVec()
+   {
+      static auto vec = new std::vector<std::pair<Core::HashedStr, Code::Word (*)(Object *)>>;
+      return vec;
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
 namespace DGE::Game
 {
+   DGE_Game_ObjectImplementCommon(Object);
+
    //
    // Object constructor
    //
@@ -56,6 +87,29 @@ namespace DGE::Game
    {
       static Core::IDAllocator<Object, Code::Word> vec{1};
       return vec;
+   }
+
+   //
+   // Object::ObjectTypeAdder constructor
+   //
+   Object::ObjectTypeAdder::ObjectTypeAdder(Core::HashedStr name, Code::Word (*func)(Object *))
+   {
+      ObjectTypeVec()->emplace_back(name, func);
+   }
+
+   //
+   // Object::ObjectTypeAdder::Finish
+   //
+   void Object::ObjectTypeAdder::Finish()
+   {
+      auto &vec = ObjectTypeVec();
+
+      auto vecItr = vec->begin();
+      ObjectTypes.reset(vec->size(),
+         [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
+
+      delete vec;
+      vec = nullptr;
    }
 }
 
@@ -82,6 +136,17 @@ namespace DGE::Game
 
       throw Code::GlyphError{"ObjectMember", glyph};
    }
+
+   //
+   // {ObjectType}
+   //
+   DGE_Code_GlyphTypeDefn(ObjectType)
+   {
+      if(auto type = ObjectTypes.findItr(glyph))
+         return static_cast<Code::Word>(type - ObjectTypes.begin());
+
+      throw Code::GlyphError{"ObjectType", glyph};
+   }
 }
 
 
@@ -91,6 +156,15 @@ namespace DGE::Game
 
 namespace DGE::Game
 {
+   //
+   // unsigned DGE_Object_Cast(unsigned id, unsigned type)
+   //
+   DGE_Code_NativeDefn(DGE_Object_Cast)
+   {
+      task->dataStk.push(ObjectTypes[argv[1]](Object::Get(argv[0])));
+      return false;
+   }
+
    //
    // T DGE_Object_MemberGet*(unsigned id, unsigned mem)
    //

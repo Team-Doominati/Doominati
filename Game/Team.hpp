@@ -28,8 +28,8 @@
 //
 #define DGE_Game_Team_GetMemberCases() \
    DGE_Game_Object_GetMemberCases(); \
-   case ObjectMember::entfi:  return getEntFirst(); \
-   case ObjectMember::entla:  return getEntLast(); \
+   case ObjectMember::entfi:  return listEnt.next->obj ? listEnt.next->obj->id : 0; \
+   case ObjectMember::entla:  return listEnt.prev->obj ? listEnt.prev->obj->id : 0; \
    case ObjectMember::owner:  return owner ? owner->id : 0; \
    case ObjectMember::teamfi: return listTeam.next->obj ? listTeam.next->obj->id : 0; \
    case ObjectMember::teamla: return listTeam.prev->obj ? listTeam.prev->obj->id : 0; \
@@ -66,9 +66,6 @@ namespace DGE::Game
    public:
       Team() : teamLink{this} {}
 
-      Code::Word getEntFirst() const;
-      Code::Word getEntLast() const;
-
       Team const *getOwnerTop() const;
 
       void setOwner(Code::Word id);
@@ -80,8 +77,6 @@ namespace DGE::Game
       Core::ListLink<Team>   teamLink;
 
       Ptr owner;
-
-   private:
    };
 }
 

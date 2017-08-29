@@ -22,7 +22,7 @@
 
 namespace DGE::Game
 {
-   void PointThinker_NativeAdd() {}
+   DGE_Game_ThinkerImplement(PointThinker);
 }
 
 

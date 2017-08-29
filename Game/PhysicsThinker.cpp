@@ -24,6 +24,8 @@
 
 namespace DGE::Game
 {
+   DGE_Game_ThinkerImplement(PhysicsThinker);
+
    //
    // PhysicsThinker::applyFriction
    //
