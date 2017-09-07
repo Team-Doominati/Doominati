@@ -46,9 +46,6 @@ namespace DGE::Game
       zl{0}, zh{0},
       rect{false}
    {
-      // Hack to keep sectors around until such time as a proper ownership
-      // relationship can be established.
-      ++refCount;
    }
 
    //
@@ -82,7 +79,7 @@ namespace DGE::Game
    //
    // Sector::Create
    //
-   Sector::Ref Sector::Create(std::size_t pc, std::size_t ext)
+   Sector *Sector::Create(std::size_t pc, std::size_t ext)
    {
       // Allocate storage.
       // Memory layout: [Sector] [extension members] [points]
@@ -92,7 +89,7 @@ namespace DGE::Game
 
       auto pbuf = reinterpret_cast<Point2 *>(reinterpret_cast<Code::Word *>(sec + 1) + ext);
 
-      return Ref{new(sec) Sector{pc, pbuf}};
+      return new(sec) Sector{pc, pbuf};
    }
 }
 

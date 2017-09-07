@@ -1,0 +1,461 @@
+###############################################################################
+Doominati Game Engine Native Functions
+###############################################################################
+
+===============================================================================
+Gamesim Functions
+===============================================================================
+
+===========================================================
+BlockMap Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xh, accum yh);
+
+  unsigned DGE_BlockMap_FindAll(void);
+
+  unsigned DGE_BlockMap_FindCountSector(unsigned find);
+  unsigned DGE_BlockMap_FindCountThinker(unsigned find);
+
+  void DGE_BlockMap_FindFree(unsigned find);
+
+  unsigned DGE_BlockMap_FindGetSector(unsigned find, unsigned idx);
+  unsigned DGE_BlockMap_FindGetThinker(unsigned find, unsigned idx);
+
+  void DGE_BlockMap_Split(accum minSize, unsigned maxObj);
+
+-----------------------------------------------------------
+DGE_BlockMap_Find
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xh, accum yh);
+
+Description:
+  Searches for Objects in any nodes which are in the given area.
+
+Returns:
+  The created find result array's id.
+
+-----------------------------------------------------------
+DGE_BlockMap_FindAll
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_BlockMap_FindAll(void);
+
+Description:
+  Like DGE_BlockMap_Find, except it searches the entire BlockMap at once.
+
+Returns:
+  The creted find result array's id.
+
+-----------------------------------------------------------
+DGE_BlockMap_FindCount*
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_BlockMap_FindCountSector(unsigned find);
+  unsigned DGE_BlockMap_FindCountThinker(unsigned find);
+
+Description:
+  Reads the size of the find result array.
+
+Returns:
+  The number of Objects in the find result array.
+
+-----------------------------------------------------------
+DGE_BlockMap_FindFree
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_BlockMap_FindFree(unsigned find);
+
+Description:
+  Frees the find result array.
+
+-----------------------------------------------------------
+DGE_BlockMap_FindGet*
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_BlockMap_FindGetSector(unsigned find, unsigned idx);
+  unsigned DGE_BlockMap_FindGetThinker(unsigned find, unsigned idx);
+
+Description:
+  Reads an element of the find result array. If idx is out of bounds, the
+  behavior is undefined.
+
+Returns:
+  The Object's id.
+
+-----------------------------------------------------------
+DGE_BlockMap_Split
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_BlockMap_Split(accum minSize, unsigned maxObj);
+
+Description:
+  Traverses the entire BlockMap and splits any nodes that are larger than
+  minSize and contain more than maxObj Objects.
+
+===========================================================
+Entity Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_Entity_Create(unsigned ext);
+
+-----------------------------------------------------------
+DGE_Entity_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Entity_Create(unsigned ext);
+
+Description:
+  Creates a new Entity with ext instance extension members.
+
+  The created Entity is automatically inserted into the Thinker list.
+
+Returns:
+  The created Entity's id.
+
+===========================================================
+MissileEntity Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_MissileEntity_Create(unsigned ext);
+
+-----------------------------------------------------------
+DGE_MissileEntity_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_MissileEntity_Create(unsigned ext);
+
+Description:
+  Creates a new MissileEntity with ext instance extension members.
+
+  The created MissileEntity is automatically inserted into the Thinker list.
+
+Returns:
+  The created MissileEntity's id.
+
+===========================================================
+Object Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_Object_Cast(unsigned id, unsigned type);
+
+  int DGE_Object_MemberGetI(unsigned id, unsigned mem);
+  unsigned long fract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
+  long fract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
+  unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
+  accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
+
+  void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
+  void DGE_Object_MemberSetLA(unsigned id, unsigned mem,
+    unsigned long fract val);
+  void DGE_Object_MemberSetLR(unsigned id, unsigned mem, long fract val);
+  void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
+  void DGE_Object_MemberSetX(unsigned id, unsigned mem, accum val);
+
+  void DGE_Object_RefAdd(unsigned id);
+
+  void DGE_Object_RefSub(unsigned id);
+
+-----------------------------------------------------------
+DGE_Object_Cast
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Object_Cast(unsigned id, unsigned type);
+
+Description:
+  The parameter type shall be a glyph with type {ObjectType}.
+
+  Checks the dynamic type of the Object. If it is the same as or derived from
+  the given type, the id is returned. Otherwise, 0 is returned.
+
+Returns:
+  The Object's id, if its type is compatible, 0 otherwise.
+
+-----------------------------------------------------------
+DGE_Object_MemberGet*
+-----------------------------------------------------------
+
+Synopsis:
+  int DGE_Object_MemberGetI(unsigned id, unsigned mem);
+  unsigned long fract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
+  long fract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
+  unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
+  accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
+
+Description:
+  The parameter mem shall be a glyph with type {ObjectMember}.
+
+  Reads a member of the Object. If the Object does not have the given member or
+  the member has the wrong type, the behavior is undefined.
+
+Returns:
+  The member's value.
+
+-----------------------------------------------------------
+DGE_Object_MemberSet*
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
+  void DGE_Object_MemberSetLA(unsigned id, unsigned mem,
+    unsigned long fract val);
+  void DGE_Object_MemberSetLR(unsigned id, unsigned mem, long fract val);
+  void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
+  void DGE_Object_MemberSetX(unsigned id, unsigned mem, accum val);
+
+Description:
+  The parameter mem shall be a glyph with type {ObjectMember}.
+
+  Sets a member of the Object. If the Object does not have the given member or
+  the member has the wrong type, the behavior is undefined.
+
+-----------------------------------------------------------
+DGE_Object_RefAdd
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Object_RefAdd(unsigned id);
+
+Description:
+  Adds one to the reference count of the Object.
+
+-----------------------------------------------------------
+DGE_Object_RefSub
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Object_RefSub(unsigned id);
+
+Description:
+  Subtracts one from the reference count of the Object.
+
+===========================================================
+PhysicsThinker Functions
+===========================================================
+
+Synopsis:
+  void DGE_PhysicsThinker_Block(unsigned id);
+
+  unsigned DGE_PhysicsThinker_Create(unsigned ext);
+
+  void DGE_PhysicsThinker_Unblock(unsigned id);
+
+-----------------------------------------------------------
+DGE_PhysicsThinker_Block
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_PhysicsThinker_Block(unsigned id);
+
+Description:
+  Links the PhysicsThinker into the BlockMap.
+
+-----------------------------------------------------------
+DGE_PhysicsThinker_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_PhysicsThinker_Create(unsigned ext);
+
+Description:
+  Creates a new PhysicsThinker with ext instance extension members.
+
+  The created PhysicsThinker is automatically inserted into the Thinker list.
+
+Returns:
+  The created PhysicsThinker's id.
+
+-----------------------------------------------------------
+DGE_PhysicsThinker_Unblock
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_PhysicsThinker_Unblock(unsigned id);
+
+Description:
+  Unlinks the PhysicsThinker from the BlockMap.
+
+===========================================================
+PointThinker Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_PointThinker_Create(unsigned ext);
+
+-----------------------------------------------------------
+DGE_PointThinker_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_PointThinker_Create(unsigned ext);
+
+Description:
+  Creates a new PointThinker with ext instance extension members.
+
+  The created PointThinker is automatically inserted into the Thinker list.
+
+Returns:
+  The created PointThinker's id.
+
+===========================================================
+Sector Functions
+===========================================================
+
+Synopsis:
+  void DGE_Sector_Block(unsigned id);
+
+  void DGE_Sector_CalcBounds(unsigned id);
+
+  unsigned DGE_Sector_Create(unsigned pc, unsigned ext);
+
+  DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p);
+
+  void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val);
+
+  void DGE_Sector_Unblock(unsigned id);
+
+-----------------------------------------------------------
+DGE_Sector_Block
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Sector_Block(unsigned id);
+
+Description:
+  Links the Sector into the BlockMap.
+
+-----------------------------------------------------------
+DGE_Sector_CalcBounds
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Sector_CalcBounds(unsigned id);
+
+Description:
+  Calculates the outer bounds and other geometric properties of the Sector.
+  This function must be called after changing the Sector's points and before
+  linking into the BlockMap.
+
+  If any two points are the same, the behavior is undefined.
+
+-----------------------------------------------------------
+DGE_Sector_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Sector_Create(unsigned pc, unsigned ext);
+
+Description:
+  Creates a new Sector with pc points and ext instance extension members.
+
+  The created Sector has no references.
+
+Returns:
+  The created Sector's id.
+
+-----------------------------------------------------------
+DGE_Sector_PointGet
+-----------------------------------------------------------
+
+Synopsis:
+  DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p);
+
+Description:
+  Reads a point of the Sector. If p is out of range, the behavior is undefined.
+
+Returns:
+  The point's value.
+
+-----------------------------------------------------------
+DGE_Sector_PointSet
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val);
+
+Description:
+  Sets a point of the Sector. If p is out of range, the behavior is undefined.
+
+-----------------------------------------------------------
+DGE_Sector_Unblock
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Sector_Unblock(unsigned id);
+
+Description:
+  Unlinks the Sector from the BlockMap.
+
+===========================================================
+Thinker Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_Thinker_Head(void);
+
+  void DGE_Thinker_Insert(unsigned id);
+
+  void DGE_Thinker_Unlink(unsigned id);
+
+-----------------------------------------------------------
+DGE_Thinker_Head
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Thinker_Head(void);
+
+Description:
+  Returns the id of the head of the Thinker list. The head shall only be used
+  to access its next or prev member.
+
+Returns:
+  The Thinker list's head's id.
+
+-----------------------------------------------------------
+DGE_Thinker_Insert
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Thinker_Insert(unsigned id);
+
+Description:
+  Inserts the Thinker into the Thinker list. This adds a reference to the
+  Thinker. The Thinker must be unlinked.
+
+-----------------------------------------------------------
+DGE_Thinker_Unlink
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Thinker_Unlink(unsigned id);
+
+Description:
+  Unlinks the Thinker from the Thinker list. This removes a reference from the
+  Thinker. The Thinker must be linked.
+
+===============================================================================
+Rendering Functions
+===============================================================================
+
+===============================================================================
+System Functions
+===============================================================================
+
+###############################################################################
+EOF
+###############################################################################
+

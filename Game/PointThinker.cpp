@@ -33,9 +33,9 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_CreatePointThinker(unsigned ext)
+   // unsigned DGE_PointThinker_Create(unsigned ext)
    //
-   DGE_Code_NativeDefn(DGE_CreatePointThinker)
+   DGE_Code_NativeDefn(DGE_PointThinker_Create)
    {
       std::size_t ext = argv[0];
 

@@ -66,12 +66,23 @@ namespace DGE::Game
    }
 
    //
+   // Thinker::insert
+   //
+   void Thinker::insert()
+   {
+      next = ThinkerCap.next;
+      prev = &ThinkerCap;
+
+      prev->next = next->prev = this;
+   }
+
+   //
    // Thinker::unlink
    //
    void Thinker::unlink()
    {
-      // Hold a reference to self while unlinking,
-      Ref self(this);
+      // Hold a reference to self while unlinking.
+      Ref self{this};
 
       prev->next = next;
       next->prev = prev;
@@ -104,18 +115,27 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_ThinkerCap(void)
+   // unsigned DGE_Thinker_Head(void)
    //
-   DGE_Code_NativeDefn(DGE_ThinkerCap)
+   DGE_Code_NativeDefn(DGE_Thinker_Head)
    {
       task->dataStk.push(Thinker::ThinkerCap.id);
       return false;
    }
 
    //
-   // void DGE_ThinkerUnlink(unsigned id)
+   // void DGE_Thinker_Insert(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_ThinkerUnlink)
+   DGE_Code_NativeDefn(DGE_Thinker_Insert)
+   {
+      if(Thinker *th = Thinker::Get(argv[0])) th->insert();
+      return false;
+   }
+
+   //
+   // void DGE_Thinker_Unlink(unsigned id)
+   //
+   DGE_Code_NativeDefn(DGE_Thinker_Unlink)
    {
       if(Thinker *th = Thinker::Get(argv[0])) th->unlink();
       return false;

@@ -85,6 +85,8 @@ namespace DGE::Game
       using Range = RangeT<Thinker>;
 
 
+      void insert();
+
       void unlink();
 
       Ptr      next;

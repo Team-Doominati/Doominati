@@ -300,18 +300,7 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_CreatePhysicsThinker(unsigned ext)
-   //
-   DGE_Code_NativeDefn(DGE_CreatePhysicsThinker)
-   {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) PhysicsThinker)->id);
-      return false;
-   }
-
-   //
-   // void DGE_PhysicsThinkerBlock(unsigned id)
+   // void DGE_PhysicsThinker_Block(unsigned id)
    //
    DGE_Code_NativeDefn(DGE_PhysicsThinkerBlock)
    {
@@ -322,7 +311,18 @@ namespace DGE::Game
    }
 
    //
-   // void DGE_PhysicsThinkerUnblock(unsigned id)
+   // unsigned DGE_PhysicsThinker_Create(unsigned ext)
+   //
+   DGE_Code_NativeDefn(DGE_PhysicsThinker_Create)
+   {
+      std::size_t ext = argv[0];
+
+      task->dataStk.push((new(ext) PhysicsThinker)->id);
+      return false;
+   }
+
+   //
+   // void DGE_PhysicsThinker_Unblock(unsigned id)
    //
    DGE_Code_NativeDefn(DGE_PhysicsThinkerUnblock)
    {

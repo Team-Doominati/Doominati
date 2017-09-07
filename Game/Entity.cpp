@@ -60,9 +60,9 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_CreateEntity(unsigned ext)
+   // unsigned DGE_Entity_Create(unsigned ext)
    //
-   DGE_Code_NativeDefn(DGE_CreateEntity)
+   DGE_Code_NativeDefn(DGE_Entity_Create)
    {
       std::size_t ext = argv[0];
 

@@ -99,7 +99,7 @@ namespace DGE::Game
       bool rect : 1;
 
 
-      static Ref Create(std::size_t pc, std::size_t ext);
+      static Sector *Create(std::size_t pc, std::size_t ext);
 
    private:
       Sector(std::size_t pc, Point2 *pv);
