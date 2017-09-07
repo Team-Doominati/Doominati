@@ -49,7 +49,7 @@ Description:
   Like DGE_BlockMap_Find, except it searches the entire BlockMap at once.
 
 Returns:
-  The creted find result array's id.
+  The created find result array's id.
 
 -----------------------------------------------------------
 DGE_BlockMap_FindCount*
