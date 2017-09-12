@@ -455,6 +455,44 @@ Rendering Functions
 System Functions
 ===============================================================================
 
+===========================================================
+Task Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_Task_Create(unsigned thread, void (*fn)(void), ...);
+
+  void DGE_Task_Sleep(unsigned id, unsigned ticks);
+
+-----------------------------------------------------------
+DGE_Task_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Task_Create(unsigned thread, void (*fn)(void), ...);
+
+Description:
+  Creates a new Task within the Thread. If thread is 0, the current Thread is
+  used. The Task is started by calling fn, which is passed any variadic
+  arguments.
+
+Returns:
+  The created Task's id if successful, 0 otherwise.
+
+-----------------------------------------------------------
+DGE_Task_Sleep
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Task_Sleep(unsigned id, unsigned ticks);
+
+Description:
+  Sets the Task to sleep for the number of ticks. If id is 0, the current Task
+  is affected.
+
+  A duration of 0 has no effect on an already-running task, and a duration of 1
+  will sleep until the next tick.
+
 ###############################################################################
 EOF
 ###############################################################################

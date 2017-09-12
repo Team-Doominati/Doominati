@@ -15,8 +15,6 @@
 #include <utility>
 #include <vector>
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -65,7 +63,6 @@ namespace DGE::Code
    DGE_Code_NativeLoaderDecl(Native_File);
    DGE_Code_NativeLoaderDecl(Native_Memory);
    DGE_Code_NativeLoaderDecl(Native_Print);
-   DGE_Code_NativeLoaderDecl(Native_State);
 
    //
    // NativeAdder constructor
@@ -100,7 +97,6 @@ namespace DGE::Code
       DGE_Code_NativeLoaderCall(Native_File);
       DGE_Code_NativeLoaderCall(Native_Memory);
       DGE_Code_NativeLoaderCall(Native_Print);
-      DGE_Code_NativeLoaderCall(Native_State);
 
       // Callbacks.
       {

@@ -12,6 +12,8 @@
 
 #include "Code/Task.hpp"
 
+#include "Code/Native.hpp"
+#include "Code/Program.hpp"
 #include "Code/Thread.hpp"
 
 #include <algorithm>
@@ -101,6 +103,45 @@ namespace DGE::Code
       task->jumpbuf = 0;
 
       return task;
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Natives                                                                    |
+//
+
+namespace DGE::Code
+{
+   //
+   // unsigned DGE_Task_Create(unsigned thread, void (*fn)(void), ...)
+   //
+   DGE_Code_NativeDefn(DGE_Task_Create)
+   {
+      // TODO: Lookup thread by id.
+      auto thrd = argv[0] ? nullptr : task->thrd;
+      auto fn   = &task->prog->funcs[argv[1]];
+
+      if(thrd)
+         task->dataStk.push(thrd->startTask(fn, argv + 2, argc - 2)->id);
+      else
+         task->dataStk.push(0);
+
+      return false;
+   }
+
+   //
+   // void DGE_Task_Sleep(unsigned id, unsigned ticks)
+   //
+   DGE_Code_NativeDefn(DGE_Task_Sleep)
+   {
+      // TODO: Lookup task by id.
+      auto t = argv[0] ? nullptr : task;
+
+      if(t)
+         t->delay = argv[1];
+
+      return t == task;
    }
 }
 
