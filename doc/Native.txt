@@ -456,6 +456,39 @@ System Functions
 ===============================================================================
 
 ===========================================================
+Callback Functions
+===========================================================
+
+Synopsis:
+  void DGE_Callback_Register(unsigned cb, void (*fn)(void));
+
+  void DGE_Callback_Unregister(unsigned cb, void (*fn)(void));
+
+-----------------------------------------------------------
+DGE_Callback_Register
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Callback_Register(unsigned cb, void (*fn)(void));
+
+Description:
+  Adds a function to the Callback. Has no effect if fn is already added.
+
+  When a Callback is invoked, all added functions are called in unspecified
+  order. What arguments are passed to the called functions depends on the
+  Callback.
+
+-----------------------------------------------------------
+DGE_Callback_Unregister
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Callback_Unregister(unsigned cb, void (*fn)(void));
+
+Description:
+  Removes a function from the Callback. Has no effect if fn is not added.
+
+===========================================================
 Task Functions
 ===========================================================
 
