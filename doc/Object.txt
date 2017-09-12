@@ -1,0 +1,144 @@
+###############################################################################
+Doominati Game Engine Object Types
+###############################################################################
+
+===============================================================================
+Object Types
+===============================================================================
+
+===========================================================
+DGE_Entity
+===========================================================
+
+Synopsis:
+  struct DGE_Entity : DGE_PhysicsThinker
+  {
+    int      health;
+    unsigned team;
+    unsigned teamne;
+    unsigned teampr;
+  };
+
+===========================================================
+DGE_MissileEntity
+===========================================================
+
+Synopsis:
+  struct DGE_MissileEntity : DGE_Entity
+  {
+    unsigned damage;
+    unsigned owner;
+  };
+
+===========================================================
+DGE_Object
+===========================================================
+
+Synopsis:
+  struct DGE_Object
+  {
+  };
+
+===========================================================
+DGE_PhysicsThinker
+===========================================================
+
+Synopsis:
+  struct DGE_PhysicsThinker : DGE_RenderThinker
+  {
+    accum      bvx;
+    accum      bvy;
+    accum      bvz;
+    long fract friction;
+    accum      grabx;
+    accum      graby;
+    accum      grabz;
+    accum      mass;
+    accum      sx;
+    accum      sy;
+    accum      sz;
+    accum      vx;
+    accum      vy;
+    accum      vz;
+  };
+
+===========================================================
+DGE_PointThinker
+===========================================================
+
+Synopsis:
+  struct DGE_PointThinker : DGE_Thinker
+  {
+    unsigned long fract pitch;
+    accum               x;
+    accum               y;
+    unsigned long fract yaw;
+    DGE_Accum           z;
+  };
+
+===========================================================
+DGE_RenderThinker
+===========================================================
+
+Synopsis:
+  struct DGE_RenderThinker : DGE_PointThinker
+  {
+    accum    rsx;
+    accum    rsy;
+    unsigned sprite;
+  };
+
+===========================================================
+DGE_Sector
+===========================================================
+
+Synopsis:
+  struct DGE_Sector : DGE_Object
+  {
+    long fract frictair;
+    long fract friction;
+    accum      gx;
+    accum      gy;
+    accum      gz;
+    unsigned   pc;
+    unsigned   texc;
+    unsigned   texf;
+    accum      xh;
+    accum      xl;
+    accum      yh;
+    accum      yl;
+    accum      zh;
+    accum      zl;
+  };
+
+===========================================================
+DGE_Team
+===========================================================
+
+Synopsis:
+  struct DGE_Team : DGE_Object
+  {
+    unsigned entfi;
+    unsigned entla;
+    unsigned owner;
+    unsigned teamfi;
+    unsigned teamla;
+    unsigned teamne;
+    unsigned teampr;
+  };
+
+===========================================================
+DGE_Thinker
+===========================================================
+
+Synopsis:
+  struct DGE_Thinker : DGE_Object
+  {
+    unsigned next;
+    unsigned prev;
+  };
+
+###############################################################################
+EOF
+###############################################################################
+
