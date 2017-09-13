@@ -99,9 +99,9 @@ namespace DGE::Game
          Coord::I steps;
 
          steps = 1 + static_cast<Coord::I>(std::max({
-            avx / std::max(sx, std::numeric_limits<Coord>::epsilon()),
-            avy / std::max(sy, std::numeric_limits<Coord>::epsilon()),
-            avz / std::max(sz, std::numeric_limits<Coord>::epsilon())}));
+            avx / std::max(sx, std::numeric_limits<Coord>::epsilon() * 2),
+            avy / std::max(sy, std::numeric_limits<Coord>::epsilon() * 2),
+            avz / std::max(sz, std::numeric_limits<Coord>::epsilon() * 2)}));
          stepx = vx / steps;
          stepy = vy / steps;
          stepz = vz / steps;
