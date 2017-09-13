@@ -92,13 +92,16 @@ namespace DGE::Game
       auto avx = std::abs(vx);
       auto avy = std::abs(vy);
       auto avz = std::abs(vz);
-      if(avx >= sx || avy >= sy || avz >= sz)
+      // Never move more than one width at a time.
+      if(avx > sx || avy > sy || avz > sz)
       {
          Coord stepx, stepy, stepz;
          Coord::I steps;
 
-         // Never move more than one width at a time.
-         steps = static_cast<Coord::I>(std::ceil(std::max({avx / sx, avy / sy, avz / sz}))) + 1;
+         steps = 1 + static_cast<Coord::I>(std::max({
+            avx / std::max(sx, std::numeric_limits<Coord>::epsilon()),
+            avy / std::max(sy, std::numeric_limits<Coord>::epsilon()),
+            avz / std::max(sz, std::numeric_limits<Coord>::epsilon())}));
          stepx = vx / steps;
          stepy = vy / steps;
          stepz = vz / steps;

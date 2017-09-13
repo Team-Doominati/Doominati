@@ -148,6 +148,75 @@ namespace DGE::Core
    };
 }
 
+namespace std
+{
+   //
+   // numeric_limits<::DGE::Core::Fixed>
+   //
+   template<typename I, unsigned FB>
+   class numeric_limits<::DGE::Core::Fixed<I, FB>>
+   {
+   public:
+      static constexpr ::DGE::Core::Fixed<I, FB> denorm_min()
+         {return {1, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> epsilon()
+         {return {1, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> infinity()
+         {return {0, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> lowest()
+         {return {numeric_limits<I>::lowest(), ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> max()
+         {return {numeric_limits<I>::max(), ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> min()
+         {return {1, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> quiet_NaN()
+         {return {0, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr ::DGE::Core::Fixed<I, FB> round_error()
+         {return {0, ::DGE::Core::FixedRawT{}};} // TODO
+
+      static constexpr ::DGE::Core::Fixed<I, FB> signaling_NaN()
+         {return {0, ::DGE::Core::FixedRawT{}};}
+
+      static constexpr int digits       = numeric_limits<I>::digits;
+      static constexpr int digits10     = numeric_limits<I>::digits10; // FIXME
+      static constexpr int max_digits10 = 0; // TODO
+
+      static constexpr float_denorm_style has_denorm        = denorm_absent;
+      static constexpr bool               has_denorm_loss   = false;
+      static constexpr bool               has_infinity      = false;
+      static constexpr bool               has_quiet_NaN     = false;
+      static constexpr bool               has_signaling_NaN = false;
+
+      static constexpr bool is_bounded     = numeric_limits<I>::is_bounded;
+      static constexpr bool is_exact       = false;
+      static constexpr bool is_iec559      = false;
+      static constexpr bool is_integer     = false;
+      static constexpr bool is_modulo      = numeric_limits<I>::is_modulo;
+      static constexpr bool is_signed      = numeric_limits<I>::is_signed;
+      static constexpr bool is_specialized = true;
+
+      static constexpr int max_exponent   = 0; // TODO
+      static constexpr int max_exponent10 = 0; // TODO
+      static constexpr int min_exponent   = 0; // TODO
+      static constexpr int min_exponent10 = 0; // TODO
+
+      static constexpr int radix = 2;
+
+      static constexpr float_round_style round_style = round_toward_zero;
+
+      static constexpr bool tinyness_before = numeric_limits<I>::tinyness_before;
+
+      static constexpr bool traps = numeric_limits<I>::traps;
+   };
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Objects                                                             |
