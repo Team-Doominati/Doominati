@@ -75,7 +75,7 @@ namespace DGE::Code
 // Glyph Types                                                                |
 //
 
-namespace DGE::Game
+namespace DGE::Code
 {
    //
    // {Callback}
@@ -101,7 +101,7 @@ namespace DGE::Code
    //
    DGE_Code_NativeDefn(DGE_Callback_Register)
    {
-      Callbacks[argv[0]].insert(&Code::Process::GetMain()->prog->funcs[argv[1]]);
+      Callbacks[argv[0]]->insert(&Code::Process::GetMain()->prog->funcs[argv[1]]);
       return false;
    }
 
@@ -110,7 +110,7 @@ namespace DGE::Code
    //
    DGE_Code_NativeDefn(DGE_Callback_Unregister)
    {
-      Callbacks[argv[0]].erase(&Code::Process::GetMain()->prog->funcs[argv[1]]);
+      Callbacks[argv[0]]->erase(&Code::Process::GetMain()->prog->funcs[argv[1]]);
       return false;
    }
 }
