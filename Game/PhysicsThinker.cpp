@@ -302,7 +302,7 @@ namespace DGE::Game
    //
    // void DGE_PhysicsThinker_Block(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_PhysicsThinkerBlock)
+   DGE_Code_NativeDefn(DGE_PhysicsThinker_Block)
    {
       auto th = PhysicsThinker::Get(argv[0]);
 
@@ -324,7 +324,7 @@ namespace DGE::Game
    //
    // void DGE_PhysicsThinker_Unblock(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_PhysicsThinkerUnblock)
+   DGE_Code_NativeDefn(DGE_PhysicsThinker_Unblock)
    {
       auto th = PhysicsThinker::Get(argv[0]);
 
