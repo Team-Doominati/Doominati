@@ -312,6 +312,28 @@ Returns:
   The created PointThinker's id.
 
 ===========================================================
+RenderThinker Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_RenderThinker_Create(unsigned ext);
+
+-----------------------------------------------------------
+DGE_RenderThinker_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_RenderThinker_Create(unsigned ext);
+
+Description:
+  Creates a new RenderThinker with ext instance extension members.
+
+  The created RenderThinker is automatically inserted into the Thinker list.
+
+Returns:
+  The created RenderThinker's id.
+
+===========================================================
 Sector Functions
 ===========================================================
 
@@ -508,6 +530,8 @@ Description:
   Creates a new Task within the Thread. If thread is 0, the current Thread is
   used. The Task is started by calling fn, which is passed any variadic
   arguments.
+
+  The created Task begins execution after this function returns.
 
 Returns:
   The created Task's id if successful, 0 otherwise.
