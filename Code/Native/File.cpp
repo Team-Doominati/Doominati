@@ -111,7 +111,7 @@ namespace DGE::Code
       Word         len = argv[3];
       FS::File    *file;
 
-      if(fd >= Files.size() || !(file = Files[fd]) || idx >= file->size)
+      if(fd >= Files.size() || !(file = Files[fd]) || idx > file->size)
          {task->dataStk.push(-1); return false;}
 
       if(len > file->size - idx)
