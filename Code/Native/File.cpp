@@ -117,7 +117,7 @@ namespace DGE::Code
       if(len > file->size - idx)
          len = file->size - idx;
 
-      for(char const *itr = file->data, *end = itr + len; itr != end; ++itr, ++buf)
+      for(char const *itr = file->data + idx, *end = itr + len; itr != end; ++itr, ++buf)
          *buf = *itr;
 
       task->dataStk.push(len);
