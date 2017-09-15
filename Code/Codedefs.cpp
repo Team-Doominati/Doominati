@@ -314,7 +314,7 @@ namespace DGE::Code
       // TODO: Better error message.
       if(code->second.argc != static_cast<std::size_t>(-1) &&
          argv.size() != code->second.argc)
-         throw GDCC::Core::ParseExceptStr({}, "invalid argument count");
+         throw GDCC::Core::ParseExceptStr{GDCC::Core::Origin{}, "invalid argument count"};
 
       codes.push_back({orig, origFunc, code->first, std::move(argv)});
       codeCount += code->second.count;
@@ -423,7 +423,7 @@ namespace DGE::Code
          Word res = std::strtoul(val, &valEnd, 16);
 
          if(!valEnd || *valEnd)
-            throw GDCC::Core::ParseExceptExpect{{}, "number", val, false};
+            throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "number", val, false};
 
          return res;
       }
@@ -433,11 +433,11 @@ namespace DGE::Code
       {
          auto close = std::strchr(val + 1, '}');
          if(!close)
-            throw GDCC::Core::ParseExceptExpect{{}, "glyph type", val, false};
+            throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "glyph type", val, false};
 
          auto type = GlyphType::Find({val + 1, close});
          if(!type)
-            throw GDCC::Core::ParseExceptExpect{{}, "known glyph type", val, false};
+            throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "known glyph type", val, false};
 
          return type->resolve(*this, close + 1);
       }
@@ -462,10 +462,10 @@ namespace DGE::Code
          if(auto fn = findFunction(glyph))
             return fn->index;
 
-         throw GDCC::Core::ParseExceptExpect{{}, "glyph", val, false};
+         throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "glyph", val, false};
       }
 
-      throw GDCC::Core::ParseExceptExpect{{}, "val", val, false};
+      throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "val", val, false};
    }
 
    //
@@ -684,7 +684,7 @@ namespace DGE::Code
       case GDCC::Core::STR_global:   loadKeywordGlobal(in);   break;
 
       default:
-         throw GDCC::Core::ParseExceptExpect({}, "top-level keyword", tlk, false);
+         throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "top-level keyword", tlk, false};
       }
    }
 
@@ -778,7 +778,7 @@ namespace DGE::Code
          case GDCC::Core::STR_retrn:            loadVal(in); break;
 
          default:
-            throw GDCC::Core::ParseExceptExpect({}, "function keyword", key, false);
+            throw GDCC::Core::ParseExceptExpect{GDCC::Core::Origin{}, "function keyword", key, false};
          }
       }
 
