@@ -482,15 +482,15 @@ namespace DGE::Code
 
       DeclCase(Jfar_Set):
          // Initialize jump buffer contents.
-         prog->memory.setW(dataStk[1]+0, callStk.size());
-         prog->memory.setW(dataStk[1]+1, codePtr->h.h);
-         prog->memory.setW(dataStk[1]+2, codePtr->w.w);
+         prog->memory.setW((dataStk[1] >> 2) + 0, callStk.size());
+         prog->memory.setW((dataStk[1] >> 2) + 1, codePtr->h.h);
+         prog->memory.setW((dataStk[1] >> 2) + 2, codePtr->w.w);
          dataStk.drop();
          NextCase();
 
       DeclCase(Jfar_Sta):
          // Set jump state.
-         jumpbuf = dataStk[1]; dataStk.drop();
+         jumpbuf = dataStk[1] >> 2; dataStk.drop();
 
          // Set result value.
          for(Word i = 0, e = codePtr->h.h; i != e; ++i)
