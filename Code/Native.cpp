@@ -63,6 +63,7 @@ namespace DGE::Code
    DGE_Code_NativeLoaderDecl(Native_File);
    DGE_Code_NativeLoaderDecl(Native_Memory);
    DGE_Code_NativeLoaderDecl(Native_Print);
+   DGE_Code_NativeLoaderDecl(Native_String);
 
    //
    // NativeAdder constructor
@@ -97,6 +98,7 @@ namespace DGE::Code
       DGE_Code_NativeLoaderCall(Native_File);
       DGE_Code_NativeLoaderCall(Native_Memory);
       DGE_Code_NativeLoaderCall(Native_Print);
+      DGE_Code_NativeLoaderCall(Native_String);
 
       // Callbacks.
       {

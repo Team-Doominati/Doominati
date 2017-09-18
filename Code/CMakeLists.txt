@@ -38,6 +38,7 @@ add_library(dge-code-lib STATIC
    Native/File.cpp
    Native/Memory.cpp
    Native/Print.cpp
+   Native/String.cpp
    OpCode.cpp
    OpCode.hpp
    OpList.hpp
