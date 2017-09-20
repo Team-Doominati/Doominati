@@ -171,28 +171,18 @@ namespace DGE::AL
    // AUDIO_TODO: think of something for reverb and sound modulation
 
    //
-   // void DGE_DopplerSpeed(short _Accum meterspersecond)
+   // void DGE_Audio_SetDopplerSpeed(short _Accum meterspersecond)
    //
-   DGE_Code_NativeDefn(DGE_DopplerSpeed)
+   DGE_Code_NativeDefn(DGE_Audio_SetDopplerSpeed)
    {
       AudioRenderer::GetCurrent()->dopplerSpeed(Code::SAccumToHost(argv[0]));
       return false;
    }
 
    //
-   // unsigned DGE_GetSound(__str_ent *name)
+   // void DGE_Audio_SetListener(short _Accum x, y, z[, velx, vely, velz, angle])
    //
-   DGE_Code_NativeDefn(DGE_GetSound)
-   {
-      GDCC::Core::String str{argv[0]};
-      task->dataStk.push(AudioRenderer::GetCurrent()->soundGetIdx(str));
-      return false;
-   }
-
-   //
-   // void DGE_SoundListener(short _Accum x, y, z[, velx, vely, velz, angle])
-   //
-   DGE_Code_NativeDefn(DGE_SoundListener)
+   DGE_Code_NativeDefn(DGE_Audio_SetListener)
    {
       auto *audio = AudioRenderer::GetCurrent();
 
@@ -214,6 +204,16 @@ namespace DGE::AL
       if(argc > 6)
          audio->listenerAng(Code::SAccumToHost(argv[6]));
 
+      return false;
+   }
+
+   //
+   // unsigned DGE_Sound_Get(__str_ent *name)
+   //
+   DGE_Code_NativeDefn(DGE_Sound_Get)
+   {
+      GDCC::Core::String str{argv[0]};
+      task->dataStk.push(AudioRenderer::GetCurrent()->soundGetIdx(str));
       return false;
    }
 }

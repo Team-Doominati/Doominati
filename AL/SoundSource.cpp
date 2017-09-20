@@ -207,9 +207,9 @@ namespace DGE::AL
    }
 
    //
-   // unsigned DGE_SoundSource(short _Accum x, y, z[, unsigned flags])
+   // unsigned DGE_SoundSrc_Create(short _Accum x, y, z)
    //
-   DGE_Code_NativeDefn(DGE_SoundSource)
+   DGE_Code_NativeDefn(DGE_SoundSrc_Create)
    {
       auto *audio = AudioRenderer::GetCurrent();
 
@@ -226,27 +226,27 @@ namespace DGE::AL
    }
 
    //
-   // unsigned DGE_SoundSrcBind(src, snd[, chan])
+   // unsigned DGE_SoundSrc_Bind(src, snd[, chan])
    //
-   DGE_Code_NativeDefn(DGE_SoundSrcBind)
+   DGE_Code_NativeDefn(DGE_SoundSrc_Bind)
    {
       task->dataStk.push(SrcBind(argv[0], argv[1], argc > 2 ? argv[2] : 0, false));
       return false;
    }
 
    //
-   // unsigned DGE_SoundSrcPlay(src, snd[, chan])
+   // unsigned DGE_SoundSrc_Play(src, snd[, chan])
    //
-   DGE_Code_NativeDefn(DGE_SoundSrcPlay)
+   DGE_Code_NativeDefn(DGE_SoundSrc_Play)
    {
       task->dataStk.push(SrcBind(argv[0], argv[1], argc > 2 ? argv[2] : 0, true));
       return false;
    }
 
    //
-   // void DGE_SoundSrcDestroy(src)
+   // void DGE_SoundSrc_Destroy(src)
    //
-   DGE_Code_NativeDefn(DGE_SoundSrcDestroy)
+   DGE_Code_NativeDefn(DGE_SoundSrc_Destroy)
    {
       AudioRenderer::GetCurrent()->soundSrcDestroy(argv[0]);
       return false;
@@ -256,9 +256,9 @@ namespace DGE::AL
       if(auto *src = AudioRenderer::GetCurrent()->soundSrcGet(argv[0]))
 
    //
-   // void DGE_SoundSrcPosition(src, short _Accum x, y, z)
+   // void DGE_SoundSrc_SetPos(src, short _Accum x, y, z)
    //
-   DGE_Code_NativeDefn(DGE_SoundSrcPosition)
+   DGE_Code_NativeDefn(DGE_SoundSrc_SetPos)
    {
       IfSrc()
       {
@@ -273,9 +273,9 @@ namespace DGE::AL
    }
 
    //
-   // void DGE_SoundSrcVelocity(src, short _Accum velx, vely, velz)
+   // void DGE_SoundSrc_SetVel(src, short _Accum velx, vely, velz)
    //
-   DGE_Code_NativeDefn(DGE_SoundSrcVelocity)
+   DGE_Code_NativeDefn(DGE_SoundSrc_SetVel)
    {
       IfSrc()
       {
@@ -290,36 +290,36 @@ namespace DGE::AL
    }
 
    //
-   // void DGE_SoundChanPlay(src, chan)
+   // void DGE_Sound_Play(src, chan)
    //
-   DGE_Code_NativeDefn(DGE_SoundChanPlay)
+   DGE_Code_NativeDefn(DGE_Sound_Play)
    {
       IfSrc() src->play(argv[1]);
       return false;
    }
 
    //
-   // void DGE_SoundChanStop(src, chan)
+   // void DGE_Sound_Stop(src, chan)
    //
-   DGE_Code_NativeDefn(DGE_SoundChanStop)
+   DGE_Code_NativeDefn(DGE_Sound_Stop)
    {
       IfSrc() src->stop(argv[1]);
       return false;
    }
 
    //
-   // void DGE_SoundChanLoop(src, chan, _Bool on)
+   // void DGE_Sound_SetLoop(src, chan, _Bool on)
    //
-   DGE_Code_NativeDefn(DGE_SoundChanLoop)
+   DGE_Code_NativeDefn(DGE_Sound_SetLoop)
    {
       IfSrc() src->setLoop(argv[1], argv[2]);
       return false;
    }
 
    //
-   // void DGE_SoundChanPosition(src, chan, short _Accum x, y, z)
+   // void DGE_Sound_SetPos(src, chan, short _Accum x, y, z)
    //
-   DGE_Code_NativeDefn(DGE_SoundChanPosition)
+   DGE_Code_NativeDefn(DGE_Sound_SetPos)
    {
       IfSrc()
       {
@@ -334,18 +334,18 @@ namespace DGE::AL
    }
 
    //
-   // void DGE_SoundChanVolume(src, chan, unsigned long _Fract volume)
+   // void DGE_Sound_SetVolume(src, chan, unsigned long _Fract volume)
    //
-   DGE_Code_NativeDefn(DGE_SoundChanVolume)
+   DGE_Code_NativeDefn(DGE_Sound_SetVolume)
    {
       IfSrc() src->setVolume(argv[1], Code::ULFractToHost(argv[2]));
       return false;
    }
 
    //
-   // short _Accum DGE_SoundChanPitch(src, chan[, short _Accum pitch])
+   // short _Accum DGE_Sound_SetPitch(src, chan[, short _Accum pitch])
    //
-   DGE_Code_NativeDefn(DGE_SoundChanPitch)
+   DGE_Code_NativeDefn(DGE_Sound_SetPitch)
    {
       IfSrc()
       {
