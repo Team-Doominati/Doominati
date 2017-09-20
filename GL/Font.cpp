@@ -135,7 +135,7 @@ namespace DGE::GL
    //
    FontFace::~FontFace()
    {
-      FT_Done_Face(face);
+      if(face) FT_Done_Face(face);
    }
 
    //

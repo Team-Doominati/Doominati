@@ -98,8 +98,16 @@ namespace DGE::GL
       Color drawColorGet() const;
 
       // font
-      void fontBind(FontFace &font) {fontBound = &font;}
-      void fontUnbind()             {fontBound = fontBase.get();}
+      std::size_t fontAdd(GDCC::Core::String name, FS::File *fp, int ptSize);
+
+      void fontBind(Font *fnt);
+
+      Font const *fontCurrent() {return fntBound;}
+
+      Font *fontGet(GDCC::Core::String name);
+      Font *fontGet(std::size_t idx) {return fntMan.get(idx);}
+
+      void fontUnbind() {fontBind(fntMan.resNone);}
 
       // line
       void lineSmooth(bool on)  const;
@@ -170,8 +178,8 @@ namespace DGE::GL
       Core::ResourceManager<ShaderData> shdMan;
       Shader                           *shdBound;
 
-      std::unique_ptr<FontFace> fontBase;
-      FontFace                 *fontBound;
+      Core::ResourceManager<FontFace> fntMan;
+      Font                           *fntBound;
 
       DynamicBuffer const *circleBuff, *circleLineBuff;
 

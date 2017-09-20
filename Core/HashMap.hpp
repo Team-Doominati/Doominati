@@ -120,6 +120,8 @@ namespace DGE::Core
 
 
       HashMap() : chainV{16}, objC{0}, growC{16} {}
+      HashMap(HashMap const &) = delete;
+      HashMap(HashMap &&) = default;
       explicit HashMap(size_type count) :
          chainV{count}, objC{0}, growC{count} {}
       HashMap(size_type count, size_type growC_) :

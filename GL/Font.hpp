@@ -37,6 +37,10 @@ namespace DGE::FS
 
 namespace DGE::GL
 {
+   class FontFace;
+
+   using Font = Core::Resource<FontFace>;
+
    //
    // FontLoadError
    //
@@ -51,7 +55,7 @@ namespace DGE::GL
    //
    struct FontGlyphMetr
    {
-      TextureDim w,  h;
+      TextureDim w, h;
       float      ax;
       int        ox, oy;
    };
@@ -62,8 +66,6 @@ namespace DGE::GL
    class FontGlyph : public FontGlyphMetr
    {
    public:
-      FontGlyph() = delete;
-
       FontGlyph(FontGlyph &&gly) :
          FontGlyphMetr{std::move(gly)},
          tex{gly.tex}, link{this, std::move(gly.link)}, ch{gly.ch}
@@ -85,10 +87,14 @@ namespace DGE::GL
    class FontFace
    {
    public:
-      FontFace() = delete;
       FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize);
       FontFace(FontFace const &) = delete;
-      FontFace(FontFace &&) = default;
+      FontFace(FontFace &&fnt) :
+         face{fnt.face}, glyMap{std::move(fnt.glyMap)},
+         glyVec{std::move(fnt.glyVec)}, texMan{fnt.texMan},
+         hasKerning{fnt.hasKerning}, kernCh{fnt.kernCh}, kernAmt{fnt.kernAmt},
+         height{fnt.height}
+         {fnt.face = nullptr;}
       ~FontFace();
 
       FontGlyph &getChar(char32_t ch);

@@ -50,7 +50,9 @@ namespace DGE::GL
    //
    void Renderer::drawText(float x, float y, char const *str, float maxwidth)
    {
-      if(!fontBound || !str || !*str) return;
+      if(!fntBound || !str || !*str) return;
+
+      FontFace &fnt = fntBound->data;
 
       char const *end = str + std::strlen(str);
 
@@ -62,7 +64,7 @@ namespace DGE::GL
          char const *beg = itr, *lend;
          float width = 0;
 
-         fontBound->kernReset();
+         fnt.kernReset();
 
          for(;;)
          {
@@ -71,8 +73,8 @@ namespace DGE::GL
 
             if(ch == '\n') {lend = itr; itr = nex; break;}
 
-            auto &gly = fontBound->getChar(ch);
-            auto glyphw = gly.ax + fontBound->getKernAmount();
+            auto &gly = fnt.getChar(ch);
+            auto glyphw = gly.ax + fnt.getKernAmount();
 
             if(maxwidth && width +  glyphw > maxwidth) {lend = itr; break;}
             else           width += glyphw;
@@ -85,8 +87,8 @@ namespace DGE::GL
          lines.emplace_back(width, beg, lend);
       }
 
-      float height = fontBound->getHeight() * lines.size();
-      float py     = fontBound->getHeight();
+      float height = fnt.getHeight() * lines.size();
+      float py     = fnt.getHeight();
       float px;
       float origx;
 
@@ -102,7 +104,7 @@ namespace DGE::GL
 
       for(auto &line : lines)
       {
-         fontBound->kernReset();
+         fnt.kernReset();
 
          switch(textAlignH)
          {
@@ -121,9 +123,9 @@ namespace DGE::GL
             if(ch == '\r')
                {px = origx; continue;}
 
-            auto &gly = fontBound->getChar(ch);
+            auto &gly = fnt.getChar(ch);
 
-            auto kern = fontBound->getKernAmount();
+            auto kern = fnt.getKernAmount();
             auto dx = px + gly.ox + kern;
             auto dy = py + gly.oy;
 
@@ -133,7 +135,7 @@ namespace DGE::GL
             px += gly.ax + kern;
          }
 
-         py += fontBound->getHeight();
+         py += fnt.getHeight();
       }
    }
 }

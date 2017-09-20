@@ -115,8 +115,8 @@ namespace DGE::GL
       shdMan{},
       shdBound{nullptr},
 
-      fontBase{baseFont()},
-      fontBound{fontBase.get()}
+      fntMan{},
+      fntBound{nullptr}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
@@ -155,21 +155,6 @@ namespace DGE::GL
    //
    Renderer::~Renderer()
    {
-   }
-
-   //
-   // Renderer::baseFont
-   //
-   FontFace *Renderer::baseFont()
-   {
-      // FONT_TODO: don't hardcode this
-      try
-         {return new FontFace(texMan, FS::Dir::FindFile("Fonts/base.ttf"), 72);}
-      catch(FontLoadError const &exc)
-      {
-         std::cerr << "couldn't load base font: " << exc.what() << std::endl;
-         return nullptr;
-      }
    }
 
    //
