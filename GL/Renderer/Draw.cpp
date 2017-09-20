@@ -277,9 +277,9 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_Draw);
 
    //
-   // void DGE_DrawColor(unsigned long _Fract r, g, b, a)
+   // void DGE_Draw_SetColor(unsigned long _Fract r, g, b, a)
    //
-   DGE_Code_NativeDefn(DGE_DrawColor)
+   DGE_Code_NativeDefn(DGE_Draw_SetColor)
    {
       auto r =            Code::ULFractToHost(argv[0]);
       auto g =            Code::ULFractToHost(argv[1]);
@@ -292,9 +292,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawCircle(short _Accum x, y, radius)
+   // void DGE_Draw_Circle(short _Accum x, y, radius)
    //
-   DGE_Code_NativeDefn(DGE_DrawCircle)
+   DGE_Code_NativeDefn(DGE_Draw_Circle)
    {
       auto x = Code::SAccumToHost(argv[0]);
       auto y = Code::SAccumToHost(argv[1]);
@@ -306,9 +306,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawCircleLine(short _Accum x, y, radius)
+   // void DGE_Draw_CircleLine(short _Accum x, y, radius)
    //
-   DGE_Code_NativeDefn(DGE_DrawCircleLine)
+   DGE_Code_NativeDefn(DGE_Draw_CircleLine)
    {
       auto x = Code::SAccumToHost(argv[0]);
       auto y = Code::SAccumToHost(argv[1]);
@@ -320,9 +320,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawEllipse(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Ellipse(short _Accum x1, y1, x2, y2)
    //
-   DGE_Code_NativeDefn(DGE_DrawEllipse)
+   DGE_Code_NativeDefn(DGE_Draw_Ellipse)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -335,9 +335,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawEllipseLine(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_EllipseLine(short _Accum x1, y1, x2, y2)
    //
-   DGE_Code_NativeDefn(DGE_DrawEllipseLine)
+   DGE_Code_NativeDefn(DGE_Draw_EllipseLine)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -350,9 +350,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawRectangle(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Rectangle(short _Accum x1, y1, x2, y2)
    //
-   DGE_Code_NativeDefn(DGE_DrawRectangle)
+   DGE_Code_NativeDefn(DGE_Draw_Rectangle)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -365,9 +365,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawRectangleLine(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_RectangleLine(short _Accum x1, y1, x2, y2)
    //
-   DGE_Code_NativeDefn(DGE_DrawRectangleLine)
+   DGE_Code_NativeDefn(DGE_Draw_RectangleLine)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -380,9 +380,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawLine(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Line(short _Accum x1, y1, x2, y2)
    //
-   DGE_Code_NativeDefn(DGE_DrawLine)
+   DGE_Code_NativeDefn(DGE_Draw_Line)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -395,9 +395,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawTriangle(short _Accum x1, y1, x2, y2, x3, y3)
+   // void DGE_Draw_Triangle(short _Accum x1, y1, x2, y2, x3, y3)
    //
-   DGE_Code_NativeDefn(DGE_DrawTriangle)
+   DGE_Code_NativeDefn(DGE_Draw_Triangle)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);
@@ -412,9 +412,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawTriangleLine(short _Accum x1, y1, x2, y2, x3, y3)
+   // void DGE_Draw_TriangleLine(short _Accum x1, y1, x2, y2, x3, y3)
    //
-   DGE_Code_NativeDefn(DGE_DrawTriangleLine)
+   DGE_Code_NativeDefn(DGE_Draw_TriangleLine)
    {
       auto x1 = Code::SAccumToHost(argv[0]);
       auto y1 = Code::SAccumToHost(argv[1]);

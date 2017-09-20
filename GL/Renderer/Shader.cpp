@@ -153,9 +153,9 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // unsigned DGE_CreateShaderData(__str_ent *name, char const *frag, char const *vert)
+   // unsigned DGE_Shader_CreateData(__str_ent *name, char const *frag, char const *vert)
    //
-   DGE_Code_NativeDefn(DGE_CreateShaderData)
+   DGE_Code_NativeDefn(DGE_Shader_CreateData)
    {
       GDCC::Core::String str{argv[0]};
 
@@ -168,9 +168,9 @@ namespace DGE::GL
    }
 
    //
-   // unsigned DGE_CreateShaderFile(__str_ent *name, char const *frag, char const *vert)
+   // unsigned DGE_Shader_CreateFile(__str_ent *name, char const *frag, char const *vert)
    //
-   DGE_Code_NativeDefn(DGE_CreateShaderFile)
+   DGE_Code_NativeDefn(DGE_Shader_CreateFile)
    {
       GDCC::Core::String str{argv[0]};
 
@@ -186,9 +186,9 @@ namespace DGE::GL
    }
 
    //
-   // unsigned DGE_GetShader(__str_ent *name)
+   // unsigned DGE_Shader_Get(__str_ent *name)
    //
-   DGE_Code_NativeDefn(DGE_GetShader)
+   DGE_Code_NativeDefn(DGE_Shader_Get)
    {
       GDCC::Core::String str{argv[0]};
       task->dataStk.push(Renderer::GetCurrent()->shaderGet(str)->idx);
@@ -196,9 +196,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawShader(unsigned shd)
+   // void DGE_Shader_Bind(unsigned shd)
    //
-   DGE_Code_NativeDefn(DGE_DrawShader)
+   DGE_Code_NativeDefn(DGE_Shader_Bind)
    {
       if(argv[0])
          Renderer::GetCurrent()->shaderBind(Renderer::GetCurrent()->shaderGet(argv[0]));

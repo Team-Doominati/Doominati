@@ -127,9 +127,9 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // unsigned DGE_GetTexture(__str_ent *name)
+   // unsigned DGE_Texture_Get(__str_ent *name)
    //
-   DGE_Code_NativeDefn(DGE_GetTexture)
+   DGE_Code_NativeDefn(DGE_Texture_Get)
    {
       GDCC::Core::String str{argv[0]};
       task->dataStk.push(Renderer::GetCurrent()->textureGet(str)->idx);
@@ -137,9 +137,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_DrawTexture(unsigned tex)
+   // void DGE_Texture_Bind(unsigned tex)
    //
-   DGE_Code_NativeDefn(DGE_DrawTexture)
+   DGE_Code_NativeDefn(DGE_Texture_Bind)
    {
       if(argv[0])
          Renderer::GetCurrent()->textureBind(Renderer::GetCurrent()->textureGet(argv[0]));

@@ -145,27 +145,27 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // int DGE_GetScrW(void)
+   // int DGE_Window_GetWidth(void)
    //
-   DGE_Code_NativeDefn(DGE_GetScrW)
+   DGE_Code_NativeDefn(DGE_Window_GetWidth)
    {
       task->dataStk.push(Window::GetCurrent()->w);
       return false;
    }
 
    //
-   // int DGE_GetScrH(void)
+   // int DGE_Window_GetHeight(void)
    //
-   DGE_Code_NativeDefn(DGE_GetScrH)
+   DGE_Code_NativeDefn(DGE_Window_GetHeight)
    {
       task->dataStk.push(Window::GetCurrent()->h);
       return false;
    }
 
    //
-   // void DGE_SetWindowTitle(char const *str)
+   // void DGE_Window_SetTitle(char const *str)
    //
-   DGE_Code_NativeDefn(DGE_SetWindowTitle)
+   DGE_Code_NativeDefn(DGE_Window_SetTitle)
    {
       Window::GetCurrent()->setTitle(Code::MemStrDup({&task->prog->memory, argv[0]}).get());
       return false;

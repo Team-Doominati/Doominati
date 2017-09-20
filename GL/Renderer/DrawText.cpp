@@ -148,13 +148,13 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_DrawText);
 
    //
-   // void DGE_DrawText(short _Accum x, y, char const *str[,
+   // void DGE_Draw_Text(short _Accum x, y, char const *str[,
    //    short _Accum maxwidth])
    //
-   DGE_Code_NativeDefn(DGE_DrawText)
+   DGE_Code_NativeDefn(DGE_Draw_Text)
    {
-      auto x        =            Code::SAccumToHost(argv[0]);
-      auto y        =            Code::SAccumToHost(argv[1]);
+      auto x = Code::SAccumToHost(argv[0]);
+      auto y = Code::SAccumToHost(argv[1]);
       auto maxwidth = argc > 3 ? Code::SAccumToHost(argv[3]) : 0;
 
       Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
@@ -164,9 +164,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_TextAlignment(int h[, int v])
+   // void DGE_Draw_SetTextAlignment(int h[, int v])
    //
-   DGE_Code_NativeDefn(DGE_TextAlignment)
+   DGE_Code_NativeDefn(DGE_Draw_SetTextAlignment)
    {
       AlignHorz h = static_cast<AlignHorz>(argv[0]);
       if(h != AlignHorz::Keep) Renderer::GetCurrent()->textAlignH = h;

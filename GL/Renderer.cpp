@@ -363,45 +363,45 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // void DGE_DrawCirclePrecision(int subdivisions)
+   // void DGE_Draw_SetCirclePrecision(int subdivisions)
    //
-   DGE_Code_NativeDefn(DGE_DrawCirclePrecision)
+   DGE_Code_NativeDefn(DGE_Draw_SetCirclePrecision)
    {
       Renderer::GetCurrent()->circlePrecision(argv[0]);
       return false;
    }
 
    //
-   // void DGE_DrawLineSmooth(_Bool on)
+   // void DGE_Draw_SetLineSmoothing(_Bool on)
    //
-   DGE_Code_NativeDefn(DGE_DrawLineSmooth)
+   DGE_Code_NativeDefn(DGE_Draw_SetLineSmoothing)
    {
       Renderer::GetCurrent()->lineSmooth(argv[0]);
       return false;
    }
 
    //
-   // void DGE_DrawLineWidth(int width)
+   // void DGE_Draw_SetLineWidth(int width)
    //
-   DGE_Code_NativeDefn(DGE_DrawLineWidth)
+   DGE_Code_NativeDefn(DGE_Draw_SetLineWidth)
    {
       Renderer::GetCurrent()->lineWidth(argv[0]);
       return false;
    }
 
    //
-   // void DGE_SetViewpoint(unsigned id)
+   // void DGE_Renderer_SetViewpoint(unsigned id)
    //
-   DGE_Code_NativeDefn(DGE_SetViewpoint)
+   DGE_Code_NativeDefn(DGE_Renderer_SetViewpoint)
    {
       Renderer::GetCurrent()->viewPoint = Game::PointThinker::Get(argv[0]);
       return false;
    }
 
    //
-   // void DGE_SetVirtualResolution(unsigned w, unsigned h)
+   // void DGE_Renderer_SetVirtualRes(unsigned w, unsigned h)
    //
-   DGE_Code_NativeDefn(DGE_SetVirtualResolution)
+   DGE_Code_NativeDefn(DGE_Renderer_SetVirtualRes)
    {
       unsigned w = argv[0];
       unsigned h = argv[1];
