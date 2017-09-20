@@ -103,12 +103,12 @@ Synopsis:
     unsigned   pc;
     unsigned   texc;
     unsigned   texf;
-    accum      xh;
     accum      xl;
-    accum      yh;
+    accum      xu;
     accum      yl;
-    accum      zh;
+    accum      yu;
     accum      zl;
+    accum      zu;
   };
 
 ===========================================================

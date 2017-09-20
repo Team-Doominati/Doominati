@@ -149,17 +149,17 @@ namespace DGE::Game
    //
    // BlockMap::countNode
    //
-   std::size_t BlockMap::countNode(Coord xl, Coord yl, Coord xh, Coord yh)
+   std::size_t BlockMap::countNode(Coord xl, Coord yl, Coord xu, Coord yu)
    {
       if(!subs)
          return 1;
 
       std::size_t count = 1;
 
-      if(xl < cx && yl < cy) count += subs[0].countNode(xl, yl, xh, yh);
-      if(xl < cx && yh > cy) count += subs[2].countNode(xl, yl, xh, yh);
-      if(xh > cx && yl < cy) count += subs[1].countNode(xl, yl, xh, yh);
-      if(xh > cx && yh > cy) count += subs[3].countNode(xl, yl, xh, yh);
+      if(xl < cx && yl < cy) count += subs[0].countNode(xl, yl, xu, yu);
+      if(xl < cx && yu > cy) count += subs[2].countNode(xl, yl, xu, yu);
+      if(xu > cx && yl < cy) count += subs[1].countNode(xl, yl, xu, yu);
+      if(xu > cx && yu > cy) count += subs[3].countNode(xl, yl, xu, yu);
 
       return count;
    }
@@ -167,12 +167,12 @@ namespace DGE::Game
    //
    // BlockMap::find
    //
-   BlockMap::FindRes const &BlockMap::find(Coord xl, Coord yl, Coord xh, Coord yh)
+   BlockMap::FindRes const &BlockMap::find(Coord xl, Coord yl, Coord xu, Coord yu)
    {
       FindResBuf.th.clear();
       FindResBuf.sec.clear();
 
-      forNode(xl, yl, xh, yh, [](BlockMap *node)
+      forNode(xl, yl, xu, yu, [](BlockMap *node)
       {
          for(auto &sec : node->listSec)
             FindResBuf.sec.insert(&sec);
@@ -193,7 +193,7 @@ namespace DGE::Game
 
       for(auto &sec : node->listSec)
       {
-         if(sec.xl <= x && x <= sec.xh && sec.yl <= y && y <= sec.yh)
+         if(sec.xl <= x && x <= sec.xu && sec.yl <= y && y <= sec.yu)
             return &sec;
       }
 
@@ -285,17 +285,17 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xh, accum yh)
+   // unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xu, accum yu)
    //
    DGE_Code_NativeDefn(DGE_BlockMap_Find)
    {
       Coord xl{static_cast<Code::SWord>(argv[0]), Core::FixedRaw};
       Coord yl{static_cast<Code::SWord>(argv[1]), Core::FixedRaw};
-      Coord xh{static_cast<Code::SWord>(argv[2]), Core::FixedRaw};
-      Coord yh{static_cast<Code::SWord>(argv[3]), Core::FixedRaw};
+      Coord xu{static_cast<Code::SWord>(argv[2]), Core::FixedRaw};
+      Coord yu{static_cast<Code::SWord>(argv[3]), Core::FixedRaw};
 
       auto &res = FindResNative::GetFree();
-      res.init(BlockMap::Root.find(xl, yl, xh, yh));
+      res.init(BlockMap::Root.find(xl, yl, xu, yu));
       task->dataStk.push(&res - FindResNative::Buf.data());
 
       return false;

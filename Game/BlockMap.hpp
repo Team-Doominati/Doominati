@@ -50,11 +50,11 @@ namespace DGE::Game
       BlockMap(Coord x, Coord y, Coord s) : subs{nullptr}, cx{x}, cy{y}, size{s} {}
       ~BlockMap();
 
-      FindRes const &find(Coord xl, Coord yl, Coord xh, Coord yh);
+      FindRes const &find(Coord xl, Coord yl, Coord xu, Coord yu);
       FindRes const &find(PhysicsThinker *th)
          {return find(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
       FindRes const &find(Sector *sec)
-         {return find(sec->xl, sec->yl, sec->xh, sec->yh);}
+         {return find(sec->xl, sec->yl, sec->xu, sec->yu);}
 
       Sector::Ptr findSector(Coord x, Coord y);
       Sector::Ptr findSector(PhysicsThinker *th) {return findSector(th->x, th->y);}
@@ -75,20 +75,20 @@ namespace DGE::Game
 
    private:
       // countNode
-      std::size_t countNode(Coord xl, Coord yl, Coord xh, Coord yh);
+      std::size_t countNode(Coord xl, Coord yl, Coord xu, Coord yu);
 
       std::size_t countNode(PhysicsThinker *th)
          {return countNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
 
       std::size_t countNode(Sector *sec)
-         {return countNode(sec->xl, sec->yl, sec->xh, sec->yh);}
+         {return countNode(sec->xl, sec->yl, sec->xu, sec->yu);}
 
       // countObj
       std::size_t countObj() {return listSec.size() + listTh.size();}
 
       // forNode
       template<typename Iter>
-      void forNode(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter);
+      void forNode(Coord xl, Coord yl, Coord xu, Coord yu, Iter &&iter);
 
       template<typename Iter>
       void forNode(PhysicsThinker *th, Iter &&iter)
@@ -96,19 +96,19 @@ namespace DGE::Game
 
       template<typename Iter>
       void forNode(Sector *sec, Iter &&iter)
-         {return forNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+         {return forNode(sec->xl, sec->yl, sec->xu, sec->yu, iter);}
 
       BlockMap *getNode(Coord x, Coord y);
 
       // insertNode
       template<typename T>
-      void insertNode(Coord xl, Coord yl, Coord xh, Coord yh, Core::ListLink<T> *&iter);
+      void insertNode(Coord xl, Coord yl, Coord xu, Coord yu, Core::ListLink<T> *&iter);
 
       void insertNode(PhysicsThinker *th, Core::ListLink<PhysicsThinker> *&iter)
          {insertNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
 
       void insertNode(Sector *sec, Core::ListLink<Sector> *&iter)
-         {insertNode(sec->xl, sec->yl, sec->xh, sec->yh, iter);}
+         {insertNode(sec->xl, sec->yl, sec->xu, sec->yu, iter);}
 
       template<typename T>
       Core::ListLink<T> &listHead();
@@ -135,36 +135,36 @@ namespace DGE::Game
    // BlockMap::forNode
    //
    template<typename Iter>
-   void BlockMap::forNode(Coord xl, Coord yl, Coord xh, Coord yh, Iter &&iter)
+   void BlockMap::forNode(Coord xl, Coord yl, Coord xu, Coord yu, Iter &&iter)
    {
       if(!subs)
          return (void)iter(this);
 
       // Check if box fully contains node.
-      if(xl <= cx - size && xh >= cx + size && yl <= cy - size && yh >= cy + size)
+      if(xl <= cx - size && xu >= cx + size && yl <= cy - size && yu >= cy + size)
          return (void)iter(this);
 
-      if(xl < cx && yl < cy) subs[0].forNode(xl, yl, xh, yh, iter);
-      if(xl < cx && yh > cy) subs[2].forNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yl < cy) subs[1].forNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yh > cy) subs[3].forNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[0].forNode(xl, yl, xu, yu, iter);
+      if(xl < cx && yu > cy) subs[2].forNode(xl, yl, xu, yu, iter);
+      if(xu > cx && yl < cy) subs[1].forNode(xl, yl, xu, yu, iter);
+      if(xu > cx && yu > cy) subs[3].forNode(xl, yl, xu, yu, iter);
    }
 
    //
    // BlockMap::insertNode
    //
    template<typename T>
-   void BlockMap::insertNode(Coord xl, Coord yl, Coord xh, Coord yh, Core::ListLink<T> *&iter)
+   void BlockMap::insertNode(Coord xl, Coord yl, Coord xu, Coord yu, Core::ListLink<T> *&iter)
    {
       iter++->insert(&listHead<T>());
 
       if(!subs)
          return;
 
-      if(xl < cx && yl < cy) subs[0].insertNode(xl, yl, xh, yh, iter);
-      if(xl < cx && yh > cy) subs[2].insertNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yl < cy) subs[1].insertNode(xl, yl, xh, yh, iter);
-      if(xh > cx && yh > cy) subs[3].insertNode(xl, yl, xh, yh, iter);
+      if(xl < cx && yl < cy) subs[0].insertNode(xl, yl, xu, yu, iter);
+      if(xl < cx && yu > cy) subs[2].insertNode(xl, yl, xu, yu, iter);
+      if(xu > cx && yl < cy) subs[1].insertNode(xl, yl, xu, yu, iter);
+      if(xu > cx && yu > cy) subs[3].insertNode(xl, yl, xu, yu, iter);
    }
 
    //

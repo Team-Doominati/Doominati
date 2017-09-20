@@ -312,9 +312,9 @@ namespace DGE::GL
          // TODO: Non-rectangular sector rendering.
 
          textureBind(textureGet(sec.texf));
-         float sxl = sec.xl - rx, sxh = sec.xh - rx;
-         float syl = sec.yl - ry, syh = sec.yh - ry;
-         drawRectangle(sxl, syl, sxh, syh);
+         float sxl = sec.xl - rx, sxu = sec.xu - rx;
+         float syl = sec.yl - ry, syu = sec.yu - ry;
+         drawRectangle(sxl, syl, sxu, syu);
       }
 
       // Render thinkers.

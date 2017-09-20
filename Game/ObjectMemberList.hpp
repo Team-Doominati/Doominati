@@ -50,15 +50,15 @@ DGE_Game_ObjectMemberList(vx)
 DGE_Game_ObjectMemberList(vy)
 DGE_Game_ObjectMemberList(vz)
 DGE_Game_ObjectMemberList(x)
-DGE_Game_ObjectMemberList(xh)
 DGE_Game_ObjectMemberList(xl)
+DGE_Game_ObjectMemberList(xu)
 DGE_Game_ObjectMemberList(y)
-DGE_Game_ObjectMemberList(yh)
 DGE_Game_ObjectMemberList(yl)
+DGE_Game_ObjectMemberList(yu)
 DGE_Game_ObjectMemberList(yaw)
 DGE_Game_ObjectMemberList(z)
-DGE_Game_ObjectMemberList(zh)
 DGE_Game_ObjectMemberList(zl)
+DGE_Game_ObjectMemberList(zu)
 
 #undef DGE_Game_ObjectMemberList
 

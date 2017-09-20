@@ -42,8 +42,8 @@ namespace DGE::Game
       frictair{0},
       friction{0},
       gx{0}, gy{0}, gz{0},
-      xl{0}, yl{0}, xh{0}, yh{0},
-      zl{0}, zh{0},
+      xl{0}, yl{0}, xu{0}, yu{0},
+      zl{0}, zu{0},
       rect{false}
    {
    }
@@ -57,15 +57,15 @@ namespace DGE::Game
       pv[pc] = pv[0];
 
       // Calculate coordinate extremes.
-      xl = xh = pv[0].x;
-      yl = yh = pv[0].y;
+      xl = xu = pv[0].x;
+      yl = yu = pv[0].y;
 
       for(std::size_t i = 1; i != pc; ++i)
       {
          xl = std::min(xl, pv[i].x);
-         xh = std::max(xh, pv[i].x);
+         xu = std::max(xu, pv[i].x);
          yl = std::min(yl, pv[i].y);
-         yh = std::max(yh, pv[i].y);
+         yu = std::max(yu, pv[i].y);
       }
 
       // Check for rectangular sector.

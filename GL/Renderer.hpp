@@ -84,7 +84,7 @@ namespace DGE::GL
 
       // draw
       void drawCircle(float x, float y, float radius, bool line = false) const;
-      void drawDigit(unsigned int dig, float xl, float yl, float xh, float yh) const;
+      void drawDigit(unsigned int dig, float xl, float yl, float xu, float yu) const;
       void drawEllipse(float x1, float y1, float x2, float y2, bool line = false) const;
       void drawLine(float x1, float y1, float x2, float y2) const;
       void drawParticleSystem(ParticleSystem const &ps);

@@ -169,12 +169,12 @@ namespace DGE::Game
       for(auto sec : findRes.sec)
       {
          // If inside sector's opening, no collision.
-         if(th->z - th->sz >= sec->zl && th->z + th->sz <= sec->zh)
+         if(th->z - th->sz >= sec->zl && th->z + th->sz <= sec->zu)
             continue;
 
          // If outside sector's outer box, no collision.
-         if((th->x - th->sx >= sec->xh || th->x + th->sx <= sec->xl) ||
-            (th->y - th->sy >= sec->yh || th->y + th->sy <= sec->yl))
+         if((th->x - th->sx >= sec->xu || th->x + th->sx <= sec->xl) ||
+            (th->y - th->sy >= sec->yu || th->y + th->sy <= sec->yl))
             continue;
 
          // If not a rectangle, check against lines.
@@ -189,11 +189,11 @@ namespace DGE::Game
             if(sec->rect)
             {
                if(oldx < th->x) snapx = std::min(snapx, sec->xl - th->sx);
-               if(oldx > th->x) snapx = std::max(snapx, sec->xh + th->sx);
+               if(oldx > th->x) snapx = std::max(snapx, sec->xu + th->sx);
                if(oldy < th->y) snapy = std::min(snapy, sec->yl - th->sy);
-               if(oldy > th->y) snapy = std::max(snapy, sec->yh + th->sy);
+               if(oldy > th->y) snapy = std::max(snapy, sec->yu + th->sy);
                if(oldz < th->z) snapz = std::min(snapz, sec->zl + th->sz);
-               if(oldz > th->z) snapz = std::max(snapz, sec->zh - th->sz);
+               if(oldz > th->z) snapz = std::max(snapz, sec->zu - th->sz);
             }
             else
             {

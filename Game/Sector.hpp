@@ -38,12 +38,12 @@
    case ObjectMember::pc:       return pc; \
    case ObjectMember::texc:     return texc; \
    case ObjectMember::texf:     return texf; \
-   case ObjectMember::xh:       return xh.raw(); \
    case ObjectMember::xl:       return xl.raw(); \
-   case ObjectMember::yh:       return yh.raw(); \
+   case ObjectMember::xu:       return xu.raw(); \
    case ObjectMember::yl:       return yl.raw(); \
-   case ObjectMember::zh:       return zh.raw(); \
-   case ObjectMember::zl:       return zl.raw()
+   case ObjectMember::yu:       return yu.raw(); \
+   case ObjectMember::zl:       return zl.raw(); \
+   case ObjectMember::zu:       return zu.raw()
 
 //
 // DGE_Game_Sector_SetMemberCases
@@ -58,12 +58,12 @@
    case ObjectMember::pc:       (void)val;         break; \
    case ObjectMember::texc:     texc = val;        break; \
    case ObjectMember::texf:     texf = val;        break; \
-   case ObjectMember::xh:       (void)val;         break; \
    case ObjectMember::xl:       (void)val;         break; \
-   case ObjectMember::yh:       (void)val;         break; \
+   case ObjectMember::xu:       (void)val;         break; \
    case ObjectMember::yl:       (void)val;         break; \
-   case ObjectMember::zh:       zh.raw(val);       break; \
-   case ObjectMember::zl:       zl.raw(val);       break
+   case ObjectMember::yu:       (void)val;         break; \
+   case ObjectMember::zl:       zl.raw(val);       break; \
+   case ObjectMember::zu:       zu.raw(val);       break
 
 
 //----------------------------------------------------------------------------|
@@ -93,8 +93,8 @@ namespace DGE::Game
       Fract friction;
 
       Coord gx, gy, gz; // Gravity (X/Y/Z)
-      Coord xl, yl, xh, yh;
-      Coord zl, zh;
+      Coord xl, yl, xu, yu;
+      Coord zl, zu;
 
       bool rect : 1;
 

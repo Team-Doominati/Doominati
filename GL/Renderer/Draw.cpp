@@ -46,7 +46,7 @@ namespace DGE::GL
    //
    // Renderer::drawDigit
    //
-   void Renderer::drawDigit(unsigned int dig, float xl, float yl, float xh, float yh) const
+   void Renderer::drawDigit(unsigned int dig, float xl, float yl, float xu, float yu) const
    {
       static struct
       {
@@ -70,7 +70,7 @@ namespace DGE::GL
       };
 
       auto &digit = digtab[dig];
-      float ym = (yl + yh) / 2;
+      float ym = (yl + yu) / 2;
 
       GLfloat   prevwidth;
       GLboolean prevsmooth;
@@ -81,13 +81,13 @@ namespace DGE::GL
       glEnable(GL_LINE_SMOOTH);
       glLineWidth(2);
 
-      if(digit.seg0) drawLine(xl, yh, xh, yh);
-      if(digit.seg1) drawLine(xl, ym, xl, yh);
-      if(digit.seg2) drawLine(xh, ym, xh, yh);
-      if(digit.seg3) drawLine(xl, ym, xh, ym);
+      if(digit.seg0) drawLine(xl, yu, xu, yu);
+      if(digit.seg1) drawLine(xl, ym, xl, yu);
+      if(digit.seg2) drawLine(xu, ym, xu, yu);
+      if(digit.seg3) drawLine(xl, ym, xu, ym);
       if(digit.seg4) drawLine(xl, yl, xl, ym);
-      if(digit.seg5) drawLine(xh, yl, xh, ym);
-      if(digit.seg6) drawLine(xl, yl, xh, yl);
+      if(digit.seg5) drawLine(xu, yl, xu, ym);
+      if(digit.seg6) drawLine(xl, yl, xu, yl);
 
                       glLineWidth(prevwidth);
       if(!prevsmooth) glDisable(GL_LINE_SMOOTH);

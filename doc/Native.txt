@@ -11,7 +11,7 @@ BlockMap Functions
 ===========================================================
 
 Synopsis:
-  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xh, accum yh);
+  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xu, accum yu);
 
   unsigned DGE_BlockMap_FindAll(void);
 
@@ -30,7 +30,7 @@ DGE_BlockMap_Find
 -----------------------------------------------------------
 
 Synopsis:
-  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xh, accum yh);
+  unsigned DGE_BlockMap_Find(accum xl, accum yl, accum xu, accum yu);
 
 Description:
   Searches for Objects in any nodes which are in the given area.
