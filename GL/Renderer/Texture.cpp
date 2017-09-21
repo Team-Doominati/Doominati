@@ -74,7 +74,7 @@ namespace DGE::GL
    {
       if(!file)
       {
-         std::cerr << "texture file not found: " << file->name << std::endl;
+         std::cerr << "texture file not found in " << name << std::endl;
          return textureGet_NoFi(name);
       }
 
