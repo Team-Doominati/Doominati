@@ -109,14 +109,9 @@ namespace DGE::GL
 
       win{win_},
 
-      texMan{},
-      texBound{nullptr},
-
-      shdMan{},
-      shdBound{nullptr},
-
-      fntMan{},
-      fntBound{nullptr}
+      texMan{}, texBound{nullptr},
+      shdMan{}, shdBound{nullptr},
+      fntMan{}, fntBound{nullptr}
    {
       // Set up OpenGL server (device).
       glClearColor(0.23f, 0.23f, 0.23f, 1.0f);
@@ -144,6 +139,7 @@ namespace DGE::GL
 
       // Set up basic no-texture.
       textureGet_None("TEXNULL");
+      textureGet_NoFi("TEXNOFI");
       textureUnbind();
 
       // Set up VBOs.

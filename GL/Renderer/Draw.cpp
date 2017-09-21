@@ -142,7 +142,7 @@ namespace DGE::GL
 
       float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
-      Core::ResourceSaver<TextureData> texSave{texMan, texBound};
+      TextureSaver texSave{*this, texBound};
 
       textureBind(ps.texname.get());
 

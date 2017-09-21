@@ -30,10 +30,7 @@ namespace DGE::GL
    //
    struct TextLine
    {
-      TextLine(float width_, char const *beg_, char const *end_) :
-         width(width_), beg(beg_), end(end_) {}
-
-      float       width;
+      float       w;
       char const *beg, *end;
    };
 }
@@ -52,20 +49,21 @@ namespace DGE::GL
    {
       if(!fntBound || !str || !*str) return;
 
+      TextureSaver texSave{*this, texBound};
+
       FontFace &fnt = fntBound->data;
 
-      char const *end = str + std::strlen(str);
-
+      // Split text into lines.
       std::vector<TextLine> lines;
-      float maxlinewidth = 0;
+      float maxw = 0;
 
-      for(char const *itr = str; itr < end;)
+      for(char const *itr = str, *end = str + std::strlen(str); itr < end;)
       {
          char const *beg = itr, *lend;
-         float width = 0;
-
+         float lnw = 0;
          fnt.kernReset();
 
+         // Parse the line, getting its width, beginning and ending.
          for(;;)
          {
             char const *nex;
@@ -74,68 +72,71 @@ namespace DGE::GL
             if(ch == '\n') {lend = itr; itr = nex; break;}
 
             auto &gly = fnt.getChar(ch);
-            auto glyphw = gly.ax + fnt.getKernAmount();
+            auto  glw = gly.ax + fnt.getKernAmount();
 
-            if(maxwidth && width +  glyphw > maxwidth) {lend = itr; break;}
-            else           width += glyphw;
+            if(maxwidth && lnw + glw > maxwidth)
+               {lend = itr; break;}
+            else
+               lnw += glw;
 
             if(nex >= end) {lend = itr = end; break;}
             else                   itr = nex;
          }
 
-         if(width > maxlinewidth) maxlinewidth = width;
-         lines.emplace_back(width, beg, lend);
+         if(lnw > maxw) maxw = lnw;
+         lines.emplace_back(TextLine{lnw, beg, lend});
       }
 
+      // Get dimensions.
       float height = fnt.getHeight() * lines.size();
-      float py     = fnt.getHeight();
-      float px;
-      float origx;
+      float cx, cy = fnt.getHeight();
+      float ox;
 
+      // Set up vertical alignment.
       switch(textAlignV)
       {
       default:
-      case AlignVert::Top:    py += y;                   break;
-      case AlignVert::Bottom: py += y -  height;         break;
-      case AlignVert::Center: py += y - (height / 2.0f); break;
+      case AlignVert::Top:    cy += y;                   break;
+      case AlignVert::Bottom: cy += y -  height;         break;
+      case AlignVert::Center: cy += y - (height / 2.0f); break;
       }
 
-      Core::ResourceSaver<TextureData> texSave{texMan, texBound};
-
-      for(auto &line : lines)
+      for(auto &ln : lines)
       {
+         // Set up horizontal alignment.
          fnt.kernReset();
 
          switch(textAlignH)
          {
          default:
-         case AlignHorz::Left:      origx = px = x;                                        break;
-         case AlignHorz::Right:     origx = px = x -                  line.width;          break;
-         case AlignHorz::Center:    origx = px = x -                 (line.width / 2.0f);  break;
-         case AlignHorz::RightBox:  origx = px = x + (maxlinewidth -  line.width);         break;
-         case AlignHorz::CenterBox: origx = px = x + (maxlinewidth - (line.width / 2.0f)); break;
+         case AlignHorz::Left:      ox = cx = x;                          break;
+         case AlignHorz::Right:     ox = cx = x -          ln.w;          break;
+         case AlignHorz::Center:    ox = cx = x -         (ln.w / 2.0f);  break;
+         case AlignHorz::RightBox:  ox = cx = x + (maxw -  ln.w);         break;
+         case AlignHorz::CenterBox: ox = cx = x + (maxw - (ln.w / 2.0f)); break;
          }
 
-         for(char const *itr = line.beg; itr < line.end;)
+         // Draw each character in the line, advancing the cursor position.
+         for(char const *itr = ln.beg; itr < ln.end;)
          {
-            char32_t ch; std::tie(ch, itr) = GDCC::Core::Str8To32(itr, line.end);
+            char32_t ch; std::tie(ch, itr) = GDCC::Core::Str8To32(itr, ln.end);
 
             if(ch == '\r')
-               {px = origx; continue;}
+               {cx = ox; continue;}
 
             auto &gly = fnt.getChar(ch);
 
             auto kern = fnt.getKernAmount();
-            auto dx = px + gly.ox + kern;
-            auto dy = py + gly.oy;
+            auto dx = cx + gly.ox + kern;
+            auto dy = cy + gly.oy;
 
             textureBind(texMan.get(gly.tex));
             drawRectangle(dx, dy, dx + gly.w, dy + gly.h);
 
-            px += gly.ax + kern;
+            cx += gly.ax + kern;
          }
 
-         py += fnt.getHeight();
+         cy += fnt.getHeight();
       }
    }
 }

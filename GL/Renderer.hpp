@@ -187,6 +187,22 @@ namespace DGE::GL
 
       int w, h;
    };
+
+   //
+   // TextureSaver
+   //
+   class TextureSaver
+   {
+   public:
+      TextureSaver(Renderer &ren_, Texture const *tex) :
+         ren{ren_}, idx{tex ? tex->idx : SIZE_MAX} {}
+      ~TextureSaver()
+         {if(idx != SIZE_MAX) ren.textureBind(ren.textureGet(idx));}
+
+   private:
+      Renderer   &ren;
+      std::size_t idx;
+   };
 }
 
 #endif//DGE__GL__Renderer_H__

@@ -106,7 +106,8 @@ namespace DGE::Core
       ResourceSaver(ResMan &man_, Res *&res_) :
          man{man_}, res{res_}, idx{res ? res->idx : SIZE_MAX} {}
       ResourceSaver(ResMan &man_, Res const *&res_) :
-         man{man_}, res{const_cast<Res *&>(res_)}, idx{res ? res->idx : SIZE_MAX} {}
+         man{man_}, res{const_cast<Res *&>(res_)},
+         idx{res ? res->idx : SIZE_MAX} {}
       ~ResourceSaver() {if(idx != SIZE_MAX) res = man.get(idx);}
 
    private:

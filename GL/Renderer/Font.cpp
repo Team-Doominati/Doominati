@@ -40,7 +40,7 @@ namespace DGE::GL
       catch(FontLoadError const &err)
       {
          std::cerr << "FontLoadError: " << err.what() << std::endl;
-         return static_cast<std::size_t>(-1);
+         return SIZE_MAX;
       }
    }
 
