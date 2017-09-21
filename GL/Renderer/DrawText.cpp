@@ -167,9 +167,9 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_SetTextAlignment(int h[, int v])
+   // void DGE_Draw_SetTextAlign(int h[, int v])
    //
-   DGE_Code_NativeDefn(DGE_Draw_SetTextAlignment)
+   DGE_Code_NativeDefn(DGE_Draw_SetTextAlign)
    {
       AlignHorz h = static_cast<AlignHorz>(argv[0]);
       if(h != AlignHorz::Keep) Renderer::GetCurrent()->textAlignH = h;
