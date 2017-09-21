@@ -289,6 +289,7 @@ namespace DGE::GL
 
       // Render floors.
       for(auto &sec : Game::BlockMap::Root.listSec)
+         if(sec.texf)
       {
          // TODO: Non-rectangular sector rendering.
 
