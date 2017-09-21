@@ -29,6 +29,16 @@
 namespace DGE::GL
 {
    //
+   // Renderer::textureAdd
+   //
+   std::size_t Renderer::textureAdd(GDCC::Core::String name, FS::File *fp)
+   {
+      Core::ResourceSaver<TextureData> texSave{texMan, texBound};
+
+      return textureGet_File(name, fp)->idx;
+   }
+
+   //
    // Renderer::textureBind
    //
    void Renderer::textureBind(Texture const *tex)
@@ -51,7 +61,7 @@ namespace DGE::GL
       Core::ResourceSaver<TextureData> texSave{texMan, texBound};
 
       if(name[0] == '@')
-         return textureGet_File(name);
+         return textureGet_File(name, FS::Dir::FindFile(name.data() + 1));
 
       std::cerr << "unknown texture: " << name << std::endl;
       return textureGet_NoFi(name);
@@ -60,14 +70,11 @@ namespace DGE::GL
    //
    // Renderer::textureGet_File
    //
-   Texture *Renderer::textureGet_File(GDCC::Core::String name)
+   Texture *Renderer::textureGet_File(GDCC::Core::String name, FS::File *file)
    {
-      auto filename = name.data() + 1;
-      auto file = FS::Dir::FindFile(filename);
-
       if(!file)
       {
-         std::cerr << "texture file not found: " << filename << std::endl;
+         std::cerr << "texture file not found: " << file->name << std::endl;
          return textureGet_NoFi(name);
       }
 
@@ -83,7 +90,7 @@ namespace DGE::GL
       }
       catch(TextureLoaderError const &err)
       {
-         std::cerr << "TextureLoaderError: " << filename
+         std::cerr << "TextureLoaderError: " << file->name
             << ": " << err.what() << std::endl;
          return textureGet_None(name);
       }
@@ -126,6 +133,21 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
+   //
+   // unsigned DGE_Texture_Create(__str_ent *name, char const *fname)
+   //
+   DGE_Code_NativeDefn(DGE_Texture_Create)
+   {
+      GDCC::Core::String str{argv[0]};
+
+      auto fname = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
+      auto fp = FS::Dir::FindFile(fname.get());
+
+      task->dataStk.push(Renderer::GetCurrent()->textureAdd(str, fp));
+
+      return false;
+   }
+
    //
    // unsigned DGE_Texture_Get(__str_ent *name)
    //

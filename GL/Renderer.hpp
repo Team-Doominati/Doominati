@@ -134,6 +134,8 @@ namespace DGE::GL
       void shaderUnbind() {shaderBind(shdMan.resNone);}
 
       // texture
+      std::size_t textureAdd(GDCC::Core::String name, FS::File *fp);
+
       void textureBind(char const *name) {textureBind(textureGet(name));}
       void textureBind(Texture const *tex);
 
@@ -164,7 +166,7 @@ namespace DGE::GL
       Shader *shaderGet_Base(GDCC::Core::String name);
 
       // texture
-      Texture *textureGet_File(GDCC::Core::String name);
+      Texture *textureGet_File(GDCC::Core::String name, FS::File *file);
       Texture *textureGet_None(GDCC::Core::String name);
       Texture *textureGet_NoFi(GDCC::Core::String name);
 
