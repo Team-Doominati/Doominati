@@ -84,6 +84,36 @@ namespace DGE::GL
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace DGE::GL
+{
+   //
+   // FreeData (FontGlyph)
+   //
+   static void FreeData(FontGlyph &)
+   {
+   }
+
+   //
+   // FreeData
+   //
+   template<typename T>
+   static void FreeData(T *&data)
+   {
+      if(!data) return;
+
+      for(auto &itr : *data)
+         FreeData(itr);
+
+      delete[] data;
+      data = nullptr;
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -94,9 +124,8 @@ namespace DGE::GL
    //
    FontFace::FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize) :
       face{nullptr},
-      glyMap{},
-      glyVec{},
       texMan{man},
+      planes{nullptr},
       kernCh{},
       kernAmt{}
    {
@@ -136,26 +165,13 @@ namespace DGE::GL
    FontFace::~FontFace()
    {
       if(face) FT_Done_Face(face);
-   }
-
-   //
-   // FontFace::addChar
-   //
-   FontGlyph &FontFace::addChar(char32_t ch, TexturePixel const *data,
-      FontGlyphMetr &&metr)
-   {
-      if(DebugFontInfo)
-         std::cout <<
-            "Glyph " << ch << ": W " << metr.w << " H " << metr.h << std::endl;
-
-      glyVec.emplace_back(ch, texMan.add({metr.w, metr.h, data}, nullptr)->idx, std::move(metr));
-      return *glyMap.insert(&glyVec.back());
+      FreeData(planes);
    }
 
    //
    // FontFace::getChar
    //
-   FontGlyph &FontFace::getChar(char32_t ch)
+   FontGlyph const &FontFace::getChar(char32_t ch)
    {
       if(hasKerning)
       {
@@ -172,11 +188,35 @@ namespace DGE::GL
          kernCh = ch;
       }
 
-      if(auto gly = glyMap.find(ch))
-         return *gly;
+      if(!planes) planes = new PlaneData[1]{};
+      GroupData *&groups = (*planes)[ch / (Groups * Blocks * Glyphs)];
 
+      if(!groups) groups = new GroupData[1]{};
+      BlockData *&blocks = (*groups)[ch / (Blocks * Glyphs) % Groups];
+
+      if(!blocks) blocks = new BlockData[1]{};
+      GlyphData *&glyphs = (*blocks)[ch / Glyphs % Blocks];
+
+      if(!glyphs)
+      {
+         glyphs = new GlyphData[1];
+         for(std::size_t i = 0; i < Glyphs; i++)
+            loadChar((*glyphs)[i], ch / Glyphs * Glyphs + i);
+      }
+
+      return (*glyphs)[ch % Glyphs];
+   }
+
+   //
+   // FontFace::loadChar
+   //
+   void FontFace::loadChar(FontGlyph &gly, char32_t ch)
+   {
       if(FT_Load_Char(face, FT_ULong(ch), FT_LOAD_RENDER))
-         return getChar_Repl(ch);
+      {
+         gly = {0, 0, 0, 0, 0, texMan.resNone->idx, ch};
+         return;
+      }
 
       auto glyph   = face->glyph;
       TextureDim w = glyph->bitmap.width;
@@ -185,42 +225,23 @@ namespace DGE::GL
 
       // We need to allocate an extra pixel due to a weird bug (feature?)
       // in GLu that causes an invalid read otherwise.
-      std::unique_ptr<TexturePixel[]> buf{new TexturePixel[(w * h) + 1]{}};
+      std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h + 1]{}};
 
       for(TextureDim y = 0; y < h; y++)
          for(TextureDim x = 0; x < w; x++)
       {
-         auto g = glyph->bitmap.buffer[x + y * pitch];
-         auto &pixel = buf[x + (y * w)];
-         pixel[0] = pixel[1] = pixel[2] = 1.0f;
-         pixel[3] = g / 255.0f;
-      }
-
-      return addChar(ch, buf.get(), {
-         w, h,
-         glyph->advance.x / 64.0f,
-         glyph->bitmap_left, -glyph->bitmap_top
-      });
-   }
-
-   //
-   // FontFace::getChar_Repl
-   //
-   FontGlyph &FontFace::getChar_Repl(char32_t ch)
-   {
-      TextureDim w = height / 2;
-      TextureDim h = height;
-
-      std::unique_ptr<TexturePixel[]> buf{new TexturePixel[w * h]};
-
-      for(TextureDim y = 0; y < h; y++)
-         for(TextureDim x = 0; x < w; x++)
-      {
+         auto v = glyph->bitmap.buffer[x + y * pitch];
          auto &pixel = buf[x + y * w];
-         pixel[0] = pixel[1] = pixel[2] = pixel[3] = 1.0f;
+         pixel[0] = pixel[1] = pixel[2] = 1.0f;
+         pixel[3] = v / 255.0f;
       }
 
-      return addChar(ch, buf.get(), {w, h, float(w), 0, 0});
+      if(DebugFontInfo)
+         std::cout << "Glyph " << ch << ": W " << w << " H " << h << std::endl;
+
+      gly = {w, h, glyph->advance.x / 64.0f, glyph->bitmap_left,
+             -glyph->bitmap_top, texMan.add({w, h, buf.get()}, nullptr)->idx,
+             ch};
    }
 }
 

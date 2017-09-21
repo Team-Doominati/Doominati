@@ -124,7 +124,7 @@ endif()
 ##
 
 ##
-## Required libraries
+## Required packages
 ##
 find_package(Eigen3   REQUIRED)
 find_package(Freetype REQUIRED)
@@ -145,12 +145,17 @@ include_directories(SYSTEM
    ${SDL2_INCLUDE_DIRS})
 
 ##
-## Optional libraries
+## Optional packages
 ##
 find_package(FLAC)
 find_package(Opus)
 find_package(Vorbis)
 find_package(JPEG)
+find_package(OpenMP)
+
+if(${OPENMP_FOUND})
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 ## Optional defs for target AL
 Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_FLAC

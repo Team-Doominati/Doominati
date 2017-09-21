@@ -63,21 +63,9 @@ namespace DGE::GL
    //
    // FontGlyph
    //
-   class FontGlyph : public FontGlyphMetr
+   struct FontGlyph : public FontGlyphMetr
    {
-   public:
-      FontGlyph(FontGlyph &&gly) :
-         FontGlyphMetr{std::move(gly)},
-         tex{gly.tex}, link{this, std::move(gly.link)}, ch{gly.ch}
-      {}
-
-      FontGlyph(char32_t ch_, std::size_t tex_, FontGlyphMetr &&metr) :
-         FontGlyphMetr{std::move(metr)}, tex{tex_}, link{this}, ch{ch_} {}
-
-      FontGlyph(FontGlyph const &) = delete;
-
       std::size_t tex;
-      Core::ListLink<FontGlyph> link;
       char32_t ch;
    };
 
@@ -90,32 +78,36 @@ namespace DGE::GL
       FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize);
       FontFace(FontFace const &) = delete;
       FontFace(FontFace &&fnt) :
-         face{fnt.face}, glyMap{std::move(fnt.glyMap)},
-         glyVec{std::move(fnt.glyVec)}, texMan{fnt.texMan},
+         face{fnt.face}, texMan{fnt.texMan}, planes{fnt.planes},
          hasKerning{fnt.hasKerning}, kernCh{fnt.kernCh}, kernAmt{fnt.kernAmt},
          height{fnt.height}
-         {fnt.face = nullptr;}
+         {fnt.planes = nullptr; fnt.face = nullptr;}
       ~FontFace();
 
-      FontGlyph &getChar(char32_t ch);
+      FontGlyph const &getChar(char32_t ch);
 
       void  kernReset()           {kernCh = 0;}
       float getKernAmount() const {return kernAmt;}
       float getHeight()     const {return height;}
 
    private:
-      using GlyphMap = Core::HashMapKeyMem<char32_t, FontGlyph, &FontGlyph::ch, &FontGlyph::link>;
-      using GlyphVec = std::vector<FontGlyph>;
+      static constexpr std::size_t Glyphs = 34;
+      static constexpr std::size_t Blocks = 64;
+      static constexpr std::size_t Groups = 32;
+      static constexpr std::size_t Planes = 16;
 
-      FontGlyph &addChar(char32_t ch, TexturePixel const *data, FontGlyphMetr &&metr);
-      FontGlyph &getChar_Repl(char32_t ch);
+      using GlyphData = FontGlyph [Glyphs];
+      using BlockData = GlyphData*[Blocks];
+      using GroupData = BlockData*[Groups];
+      using PlaneData = GroupData*[Planes];
+
+      void loadChar(FontGlyph &gly, char32_t ch);
 
       FT_FaceRec_ *face;
 
-      GlyphMap glyMap;
-      GlyphVec glyVec;
-
       Core::ResourceManager<TextureData> &texMan;
+
+      PlaneData *planes;
 
       bool     hasKerning : 1;
       char32_t kernCh;
