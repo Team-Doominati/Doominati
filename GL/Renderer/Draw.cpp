@@ -281,9 +281,9 @@ namespace DGE::GL
    //
    DGE_Code_NativeDefn(DGE_Draw_SetColor)
    {
-      auto r =            Code::ULFractToHost(argv[0]);
-      auto g =            Code::ULFractToHost(argv[1]);
-      auto b =            Code::ULFractToHost(argv[2]);
+      auto r = argc > 0 ? Code::ULFractToHost(argv[0]) : 1.0f;
+      auto g = argc > 1 ? Code::ULFractToHost(argv[1]) : 1.0f;
+      auto b = argc > 2 ? Code::ULFractToHost(argv[2]) : 1.0f;
       auto a = argc > 3 ? Code::ULFractToHost(argv[3]) : 1.0f;
 
       Renderer::GetCurrent()->drawColorSet(r, g, b, a);
