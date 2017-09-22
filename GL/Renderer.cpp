@@ -20,6 +20,7 @@
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
 #include "Code/Program.hpp"
+#include "Code/Task.hpp"
 
 #include "Core/Time.hpp"
 
@@ -239,6 +240,20 @@ namespace DGE::GL
    }
 
    //
+   // Renderer::getFocus
+   //
+   std::tuple<float, float> Renderer::getFocus()
+   {
+      // If viewPoint set, focus on that.
+      if(viewPoint)
+         return {viewPoint->x.toF() - w / 2, viewPoint->y.toF() - h / 2};
+
+      // Otherwise, focus on center of world.
+      else
+         return {-w / 2, -h / 2};
+   }
+
+   //
    // Renderer:lineSmooth
    //
    void Renderer::lineSmooth(bool on) const
@@ -276,14 +291,7 @@ namespace DGE::GL
 
       // Calculate render focus.
       float rx, ry;
-
-      // If viewPoint set, focus on that.
-      if(viewPoint)
-         rx = viewPoint->x.toF() - w / 2, ry = viewPoint->y.toF() - h / 2;
-
-      // Otherwise, focus on center of world.
-      else
-         rx = -w / 2, ry = -h / 2;
+      std::tie(rx, ry) = getFocus();
 
       drawColorSet(1.0f, 1.0f, 1.0f);
 
@@ -368,6 +376,18 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_Draw_SetLineWidth)
    {
       Renderer::GetCurrent()->lineWidth(argv[0]);
+      return false;
+   }
+
+   //
+   // DGE_Point2 DGE_Renderer_GetViewpoint(void)
+   //
+   DGE_Code_NativeDefn(DGE_Renderer_GetViewpoint)
+   {
+      float x, y;
+      std::tie(x, y) = Renderer::GetCurrent()->getFocus();
+      task->dataStk.push(Code::HostToSAccum(x));
+      task->dataStk.push(Code::HostToSAccum(y));
       return false;
    }
 

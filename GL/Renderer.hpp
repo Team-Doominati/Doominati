@@ -144,6 +144,8 @@ namespace DGE::GL
 
       void textureUnbind() {textureBind(texMan.resNone);}
 
+      std::tuple<float, float> getFocus();
+
       GDCC::Core::CounterPtr<Game::PointThinker> viewPoint;
 
       AlignHorz textAlignH;
