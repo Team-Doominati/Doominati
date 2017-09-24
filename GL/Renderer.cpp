@@ -312,7 +312,8 @@ namespace DGE::GL
       {
          textureBind(textureGet(th.sprite));
          float tx = th.x - rx, ty = th.y - ry;
-         drawRectangle(tx - th.rsx, ty - th.rsy, tx + th.rsx, ty + th.rsy);
+         drawRectangle(tx - th.rsx, ty - th.rsy, tx + th.rsx, ty + th.rsy,
+            static_cast<double>(th.yaw) * Core::Tau);
       }
 
       // TODO: Render ceilings.
