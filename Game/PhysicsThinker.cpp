@@ -86,9 +86,9 @@ namespace DGE::Game
       // Gravity and air friction.
       if(auto sec = BlockMap::Root.findSector(this))
       {
-         vx += sec->gx;
-         vy += sec->gy;
-         vz += sec->gz;
+         vx += sec->gx * gravity;
+         vy += sec->gy * gravity;
+         vz += sec->gz * gravity;
 
          applyFriction(sec->frictair);
       }

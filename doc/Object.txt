@@ -53,6 +53,7 @@ Synopsis:
     accum      grabx;
     accum      graby;
     accum      grabz;
+    accum      gravity;
     accum      mass;
     accum      sx;
     accum      sy;
