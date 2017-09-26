@@ -114,10 +114,19 @@ static void DrawFPS()
 //
 static void LoadCodedefs(DGE::Code::Program *prog)
 {
+   // Finish internal loader data.
+   DGE::Game::NativeAdd();
+   DGE::GL::NativeAdd();
+
+   DGE::Code::NativeAdder::Finish();
+   DGE::Game::Object::ObjectTypeAdder::Finish();
+
+   // Load CODEDEFS files.
    DGE::Code::Loader loader;
    DGE::FS::Dir::ForFile("codedefs",
       std::bind(&DGE::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
 
+   // Print status.
    if(loader.loadPASS)
    {
       char const *s = (loader.loadPASS != 1) ? "s" : "";
@@ -132,6 +141,10 @@ static void LoadCodedefs(DGE::Code::Program *prog)
       throw EXIT_FAILURE;
    }
 
+   // Finish external loader data.
+   for(auto &em : DGE::Code::ExtMems) em.val->finish();
+
+   // Process loaded CODEDEFS.
    loader.gen(prog);
 }
 
@@ -188,12 +201,6 @@ static int Main()
    DGE::Game::InputSource::SetCurrent(&input);
 
    // Initialize scripting and call main.
-   DGE::Game::NativeAdd();
-   DGE::GL::NativeAdd();
-
-   DGE::Code::NativeAdder::Finish();
-   DGE::Game::Object::ObjectTypeAdder::Finish();
-
    DGE::Code::Program prog;
    LoadCodedefs(&prog);
    DGE::Code::Process proc{&prog};

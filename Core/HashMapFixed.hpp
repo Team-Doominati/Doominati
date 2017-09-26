@@ -104,7 +104,7 @@ namespace DGE::Core
       //
       // find
       //
-      T *find(Key const &key)
+      T *find(Key const &key) const
       {
          if(auto elem = findItr(key))
             return &elem->val;
@@ -115,7 +115,7 @@ namespace DGE::Core
       //
       // findItr
       //
-      Elem *findItr(Key const &key)
+      Elem *findItr(Key const &key) const
       {
          if(!table) return nullptr;
 
@@ -126,6 +126,17 @@ namespace DGE::Core
          }
 
          return nullptr;
+      }
+
+      //
+      // findVal
+      //
+      T findVal(Key const &key) const
+      {
+         if(auto elem = findItr(key))
+            return elem->val;
+
+         return T{};
       }
 
       //

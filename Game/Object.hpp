@@ -16,7 +16,7 @@
 #include "Core/IDAllocator.hpp"
 #include "Core/String.hpp"
 
-#include "Code/Types.hpp"
+#include "Code/ExtMem.hpp"
 
 #include <GDCC/Core/Counter.hpp>
 
@@ -41,7 +41,9 @@
 // DGE_Game_ObjectImplement
 //
 #define DGE_Game_ObjectImplement(name) \
-   DGE_Game_ObjectImplementCommon(name)
+   DGE_Game_ObjectImplementCommon(name); \
+   \
+   Code::ExtensionMembers name::ExtMem{#name, &Super::ExtMem}
 
 //
 // DGE_Game_ObjectImplementCommon
@@ -55,21 +57,14 @@
          default: This::extMember()[mem - ObjectMember::MAX] = val;}} \
    \
    static Object::ObjectTypeAdder name##TypeAdd{#name, \
-      [](Object *o) {return dynamic_cast<name *>(o) ? o->id : 0;}}; \
-   \
-   std::size_t name::ExtMemC; \
-   std::size_t name::ExtMemCF
+      [](Object *o) {return dynamic_cast<name *>(o) ? o->id : 0;}}
 
 //
 // DGE_Game_ObjectPreamble
 //
 #define DGE_Game_ObjectPreamble(name, base) \
    GDCC_Core_CounterPreambleNoClone(DGE::Game::name, DGE::Game::base); \
-   DGE_Game_ObjectPreambleCommon(name); \
-   \
-public: \
-   static std::size_t GetExtMemCF() \
-      {return ExtMemCF = Super::GetExtMemCF() + ExtMemC;}
+   DGE_Game_ObjectPreambleCommon(name)
 
 //
 // DGE_Game_ObjectPreambleCommon
@@ -82,7 +77,7 @@ public: \
       {return ::operator delete(ptr);} \
    \
    void *operator new(std::size_t size, std::size_t ext = 0) \
-      {return ::operator new(size + (ExtMemCF + ext) * sizeof(Code::Word));} \
+      {return ::operator new(size + (ExtMem.max() + ext) * sizeof(Code::Word));} \
    void *operator new(std::size_t, void *ptr) {return ptr;} \
    \
    virtual Code::Word *extMember() \
@@ -90,8 +85,7 @@ public: \
    virtual Code::Word getMember(ObjectMember mem); \
    virtual void setMember(ObjectMember mem, Code::Word val); \
    \
-   static std::size_t ExtMemC; \
-   static std::size_t ExtMemCF; \
+   static Code::ExtensionMembers ExtMem;\
    \
    static This *Get(Code::Word id) \
       {return dynamic_cast<This *>(ObjectVec[id]);}
@@ -142,9 +136,6 @@ namespace DGE::Game
       void refSub() {if(!--refCount) delete this;}
 
       Code::Word const id;
-
-
-      static std::size_t GetExtMemCF() {return ExtMemCF = ExtMemC;}
 
    protected:
       Object();

@@ -12,6 +12,7 @@
 
 #include "Code/Codedefs.hpp"
 
+#include "Code/ExtMem.hpp"
 #include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
 #include "Code/Program.hpp"
@@ -672,6 +673,8 @@ namespace DGE::Code
    //
    void Loader::loadKeyword(Core::NTSStream &in)
    {
+      static GDCC::Core::String const STR_extmem{"extmem"};
+
       GDCC::Core::String tlk = in.get();
 
       switch(tlk)
@@ -683,6 +686,8 @@ namespace DGE::Code
       case GDCC::Core::STR_global:   loadKeywordGlobal(in);   break;
 
       default:
+         if(tlk == STR_extmem) {loadKeywordExtMem(in); break;}
+
          throw GDCC::Core::ParseExceptExpect{"top-level keyword", tlk, false};
       }
    }
@@ -738,6 +743,28 @@ namespace DGE::Code
       }
       else
          while(in && !in.drop("}")) in.drop();
+   }
+
+   //
+   // Loader::loadKeywordExtMem
+   //
+   // extmem-def:
+   //    <extmem> identifier identifier integer ;
+   //
+   void Loader::loadKeywordExtMem(Core::NTSStream &in)
+   {
+      char const *type  = in.get();
+      char const *mem   = in.get();
+      Word        words = evalVal(in.get());
+
+      in.expect(";");
+
+      auto em = ExtMems.findVal(type);
+
+      if(!em)
+         throw GDCC::Core::ParseExceptExpect{"Object Type", type, false};
+
+      em->add(mem, words);
    }
 
    //

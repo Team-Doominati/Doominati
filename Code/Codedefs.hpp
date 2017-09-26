@@ -117,6 +117,7 @@ namespace DGE::Code
       void loadKeyword(Core::NTSStream &in);
       void loadKeywordBlock(Core::NTSStream &in);
       void loadKeywordDefine(Core::NTSStream &in);
+      void loadKeywordExtMem(Core::NTSStream &in);
       void loadKeywordFunction(Core::NTSStream &in);
       void loadKeywordGlobal(Core::NTSStream &in);
 

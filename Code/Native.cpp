@@ -32,6 +32,15 @@ namespace DGE::Code
    }
 
    //
+   // ExtMemsVec
+   //
+   static auto &ExtMemsVec()
+   {
+      static auto *vec = new std::vector<std::pair<Core::HashedStr, ExtensionMembers *>>;
+      return vec;
+   }
+
+   //
    // NativeVec
    //
    static auto &NativeVec()
@@ -49,6 +58,7 @@ namespace DGE::Code
 namespace DGE::Code
 {
    Core::HashMapFixed<Core::HashedStr, Callback *> Callbacks;
+   Core::HashMapFixed<Core::HashedStr, ExtensionMembers *> ExtMems;
    Core::HashMapFixed<Core::HashedStr, Native> Natives;
 }
 
@@ -84,6 +94,14 @@ namespace DGE::Code
    //
    // NativeAdder::Add
    //
+   void NativeAdder::Add(Core::HashedStr name, ExtensionMembers *em)
+   {
+      ExtMemsVec()->push_back({name, em});
+   }
+
+   //
+   // NativeAdder::Add
+   //
    void NativeAdder::Add(Core::HashedStr name, Native native)
    {
       NativeVec()->push_back({name, native});
@@ -107,6 +125,18 @@ namespace DGE::Code
          auto vecItr = vec->begin();
          Callbacks.reset(vec->size(),
             [&](auto elem){elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
+
+         delete vec;
+         vec = nullptr;
+      }
+
+      // ExtMems.
+      {
+         auto &vec = ExtMemsVec();
+
+         auto vecItr = vec->begin();
+         ExtMems.reset(vec->size(), [&](auto elem)
+            {elem->key = vecItr->first; elem->val = vecItr->second; ++vecItr;});
 
          delete vec;
          vec = nullptr;

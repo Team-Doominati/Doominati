@@ -12,6 +12,7 @@
 
 #include "Game/Object.hpp"
 
+#include "Code/ExtMem.hpp"
 #include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
@@ -35,6 +36,8 @@ namespace DGE::Game
 
 namespace DGE::Game
 {
+   Code::ExtensionMembers Object::ExtMem{"Object", nullptr};
+
    Core::IDAllocator<Object, Code::Word> &Object::ObjectVec = GetObjectVec();
 }
 
@@ -135,6 +138,27 @@ namespace DGE::Game
          return static_cast<Code::Word>(*mem);
 
       throw Code::GlyphError{"ObjectMember", glyph};
+   }
+
+   //
+   // {ObjectMemberExt}
+   //
+   DGE_Code_GlyphTypeDefn(ObjectMemberExt)
+   {
+      // Empty glyph means to give the extension member base.
+      // Use of this is dangerous, but potentially useful for testing.
+      if(glyph.empty()) return static_cast<Code::Word>(ObjectMember::MAX);
+
+      if(auto dot = static_cast<char const *>(std::memchr(glyph.str, glyph.len, '.')))
+      {
+         if(auto type = Code::ExtMems.findVal({glyph.begin(), dot}))
+            if(auto mem = type->find({dot + 1, glyph.end()}))
+               return static_cast<Code::Word>(ObjectMember::MAX) + *mem;
+      }
+      else if(auto type = Code::ExtMems.findVal(glyph))
+         return static_cast<Code::Word>(ObjectMember::MAX) + type->max();
+
+      throw Code::GlyphError{"ObjectMemberExt", glyph};
    }
 
    //

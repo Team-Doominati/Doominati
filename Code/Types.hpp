@@ -23,6 +23,7 @@
 namespace DGE::Code
 {
    class Callback;
+   class ExtensionMembers;
    class Function;
    class Loader;
    class OpCode;

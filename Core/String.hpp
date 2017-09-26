@@ -42,12 +42,23 @@ namespace DGE::Core
       HashedStr(char const *str_, std::size_t len_, std::size_t hash_) :
          str{str_}, len{len_}, hash{hash_} {}
 
+      explicit operator bool () const {return str;}
       operator std::string () const {return std::string{str, len};}
 
       bool operator == (HashedStr const &r) const
          {return hash == r.hash && len == r.len && std::memcmp(str, r.str, len) == 0;}
       bool operator != (HashedStr const &r) const
          {return hash != r.hash || len != r.len || std::memcmp(str, r.str, len) != 0;}
+
+      char const *begin() const {return str;}
+
+      char const *data() const {return str;}
+
+      bool empty() const {return !len;}
+
+      char const *end() const {return str + len;}
+
+      std::size_t size() const {return len;}
 
       char const *str;
       std::size_t len;
@@ -75,6 +86,22 @@ namespace std
 
 namespace DGE::Core
 {
+   //
+   // operator std::string == HashedStr
+   //
+   inline bool operator == (std::string const &l, HashedStr const &r)
+   {
+      return l.size() == r.size() && !std::memcmp(l.data(), r.data(), r.size());
+   }
+
+   //
+   // operator HashedStr == std::string
+   //
+   inline bool operator == (HashedStr const &l, std::string const &r)
+   {
+      return l.size() == r.size() && !std::memcmp(l.data(), r.data(), l.size());
+   }
+
    //
    // operator std::ostream << HashedStr
    //

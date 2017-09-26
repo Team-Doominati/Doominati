@@ -24,6 +24,8 @@ add_library(dge-code-lib STATIC
    Codedefs.cpp
    Codedefs.hpp
    Convert.hpp
+   ExtMem.cpp
+   ExtMem.hpp
    Function.hpp
    Glyph.cpp
    Glyph.hpp
