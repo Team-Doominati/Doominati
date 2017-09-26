@@ -36,9 +36,17 @@ namespace DGE::Game
 
       if(mass)
       {
-         vx -= Coord::MulFB(vx, f) / mass;
-         vy -= Coord::MulFB(vy, f) / mass;
-         vz -= Coord::MulFB(vz, f) / mass;
+         auto getf = [f, this](Coord v) -> Coord
+         {
+            auto vf = Coord::MulFB(v, f);
+            return vf ? vf : v < 0
+               ? -std::numeric_limits<Coord>::epsilon()
+               :  std::numeric_limits<Coord>::epsilon();
+         };
+
+         if(vx) vx -= getf(vx);
+         if(vy) vy -= getf(vy);
+         if(vz) vz -= getf(vz);
       }
       else
          vx = vy = vz = 0;
