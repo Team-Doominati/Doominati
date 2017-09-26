@@ -200,8 +200,8 @@ namespace DGE::Game
                if(oldx > th->x) snapx = std::max(snapx, sec->xu + th->sx);
                if(oldy < th->y) snapy = std::min(snapy, sec->yl - th->sy);
                if(oldy > th->y) snapy = std::max(snapy, sec->yu + th->sy);
-               if(oldz < th->z) snapz = std::min(snapz, sec->zl + th->sz);
-               if(oldz > th->z) snapz = std::max(snapz, sec->zu - th->sz);
+               if(oldz < th->z) snapz = std::min(snapz, sec->zu - th->sz);
+               if(oldz > th->z) snapz = std::max(snapz, sec->zl + th->sz);
             }
             else
             {
