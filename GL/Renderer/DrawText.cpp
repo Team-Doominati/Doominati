@@ -51,7 +51,7 @@ namespace DGE::GL
 
       TextureSaver texSave{*this, texBound};
 
-      FontFace &fnt = fntBound->data;
+      auto &fnt = fntBound->data;
 
       // Split text into lines.
       std::vector<TextLine> lines;
@@ -68,8 +68,8 @@ namespace DGE::GL
          {
             char const *nex;
             char32_t ch; std::tie(ch, nex) = GDCC::Core::Str8To32(itr, end);
-
             if(ch == '\n') {lend = itr; itr = nex; break;}
+            if(ch == '\r') lnw = 0;
 
             auto &gly = fnt.getChar(ch);
             auto  glw = gly.ax + fnt.getKernAmount();
@@ -120,9 +120,7 @@ namespace DGE::GL
          for(char const *itr = ln.beg; itr < ln.end;)
          {
             char32_t ch; std::tie(ch, itr) = GDCC::Core::Str8To32(itr, ln.end);
-
-            if(ch == '\r')
-               {cx = ox; continue;}
+            if(ch == '\r') {cx = ox; continue;}
 
             auto &gly = fnt.getChar(ch);
 
@@ -151,8 +149,8 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_DrawText);
 
    //
-   // void DGE_Draw_Text(short _Accum x, y, char const *str[,
-   //    short _Accum maxwidth])
+   // void DGE_Draw_Text(short accum x, short accum y, char const *str[,
+   //    short accum maxwidth])
    //
    DGE_Code_NativeDefn(DGE_Draw_Text)
    {
@@ -160,9 +158,9 @@ namespace DGE::GL
       auto y = Code::SAccumToHost(argv[1]);
       auto maxwidth = argc > 3 ? Code::SAccumToHost(argv[3]) : 0;
 
-      Code::MemPtr<Code::Byte const> str = {&task->prog->memory, argv[2]};
+      auto str = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[2]});
 
-      Renderer::GetCurrent()->drawText(x, y, MemStrDup(str).get(), maxwidth);
+      Renderer::GetCurrent()->drawText(x, y, str.get(), maxwidth);
       return false;
    }
 
