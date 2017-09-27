@@ -44,16 +44,17 @@ namespace DGE::GL
    class TextureData
    {
    public:
-      TextureData() : tex{0} {}
+      TextureData() : w{0}, h{0}, tex{0} {}
       TextureData(TextureData const &) = delete;
-      TextureData(TextureData &&t) : tex{t.tex} {t.tex = 0;}
-      TextureData(TextureDim width, TextureDim height,
-         TexturePixel const *texdata);
+      TextureData(TextureData &&t) : w{t.w}, h{t.h}, tex{t.tex} {t.tex = 0;}
+      TextureData(TextureDim w, TextureDim h, TexturePixel const *texdata);
       ~TextureData();
 
       TextureData &operator = (TextureData const &) = delete;
       TextureData &operator = (TextureData &&t)
          {std::swap(tex, t.tex); return *this;}
+
+      TextureDim w, h;
 
       GLuint tex;
    };
