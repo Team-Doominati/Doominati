@@ -18,7 +18,7 @@
 ##
 ## dge-fs-lib
 ##
-add_library(dge-fs-lib STATIC
+add_library(dge-fs-lib ${DGE_SHARED_DECL}
    Dir.cpp
    Dir.hpp
    Dir/Directory.cpp
@@ -33,6 +33,8 @@ add_library(dge-fs-lib STATIC
 target_link_libraries(dge-fs-lib
    dge-core-lib
    ${GDCC_LIBRARIES})
+
+DGE_INSTALL_PART(fs FALSE TRUE)
 
 ## EOF
 

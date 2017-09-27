@@ -18,7 +18,7 @@
 ##
 ## dge-game-lib
 ##
-add_library(dge-game-lib STATIC
+add_library(dge-game-lib ${DGE_SHARED_DECL}
    BlockMap.cpp
    BlockMap.hpp
    Entity.cpp
@@ -54,6 +54,8 @@ target_link_libraries(dge-game-lib
    dge-core-lib
    ${GDCC_LIBRARIES}
    ${SDL2_LIBRARIES})
+
+DGE_INSTALL_PART(game FALSE TRUE)
 
 ## EOF
 
