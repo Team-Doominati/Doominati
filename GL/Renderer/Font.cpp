@@ -112,6 +112,39 @@ namespace DGE::GL
 
       return false;
    }
+
+   //
+   // DGE_Point2I DGE_Font_GetTextSize(unsigned fnt, char const *text)
+   //
+   DGE_Code_NativeDefn(DGE_Font_GetTextSize)
+   {
+      auto &fnt = Renderer::GetCurrent()->fontGet(argv[0])->data;
+      auto  str = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
+      float maxw = 0, lnw = 0;
+      int lns = 0;
+
+      fnt.kernReset();
+
+      for(char const *itr = str.get(),
+                     *end = str.get() + std::strlen(str.get()); itr < end;)
+      {
+         char32_t ch; std::tie(ch, itr) = GDCC::Core::Str8To32(itr, end);
+         if(ch == '\n') {lns++; lnw = 0; continue;}
+         if(ch == '\r') {       lnw = 0; continue;}
+
+         if(!lns) lns++;
+
+         auto &gly = fnt.getChar(ch);
+         auto  glw = gly.ax + fnt.getKernAmount();
+
+         if((lnw += glw) > maxw) maxw = lnw;
+      }
+
+      task->dataStk.push(maxw);
+      task->dataStk.push(fnt.getHeight() * lns);
+
+      return false;
+   }
 }
 
 // EOF

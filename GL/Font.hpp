@@ -75,7 +75,8 @@ namespace DGE::GL
    class FontFace
    {
    public:
-      FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize);
+      FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp,
+         int ptsize);
       FontFace(FontFace const &) = delete;
       FontFace(FontFace &&fnt) :
          face{fnt.face}, texMan{fnt.texMan}, planes{fnt.planes},

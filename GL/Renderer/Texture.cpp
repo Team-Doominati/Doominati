@@ -170,6 +170,17 @@ namespace DGE::GL
 
       return false;
    }
+
+   //
+   // DGE_Point2I DGE_Texture_GetSize(unsigned tex);
+   //
+   DGE_Code_NativeDefn(DGE_Texture_GetSize)
+   {
+      auto tex = Renderer::GetCurrent()->textureGet(argv[0]);
+      task->dataStk.push(tex->data.w);
+      task->dataStk.push(tex->data.h);
+      return false;
+   }
 }
 
 // EOF

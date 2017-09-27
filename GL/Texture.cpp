@@ -26,8 +26,9 @@ namespace DGE::GL
    //
    // TextureData constructor
    //
-   TextureData::TextureData(TextureDim width, TextureDim height,
-      TexturePixel const *texdata) :
+   TextureData::TextureData(TextureDim w_, TextureDim h_, TexturePixel const *texdata) :
+      w{w_},
+      h{h_},
       tex{0}
    {
       glGenTextures(1, &tex);
@@ -39,7 +40,7 @@ namespace DGE::GL
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_FLOAT, texdata);
+      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_FLOAT, texdata);
    }
 
    //
