@@ -171,6 +171,7 @@ namespace DGE::GL
       if(y1 > y2) std::swap(y1, y2);
 
       Core::Vector2 v[4] = {{x1, y1}, {x2, y1}, {x2, y2}, {x1, y2}};
+
       if(rot)
       {
          float c = std::cos(rot);
@@ -292,7 +293,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_Circle(short _Accum x, y, radius)
+   // void DGE_Draw_Circle(short accum x, y, radius)
    //
    DGE_Code_NativeDefn(DGE_Draw_Circle)
    {
@@ -306,7 +307,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_CircleLine(short _Accum x, y, radius)
+   // void DGE_Draw_CircleLine(short accum x, y, radius)
    //
    DGE_Code_NativeDefn(DGE_Draw_CircleLine)
    {
@@ -320,7 +321,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_Ellipse(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Ellipse(short accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_Draw_Ellipse)
    {
@@ -335,7 +336,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_EllipseLine(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_EllipseLine(short accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_Draw_EllipseLine)
    {
@@ -350,7 +351,8 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_Rectangle(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Rectangle(short accum x1, y1, x2, y2[,
+   //    unsigned long fract rot])
    //
    DGE_Code_NativeDefn(DGE_Draw_Rectangle)
    {
@@ -358,14 +360,16 @@ namespace DGE::GL
       auto y1 = Code::SAccumToHost(argv[1]);
       auto x2 = Code::SAccumToHost(argv[2]);
       auto y2 = Code::SAccumToHost(argv[3]);
+      auto rt = argc > 4 ? Code::ULFractToHost(argv[4]) : 0.0;
 
-      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2);
+      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, rt);
 
       return false;
    }
 
    //
-   // void DGE_Draw_RectangleLine(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_RectangleLine(short accum x1, y1, x2, y2[,
+   //    unsigned long fract rot])
    //
    DGE_Code_NativeDefn(DGE_Draw_RectangleLine)
    {
@@ -373,14 +377,15 @@ namespace DGE::GL
       auto y1 = Code::SAccumToHost(argv[1]);
       auto x2 = Code::SAccumToHost(argv[2]);
       auto y2 = Code::SAccumToHost(argv[3]);
+      auto rt = argc > 4 ? Code::ULFractToHost(argv[4]) : 0.0;
 
-      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, 0, true);
+      Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, rt, true);
 
       return false;
    }
 
    //
-   // void DGE_Draw_Line(short _Accum x1, y1, x2, y2)
+   // void DGE_Draw_Line(short accum x1, y1, x2, y2)
    //
    DGE_Code_NativeDefn(DGE_Draw_Line)
    {
@@ -395,7 +400,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_Triangle(short _Accum x1, y1, x2, y2, x3, y3)
+   // void DGE_Draw_Triangle(short accum x1, y1, x2, y2, x3, y3)
    //
    DGE_Code_NativeDefn(DGE_Draw_Triangle)
    {
@@ -412,7 +417,7 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_TriangleLine(short _Accum x1, y1, x2, y2, x3, y3)
+   // void DGE_Draw_TriangleLine(short accum x1, y1, x2, y2, x3, y3)
    //
    DGE_Code_NativeDefn(DGE_Draw_TriangleLine)
    {
