@@ -18,7 +18,7 @@
 ##
 ## dge-gl-lib
 ##
-add_library(dge-gl-lib STATIC
+add_library(dge-gl-lib ${DGE_SHARED_DECL}
    Color.cpp
    Color.hpp
    DynamicBuffer.cpp
@@ -57,6 +57,8 @@ target_link_libraries(dge-gl-lib
    ${OPENGL_LIBRARIES}
    ${SDL2_LIBRARIES}
    ${DGE_GL_LIBRARIES})
+
+DGE_INSTALL_PART(gl FALSE TRUE)
 
 ## EOF
 

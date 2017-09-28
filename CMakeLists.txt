@@ -46,6 +46,34 @@ endif()
 ##
 
 ##
+## DGE_INSTALL_PART
+##
+function(DGE_INSTALL_PART name wantExe wantLib)
+   if(wantExe AND DGE_INSTALL_EXE)
+      install(TARGETS dge-${name}
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib
+         ARCHIVE DESTINATION lib
+      )
+   endif()
+
+   if(wantLib AND DGE_INSTALL_LIB)
+      if(DGE_INSTALL_API)
+         install(TARGETS dge-${name}-lib
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+         )
+      elseif(DGE_SHARED)
+         install(TARGETS dge-${name}-lib
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+         )
+      endif()
+   endif()
+endfunction()
+
+##
 ## Try_CXX_Compiler_Flag
 ##
 function(Try_CXX_Compiler_Flag flag name)
@@ -116,6 +144,60 @@ check_cxx_source_compiles("
 
 if(Has_GNU_Dynamic_Goto)
    add_definitions(-DDGE_Code_GNUC_DynamicGoto=1)
+endif()
+
+
+##----------------------------------------------------------------------------|
+## Variables                                                                  |
+##
+
+##
+## DGE_INSTALL_API
+##
+if(NOT DEFINED DGE_INSTALL_API)
+   set(DGE_INSTALL_API ON CACHE BOOL "Install headers.")
+endif()
+
+##
+## DGE_INSTALL_DOC
+##
+if(NOT DEFINED DGE_INSTALL_DOC)
+   set(DGE_INSTALL_DOC ON CACHE BOOL "Install documentation.")
+endif()
+
+##
+## DGE_INSTALL_EXE
+##
+if(NOT DEFINED DGE_INSTALL_EXE)
+   set(DGE_INSTALL_EXE ON CACHE BOOL "Install executables.")
+endif()
+
+##
+## DGE_INSTALL_LIB
+##
+if(NOT DEFINED DGE_INSTALL_LIB)
+   set(DGE_INSTALL_LIB ON CACHE BOOL "Install libraries.")
+endif()
+
+##
+## DGE_SHARED
+##
+## If true (or equivalent), libraries will be built as SHARED. Otherwise,
+## they are built as STATIC.
+##
+if(NOT DEFINED DGE_SHARED)
+   set(DGE_SHARED OFF CACHE BOOL "Build libraries as shared objects.")
+endif()
+
+##
+## DGE_SHARED_DECL
+##
+## Used internally for convenience in add_library commands.
+##
+if(DGE_SHARED)
+   set(DGE_SHARED_DECL SHARED)
+else()
+   set(DGE_SHARED_DECL STATIC)
 endif()
 
 
@@ -197,6 +279,17 @@ add_subdirectory(doominati)
 add_subdirectory(FS)
 add_subdirectory(GL)
 add_subdirectory(Game)
+
+if(DGE_INSTALL_API)
+   install(DIRECTORY AL Code Core FS GL Game
+      DESTINATION include/DGE
+      FILES_MATCHING PATTERN "*.hpp")
+endif()
+
+if(DGE_INSTALL_DOC)
+   install(DIRECTORY doc/ DESTINATION share/dge/doc)
+   install(FILES COPYING DESTINATION share/dge/doc)
+endif()
 
 ## EOF
 

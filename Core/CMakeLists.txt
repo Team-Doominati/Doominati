@@ -18,7 +18,7 @@
 ##
 ## dge-core-lib
 ##
-add_library(dge-core-lib STATIC
+add_library(dge-core-lib ${DGE_SHARED_DECL}
    BitStream.cpp
    BitStream.hpp
    HashMapFixed.hpp
@@ -42,6 +42,8 @@ add_library(dge-core-lib STATIC
 
 target_link_libraries(dge-core-lib
    ${GDCC_LIBRARIES})
+
+DGE_INSTALL_PART(core FALSE TRUE)
 
 ## EOF
 

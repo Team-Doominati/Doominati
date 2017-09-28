@@ -18,7 +18,7 @@
 ##
 ## dge-code-lib
 ##
-add_library(dge-code-lib STATIC
+add_library(dge-code-lib ${DGE_SHARED_DECL}
    Callback.cpp
    Callback.hpp
    Codedefs.cpp
@@ -60,6 +60,8 @@ target_link_libraries(dge-code-lib
    dge-core-lib
    dge-fs-lib
    ${GDCC_LIBRARIES})
+
+DGE_INSTALL_PART(code FALSE TRUE)
 
 ## EOF
 
