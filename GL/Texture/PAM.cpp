@@ -187,22 +187,19 @@ namespace DGE::GL
 
       switch(*pixelItr++)
       {
-      case '1':
-         plain  = true;
+      case '1': plain = true; [[fallthrough]];
       case '4':
          maxval = 1.0f;
          depth  = 1;
          bits   = true;
          break;
 
-      case '2':
-         plain = true;
+      case '2': plain = true; [[fallthrough]];
       case '5':
          depth = 1;
          break;
 
-      case '3':
-         plain = true;
+      case '3': plain = true; [[fallthrough]];
       case '6':
          depth = 3;
          break;

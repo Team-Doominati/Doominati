@@ -365,6 +365,7 @@ namespace DGE::GL
          {
          case PNGColorType::Truecolor:
             (*pixel)[3] = 1.0f;
+            [[fallthrough]];
          case PNGColorType::TruecolorWithAlpha:
             for(unsigned i = 0; i < pixelLen; i++)
             {

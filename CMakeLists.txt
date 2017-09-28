@@ -104,7 +104,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
    Try_CXX_Compiler_Flag(-Wall       FLAG_CXX_Wall)
    Try_CXX_Compiler_Flag(-Wextra     FLAG_CXX_Wextra)
-   Try_CXX_Compiler_Flag(-Wshadow    FLAG_CXX_Wshadow)
    Try_CXX_Compiler_Flag(-ffast-math FLAG_CXX_ffast_math)
 
    Try_CXX_Compiler_Flag(-std=c++1z FLAG_CXX_STD_CXX17)
