@@ -45,9 +45,9 @@ namespace DGE::GL
    //
    // Renderer::drawText
    //
-   void Renderer::drawText(float x, float y, char const *str, float maxwidth)
+   std::pair<float, float> Renderer::drawText(float x, float y, char const *str, float maxwidth)
    {
-      if(!fntBound || !str || !*str) return;
+      if(!fntBound || !str || !*str) return {0, 0};
 
       TextureSaver texSave{*this, texBound};
 
@@ -136,6 +136,8 @@ namespace DGE::GL
 
          cy += fnt.getHeight();
       }
+
+      return {maxw, height};
    }
 }
 
@@ -149,7 +151,7 @@ namespace DGE::GL
    DGE_Code_NativeLoaderDefn(Renderer_DrawText);
 
    //
-   // void DGE_Draw_Text(short accum x, short accum y, char const *str[,
+   // DGE_Point2 DGE_Draw_Text(short accum x, short accum y, char const *str[,
    //    short accum maxwidth])
    //
    DGE_Code_NativeDefn(DGE_Draw_Text)
@@ -160,7 +162,12 @@ namespace DGE::GL
 
       auto str = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[2]});
 
-      Renderer::GetCurrent()->drawText(x, y, str.get(), maxwidth);
+      float w, h;
+      std::tie(w, h) = Renderer::GetCurrent()->drawText(x, y, str.get(), maxwidth);
+
+      task->dataStk.push(Code::HostToSAccum(w));
+      task->dataStk.push(Code::HostToSAccum(h));
+
       return false;
    }
 

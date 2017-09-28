@@ -12,6 +12,7 @@
 
 #include "GL/Renderer.hpp"
 
+#include "Code/Convert.hpp"
 #include "Code/MemStr.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
@@ -114,7 +115,7 @@ namespace DGE::GL
    }
 
    //
-   // DGE_Point2I DGE_Font_GetTextSize(unsigned fnt, char const *text)
+   // DGE_Point2 DGE_Font_GetTextSize(unsigned fnt, char const *text)
    //
    DGE_Code_NativeDefn(DGE_Font_GetTextSize)
    {
@@ -140,8 +141,8 @@ namespace DGE::GL
          if((lnw += glw) > maxw) maxw = lnw;
       }
 
-      task->dataStk.push(maxw);
-      task->dataStk.push(fnt.getHeight() * lns);
+      task->dataStk.push(Code::HostToSAccum(maxw));
+      task->dataStk.push(Code::HostToSAccum(fnt.getHeight() * lns));
 
       return false;
    }

@@ -89,7 +89,7 @@ namespace DGE::GL
       void drawLine(float x1, float y1, float x2, float y2) const;
       void drawParticleSystem(ParticleSystem const &ps);
       void drawRectangle(float x1, float y1, float x2, float y2, float rot = 0, bool line = false) const;
-      void drawText(float x, float y, char const *str, float maxwidth = 0);
+      std::pair<float, float> drawText(float x, float y, char const *str, float maxwidth = 0);
       void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, bool line = false) const;
 
       // drawColor
