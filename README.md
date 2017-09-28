@@ -3,9 +3,13 @@ Doominati Game Engine
 
 A multi-purpose 2D game engine built on scripting and moddability.
 
-### Dependencies
+### Compiling
 
-Building is done with CMake. Version 3.4 or higher is needed.
+Configuration is done with CMake. Version 3.4 or higher is needed.
+
+This project does not support Microsoft Visual Studio.
+
+### Dependencies
 
 This project depends on the following libraries:
 
@@ -28,20 +32,19 @@ Optionally, you can link any of these libraries:
 ### Project Credits
 
 #### Kyle873
-> Project Lead
->
-> Slave Driver
+- Project Lead
+- Slave Driver
 
 #### DavidPH
-> Lead Programmer
->
-> Catgirl
+- Lead Programmer
+- Catgirl
 
 #### Marrub
-> OpenGL Wizard
+- OpenGL Wizard
+- Crimelord
 
 #### Marrub's Cat
-> OpenGL Apprentice
+- OpenGL Apprentice
 
 #### Yholl
-> Shitposting
+- Shitposting
