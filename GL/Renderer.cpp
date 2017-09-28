@@ -31,7 +31,31 @@
 #include "Game/RenderThinker.hpp"
 #include "Game/Sector.hpp"
 
+#include <GDCC/Core/Option.hpp>
+
+#include <GDCC/Option/Bool.hpp>
+
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --fps-counter
+//
+namespace DGE::GL
+{
+   static bool FpsCounterOn = false;
+   static GDCC::Option::Bool FpsCounterOpt{
+      &GDCC::Core::GetOptionList(),
+      GDCC::Option::Base::Info()
+         .setName("fps-counter")
+         .setDescS("Enables a simple frames per second counter."),
+      &FpsCounterOn
+   };
+}
 
 
 //----------------------------------------------------------------------------|
@@ -92,6 +116,39 @@ namespace DGE::GL
 
       Circle_CalcFaces(subdivisions - 1, anglA, anglB, buf);
       Circle_CalcFaces(subdivisions - 1, anglB, anglC, buf);
+   }
+
+   //
+   // DrawFPS
+   //
+   static void DrawFPS(Renderer &renderer)
+   {
+      static double timeLast = 0;
+      static double timeMean = 1/50.0;
+      double timeThis, timePass;
+
+      timeThis = DGE::Core::GetTicks<DGE::Core::Second<double>>();
+      timePass = timeThis - timeLast;
+      timeLast = timeThis;
+      timeMean = (timeMean * 19 + timePass) / 20;
+
+      unsigned int fps = std::round(1 / timeMean);
+
+      glMatrixMode(GL_PROJECTION);
+      glPushMatrix();
+      glLoadIdentity();
+      glOrtho(0, 640, 480, 0, 0, 0.01f);
+
+      renderer.drawColorSet(DGE::GL::GetColor("White"));
+      renderer.textureUnbind();
+
+      if(fps > 999) fps = 999;
+
+      renderer.drawDigit(fps / 100 % 10,  0, 25, 15, 0);
+      renderer.drawDigit(fps /  10 % 10, 20, 25, 35, 0);
+      renderer.drawDigit(fps /   1 % 10, 40, 25, 55, 0);
+
+      glPopMatrix();
    }
 }
 
@@ -295,6 +352,8 @@ namespace DGE::GL
 
       drawColorSet(1.0f, 1.0f, 1.0f);
 
+      TextureSaver texSave{*this, texBound};
+
       // Render floors.
       for(auto &sec : Game::BlockMap::Root.listSec)
          if(sec.texf)
@@ -309,6 +368,7 @@ namespace DGE::GL
 
       // Render thinkers.
       for(auto &th : Game::RenderThinker::Range())
+         if(th.rsx || th.rsy)
       {
          textureBind(textureGet(th.sprite));
          float tx = th.x - rx, ty = th.y - ry;
@@ -325,6 +385,12 @@ namespace DGE::GL
    void Renderer::renderEnd()
    {
       CallbackDrawPost(Code::HostToULFract(Core::GetTickFract<Core::PlayTick<float>>()));
+
+      if(FpsCounterOn)
+      {
+         TextureSaver texSave{*this, texBound};
+         DrawFPS(*this);
+      }
 
       win.renderEnd();
    }
