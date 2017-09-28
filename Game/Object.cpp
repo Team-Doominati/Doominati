@@ -149,7 +149,7 @@ namespace DGE::Game
       // Use of this is dangerous, but potentially useful for testing.
       if(glyph.empty()) return static_cast<Code::Word>(ObjectMember::MAX);
 
-      if(auto dot = static_cast<char const *>(std::memchr(glyph.str, glyph.len, '.')))
+      if(auto dot = static_cast<char const *>(std::memchr(glyph.str, '.', glyph.len)))
       {
          if(auto type = Code::ExtMems.findVal({glyph.begin(), dot}))
             if(auto mem = type->find({dot + 1, glyph.end()}))
