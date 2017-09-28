@@ -26,55 +26,47 @@
 
 namespace DGE::GL
 {
-   class Particle
+   struct Particle
    {
-      friend class ParticleSystem;
-
-   public:
       Particle() = default;
 
       int life = 0;
 
-      Core::Vector2 oldposition{};
-      Core::Vector2 position{};
+      Core::Vector2 oldpos{};
+      Core::Vector2 pos{};
 
-      Core::Vector2 velocity{};
-      Core::Vector2 acceleration{};
+      Core::Vector2 vel{};
+      Core::Vector2 accel{};
 
-      Core::Vector2 scale{};
-      Core::Vector2 scaledest{};
-      float scalespeed = 0.0f;
+      Core::Vector2 size{};
+      Core::Vector2 sizedest{};
+      float sizespeed = 0;
 
-      float rot = 0.0f;
-      float rotspeed = 0.0f;
+      float rot = 0;
+      float rotspeed = 0;
 
       Color color{};
       Color colordest{};
-      float colorspeed = 0.0f;
+      float colorspeed = 0;
 
-   protected:
       std::ptrdiff_t next = -1;
    };
 
    class ParticleSystem
    {
-      friend class Renderer;
-
    public:
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-      ParticleSystem();
-      ParticleSystem(float x, float y, std::ptrdiff_t pnum = 128, char const *texture = "TEXNULL");
+      ParticleSystem() : ParticleSystem{0, 0, 128, 0} {}
+      ParticleSystem(float x, float y, std::ptrdiff_t pnum, std::size_t tex_);
 
       Particle *create();
       void setPosition(float x, float y);
-      void setTexture(char const *texture);
       void update();
 
-   protected:
+      std::size_t tex;
       Core::Matrix4 mat;
       GDCC::Core::Array<Particle> particles;
-      std::unique_ptr<char[]> texname;
 
    private:
       std::ptrdiff_t pinactive, pactive;

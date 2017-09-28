@@ -24,19 +24,13 @@ namespace DGE::GL
    //
    // ParticleSystem constructor
    //
-   ParticleSystem::ParticleSystem() :
-      ParticleSystem{0.0f, 0.0f}
-   {
-   }
-
-   ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum, char const *texture) :
+   ParticleSystem::ParticleSystem(float x, float y, std::ptrdiff_t pnum, std::size_t tex_) :
+      tex{tex_},
       mat{},
-      particles{static_cast<decltype(particles)::size_type>(pnum)},
-      texname{nullptr},
+      particles(static_cast<std::size_t>(pnum)),
       pinactive{0}, pactive{-1}
    {
       setPosition(x, y);
-      setTexture(texture);
 
       std::ptrdiff_t i = 0;
       for(auto it = particles.begin(); it != particles.end(); ++it)
@@ -75,14 +69,6 @@ namespace DGE::GL
    }
 
    //
-   // ParticleSystem::setTexture
-   //
-   void ParticleSystem::setTexture(char const *texture)
-   {
-      texname.reset(GDCC::Core::StrDup(texture).release());
-   }
-
-   //
    // ParticleSystem::update
    //
    void ParticleSystem::update()
@@ -99,9 +85,9 @@ namespace DGE::GL
          if(p.colorspeed)
             p.color.interpolate(p.colordest, p.colorspeed);
 
-         if(--p.life <= 0 || p.color.a <= 0.01f)
+         if(--p.life <= 0 || p.color.a < 0.01f)
          {
-            std::memset(&p, 0, sizeof(Particle));
+            p = Particle();
 
             if(prev != -1)
                particles.at(prev).next = i;
@@ -114,15 +100,15 @@ namespace DGE::GL
             continue;
          }
 
-         if(p.acceleration)
+         if(p.accel)
          {
-            p.oldposition = p.position;
-            p.position += p.velocity;
-            p.velocity += p.acceleration;
+            p.oldpos = p.pos;
+            p.pos += p.vel;
+            p.vel += p.accel;
          }
 
-         if(p.scalespeed)
-            p.scale.interpolate(p.scaledest, p.scalespeed);
+         if(p.sizespeed)
+            p.size.interpolate(p.sizedest, p.sizespeed);
 
          if(p.rotspeed)
             p.rot += p.rotspeed;

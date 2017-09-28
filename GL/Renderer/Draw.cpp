@@ -137,22 +137,18 @@ namespace DGE::GL
    void Renderer::drawParticleSystem(ParticleSystem const &ps)
    {
       glPushMatrix();
-
       glMultMatrixf(ps.mat.data());
 
       float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
       TextureSaver texSave{*this, texBound};
-
-      textureBind(ps.texname.get());
+      textureBind(textureGet(ps.tex));
 
       for(auto &p : ps.particles)
       {
-         float x = Core::Lerp(p.oldposition.x, p.position.x, frac);
-         float y = Core::Lerp(p.oldposition.y, p.position.y, frac);
-
-         float sx = 8 * p.scale.x;
-         float sy = 8 * p.scale.y;
+         float x = Core::Lerp(p.oldpos.x, p.pos.x, frac);
+         float y = Core::Lerp(p.oldpos.y, p.pos.y, frac);
+         float sx = p.size.x, sy = p.size.y;
 
          drawColorSet(p.color);
          drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
