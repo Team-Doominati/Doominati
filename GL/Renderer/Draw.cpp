@@ -250,7 +250,7 @@ namespace DGE::GL
    //
    // Renderer::drawColorSet
    //
-   void Renderer::drawColorSet(Color const &col)
+   void Renderer::drawColorSet(Core::Color const &col)
    {
       drawColorSet(col.r, col.g, col.b, col.a);
    }
@@ -258,7 +258,7 @@ namespace DGE::GL
    //
    // Renderer::drawColorGet
    //
-   Color Renderer::drawColorGet() const
+   Core::Color Renderer::drawColorGet() const
    {
       return {cr, cg, cb, ca};
    }

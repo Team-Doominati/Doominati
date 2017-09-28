@@ -21,6 +21,8 @@
 add_library(dge-core-lib ${DGE_SHARED_DECL}
    BitStream.cpp
    BitStream.hpp
+   Color.cpp
+   Color.hpp
    HashMapFixed.hpp
    HashMap.hpp
    IDAllocator.hpp

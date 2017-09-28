@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__GL__Color_H__
-#define DGE__GL__Color_H__
+#ifndef DGE__Core__Color_H__
+#define DGE__Core__Color_H__
 
 #include "Core/Math.hpp"
 
@@ -24,7 +24,7 @@
 // Types                                                                      |
 //
 
-namespace DGE::GL
+namespace DGE::Core
 {
    //
    // Color
@@ -63,10 +63,10 @@ namespace DGE::GL
 // Extern Functions                                                           |
 //
 
-namespace DGE::GL
+namespace DGE::Core
 {
    Color const &GetColor(std::string name);
 }
 
-#endif//DGE__GL__Color_H__
+#endif//DGE__Core__Color_H__
 

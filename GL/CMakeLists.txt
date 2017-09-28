@@ -19,8 +19,6 @@
 ## dge-gl-lib
 ##
 add_library(dge-gl-lib ${DGE_SHARED_DECL}
-   Color.cpp
-   Color.hpp
    DynamicBuffer.cpp
    DynamicBuffer.hpp
    Font.cpp

@@ -13,7 +13,7 @@
 #ifndef DGE__GL__Particle_H__
 #define DGE__GL__Particle_H__
 
-#include "GL/Color.hpp"
+#include "Core/Color.hpp"
 #include "Core/Vector2.hpp"
 #include "Core/Math.hpp"
 
@@ -40,14 +40,14 @@ namespace DGE::GL
 
       Core::Vector2 size{};
       Core::Vector2 sizedest{};
-      float sizespeed = 0;
+      float         sizespeed = 0;
 
       float rot = 0;
       float rotspeed = 0;
 
-      Color color{};
-      Color colordest{};
-      float colorspeed = 0;
+      Core::Color color{};
+      Core::Color colordest{};
+      float       colorspeed = 0;
 
       std::ptrdiff_t next = -1;
    };

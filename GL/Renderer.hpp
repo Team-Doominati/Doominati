@@ -94,8 +94,8 @@ namespace DGE::GL
 
       // drawColor
       void drawColorSet(float r, float g, float b, float a = 1.0f);
-      void drawColorSet(Color const &col);
-      Color drawColorGet() const;
+      void drawColorSet(Core::Color const &col);
+      Core::Color drawColorGet() const;
 
       // font
       std::size_t fontAdd(GDCC::Core::String name, FS::File *fp, int ptSize);

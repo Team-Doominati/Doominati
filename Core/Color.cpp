@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GL/Color.hpp"
+#include "Core/Color.hpp"
 
 #include <cmath>
 
@@ -19,7 +19,7 @@
 // Static Objects                                                             |
 //
 
-namespace DGE::GL
+namespace DGE::Core
 {
    static std::unordered_map<std::string, Color> const Colors = {
       {"AliceBlue", {0.941, 0.973, 1.000}},
@@ -177,17 +177,17 @@ namespace DGE::GL
 // Extern Functions                                                           |
 //
 
-namespace DGE::GL
+namespace DGE::Core
 {
    //
    // Color::interpolate
    //
    Color &Color::interpolate(Color const &c, float amt)
    {
-      r = Core::Lerp(r, c.r, amt);
-      g = Core::Lerp(g, c.g, amt);
-      b = Core::Lerp(b, c.b, amt);
-      a = Core::Lerp(a, c.a, amt);
+      r = Lerp(r, c.r, amt);
+      g = Lerp(g, c.g, amt);
+      b = Lerp(b, c.b, amt);
+      a = Lerp(a, c.a, amt);
 
       return *this;
    }
@@ -238,10 +238,10 @@ namespace DGE::GL
    Color Color::Interpolate(Color const &a, Color const &b, float amt)
    {
       return {
-         Core::Lerp(a.r, b.r, amt),
-         Core::Lerp(a.g, b.g, amt),
-         Core::Lerp(a.b, b.b, amt),
-         Core::Lerp(a.a, b.a, amt)
+         Lerp(a.r, b.r, amt),
+         Lerp(a.g, b.g, amt),
+         Lerp(a.b, b.b, amt),
+         Lerp(a.a, b.a, amt)
       };
    }
 

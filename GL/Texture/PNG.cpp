@@ -11,8 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "GL/Texture.hpp"
-#include "GL/Color.hpp"
 
+#include "Core/Color.hpp"
 #include "Core/Zip.hpp"
 
 #include "FS/File.hpp"
@@ -143,8 +143,8 @@ namespace DGE::GL
       std::uint32_t width;
       std::uint32_t height;
 
-      GDCC::Core::Array<Color> paletteColors;
-      Color                    backgroundColor;
+      GDCC::Core::Array<Core::Color> paletteColors;
+      Core::Color                    backgroundColor;
 
       Core::Byte     bitdepth;
       PNGColorType   colorType;
@@ -264,7 +264,7 @@ namespace DGE::GL
       auto        data   = reinterpret_cast<Core::Byte const *>(chunk.data);
       std::size_t length = chunk.length / 3;
 
-      paletteColors = GDCC::Core::Array<Color>(length);
+      paletteColors = GDCC::Core::Array<Core::Color>(length);
 
       for(std::size_t i = 0; i < length; i++)
          paletteColors[i] = {data[(i * 3) + 0] / 255.0f,

@@ -139,7 +139,7 @@ namespace DGE::GL
       glLoadIdentity();
       glOrtho(0, 640, 480, 0, 0, 0.01f);
 
-      renderer.drawColorSet(DGE::GL::GetColor("White"));
+      renderer.drawColorSet(DGE::Core::GetColor("White"));
       renderer.textureUnbind();
 
       if(fps > 999) fps = 999;
