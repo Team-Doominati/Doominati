@@ -23,6 +23,7 @@
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
 #include "Code/Program.hpp"
+#include "Code/Textdefs.hpp"
 #include "Code/Thread.hpp"
 
 #include "Core/Time.hpp"
@@ -130,6 +131,9 @@ static int Main()
    }
    else
       DGE::FS::Dir::AddRoot(".");
+
+   // Load TEXTDEFS.
+   DGE::Code::LoadTextdefs();
 
    // Initialize rendering.
    DGE::GL::Window window{640, 480};

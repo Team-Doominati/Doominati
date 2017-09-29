@@ -41,6 +41,8 @@ namespace DGE::Core
          str{str_}, len{len_}, hash{GDCC::Core::StrHash(str, len)} {}
       HashedStr(char const *str_, std::size_t len_, std::size_t hash_) :
          str{str_}, len{len_}, hash{hash_} {}
+      HashedStr(GDCC::Core::String s) :
+         str{s.data()}, len{s.size()}, hash{s.getHash()} {}
 
       explicit operator bool () const {return str;}
       operator std::string () const {return std::string{str, len};}

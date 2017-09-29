@@ -52,6 +52,8 @@ add_library(dge-code-lib ${DGE_SHARED_DECL}
    Task.cpp
    TaskExec.cpp
    Task.hpp
+   Textdefs.cpp
+   Textdefs.hpp
    Thread.cpp
    Thread.hpp
    Types.hpp
