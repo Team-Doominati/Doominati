@@ -13,9 +13,10 @@
 #ifndef DGE__GL__Renderer_H__
 #define DGE__GL__Renderer_H__
 
+#include "Game/ParticleSys.hpp"
+
 #include "GL/DynamicBuffer.hpp"
 #include "GL/Font.hpp"
-#include "GL/Particle.hpp"
 #include "GL/ShaderData.hpp"
 #include "GL/Texture.hpp"
 
@@ -87,7 +88,7 @@ namespace DGE::GL
       void drawDigit(unsigned int dig, float xl, float yl, float xu, float yu) const;
       void drawEllipse(float x1, float y1, float x2, float y2, bool line = false) const;
       void drawLine(float x1, float y1, float x2, float y2) const;
-      void drawParticleSystem(ParticleSystem const &ps);
+      void drawParticleSys(float x, float y, Game::ParticleSys const &ps);
       void drawRectangle(float x1, float y1, float x2, float y2, float rot = 0, bool line = false) const;
       std::pair<float, float> drawText(float x, float y, char const *str, float maxwidth = 0);
       void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, bool line = false) const;

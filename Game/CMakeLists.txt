@@ -34,6 +34,8 @@ add_library(dge-game-lib ${DGE_SHARED_DECL}
    Object.cpp
    Object.hpp
    ObjectMemberList.hpp
+   ParticleSys.cpp
+   ParticleSys.hpp
    PhysicsThinker.cpp
    PhysicsThinker.hpp
    PointThinker.cpp

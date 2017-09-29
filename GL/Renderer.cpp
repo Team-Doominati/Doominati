@@ -29,6 +29,7 @@
 #include "Game/BlockMap.hpp"
 #include "Game/Event.hpp"
 #include "Game/RenderThinker.hpp"
+#include "Game/ParticleSys.hpp"
 #include "Game/Sector.hpp"
 
 #include <GDCC/Core/Option.hpp>
@@ -364,6 +365,13 @@ namespace DGE::GL
          float sxl = sec.xl - rx, sxu = sec.xu - rx;
          float syl = sec.yl - ry, syu = sec.yu - ry;
          drawRectangle(sxl, syl, sxu, syu);
+      }
+
+      // Render particle systems.
+      for(auto &th : Game::ParticleSys::Range())
+      {
+         float tx = th.x - rx, ty = th.y - ry;
+         drawParticleSys(tx, ty, th);
       }
 
       // Render thinkers.

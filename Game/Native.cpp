@@ -20,6 +20,7 @@
 namespace DGE::Game
 {
    DGE_Code_NativeLoaderDecl(MissileEntity);
+   DGE_Code_NativeLoaderDecl(ParticleSys);
    DGE_Code_NativeLoaderDecl(Sector);
 
    //
@@ -28,6 +29,7 @@ namespace DGE::Game
    void NativeAdd()
    {
       DGE_Code_NativeLoaderCall(MissileEntity);
+      DGE_Code_NativeLoaderCall(ParticleSys);
       DGE_Code_NativeLoaderCall(Sector);
    }
 }

@@ -132,13 +132,10 @@ namespace DGE::GL
    }
 
    //
-   // Renderer::drawParticleSystem
+   // Renderer::drawParticleSys
    //
-   void Renderer::drawParticleSystem(ParticleSystem const &ps)
+   void Renderer::drawParticleSys(float x, float y, Game::ParticleSys const &ps)
    {
-      glPushMatrix();
-      glMultMatrixf(ps.mat.data());
-
       float frac = Core::GetTickFract<Core::PlayTick<float>>();
 
       TextureSaver texSave{*this, texBound};
@@ -146,15 +143,13 @@ namespace DGE::GL
 
       for(auto &p : ps.particles)
       {
-         float x = Core::Lerp(p.oldpos.x, p.pos.x, frac);
-         float y = Core::Lerp(p.oldpos.y, p.pos.y, frac);
+         float px = x + Core::Lerp(p.oldpos.x, p.pos.x, frac);
+         float py = y + Core::Lerp(p.oldpos.y, p.pos.y, frac);
          float sx = p.size.x, sy = p.size.y;
 
          drawColorSet(p.color);
-         drawRectangle(x - sx, y - sy, x + sx, y + sy, p.rot);
+         drawRectangle(px - sx, py - sy, px + sx, py + sy, p.rot);
       }
-
-      glPopMatrix();
    }
 
    //
@@ -284,7 +279,6 @@ namespace DGE::GL
       auto a = argc > 3 ? Code::ULFractToHost(argv[3]) : 1.0f;
 
       Renderer::GetCurrent()->drawColorSet(r, g, b, a);
-
       return false;
    }
 
@@ -298,7 +292,6 @@ namespace DGE::GL
       auto r = Code::SAccumToHost(argv[2]);
 
       Renderer::GetCurrent()->drawCircle(x, y, r);
-
       return false;
    }
 
@@ -312,7 +305,6 @@ namespace DGE::GL
       auto r = Code::SAccumToHost(argv[2]);
 
       Renderer::GetCurrent()->drawCircle(x, y, r, true);
-
       return false;
    }
 
@@ -327,7 +319,6 @@ namespace DGE::GL
       auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2);
-
       return false;
    }
 
@@ -342,7 +333,19 @@ namespace DGE::GL
       auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawEllipse(x1, y1, x2, y2, true);
+      return false;
+   }
 
+   //
+   // void DGE_Draw_ParticleSys(unsigned id, short accum x, short accum y)
+   //
+   DGE_Code_NativeDefn(DGE_Draw_ParticleSys)
+   {
+      auto th = Game::ParticleSys::Get(argv[0]);
+      auto x = Code::SAccumToHost(argv[1]);
+      auto y = Code::SAccumToHost(argv[2]);
+
+      if(th) Renderer::GetCurrent()->drawParticleSys(x, y, *th);
       return false;
    }
 
@@ -359,7 +362,6 @@ namespace DGE::GL
       auto rt = argc > 4 ? Code::ULFractToHost(argv[4]) : 0.0;
 
       Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, rt);
-
       return false;
    }
 
@@ -376,7 +378,6 @@ namespace DGE::GL
       auto rt = argc > 4 ? Code::ULFractToHost(argv[4]) : 0.0;
 
       Renderer::GetCurrent()->drawRectangle(x1, y1, x2, y2, rt, true);
-
       return false;
    }
 
@@ -391,7 +392,6 @@ namespace DGE::GL
       auto y2 = Code::SAccumToHost(argv[3]);
 
       Renderer::GetCurrent()->drawLine(x1, y1, x2, y2);
-
       return false;
    }
 
@@ -408,7 +408,6 @@ namespace DGE::GL
       auto y3 = Code::SAccumToHost(argv[5]);
 
       Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3);
-
       return false;
    }
 
@@ -425,7 +424,6 @@ namespace DGE::GL
       auto y3 = Code::SAccumToHost(argv[5]);
 
       Renderer::GetCurrent()->drawTriangle(x1, y1, x2, y2, x3, y3, true);
-
       return false;
    }
 }

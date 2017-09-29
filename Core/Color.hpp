@@ -33,7 +33,7 @@ namespace DGE::Core
    {
    public:
       Color() = default;
-      Color(float r_, float g_, float b_, float a_ = 1.0f) :
+      constexpr Color(float r_, float g_, float b_, float a_ = 1.0f) :
          r{r_}, g{g_}, b{b_}, a{a_} {}
       Color(Color const &) = default;
       Color(Color &&) = default;

@@ -26,8 +26,6 @@ add_library(dge-gl-lib ${DGE_SHARED_DECL}
    Native.cpp
    OpenGL2.1.c
    OpenGL2.1.h
-   Particle.cpp
-   Particle.hpp
    Renderer.cpp
    Renderer.hpp
    Renderer/Draw.cpp
