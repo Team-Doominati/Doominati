@@ -77,7 +77,7 @@ public: \
       {return ::operator delete(ptr);} \
    \
    void *operator new(std::size_t size, std::size_t ext = 0) \
-      {return ::operator new(size + (ExtMem.max() + ext) * sizeof(Code::Word));} \
+      {return New(size, ExtMem.max() + ext);} \
    void *operator new(std::size_t, void *ptr) {return ptr;} \
    \
    virtual Code::Word *extMember() \
@@ -141,6 +141,8 @@ namespace DGE::Game
       Object();
       virtual ~Object();
 
+
+      static void *New(std::size_t size, std::size_t emc);
 
       static Core::IDAllocator<Object, Code::Word> &GetObjectVec();
 

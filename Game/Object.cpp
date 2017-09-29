@@ -93,6 +93,19 @@ namespace DGE::Game
    }
 
    //
+   // Object::New
+   //
+   void *Object::New(std::size_t size, std::size_t emc)
+   {
+      void *p   = ::operator new(size + emc * sizeof(Code::Word));
+      auto  emv = reinterpret_cast<Code::Word *>(static_cast<char *>(p) + size);
+
+      std::uninitialized_value_construct_n(emv, emc);
+
+      return p;
+   }
+
+   //
    // Object::ObjectTypeAdder constructor
    //
    Object::ObjectTypeAdder::ObjectTypeAdder(Core::HashedStr name, Code::Word (*func)(Object *))

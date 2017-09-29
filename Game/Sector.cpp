@@ -81,15 +81,20 @@ namespace DGE::Game
    //
    Sector *Sector::Create(std::size_t pc, std::size_t ext)
    {
+      std::size_t emc = ExtMem.max() + ext;
+
       // Allocate storage.
       // Memory layout: [Sector] [extension members] [points]
       // This requires Code::Word having equal or stricter alignment to Point2.
-      Sector *sec = static_cast<Sector *>(
-         operator new(sizeof(Sector) + (pc + 1) * sizeof(Point2), ext));
+      Sector *sec = static_cast<Sector *>(::operator new(
+         sizeof(Sector) + emc * sizeof(Code::Word) + (pc + 1) * sizeof(Point2)));
+      auto    emv = reinterpret_cast<Code::Word *>(sec + 1);
+      auto    pv  = reinterpret_cast<Point2     *>(emv + emc);
 
-      auto pbuf = reinterpret_cast<Point2 *>(reinterpret_cast<Code::Word *>(sec + 1) + ext);
+      std::uninitialized_value_construct_n(emv, emc);
+      std::uninitialized_value_construct_n(pv,  pc + 1);
 
-      return new(sec) Sector{pc, pbuf};
+      return new(sec) Sector{pc, pv};
    }
 }
 
