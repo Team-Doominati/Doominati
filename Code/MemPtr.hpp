@@ -113,6 +113,8 @@ namespace DGE::Code
    public:
       MemPtr(Memory *mem_, Word idx_ = 0) :
          mem{mem_}, idx{idx_ >> MemInfo<T>::Shift} {}
+      MemPtr(Memory &mem_, Word idx_ = 0) :
+         mem{&mem_}, idx{idx_ >> MemInfo<T>::Shift} {}
 
       explicit operator bool () const {return idx != 0;}
 

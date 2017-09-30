@@ -13,8 +13,11 @@
 #include "Game/PhysicsThinker.hpp"
 
 #include "Game/BlockMap.hpp"
+#include "Game/MemInfo.hpp"
 
+#include "Code/MemPtr.hpp"
 #include "Code/Native.hpp"
+#include "Code/Program.hpp"
 #include "Code/Task.hpp"
 
 
@@ -311,6 +314,15 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
+   // void DGE_PhysicsThinker_ApplyFriction(unsigned id, long fract f)
+   //
+   DGE_Code_NativeDefn(DGE_PhysicsThinker_ApplyFriction)
+   {
+      PhysicsThinker::Get(argv[0])->applyFriction(Fract::Raw(argv[1]));
+      return false;
+   }
+
+   //
    // void DGE_PhysicsThinker_Block(unsigned id)
    //
    DGE_Code_NativeDefn(DGE_PhysicsThinker_Block)
@@ -318,6 +330,34 @@ namespace DGE::Game
       auto th = PhysicsThinker::Get(argv[0]);
 
       if(th) BlockMap::Root.insert(th);
+      return false;
+   }
+
+   //
+   // unsigned DGE_PhysicsThinker_Collide(unsigned id, accum *oldx,
+   //    accum *oldy, accum *oldz, long fract *fric)
+   //
+   DGE_Code_NativeDefn(DGE_PhyscisThinker_Collide)
+   {
+      auto th = PhysicsThinker::Get(argv[0]);
+
+      Code::MemPtr<Coord> oldx{task->prog->memory, argv[1]};
+      Code::MemPtr<Coord> oldy{task->prog->memory, argv[2]};
+      Code::MemPtr<Coord> oldz{task->prog->memory, argv[3]};
+      Code::MemPtr<Fract> fric{task->prog->memory, argc > 4 ? argv[4] : 0};
+
+      Coord tmpx = oldx ? *oldx : th->x;
+      Coord tmpy = oldy ? *oldy : th->y;
+      Coord tmpz = oldz ? *oldz : th->z;
+      Fract tmpf = fric ? *fric : Fract{};
+
+      task->dataStk.push(PhysicsThinker::Collide(th, tmpx, tmpy, tmpz, tmpf));
+
+      if(oldx) *oldx = tmpx;
+      if(oldy) *oldy = tmpy;
+      if(oldz) *oldz = tmpz;
+      if(fric) *fric = tmpf;
+
       return false;
    }
 
