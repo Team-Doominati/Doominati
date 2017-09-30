@@ -337,19 +337,6 @@ namespace DGE::GL
    }
 
    //
-   // void DGE_Draw_ParticleSys(unsigned id, short accum x, short accum y)
-   //
-   DGE_Code_NativeDefn(DGE_Draw_ParticleSys)
-   {
-      auto th = Game::ParticleSys::Get(argv[0]);
-      auto x = Code::SAccumToHost(argv[1]);
-      auto y = Code::SAccumToHost(argv[2]);
-
-      if(th) Renderer::GetCurrent()->drawParticleSys(x, y, *th);
-      return false;
-   }
-
-   //
    // void DGE_Draw_Rectangle(short accum x1, y1, x2, y2[,
    //    unsigned long fract rot])
    //
