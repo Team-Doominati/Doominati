@@ -97,7 +97,8 @@ namespace DGE::GL
    DGE_Code_NativeDefn(DGE_Font_Get)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(Renderer::GetCurrent()->fontGet(str)->idx);
+      auto fnt = Renderer::GetCurrent()->fontGet(str);
+      task->dataStk.push(fnt ? fnt->idx : 0);
       return false;
    }
 
