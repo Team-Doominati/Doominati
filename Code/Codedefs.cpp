@@ -12,6 +12,7 @@
 
 #include "Code/Codedefs.hpp"
 
+#include "Code/Callback.hpp"
 #include "Code/ExtMem.hpp"
 #include "Code/Glyph.hpp"
 #include "Code/Native.hpp"
@@ -570,6 +571,10 @@ namespace DGE::Code
 
          ++func;
       });
+
+      // Register callbacks.
+      for(auto &call : calls)
+         call.first->insert(&prog->funcs[call.second]);
    }
 
    //
@@ -788,6 +793,8 @@ namespace DGE::Code
          *valLocal = nullptr,
          *valParam = nullptr;
 
+      auto callIdx = calls.size();
+
       glyph = in.get();
 
       in.expect("{");
@@ -803,6 +810,13 @@ namespace DGE::Code
          case GDCC::Core::STR_param: valParam = loadVal(in); break;
          case GDCC::Core::STR_retrn:            loadVal(in); break;
 
+         case GDCC::Core::STR_call:
+            if(auto cb = Callbacks.findVal(key = loadVal(in)))
+               calls.emplace_back(cb, 0);
+            else
+               throw GDCC::Core::ParseExceptExpect{"callback", key, false};
+            break;
+
          default:
             throw GDCC::Core::ParseExceptExpect{"function keyword", key, false};
          }
@@ -813,7 +827,10 @@ namespace DGE::Code
       Word param = valParam ? evalVal(valParam) : 0;
       Word local = valLocal ? evalVal(valLocal) : 0;
 
-      addFunction(glyph, valLabel, param, local);
+      auto fn = addFunction(glyph, valLabel, param, local);
+
+      for(auto callEnd = calls.size(); callIdx != callEnd; ++callIdx)
+         calls[callIdx].second = fn;
    }
 
    //

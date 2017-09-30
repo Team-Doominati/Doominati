@@ -123,6 +123,7 @@ namespace DGE::Code
 
       char const *loadVal(Core::NTSStream &in);
 
+      std::vector<std::pair<Callback *, Word>>    calls;
       std::vector<RawCode>                        codes;
       std::unordered_map<Core::HashedStr, RawExp> defines;
       std::vector<RawFunc>                        funcs;
