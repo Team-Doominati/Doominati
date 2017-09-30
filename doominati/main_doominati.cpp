@@ -160,6 +160,8 @@ static int Main()
    if(auto func = prog.funcs.find("main"))
       proc.mainThread()->startTask(func, nullptr, 0);
 
+   proc.exec();
+
    // Run main loop.
    std::size_t timeLast = DGE::Core::GetTicks<DGE::Core::PlayTick<>>();
    std::size_t timeNext;
