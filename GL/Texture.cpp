@@ -14,8 +14,6 @@
 
 #include "FS/File.hpp"
 
-#include <GL/glu.h>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -40,7 +38,7 @@ namespace DGE::GL
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_FLOAT, texdata);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, texdata);
    }
 
    //
