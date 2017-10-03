@@ -208,6 +208,22 @@ namespace DGE::GL
       Renderer   &ren;
       std::size_t idx;
    };
+
+   //
+   // ShaderSaver
+   //
+   class ShaderSaver
+   {
+   public:
+      ShaderSaver(Renderer &ren_, Shader const *shd) :
+         ren{ren_}, idx{shd ? shd->idx : SIZE_MAX} {}
+      ~ShaderSaver()
+         {if(idx != SIZE_MAX) ren.shaderBind(ren.shaderGet(idx));}
+
+   private:
+      Renderer   &ren;
+      std::size_t idx;
+   };
 }
 
 #endif//DGE__GL__Renderer_H__

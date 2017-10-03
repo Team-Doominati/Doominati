@@ -84,9 +84,14 @@ DGE_RenderThinker
 Synopsis:
   struct DGE_RenderThinker : DGE_PointThinker
   {
-    accum    rsx;
-    accum    rsy;
-    unsigned sprite;
+    unsigned long fract ca;
+    unsigned long fract cb;
+    unsigned long fract cg;
+    unsigned long fract cr;
+    accum               rsx;
+    accum               rsy;
+    unsigned            shader;
+    unsigned            sprite;
   };
 
 ===========================================================

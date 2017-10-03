@@ -354,6 +354,7 @@ namespace DGE::GL
       drawColorSet(1.0f, 1.0f, 1.0f);
 
       TextureSaver texSave{*this, texBound};
+      ShaderSaver  shdSave{*this, shdBound};
 
       // Render floors.
       for(auto &sec : Game::BlockMap::Root.listSec)
@@ -361,14 +362,15 @@ namespace DGE::GL
       {
          // TODO: Non-rectangular sector rendering.
 
-         textureBind(textureGet(sec.texf));
          float sxl = sec.xl - rx, sxu = sec.xu - rx;
          float syl = sec.yl - ry, syu = sec.yu - ry;
+         textureBind(textureGet(sec.texf));
          drawRectangle(sxl, syl, sxu, syu);
       }
 
       // Render particle systems.
       for(auto &th : Game::ParticleSys::Range())
+         if(th.tex)
       {
          float tx = th.x - rx, ty = th.y - ry;
          drawParticleSys(tx, ty, th);
@@ -376,10 +378,12 @@ namespace DGE::GL
 
       // Render thinkers.
       for(auto &th : Game::RenderThinker::Range())
-         if(th.rsx || th.rsy)
+         if(th.sprite && (th.rsx || th.rsy))
       {
-         textureBind(textureGet(th.sprite));
          float tx = th.x - rx, ty = th.y - ry;
+         textureBind(textureGet(th.sprite));
+         shaderBind(shaderGet(th.shader));
+         drawColorSet(th.cr, th.cg, th.cb, th.ca);
          drawRectangle(tx - th.rsx, ty - th.rsy, tx + th.rsx, ty + th.rsy,
             static_cast<double>(th.yaw) * Core::Tau);
       }
