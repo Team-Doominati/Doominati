@@ -34,7 +34,9 @@
    case ObjectMember::grabx:    return grabx.raw(); \
    case ObjectMember::graby:    return graby.raw(); \
    case ObjectMember::grabz:    return grabz.raw(); \
-   case ObjectMember::gravity:  return gravity.raw(); \
+   case ObjectMember::gx:       return gx.raw(); \
+   case ObjectMember::gy:       return gy.raw(); \
+   case ObjectMember::gz:       return gz.raw(); \
    case ObjectMember::mass:     return mass.raw(); \
    case ObjectMember::sx:       return sx.raw(); \
    case ObjectMember::sy:       return sy.raw(); \
@@ -55,7 +57,9 @@
    case ObjectMember::grabx:    grabx.raw(val);    break; \
    case ObjectMember::graby:    graby.raw(val);    break; \
    case ObjectMember::grabz:    grabz.raw(val);    break; \
-   case ObjectMember::gravity:  gravity.raw(val);  break; \
+   case ObjectMember::gx:       gx.raw(val);       break; \
+   case ObjectMember::gy:       gy.raw(val);       break; \
+   case ObjectMember::gz:       gz.raw(val);       break; \
    case ObjectMember::mass:     mass.raw(val);     break; \
    case ObjectMember::sx:       sx.raw(val);       break; \
    case ObjectMember::sy:       sy.raw(val);       break; \
@@ -86,7 +90,7 @@ namespace DGE::Game
          bvx{0}, bvy{0}, bvz{0},
          friction{0},
          grabx{0}, graby{0}, grabz{0},
-         gravity{0},
+         gx{0}, gy{0}, gz{0},
          mass{0},
          sx{0}, sy{0}, sz{0},
          vx{0}, vy{0}, vz{0}
@@ -113,7 +117,7 @@ namespace DGE::Game
       Coord bvx, bvy, bvz; // Bounce Velociy (X/Y/Z)
       Fract friction;
       Coord grabx, graby, grabz;
-      Coord gravity;
+      Coord gx, gy, gz; // Gravity (X/Y/Z)
       Coord mass;
       Coord sx, sy, sz; // Size (X/Y/Z)
       Coord vx, vy, vz; // Velocity (X/Y/Z)
