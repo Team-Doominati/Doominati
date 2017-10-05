@@ -203,42 +203,49 @@ namespace DGE::Game
    }
 
    //
-   // T DGE_Object_MemberGet*(unsigned id, unsigned mem)
+   // ... DGE_Object_MemberGet(unsigned id, unsigned mem, unsigned len)
    //
-   #define DGE_Game_Object_MemberGetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_Object_MemberGet##suffix) \
-      { \
-         Object *obj = Object::Get(argv[0]); \
-         auto    mem = static_cast<ObjectMember>(argv[1]); \
-         \
-         task->dataStk.push(obj ? obj->getMember(mem) : 0); \
-         return false; \
+   DGE_Code_NativeDefn(DGE_Object_MemberGet)
+   {
+      Object    *obj = Object::Get(argv[0]);
+      auto       mem = static_cast<ObjectMember>(argv[1]);
+      Code::Word len = argv[2];
+
+      if(mem < ObjectMember::MAX)
+      {
+         task->dataStk.push(obj->getMember(mem));
+      }
+      else
+      {
+         auto em = obj->extMember() + (mem - ObjectMember::MAX);
+         while(len--) task->dataStk.push(*em++);
       }
 
-   DGE_Game_Object_MemberGetDefn(I)
-   DGE_Game_Object_MemberGetDefn(LA)
-   DGE_Game_Object_MemberGetDefn(LR)
-   DGE_Game_Object_MemberGetDefn(U)
-   DGE_Game_Object_MemberGetDefn(X)
+      return false;
+   }
 
    //
-   // void DGE_Object_MemberSet*(unsigned id, unsigned mem, T val)
+   // void DGE_Object_MemberSet(unsigned id, unsigned mem, ...)
    //
-   #define DGE_Game_Object_MemberSetDefn(suffix) \
-      DGE_Code_NativeDefn(DGE_Object_MemberSet##suffix) \
-      { \
-         Object *obj = Object::Get(argv[0]); \
-         auto    mem = static_cast<ObjectMember>(argv[1]); \
-         \
-         if(obj) obj->setMember(mem, argv[2]); \
-         return false; \
+   DGE_Code_NativeDefn(DGE_Object_MemberSet)
+   {
+      Object    *obj = Object::Get(argv[0]);
+      auto       mem = static_cast<ObjectMember>(argv[1]);
+      Code::Word len = argc;
+
+      if(mem < ObjectMember::MAX)
+      {
+         obj->setMember(mem, argv[2]);
+      }
+      else
+      {
+         auto em = obj->extMember() + (mem - ObjectMember::MAX);
+         auto va = argv + 2;
+         while(len--) *em++ = *va++;
       }
 
-   DGE_Game_Object_MemberSetDefn(I)
-   DGE_Game_Object_MemberSetDefn(LA)
-   DGE_Game_Object_MemberSetDefn(LR)
-   DGE_Game_Object_MemberSetDefn(U)
-   DGE_Game_Object_MemberSetDefn(X)
+      return false;
+   }
 
    //
    // void DGE_Object_RefAdd(unsigned id)

@@ -152,18 +152,9 @@ Object Functions
 Synopsis:
   unsigned DGE_Object_Cast(unsigned id, unsigned type);
 
-  int DGE_Object_MemberGetI(unsigned id, unsigned mem);
-  unsigned long fract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
-  long fract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
-  unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
-  accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
+  ... DGE_Object_MemberGet(unsigned id, unsigned mem, unsigned len);
 
-  void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
-  void DGE_Object_MemberSetLA(unsigned id, unsigned mem,
-    unsigned long fract val);
-  void DGE_Object_MemberSetLR(unsigned id, unsigned mem, long fract val);
-  void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
-  void DGE_Object_MemberSetX(unsigned id, unsigned mem, accum val);
+  void DGE_Object_MemberSet(unsigned id, unsigned mem, unsigned len, ...);
 
   void DGE_Object_RefAdd(unsigned id);
 
@@ -186,21 +177,18 @@ Returns:
   The Object's id, if its type is compatible, 0 otherwise.
 
 -----------------------------------------------------------
-DGE_Object_MemberGet*
+DGE_Object_MemberGet
 -----------------------------------------------------------
 
 Synopsis:
-  int DGE_Object_MemberGetI(unsigned id, unsigned mem);
-  unsigned long fract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
-  long fract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
-  unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
-  accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
+  ... DGE_Object_MemberGet(unsigned id, unsigned mem, unsigned len);
 
 Description:
-  The parameter mem shall be a glyph with type {ObjectMember}.
+  The parameter mem shall be a glyph with type {ObjectMember},
+  {ObjectMemberExt}, or a valid Instance Extension Member index.
 
   Reads a member of the Object. If the Object does not have the given member or
-  the member has the wrong type, the behavior is undefined.
+  the member has the wrong size, the behavior is undefined.
 
 Returns:
   The member's value.
@@ -210,18 +198,14 @@ DGE_Object_MemberSet*
 -----------------------------------------------------------
 
 Synopsis:
-  void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
-  void DGE_Object_MemberSetLA(unsigned id, unsigned mem,
-    unsigned long fract val);
-  void DGE_Object_MemberSetLR(unsigned id, unsigned mem, long fract val);
-  void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
-  void DGE_Object_MemberSetX(unsigned id, unsigned mem, accum val);
+  void DGE_Object_MemberSet(unsigned id, unsigned mem, ...);
 
 Description:
-  The parameter mem shall be a glyph with type {ObjectMember}.
+  The parameter mem shall be a glyph with type {ObjectMember},
+  {ObjectMemberExt}, or a valid Instance Extension Member index.
 
   Sets a member of the Object. If the Object does not have the given member or
-  the member has the wrong type, the behavior is undefined.
+  the member has the wrong size, the behavior is undefined.
 
 -----------------------------------------------------------
 DGE_Object_RefAdd

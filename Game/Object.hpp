@@ -51,10 +51,10 @@
 #define DGE_Game_ObjectImplementCommon(name) \
    Code::Word name::getMember(ObjectMember mem) \
       {switch(mem) {DGE_Game_##name##_GetMemberCases(); \
-         default: return This::extMember()[mem - ObjectMember::MAX];}} \
+         default: return 0;}} \
    void name::setMember(ObjectMember mem, Code::Word val) \
       {switch(mem) {DGE_Game_##name##_SetMemberCases(); \
-         default: This::extMember()[mem - ObjectMember::MAX] = val;}} \
+         default: (void)val; break;}} \
    \
    static Object::ObjectTypeAdder name##TypeAdd{#name, \
       [](Object *o) {return dynamic_cast<name *>(o) ? o->id : 0;}}
