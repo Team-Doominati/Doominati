@@ -337,7 +337,7 @@ namespace DGE::Game
    // unsigned DGE_PhysicsThinker_Collide(unsigned id, accum *oldx,
    //    accum *oldy, accum *oldz, long fract *fric)
    //
-   DGE_Code_NativeDefn(DGE_PhyscisThinker_Collide)
+   DGE_Code_NativeDefn(DGE_PhysicsThinker_Collide)
    {
       auto th = PhysicsThinker::Get(argv[0]);
 
