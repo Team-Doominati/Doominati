@@ -24,8 +24,7 @@
 #include "SDL.h"
 
 #include <iostream>
-#include <climits>
-#include <tuple>
+#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -34,7 +33,8 @@
 
 namespace DGE::Game
 {
-   static InputSource *CurrentInput;
+   static std::unordered_map<unsigned, InputSource *> InputSources;
+   static InputSource_Local *LocalInput;
 }
 
 
@@ -45,32 +45,31 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
+   // InputSource::Get
+   //
+   InputSource *InputSource::Get(unsigned player)
+   {
+      if(auto it = InputSources.find(player); it != InputSources.end())
+         return it->second;
+      else
+         return nullptr;
+   }
+
+   //
+   // InputSource::Set
+   //
+   void InputSource::Set(unsigned player, InputSource *input)
+   {
+      InputSources[player] = input;
+   }
+
+   //
    // InputSource_Local::poll
    //
    void InputSource_Local::poll()
    {
       frameLast = frameNext;
-
-      // Process events into actions.
       ProcessGameEvents(*this);
-
-      // After that, we can process those into an input frame.
-      auto getAxis = [this](int actionstart)
-      {
-         std::int16_t axf = 0, axr = 0;
-         if(actions[actionstart + A_AxF]) axf += INT16_MAX;
-         if(actions[actionstart + A_AxB]) axf -= INT16_MAX;
-         if(actions[actionstart + A_AxR]) axr += INT16_MAX;
-         if(actions[actionstart + A_AxL]) axr -= INT16_MAX;
-         return std::pair<std::int16_t, std::int16_t>{axf, axr};
-      };
-
-      std::tie(frameNext.ax1y, frameNext.ax1x) = getAxis(A_Ax1S);
-      std::tie(frameNext.ax2y, frameNext.ax2x) = getAxis(A_Ax2S);
-
-      frameNext.buttons = 0;
-      for(int i = 0; i < 4; i++)
-         frameNext.buttons |= actions[A_ButtonS + i] << i;
    }
 
    //
@@ -81,63 +80,71 @@ namespace DGE::Game
       switch(event.type)
       {
       case Event::KeyDown:
-         switch(event.data.key)
-         {
-         case 'w': actions[A_Ax1S + A_AxF] = true; break;
-         case 'a': actions[A_Ax1S + A_AxL] = true; break;
-         case 's': actions[A_Ax1S + A_AxB] = true; break;
-         case 'd': actions[A_Ax1S + A_AxR] = true; break;
-         }
+         if(auto it = keys.find(event.data.key); it != keys.end())
+            frameNext.bind[it->second.num] = true;
          break;
 
       case Event::KeyUp:
-         switch(event.data.key)
-         {
-         case 'w': actions[A_Ax1S + A_AxF] = false; break;
-         case 'a': actions[A_Ax1S + A_AxL] = false; break;
-         case 's': actions[A_Ax1S + A_AxB] = false; break;
-         case 'd': actions[A_Ax1S + A_AxR] = false; break;
-         case Key::Escape: throw EXIT_SUCCESS;
-         }
+         if(auto it = keys.find(event.data.key); it != keys.end())
+            frameNext.bind[it->second.num] = false;
          break;
 
       case Event::MouseDown:
-         switch(event.data.mb)
-         {
-         case MouseButton::Left:  actions[A_ButtonS + 0] = true; break;
-         case MouseButton::Right: actions[A_ButtonS + 1] = true; break;
-         }
+         // TODO
          break;
 
       case Event::MouseUp:
-         switch(event.data.mb)
-         {
-         case MouseButton::Left:  actions[A_ButtonS + 0] = false; break;
-         case MouseButton::Right: actions[A_ButtonS + 1] = false; break;
-         }
+         // TODO
          break;
 
       case Event::MouseMove:
-         frameNext.curx = event.data.mouse.x;
-         frameNext.cury = event.data.mouse.y;
+         frameNext.curs.x = event.data.mouse.x;
+         frameNext.curs.y = event.data.mouse.y;
+         break;
+
+      case Event::MouseWheel:
+         // TODO
+         break;
+
+      case Event::GamepadDown:
+         // TODO
+         break;
+
+      case Event::GamepadUp:
+         // TODO
+         break;
+
+      case Event::GamepadMove:
+         // TODO
          break;
       }
    }
 
    //
-   // InputSource::GetCurrent
+   // InputSource_Local::bindKey
    //
-   InputSource *InputSource::GetCurrent()
+   void InputSource_Local::bindKey(unsigned btn, char32_t ch)
    {
-      return CurrentInput;
+      for(auto it = keys.cbegin(); it != keys.cend(); ++it)
+         if(it->second.num == btn) {keys.erase(it); break;}
+
+      keys.emplace(ch, btn);
    }
 
    //
-   // InputSource::SetCurrent
+   // InputSource_Local::GetCurrent
    //
-   void InputSource::SetCurrent(InputSource *input)
+   InputSource_Local *InputSource_Local::GetCurrent()
    {
-      CurrentInput = input;
+      return LocalInput;
+   }
+
+   //
+   // InputSource_Local::SetCurrent
+   //
+   void InputSource_Local::SetCurrent(InputSource_Local *input)
+   {
+      LocalInput = input;
    }
 }
 
@@ -149,47 +156,64 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // DGE_Point3R DGE_Input_GetAxis(unsigned num)
+   // DGE_Point3R DGE_Input_GetAxis(unsigned player, unsigned num)
    //
    DGE_Code_NativeDefn(DGE_Input_GetAxis)
    {
-      auto const &frame = InputSource::GetCurrent()->getNext();
+      auto const &frame = InputSource::Get(argv[0])->getNext();
 
-      switch(argv[0])
+      if(argv[1] < InputSource::NumAxis)
       {
-      default:
-      case 1:
-         task->dataStk.push(Code::SFractToSLFract(frame.ax1x));
-         task->dataStk.push(Code::SFractToSLFract(frame.ax1y));
+         auto &axis = frame.axis[argv[1]];
+         task->dataStk.push(Code::SFractToSLFract(axis.x));
+         task->dataStk.push(Code::SFractToSLFract(axis.y));
+         task->dataStk.push(Code::SFractToSLFract(axis.z));
+      }
+      else
+      {
          task->dataStk.push(0);
-         break;
-      case 2:
-         task->dataStk.push(Code::SFractToSLFract(frame.ax2x));
-         task->dataStk.push(Code::SFractToSLFract(frame.ax2y));
          task->dataStk.push(0);
-         break;
+         task->dataStk.push(0);
       }
 
       return false;
    }
 
    //
-   // unsigned DGE_Input_GetButtons(void)
+   // unsigned DGE_Input_GetButton(unsigned player, unsigned btn)
    //
-   DGE_Code_NativeDefn(DGE_Input_GetButtons)
+   DGE_Code_NativeDefn(DGE_Input_GetButton)
    {
-      task->dataStk.push(InputSource::GetCurrent()->getNext().buttons);
+      auto const &frameNext = InputSource::Get(argv[0])->getNext();
+      auto const &framePrev = InputSource::Get(argv[0])->getLast();
+
+      if(argv[1] < InputSource::NumBind)
+      {
+         unsigned next = frameNext.bind[argv[1]];
+         unsigned prev = framePrev.bind[argv[1]];
+         task->dataStk.push((next << 0) | (prev << 1));
+      }
+
       return false;
    }
 
    //
-   // DGE_Point2I DGE_Input_GetCursor(void)
+   // DGE_Point2I DGE_Input_GetCursor(unsigned player)
    //
    DGE_Code_NativeDefn(DGE_Input_GetCursor)
    {
-      auto const &frame = InputSource::GetCurrent()->getNext();
-      task->dataStk.push(frame.curx);
-      task->dataStk.push(frame.cury);
+      auto const &frame = InputSource::Get(argv[0])->getNext();
+      task->dataStk.push(frame.curs.x);
+      task->dataStk.push(frame.curs.y);
+      return false;
+   }
+
+   //
+   // void DGE_Input_SetBindKey(unsigned btn, int ch)
+   //
+   DGE_Code_NativeDefn(DGE_Input_SetBindKey)
+   {
+      InputSource_Local::GetCurrent()->bindKey(argv[0], argv[1]);
       return false;
    }
 }

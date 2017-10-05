@@ -148,9 +148,13 @@ static int Main()
    DGE::AL::AudioRenderer::SetCurrent(&audio);
 
    // Initialize input.
+   DGE::Game::InputSource::NumAxis = 8;
+   DGE::Game::InputSource::NumBind = 8;
+
    DGE::Game::InputSource_Local input;
 
-   DGE::Game::InputSource::SetCurrent(&input);
+   DGE::Game::InputSource_Local::SetCurrent(&input);
+   DGE::Game::InputSource::Set(0, &input);
 
    // Initialize scripting and call main.
    DGE::Code::Program prog;
