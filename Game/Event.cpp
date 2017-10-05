@@ -18,10 +18,6 @@
 
 #include <vector>
 
-#define PushEvent() \
-   EventStack.push_back(pevent); \
-   GameEventStack.push_back(pevent)
-
 
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
@@ -32,7 +28,107 @@ namespace DGE::Game
    static std::vector<Event> EventStack;
    static std::vector<Event> GameEventStack;
 
-   static unsigned ResRH, ResRW, ResVH, ResVW;
+   static int ResRH, ResRW, ResVH, ResVW;
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace DGE::Game
+{
+   //
+   // PushEvent
+   //
+   static inline void PushEvent(Event const &evt)
+   {
+      EventStack.emplace_back(evt);
+      GameEventStack.emplace_back(evt);
+   }
+
+   //
+   // EventAxis
+   //
+   static inline void EventAxis(SDL_Event const &sevt)
+   {
+      Event evt{Event::GamepadMove};
+
+      evt.data.axis.num = GamepadAxis(sevt.caxis.axis);
+      evt.data.axis.val = sevt.caxis.value;
+
+      PushEvent(evt);
+   }
+
+   //
+   // EventButton
+   //
+   static inline void EventButton(SDL_Event const &sevt)
+   {
+      Event evt{sevt.cbutton.state == SDL_PRESSED ?
+         Event::GamepadDown : Event::GamepadUp};
+
+      evt.data.gb = GamepadButton(sevt.cbutton.button);
+
+      PushEvent(evt);
+   }
+
+   //
+   // EventKey
+   //
+   static inline void EventKey(SDL_Event const &sevt)
+   {
+      if(!sevt.key.repeat)
+      {
+         Event evt{sevt.key.state == SDL_PRESSED ?
+            Event::KeyDown : Event::KeyUp};
+
+         evt.data.key = char32_t(sevt.key.keysym.sym);
+
+         PushEvent(evt);
+      }
+   }
+
+   //
+   // EventMotion
+   //
+   static inline void EventMotion(SDL_Event const &sevt)
+   {
+      Event evt{Event::MouseMove};
+
+      evt.data.mouse = Core::Vector2I{sevt.motion.x * ResVW / ResRW,
+                                      sevt.motion.y * ResVH / ResRH};
+
+      PushEvent(evt);
+   }
+
+   //
+   // EventMouse
+   //
+   static inline void EventMouse(SDL_Event const &sevt)
+   {
+      Event evt{sevt.button.state == SDL_PRESSED ?
+         Event::MouseDown : Event::MouseUp};
+
+      evt.data.mb = MouseButton(sevt.button.button);
+
+      PushEvent(evt);
+   }
+
+   //
+   // EventWheel
+   //
+   static inline void EventWheel(SDL_Event const &sevt)
+   {
+      Event evt{Event::MouseWheel};
+
+      evt.data.mouse = Core::Vector2I{sevt.wheel.x, sevt.wheel.y};
+
+      if(sevt.wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+         evt.data.mouse = -evt.data.mouse;
+
+      PushEvent(evt);
+   }
 }
 
 
@@ -51,76 +147,11 @@ namespace DGE::Game
    }
 
    //
-   // PumpEvents
-   //
-   void PumpEvents()
-   {
-      EventStack.clear();
-
-      // Poll events.
-      for(SDL_Event event; SDL_PollEvent(&event);)
-      {
-         switch(event.type)
-         {
-         case SDL_KEYDOWN: case SDL_KEYUP:
-         if(!event.key.repeat)
-         {
-            bool  down = event.type == SDL_KEYDOWN;
-            Event pevent{down ? Event::KeyDown : Event::KeyUp};
-
-            pevent.data.key = char32_t(event.key.keysym.sym);
-
-            PushEvent();
-         }
-            break;
-         case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
-         {
-            bool  down = (event.type == SDL_MOUSEBUTTONDOWN);
-            Event pevent{down ? Event::MouseDown : Event::MouseUp};
-
-            pevent.data.mb = MouseButton(event.button.button);
-
-            PushEvent();
-         }
-            break;
-         case SDL_MOUSEWHEEL:
-         {
-            Event pevent{Event::MouseWheel};
-            pevent.data.axis.x = event.wheel.x;
-            pevent.data.axis.y = event.wheel.y;
-
-            if(event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
-            {
-               pevent.data.axis.x = -pevent.data.axis.x;
-               pevent.data.axis.y = -pevent.data.axis.y;
-            }
-
-            PushEvent();
-         }
-            break;
-         case SDL_MOUSEMOTION:
-         {
-            Event pevent{Event::MouseMove};
-
-            pevent.data.axis.x = event.motion.x * ResVW / ResRW;
-            pevent.data.axis.y = event.motion.y * ResVH / ResRH;
-
-            PushEvent();
-         }
-            break;
-         case SDL_QUIT:
-            throw EXIT_SUCCESS;
-         }
-      }
-   }
-
-   //
    // ProcessEvents
    //
    void ProcessEvents(EventSink &sink)
    {
-      for(auto const &evt : EventStack)
-         sink.sink(evt);
+      for(auto const &evt : EventStack) sink.sink(evt);
    }
 
    //
@@ -128,14 +159,58 @@ namespace DGE::Game
    //
    void ProcessGameEvents(EventSink &sink)
    {
-      for(auto const &evt : GameEventStack)
-         sink.sink(evt);
+      for(auto const &evt : GameEventStack) sink.sink(evt);
+   }
+
+   //
+   // PumpEvents
+   //
+   void PumpEvents()
+   {
+      EventStack.clear();
+
+      // Poll events.
+      for(SDL_Event sevt; SDL_PollEvent(&sevt);)
+      {
+         switch(sevt.type)
+         {
+         case SDL_CONTROLLERAXISMOTION:
+            EventAxis(sevt);
+            break;
+
+         case SDL_CONTROLLERBUTTONDOWN:
+         case SDL_CONTROLLERBUTTONUP:
+            EventButton(sevt);
+            break;
+
+         case SDL_KEYDOWN:
+         case SDL_KEYUP:
+            EventKey(sevt);
+            break;
+
+         case SDL_MOUSEBUTTONDOWN:
+         case SDL_MOUSEBUTTONUP:
+            EventMouse(sevt);
+            break;
+
+         case SDL_MOUSEMOTION:
+            EventMotion(sevt);
+            break;
+
+         case SDL_MOUSEWHEEL:
+            EventWheel(sevt);
+            break;
+
+         case SDL_QUIT:
+            throw EXIT_SUCCESS;
+         }
+      }
    }
 
    //
    // SetResolutionReal
    //
-   void SetResolutionReal(unsigned w, unsigned h)
+   void SetResolutionReal(int w, int h)
    {
       ResRH = h;
       ResRW = w;
@@ -144,7 +219,7 @@ namespace DGE::Game
    //
    // SetResolutionVirt
    //
-   void SetResolutionVirt(unsigned w, unsigned h)
+   void SetResolutionVirt(int w, int h)
    {
       ResVH = h;
       ResVW = w;

@@ -13,7 +13,7 @@
 #ifndef DGE__Game__Event_H__
 #define DGE__Game__Event_H__
 
-#include "Core/Stack.hpp"
+#include "Core/Vector2.hpp"
 
 #include <cstdint>
 
@@ -24,60 +24,93 @@
 
 namespace DGE::Game
 {
-   //
-   // These are special characters outside any usable Unicode range which
-   // represent special keypresses (like F1-F12).
-   //
-   enum : char32_t
+   namespace Key
    {
-      KC_Invalid = '\0',
+      //
+      // Key
+      //
+      enum Key : char32_t
+      {
+         Invalid = '\0',
 
-      // ASCII keys
-      KC_Backspace = '\b',
-      KC_Tab       = '\t',
-      KC_Return    = '\r',
-      KC_Escape    = '\033',
-      KC_Delete    = '\177',
+         Backspace = '\b',
+         Tab       = '\t',
+         Return    = '\r',
+         Escape    = '\033',
+         Delete    = '\177',
 
-      // Special keys, using a Unicode reserved plane
-      KC_Special  = 0x40000000,
-      KC_Capslock = KC_Special + 0x39,
+         Special  = 0x40000000,
+         Capslock = Special + 0x39,
 
-      // Function keys
-      KC_F1, KC_F2,  KC_F3,  KC_F4,
-      KC_F5, KC_F6,  KC_F7,  KC_F8,
-      KC_F9, KC_F10, KC_F11, KC_F12,
-      KC_SysRq,
-      KC_ScrollLock,
-      KC_Pause,
+         F1, F2,  F3,  F4,
+         F5, F6,  F7,  F8,
+         F9, F10, F11, F12,
+         SysRq,
+         ScrollLock,
+         Pause,
 
-      // Movement keys
-      KC_Insert, KC_Home, KC_PageUp, KC_End, KC_PageDown,
+         Insert, Home, PageUp,
+                 End,  PageDown,
 
-      // Arrow keys
-      KC_Right, KC_Left, KC_Down, KC_Up,
+         Right, Left, Down, Up,
 
-      // Keypad
-      KC_NumLock,
-      KC_KP_Div, KC_KP_Mul, KC_KP_Sub, KC_KP_Add,
-      KC_KP_Enter,
-      KC_KP_1, KC_KP_2, KC_KP_3,
-      KC_KP_4, KC_KP_5, KC_KP_6,
-      KC_KP_7, KC_KP_8, KC_KP_9,
-      KC_KP_0, KC_KP_Dot
-   };
+         NumLock,
+         KP_Div, KP_Mul, KP_Sub, KP_Add,
+         KP_Enter,
+         KP_1, KP_2, KP_3,
+         KP_4, KP_5, KP_6,
+         KP_7, KP_8, KP_9,
+         KP_0, KP_Dot
+      };
+   }
 
    //
    // MouseButton
    //
-   enum MouseButton
+   enum class MouseButton
    {
-      MB_Invalid,
-      MB_Left,
-      MB_Middle,
-      MB_Right,
-      MB_Extra1,
-      MB_Extra2
+      Invalid,
+      Left,
+      Middle,
+      Right,
+      Extra1,
+      Extra2,
+      Extra3,
+      Extra4
+   };
+
+   //
+   // GamepadButton
+   //
+   enum class GamepadButton
+   {
+      Invalid,
+      A, B, X, Y,
+      Back,
+      Menu,
+      Start,
+      StickLeft,
+      StickRight,
+      ShoulderLeft,
+      ShoulderRight,
+      DPadUp,
+      DPadDown,
+      DPadLeft,
+      DPadRight
+   };
+
+   //
+   // GamepadAxis
+   //
+   enum class GamepadAxis
+   {
+      Invalid,
+      LeftX,
+      LeftY,
+      RightX,
+      RightY,
+      TriggerLeft,
+      TriggerRight
    };
 
    //
@@ -87,16 +120,18 @@ namespace DGE::Game
    {
       enum Type
       {
-         Null,
-         KeyDown,   KeyUp,
-         MouseDown, MouseUp,
+         KeyDown,
+         KeyUp,
+         MouseDown,
+         MouseUp,
          MouseMove,
          MouseWheel,
-         // TODO: gamepad support
-         Max
+         GamepadDown,
+         GamepadUp,
+         GamepadMove
       };
 
-      Event(Type type_) : type(type_) {}
+      Event(Type type_) : type{type_} {}
       Event(Event &&) = default;
       Event(Event const &) = default;
 
@@ -104,9 +139,15 @@ namespace DGE::Game
 
       union
       {
-         char32_t    key;
-         MouseButton mb;
-         struct {float x, y;} axis;
+         char32_t       key;
+         MouseButton    mb;
+         GamepadButton  gb;
+         Core::Vector2I mouse;
+         struct
+         {
+            GamepadAxis  num;
+            std::int16_t val;
+         } axis;
       } data;
    };
 
@@ -139,13 +180,11 @@ namespace DGE::Game
 namespace DGE::Game
 {
    void EventFrame();
-   void PumpEvents();
    void ProcessEvents(EventSink &sink);
    void ProcessGameEvents(EventSink &sink);
-
-   // These are used to scale screen coordinates.
-   void SetResolutionReal(unsigned w, unsigned h);
-   void SetResolutionVirt(unsigned w, unsigned h);
+   void PumpEvents();
+   void SetResolutionReal(int w, int h);
+   void SetResolutionVirt(int w, int h);
 }
 
 #endif//DGE__Game__Event_H__

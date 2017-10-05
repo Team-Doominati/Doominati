@@ -89,6 +89,7 @@ namespace DGE::Game
          case 'd': actions[A_Ax1S + A_AxR] = true; break;
          }
          break;
+
       case Event::KeyUp:
          switch(event.data.key)
          {
@@ -96,27 +97,29 @@ namespace DGE::Game
          case 'a': actions[A_Ax1S + A_AxL] = false; break;
          case 's': actions[A_Ax1S + A_AxB] = false; break;
          case 'd': actions[A_Ax1S + A_AxR] = false; break;
-         case KC_Escape: throw EXIT_SUCCESS;
+         case Key::Escape: throw EXIT_SUCCESS;
          }
          break;
+
       case Event::MouseDown:
          switch(event.data.mb)
          {
-         case MB_Left:  actions[A_ButtonS + 0] = true; break;
-         case MB_Right: actions[A_ButtonS + 1] = true; break;
+         case MouseButton::Left:  actions[A_ButtonS + 0] = true; break;
+         case MouseButton::Right: actions[A_ButtonS + 1] = true; break;
          }
          break;
+
       case Event::MouseUp:
          switch(event.data.mb)
          {
-         case MB_Left:  actions[A_ButtonS + 0] = false; break;
-         case MB_Right: actions[A_ButtonS + 1] = false; break;
+         case MouseButton::Left:  actions[A_ButtonS + 0] = false; break;
+         case MouseButton::Right: actions[A_ButtonS + 1] = false; break;
          }
          break;
 
       case Event::MouseMove:
-         frameNext.curx = event.data.axis.x;
-         frameNext.cury = event.data.axis.y;
+         frameNext.curx = event.data.mouse.x;
+         frameNext.cury = event.data.mouse.y;
          break;
       }
    }
@@ -146,38 +149,43 @@ namespace DGE::Game
 namespace DGE::Game
 {
    //
-   // long _Fract DGE_GetInputAxis(unsigned num, unsigned axis)
+   // DGE_Point3R DGE_Input_GetAxis(unsigned num)
    //
-   DGE_Code_NativeDefn(DGE_GetInputAxis)
+   DGE_Code_NativeDefn(DGE_Input_GetAxis)
    {
       auto const &frame = InputSource::GetCurrent()->getNext();
-      int ret;
 
-      bool y = argv[1];
       switch(argv[0])
       {
       default:
-      case 1: ret = y ? frame.ax1y : frame.ax1x; break;
-      case 2: ret = y ? frame.ax2y : frame.ax2x; break;
+      case 1:
+         task->dataStk.push(Code::SFractToSLFract(frame.ax1x));
+         task->dataStk.push(Code::SFractToSLFract(frame.ax1y));
+         task->dataStk.push(0);
+         break;
+      case 2:
+         task->dataStk.push(Code::SFractToSLFract(frame.ax2x));
+         task->dataStk.push(Code::SFractToSLFract(frame.ax2y));
+         task->dataStk.push(0);
+         break;
       }
 
-      task->dataStk.push(Code::SFractToSLFract(ret));
       return false;
    }
 
    //
-   // unsigned DGE_GetInputButtons(void)
+   // unsigned DGE_Input_GetButtons(void)
    //
-   DGE_Code_NativeDefn(DGE_GetInputButtons)
+   DGE_Code_NativeDefn(DGE_Input_GetButtons)
    {
       task->dataStk.push(InputSource::GetCurrent()->getNext().buttons);
       return false;
    }
 
    //
-   // DGE_Point2I DGE_GetInputCursor(void)
+   // DGE_Point2I DGE_Input_GetCursor(void)
    //
-   DGE_Code_NativeDefn(DGE_GetInputCursor)
+   DGE_Code_NativeDefn(DGE_Input_GetCursor)
    {
       auto const &frame = InputSource::GetCurrent()->getNext();
       task->dataStk.push(frame.curx);
