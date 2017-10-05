@@ -154,7 +154,7 @@ Synopsis:
 
   ... DGE_Object_MemberGet(unsigned id, unsigned mem, unsigned len);
 
-  void DGE_Object_MemberSet(unsigned id, unsigned mem, unsigned len, ...);
+  void DGE_Object_MemberSet(unsigned id, unsigned mem, ...);
 
   void DGE_Object_RefAdd(unsigned id);
 

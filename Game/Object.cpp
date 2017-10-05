@@ -231,7 +231,7 @@ namespace DGE::Game
    {
       Object    *obj = Object::Get(argv[0]);
       auto       mem = static_cast<ObjectMember>(argv[1]);
-      Code::Word len = argc;
+      Code::Word len = argc - 2;
 
       if(mem < ObjectMember::MAX)
       {
