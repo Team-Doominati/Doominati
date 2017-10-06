@@ -26,15 +26,10 @@
 //
 // DGE_Code_NativeArgs
 //
-#if __GNUC__
-# define DGE_Code_NativeArgs() \
-   __attribute__((unused)) ::DGE::Code::Task *task, \
-   __attribute__((unused)) ::DGE::Code::Word const *argv, \
-   __attribute__((unused)) ::DGE::Code::Word argc
-#else
-# define DGE_Code_NativeArgs() ::DGE::Code::Task *task, \
-   ::DGE::Code::Word const *argv, ::DGE::Code::Word argc
-#endif
+#define DGE_Code_NativeArgs() \
+   [[maybe_unused]] ::DGE::Code::Task *task, \
+   [[maybe_unused]] ::DGE::Code::Word const *argv, \
+   [[maybe_unused]] ::DGE::Code::Word argc
 
 //
 // DGE_Code_NativeDefn

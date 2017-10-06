@@ -30,15 +30,9 @@
 //
 // DGE_Code_GlyphTypeArgs
 //
-#if __GNUC__
-# define DGE_Code_GlyphTypeArgs() \
-   __attribute__((unused)) ::DGE::Code::Loader   &loader, \
-   __attribute__((unused)) ::DGE::Core::HashedStr glyph
-#else
-# define DGE_Code_GlyphTypeArgs() \
-   ::DGE::Code::Loader   &loader, \
-   ::DGE::Core::HashedStr glyph
-#endif
+#define DGE_Code_GlyphTypeArgs() \
+   [[maybe_unused]] ::DGE::Code::Loader   &loader, \
+   [[maybe_unused]] ::DGE::Core::HashedStr glyph
 
 //
 // DGE_Code_GlyphTypeDefn
