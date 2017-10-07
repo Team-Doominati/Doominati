@@ -432,27 +432,27 @@ namespace DGE::GL
 namespace DGE::GL
 {
    //
-   // void DGE_Draw_SetCirclePrecision(int subdivisions)
+   // void DGE_Draw_CirclePrecision(int subdivisions)
    //
-   DGE_Code_NativeDefn(DGE_Draw_SetCirclePrecision)
+   DGE_Code_NativeDefn(DGE_Draw_CirclePrecision)
    {
       Renderer::GetCurrent()->circlePrecision(argv[0]);
       return false;
    }
 
    //
-   // void DGE_Draw_SetLineSmoothing(_Bool on)
+   // void DGE_Draw_LineSmooth(_Bool on)
    //
-   DGE_Code_NativeDefn(DGE_Draw_SetLineSmoothing)
+   DGE_Code_NativeDefn(DGE_Draw_LineSmooth)
    {
       Renderer::GetCurrent()->lineSmooth(argv[0]);
       return false;
    }
 
    //
-   // void DGE_Draw_SetLineWidth(int width)
+   // void DGE_Draw_LineWidth(int width)
    //
-   DGE_Code_NativeDefn(DGE_Draw_SetLineWidth)
+   DGE_Code_NativeDefn(DGE_Draw_LineWidth)
    {
       Renderer::GetCurrent()->lineWidth(argv[0]);
       return false;
