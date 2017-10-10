@@ -162,7 +162,7 @@ namespace DGE::Code
          mem{&mem_}, idx{idx_ >> MemInfo<T>::Shift} {}
 
       explicit operator bool () const {return idx != 0;}
-      explicit operator Word () const {return idx;}
+      explicit operator Word () const {return idx << MemInfo<T>::Shift;}
 
       MemPtr &operator ++ () {idx += MemInfo<T>::Step; return *this;}
       MemPtr  operator ++ (int) {auto p = *this; return ++*this, p;}
