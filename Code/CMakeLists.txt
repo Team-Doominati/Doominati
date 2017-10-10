@@ -27,6 +27,7 @@ add_library(dge-code-lib ${DGE_SHARED_DECL}
    ConvertStruct.hpp
    ExtMem.cpp
    ExtMem.hpp
+   FuncPtr.hpp
    Function.hpp
    Glyph.cpp
    Glyph.hpp
@@ -56,6 +57,7 @@ add_library(dge-code-lib ${DGE_SHARED_DECL}
    Textdefs.hpp
    Thread.cpp
    Thread.hpp
+   TuplePtr.hpp
    Types.hpp
 )
 

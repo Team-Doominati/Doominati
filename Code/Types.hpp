@@ -33,6 +33,8 @@ namespace DGE::Code
    class Thread;
 
    template<typename T>
+   class FuncPtr;
+   template<typename T>
    class MemPtr;
 
    using Byte  = std::uint8_t;
