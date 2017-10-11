@@ -149,7 +149,7 @@ namespace DGE::Game
    //
    // BlockMap::countNode
    //
-   std::size_t BlockMap::countNode(Coord xl, Coord yl, Coord xu, Coord yu)
+   std::size_t BlockMap::countNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu)
    {
       if(!subs)
          return 1;
@@ -167,7 +167,7 @@ namespace DGE::Game
    //
    // BlockMap::find
    //
-   BlockMap::FindRes const &BlockMap::find(Coord xl, Coord yl, Coord xu, Coord yu)
+   BlockMap::FindRes const &BlockMap::find(Fixed xl, Fixed yl, Fixed xu, Fixed yu)
    {
       FindResBuf.th.clear();
       FindResBuf.sec.clear();
@@ -187,7 +187,7 @@ namespace DGE::Game
    //
    // BlockMap::findSector
    //
-   Sector::Ptr BlockMap::findSector(Coord x, Coord y)
+   Sector::Ptr BlockMap::findSector(Fixed x, Fixed y)
    {
       auto node = getNode(x, y);
 
@@ -203,7 +203,7 @@ namespace DGE::Game
    //
    // BlockMap::getNode
    //
-   BlockMap *BlockMap::getNode(Coord x, Coord y)
+   BlockMap *BlockMap::getNode(Fixed x, Fixed y)
    {
       return subs ? subs[(x > cx) | ((y > cy) << 1)].getNode(x, y) : this;
    }
@@ -231,7 +231,7 @@ namespace DGE::Game
    //
    // BlockMap::split
    //
-   void BlockMap::split(Coord minSize, std::size_t maxObj)
+   void BlockMap::split(Fixed minSize, std::size_t maxObj)
    {
       // If no children, consider splitting.
       if(!subs)
@@ -289,10 +289,10 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_BlockMap_Find)
    {
-      Coord xl{static_cast<Code::SWord>(argv[0]), Core::FixedRaw};
-      Coord yl{static_cast<Code::SWord>(argv[1]), Core::FixedRaw};
-      Coord xu{static_cast<Code::SWord>(argv[2]), Core::FixedRaw};
-      Coord yu{static_cast<Code::SWord>(argv[3]), Core::FixedRaw};
+      Fixed xl{static_cast<Code::SWord>(argv[0]), Core::FixedRaw};
+      Fixed yl{static_cast<Code::SWord>(argv[1]), Core::FixedRaw};
+      Fixed xu{static_cast<Code::SWord>(argv[2]), Core::FixedRaw};
+      Fixed yu{static_cast<Code::SWord>(argv[3]), Core::FixedRaw};
 
       auto &res = FindResNative::GetFree();
       res.init(BlockMap::Root.find(xl, yl, xu, yu));

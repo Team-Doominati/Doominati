@@ -85,16 +85,16 @@ namespace DGE::Game
       Core::ListLinkVector<Sector> blockLinks;
 
       std::size_t const pc;
-      Point2     *const pv;
+      Point2X    *const pv;
 
       Code::Word texc, texf;
 
       Fract frictair;
       Fract friction;
 
-      Coord gx, gy, gz; // Gravity (X/Y/Z)
-      Coord xl, yl, xu, yu;
-      Coord zl, zu;
+      Fixed gx, gy, gz; // Gravity (X/Y/Z)
+      Fixed xl, yl, xu, yu;
+      Fixed zl, zu;
 
       bool rect : 1;
 
@@ -102,7 +102,7 @@ namespace DGE::Game
       static Sector *Create(std::size_t pc, std::size_t ext);
 
    private:
-      Sector(std::size_t pc, Point2 *pv);
+      Sector(std::size_t pc, Point2X *pv);
    };
 }
 

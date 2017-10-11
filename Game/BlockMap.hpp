@@ -47,22 +47,22 @@ namespace DGE::Game
          std::unordered_set<PhysicsThinker *> th;
       };
 
-      BlockMap(Coord x, Coord y, Coord s) : subs{nullptr}, cx{x}, cy{y}, size{s} {}
+      BlockMap(Fixed x, Fixed y, Fixed s) : subs{nullptr}, cx{x}, cy{y}, size{s} {}
       ~BlockMap();
 
-      FindRes const &find(Coord xl, Coord yl, Coord xu, Coord yu);
+      FindRes const &find(Fixed xl, Fixed yl, Fixed xu, Fixed yu);
       FindRes const &find(PhysicsThinker *th)
          {return find(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
       FindRes const &find(Sector *sec)
          {return find(sec->xl, sec->yl, sec->xu, sec->yu);}
 
-      Sector::Ptr findSector(Coord x, Coord y);
+      Sector::Ptr findSector(Fixed x, Fixed y);
       Sector::Ptr findSector(PhysicsThinker *th) {return findSector(th->x, th->y);}
 
       void insert(PhysicsThinker *th);
       void insert(Sector *sec);
 
-      void split(Coord minW, std::size_t maxObj);
+      void split(Fixed minW, std::size_t maxObj);
 
       void unlink(PhysicsThinker *th);
       void unlink(Sector *sec);
@@ -75,7 +75,7 @@ namespace DGE::Game
 
    private:
       // countNode
-      std::size_t countNode(Coord xl, Coord yl, Coord xu, Coord yu);
+      std::size_t countNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu);
 
       std::size_t countNode(PhysicsThinker *th)
          {return countNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy);}
@@ -88,7 +88,7 @@ namespace DGE::Game
 
       // forNode
       template<typename Iter>
-      void forNode(Coord xl, Coord yl, Coord xu, Coord yu, Iter &&iter);
+      void forNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu, Iter &&iter);
 
       template<typename Iter>
       void forNode(PhysicsThinker *th, Iter &&iter)
@@ -98,11 +98,11 @@ namespace DGE::Game
       void forNode(Sector *sec, Iter &&iter)
          {return forNode(sec->xl, sec->yl, sec->xu, sec->yu, iter);}
 
-      BlockMap *getNode(Coord x, Coord y);
+      BlockMap *getNode(Fixed x, Fixed y);
 
       // insertNode
       template<typename T>
-      void insertNode(Coord xl, Coord yl, Coord xu, Coord yu, Core::ListLink<T> *&iter);
+      void insertNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu, Core::ListLink<T> *&iter);
 
       void insertNode(PhysicsThinker *th, Core::ListLink<PhysicsThinker> *&iter)
          {insertNode(th->x - th->sx, th->y - th->sy, th->x + th->sx, th->y + th->sy, iter);}
@@ -119,8 +119,8 @@ namespace DGE::Game
 
       BlockMap *subs;
 
-      Coord const cx, cy;
-      Coord const size;
+      Fixed const cx, cy;
+      Fixed const size;
    };
 }
 
@@ -135,7 +135,7 @@ namespace DGE::Game
    // BlockMap::forNode
    //
    template<typename Iter>
-   void BlockMap::forNode(Coord xl, Coord yl, Coord xu, Coord yu, Iter &&iter)
+   void BlockMap::forNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu, Iter &&iter)
    {
       if(!subs)
          return (void)iter(this);
@@ -154,7 +154,7 @@ namespace DGE::Game
    // BlockMap::insertNode
    //
    template<typename T>
-   void BlockMap::insertNode(Coord xl, Coord yl, Coord xu, Coord yu, Core::ListLink<T> *&iter)
+   void BlockMap::insertNode(Fixed xl, Fixed yl, Fixed xu, Fixed yu, Core::ListLink<T> *&iter)
    {
       iter++->insert(&listHead<T>());
 

@@ -114,20 +114,20 @@ namespace DGE::Game
       Core::ListLinkVector<PhysicsThinker> blockLinks;
 
 
-      Coord bvx, bvy, bvz; // Bounce Velociy (X/Y/Z)
+      Fixed bvx, bvy, bvz; // Bounce Velociy (X/Y/Z)
       Fract friction;
-      Coord grabx, graby, grabz;
-      Coord gx, gy, gz; // Gravity (X/Y/Z)
-      Coord mass;
-      Coord sx, sy, sz; // Size (X/Y/Z)
-      Coord vx, vy, vz; // Velocity (X/Y/Z)
+      Fixed grabx, graby, grabz;
+      Fixed gx, gy, gz; // Gravity (X/Y/Z)
+      Fixed mass;
+      Fixed sx, sy, sz; // Size (X/Y/Z)
+      Fixed vx, vy, vz; // Velocity (X/Y/Z)
 
 
-      static bool Collide(PhysicsThinker *th, Coord &x, Coord &y, Coord &z, Fract &friction);
+      static bool Collide(PhysicsThinker *th, Fixed &x, Fixed &y, Fixed &z, Fract &friction);
 
-      static bool TryMoveX(PhysicsThinker *th, Coord x, Fract &friction);
-      static bool TryMoveY(PhysicsThinker *th, Coord y, Fract &friction);
-      static bool TryMoveZ(PhysicsThinker *th, Coord z, Fract &friction);
+      static bool TryMoveX(PhysicsThinker *th, Fixed x, Fract &friction);
+      static bool TryMoveY(PhysicsThinker *th, Fixed y, Fract &friction);
+      static bool TryMoveZ(PhysicsThinker *th, Fixed z, Fract &friction);
 
    protected:
       virtual void think();

@@ -39,12 +39,12 @@ namespace DGE::Game
 
       if(mass)
       {
-         auto getf = [f, this](Coord v) -> Coord
+         auto getf = [f, this](Fixed v) -> Fixed
          {
-            auto vf = Coord::MulFB(v, f);
+            auto vf = Fixed::MulFB(v, f);
             return vf ? vf : v < 0
-               ? -std::numeric_limits<Coord>::epsilon()
-               :  std::numeric_limits<Coord>::epsilon();
+               ? -std::numeric_limits<Fixed>::epsilon()
+               :  std::numeric_limits<Fixed>::epsilon();
          };
 
          if(vx) vx -= getf(vx);
@@ -106,13 +106,13 @@ namespace DGE::Game
       // Never move more than one width at a time.
       if(avx > sx || avy > sy || avz > sz)
       {
-         Coord stepx, stepy, stepz;
-         Coord::I steps;
+         Fixed stepx, stepy, stepz;
+         Fixed::I steps;
 
-         steps = 1 + static_cast<Coord::I>(std::max({
-            avx / std::max(sx, std::numeric_limits<Coord>::epsilon() * 2),
-            avy / std::max(sy, std::numeric_limits<Coord>::epsilon() * 2),
-            avz / std::max(sz, std::numeric_limits<Coord>::epsilon() * 2)}));
+         steps = 1 + static_cast<Fixed::I>(std::max({
+            avx / std::max(sx, std::numeric_limits<Fixed>::epsilon() * 2),
+            avy / std::max(sy, std::numeric_limits<Fixed>::epsilon() * 2),
+            avz / std::max(sz, std::numeric_limits<Fixed>::epsilon() * 2)}));
          stepx = vx / steps;
          stepy = vy / steps;
          stepz = vz / steps;
@@ -167,11 +167,11 @@ namespace DGE::Game
    //
    // PhysicsThinker::Collide
    //
-   bool PhysicsThinker::Collide(PhysicsThinker *th, Coord &oldx, Coord &oldy, Coord &oldz, Fract &friction)
+   bool PhysicsThinker::Collide(PhysicsThinker *th, Fixed &oldx, Fixed &oldy, Fixed &oldz, Fract &friction)
    {
-      Coord snapx    = th->x;
-      Coord snapy    = th->y;
-      Coord snapz    = th->z;
+      Fixed snapx    = th->x;
+      Fixed snapy    = th->y;
+      Fixed snapz    = th->z;
       bool  collided = false;
 
       auto const &findRes = BlockMap::Root.find(th);
@@ -254,9 +254,9 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveX
    //
-   bool PhysicsThinker::TryMoveX(PhysicsThinker *th, Coord x, Fract &friction)
+   bool PhysicsThinker::TryMoveX(PhysicsThinker *th, Fixed x, Fract &friction)
    {
-      Coord oldx = th->x, oldy = th->y, oldz = th->z;
+      Fixed oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->x = x;
 
@@ -272,9 +272,9 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveY
    //
-   bool PhysicsThinker::TryMoveY(PhysicsThinker *th, Coord y, Fract &friction)
+   bool PhysicsThinker::TryMoveY(PhysicsThinker *th, Fixed y, Fract &friction)
    {
-      Coord oldx = th->x, oldy = th->y, oldz = th->z;
+      Fixed oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->y = y;
 
@@ -290,9 +290,9 @@ namespace DGE::Game
    //
    // PhysicsThinker::TryMoveZ
    //
-   bool PhysicsThinker::TryMoveZ(PhysicsThinker *th, Coord z, Fract &friction)
+   bool PhysicsThinker::TryMoveZ(PhysicsThinker *th, Fixed z, Fract &friction)
    {
-      Coord oldx = th->x, oldy = th->y, oldz = th->z;
+      Fixed oldx = th->x, oldy = th->y, oldz = th->z;
 
       th->z = z;
 
@@ -341,14 +341,14 @@ namespace DGE::Game
    {
       auto th = PhysicsThinker::Get(argv[0]);
 
-      Code::MemPtr<Coord> oldx{task->prog->memory, argv[1]};
-      Code::MemPtr<Coord> oldy{task->prog->memory, argv[2]};
-      Code::MemPtr<Coord> oldz{task->prog->memory, argv[3]};
+      Code::MemPtr<Fixed> oldx{task->prog->memory, argv[1]};
+      Code::MemPtr<Fixed> oldy{task->prog->memory, argv[2]};
+      Code::MemPtr<Fixed> oldz{task->prog->memory, argv[3]};
       Code::MemPtr<Fract> fric{task->prog->memory, argc > 4 ? argv[4] : 0};
 
-      Coord tmpx = oldx ? *oldx : th->x;
-      Coord tmpy = oldy ? *oldy : th->y;
-      Coord tmpz = oldz ? *oldz : th->z;
+      Fixed tmpx = oldx ? *oldx : th->x;
+      Fixed tmpy = oldy ? *oldy : th->y;
+      Fixed tmpz = oldz ? *oldz : th->z;
       Fract tmpf = fric ? *fric : Fract{};
 
       task->dataStk.push(PhysicsThinker::Collide(th, tmpx, tmpy, tmpz, tmpf));

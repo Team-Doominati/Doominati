@@ -94,7 +94,7 @@ namespace DGE::Game
 
       Particle *add();
 
-      Coord x, y;
+      Fixed x, y;
       std::size_t tex;
       GDCC::Core::Array<Particle> particles;
 

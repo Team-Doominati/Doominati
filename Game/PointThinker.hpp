@@ -61,7 +61,7 @@ namespace DGE::Game
       PointThinker() : pitch{0}, yaw{0}, x{0}, y{0}, z{0} {}
 
       Angle pitch, yaw;
-      Coord x, y, z;
+      Fixed x, y, z;
    };
 }
 

@@ -25,23 +25,23 @@
 namespace DGE::Code
 {
    //
-   // MemInfo<Game::Coord>
+   // MemInfo<Game::Fixed>
    //
    template<>
-   struct MemInfo<Game::Coord const>
+   struct MemInfo<Game::Fixed const>
    {
-      static Game::Coord Get(Memory *mem, Word idx)
+      static Game::Fixed Get(Memory *mem, Word idx)
       {
-         return Game::Coord::Raw(mem->getW(idx));
+         return Game::Fixed::Raw(mem->getW(idx));
       }
 
       constexpr static unsigned int Shift = MemInfo<Word>::Shift;
       constexpr static unsigned int Step  = MemInfo<Word>::Step;
    };
    template<>
-   struct MemInfo<Game::Coord> : MemInfo<Game::Coord const>
+   struct MemInfo<Game::Fixed> : MemInfo<Game::Fixed const>
    {
-      static void Set(Memory *mem, Word idx, Game::Coord val)
+      static void Set(Memory *mem, Word idx, Game::Fixed val)
       {
          mem->setW(idx, val.raw());
       }
@@ -71,17 +71,17 @@ namespace DGE::Code
    };
 
    //
-   // MemInfo<Game::Point2>
+   // MemInfo<Game::Point2X>
    //
    template<>
-   struct MemInfo<Game::Point2 const>
+   struct MemInfo<Game::Point2X const>
    {
-      static Game::Point2 Get(Memory *mem, Word idx)
+      static Game::Point2X Get(Memory *mem, Word idx)
       {
          return
          {
-            Game::Coord::Raw(mem->getW(idx)),
-            Game::Coord::Raw(mem->getW(idx + MemInfo<Word>::Step))
+            Game::Fixed::Raw(mem->getW(idx)),
+            Game::Fixed::Raw(mem->getW(idx + MemInfo<Word>::Step))
          };
       }
 
@@ -89,9 +89,9 @@ namespace DGE::Code
       constexpr static unsigned int Step  = MemInfo<Word>::Step * 2;
    };
    template<>
-   struct MemInfo<Game::Point2> : MemInfo<Game::Point2 const>
+   struct MemInfo<Game::Point2X> : MemInfo<Game::Point2X const>
    {
-      static void Set(Memory *mem, Word idx, Game::Point2 val)
+      static void Set(Memory *mem, Word idx, Game::Point2X val)
       {
          mem->setW(idx,                       val.x.raw());
          mem->setW(idx + MemInfo<Word>::Step, val.y.raw());

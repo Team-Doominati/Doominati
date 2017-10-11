@@ -35,7 +35,7 @@ namespace DGE::Game
    //
    // Sector constructor
    //
-   Sector::Sector(std::size_t pc_, Point2 *pv_) :
+   Sector::Sector(std::size_t pc_, Point2X *pv_) :
       blockLinks{this},
       pc{pc_}, pv{pv_},
       texc{0}, texf{0},
@@ -87,9 +87,9 @@ namespace DGE::Game
       // Memory layout: [Sector] [extension members] [points]
       // This requires Code::Word having equal or stricter alignment to Point2.
       Sector *sec = static_cast<Sector *>(::operator new(
-         sizeof(Sector) + emc * sizeof(Code::Word) + (pc + 1) * sizeof(Point2)));
+         sizeof(Sector) + emc * sizeof(Code::Word) + (pc + 1) * sizeof(Point2X)));
       auto    emv = reinterpret_cast<Code::Word *>(sec + 1);
-      auto    pv  = reinterpret_cast<Point2     *>(emv + emc);
+      auto    pv  = reinterpret_cast<Point2X    *>(emv + emc);
 
       std::uninitialized_value_construct_n(emv, emc);
       std::uninitialized_value_construct_n(pv,  pc + 1);

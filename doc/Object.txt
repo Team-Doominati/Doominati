@@ -37,6 +37,7 @@ DGE_Object
 Synopsis:
   struct DGE_Object
   {
+    unsigned id;
   };
 
 ===========================================================
@@ -46,23 +47,23 @@ DGE_PhysicsThinker
 Synopsis:
   struct DGE_PhysicsThinker : DGE_RenderThinker
   {
-    accum      bvx;
-    accum      bvy;
-    accum      bvz;
-    long fract friction;
-    accum      grabx;
-    accum      graby;
-    accum      grabz;
-    accum      gx;
-    accum      gy;
-    accum      gz;
-    accum      mass;
-    accum      sx;
-    accum      sy;
-    accum      sz;
-    accum      vx;
-    accum      vy;
-    accum      vz;
+    accum bvx;
+    accum bvy;
+    accum bvz;
+    fract friction;
+    accum grabx;
+    accum graby;
+    accum grabz;
+    accum gx;
+    accum gy;
+    accum gz;
+    accum mass;
+    accum sx;
+    accum sy;
+    accum sz;
+    accum vx;
+    accum vy;
+    accum vz;
   };
 
 ===========================================================
@@ -72,11 +73,11 @@ DGE_PointThinker
 Synopsis:
   struct DGE_PointThinker : DGE_Thinker
   {
-    unsigned long fract pitch;
-    accum               x;
-    accum               y;
-    unsigned long fract yaw;
-    DGE_Accum           z;
+    unsigned fract pitch;
+    accum          x;
+    accum          y;
+    unsigned fract yaw;
+    accum          z;
   };
 
 ===========================================================
@@ -86,14 +87,27 @@ DGE_RenderThinker
 Synopsis:
   struct DGE_RenderThinker : DGE_PointThinker
   {
-    unsigned long fract ca;
-    unsigned long fract cb;
-    unsigned long fract cg;
-    unsigned long fract cr;
-    accum               rsx;
-    accum               rsy;
-    unsigned            shader;
-    unsigned            sprite;
+    unsigned fract ca;
+    unsigned fract cb;
+    unsigned fract cg;
+    unsigned fract cr;
+    accum          rsx;
+    accum          rsy;
+    unsigned       shader;
+    unsigned       sprite;
+  };
+
+===========================================================
+DGE_ScriptedEntity
+===========================================================
+
+Synopsis:
+  struct DGE_ScriptedEntity : DGE_Entity
+  {
+    unsigned (*collideI)(unsigned this, unsigned other);
+    unsigned (*collideF)(unsigned this, unsigned other);
+
+    void (*think)(unsigned this)
   };
 
 ===========================================================
@@ -103,20 +117,20 @@ DGE_Sector
 Synopsis:
   struct DGE_Sector : DGE_Object
   {
-    long fract frictair;
-    long fract friction;
-    accum      gx;
-    accum      gy;
-    accum      gz;
-    unsigned   pc;
-    unsigned   texc;
-    unsigned   texf;
-    accum      xl;
-    accum      xu;
-    accum      yl;
-    accum      yu;
-    accum      zl;
-    accum      zu;
+    fract    frictair;
+    fract    friction;
+    accum    gx;
+    accum    gy;
+    accum    gz;
+    unsigned pc;
+    unsigned texc;
+    unsigned texf;
+    accum    xl;
+    accum    xu;
+    accum    yl;
+    accum    yu;
+    accum    zl;
+    accum    zu;
   };
 
 ===========================================================

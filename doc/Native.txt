@@ -328,9 +328,9 @@ Synopsis:
 
   unsigned DGE_Sector_Create(unsigned pc, unsigned ext);
 
-  DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p);
+  DGE_Point2X DGE_Sector_PointGet(unsigned id, unsigned p);
 
-  void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val);
+  void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2X val);
 
   void DGE_Sector_Unblock(unsigned id);
 
