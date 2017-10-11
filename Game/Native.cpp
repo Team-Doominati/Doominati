@@ -22,6 +22,7 @@ namespace DGE::Game
    DGE_Code_NativeLoaderDecl(MissileEntity);
    DGE_Code_NativeLoaderDecl(ParticleSys);
    DGE_Code_NativeLoaderDecl(Sector);
+   DGE_Code_NativeLoaderDecl(ScriptedEntity);
 
    //
    // NativeAdd
@@ -31,6 +32,7 @@ namespace DGE::Game
       DGE_Code_NativeLoaderCall(MissileEntity);
       DGE_Code_NativeLoaderCall(ParticleSys);
       DGE_Code_NativeLoaderCall(Sector);
+      DGE_Code_NativeLoaderCall(ScriptedEntity);
    }
 }
 

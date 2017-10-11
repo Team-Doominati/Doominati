@@ -44,6 +44,8 @@ add_library(dge-game-lib ${DGE_SHARED_DECL}
    RenderThinker.hpp
    Sector.cpp
    Sector.hpp
+   ScriptedEntity.cpp
+   ScriptedEntity.hpp
    Team.cpp
    Team.hpp
    Thinker.cpp
