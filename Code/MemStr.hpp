@@ -24,6 +24,8 @@
 
 namespace DGE::Code
 {
+   void MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL);
+
    std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str);
    std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str, std::size_t len);
 

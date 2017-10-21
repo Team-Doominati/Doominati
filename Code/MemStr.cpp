@@ -20,6 +20,23 @@
 namespace DGE::Code
 {
    //
+   // MemStrNCpy
+   //
+   void MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL)
+   {
+      if(outL)
+      {
+         if(outL > inL)
+            outL = inL + 1;
+
+         for(auto end = in + outL - 1; in != end;)
+            *out++ = *in++;
+
+         *out++ = '\0';
+      }
+   }
+
+   //
    // MemStrDup
    //
    std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str)

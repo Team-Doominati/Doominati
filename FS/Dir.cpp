@@ -135,8 +135,7 @@ namespace DGE::FS
    //
    Core::HashedStr Dir::iterGetName(IterData iter)
    {
-      auto res = iterGet(iter);
-      return res.dir ? res.dir->name : res.file ? res.file->name : nullptr;
+      return iterGet(iter).name();
    }
 
    //

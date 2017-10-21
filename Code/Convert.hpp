@@ -89,7 +89,7 @@ namespace DGE::Code
    //
    constexpr DWord WordToDWord(Word x0, Word x1)
       {return x0 | (static_cast<DWord>(x1) << 32);}
-   constexpr DWord WordToDWord(Word x[2])
+   constexpr DWord WordToDWord(Word const x[2])
       {return x[0] | (static_cast<DWord>(x[1]) << 32);}
 }
 

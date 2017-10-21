@@ -55,6 +55,8 @@ namespace DGE::FS
          IterRes(DirPtr &&dir_, File *file_) : dir{std::move(dir_)}, file{file_} {}
          IterRes(File *file_) : dir{nullptr, false}, file{file_} {}
 
+         Core::HashedStr name() {return dir ? dir->name : file ? file->name : nullptr;}
+
          DirPtr  dir;
          FilePtr file;
       };

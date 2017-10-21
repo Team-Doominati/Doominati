@@ -12,7 +12,7 @@
 
 #include "Code/Textdefs.hpp"
 
-#include "Code/MemPtr.hpp"
+#include "Code/MemStr.hpp"
 #include "Code/Native.hpp"
 #include "Code/Program.hpp"
 #include "Code/Task.hpp"
@@ -173,17 +173,7 @@ namespace DGE::Code
       if(!text)
          return task->dataStk.push(0), false;
 
-      // Copy text into buffer.
-      if(len)
-      {
-         if(len > text->len)
-            len = text->len + 1;
-
-         for(auto c = text->str, e = c + len - 1; c != e;)
-            *buf++ = *c++;
-
-         *buf++ = '\0';
-      }
+      MemStrNCpy(buf, len, text->str, text->len);
 
       task->dataStk.push(text->len);
       return false;
