@@ -80,7 +80,7 @@ namespace DGE::Code
    {
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
 
-      FS::File *file = FS::Dir::FindFile(MemStrDup(name).get());
+      FS::File *file = FS::Dir::Root->findFilePath(MemStrDup(name).get());
       if(!file) {task->dataStk.push(-1); return false;}
 
       ++file->refs;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -24,7 +24,22 @@
 namespace DGE::Core
 {
    //
-   // BinarySearch
+   // BSearchKey
+   //
+   template<typename T, typename Key>
+   T *BSearchKey(T *itr, T *end, Key key)
+   {
+      auto cmpL = [](T const &i, Key const &k) {return i.name < k;};
+      auto cmpU = [](Key const &k, T const &i) {return k < i.name;};
+
+      itr = std::lower_bound(itr, end, key, cmpL);
+      end = std::upper_bound(itr, end, key, cmpU);
+
+      return itr == end ? nullptr : itr;
+   }
+
+   //
+   // BSearchStr
    //
    template<typename T> T *BSearchStr(T *itr, T *end, char const *key)
    {

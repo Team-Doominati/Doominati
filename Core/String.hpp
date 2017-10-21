@@ -32,7 +32,7 @@ namespace DGE::Core
    class HashedStr
    {
    public:
-      HashedStr() : str{nullptr}, len{0}, hash{0} {}
+      HashedStr(decltype(nullptr) str_ = nullptr) : str{str_}, len{0}, hash{0} {}
       HashedStr(char const *str_) :
          str{str_} {std::tie(len, hash) = GDCC::Core::StrLenHash(str);}
       HashedStr(char const *first, char const *last) :
@@ -46,6 +46,9 @@ namespace DGE::Core
 
       explicit operator bool () const {return str;}
       operator std::string () const {return std::string{str, len};}
+
+      bool operator < (HashedStr const &r) const
+         {return std::lexicographical_compare(str, end(), r.str, r.end());}
 
       bool operator == (HashedStr const &r) const
          {return hash == r.hash && len == r.len && std::memcmp(str, r.str, len) == 0;}

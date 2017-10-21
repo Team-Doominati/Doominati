@@ -13,6 +13,8 @@
 #ifndef DGE__FS__File_H__
 #define DGE__FS__File_H__
 
+#include "../Core/String.hpp"
+
 #include <cstddef>
 #include <memory>
 
@@ -65,7 +67,7 @@ namespace DGE::FS
 
       std::unique_ptr<Dir> dir;
       char const          *data;
-      char const          *name;
+      Core::HashedStr      name;
       std::size_t          refs;
       std::size_t          size;
       Format               format;

@@ -85,7 +85,7 @@ namespace DGE::Code
    {
       std::unordered_map<Core::HashedStr, std::unordered_map<Core::HashedStr, Core::HashedStr>> langs;
 
-      FS::Dir::ForFile("textdefs", [&](FS::File *file)
+      FS::Dir::Root->forFilePath("textdefs", [&](FS::File *file)
       {
          if(file->format != FS::Format::DGE_NTS)
             return;

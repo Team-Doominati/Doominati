@@ -84,7 +84,7 @@ namespace DGE::GL
       GDCC::Core::String str{argv[0]};
 
       auto fname = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
-      auto fp = FS::Dir::FindFile(fname.get());
+      auto fp = FS::Dir::Root->findFilePath(fname.get());
 
       task->dataStk.push(Renderer::GetCurrent()->fontAdd(str, fp, argv[2]));
 

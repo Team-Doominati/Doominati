@@ -31,7 +31,7 @@ namespace DGE::FS
    class DirMapNF
    {
    public:
-      char const *operator () (FT const *file) {return file->name;}
+      char const *operator () (FT const *file) {return file->name.str;}
    };
 
    //
@@ -41,7 +41,7 @@ namespace DGE::FS
    class DirMapNL
    {
    public:
-      std::size_t operator () (FT const *file) {return std::strlen(file->name);}
+      std::size_t operator () (FT const *file) {return file->name.len;}
    };
 
    //

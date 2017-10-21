@@ -47,6 +47,13 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Objects                                                             |
+//
+
+static GDCC::Core::Array<std::unique_ptr<DGE::FS::Dir>> RootDirs;
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -72,7 +79,7 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 
    // Load CODEDEFS files.
    DGE::Code::Loader loader;
-   DGE::FS::Dir::ForFile("codedefs",
+   DGE::FS::Dir::Root->forFilePath("codedefs",
       std::bind(&DGE::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
 
    // Print status.
@@ -126,11 +133,24 @@ static int Main()
    // Initialize filesystem.
    if(GDCC::Core::GetOptionArgs().size())
    {
+      std::vector<std::unique_ptr<DGE::FS::Dir>> dirs;
       for(auto const &arg : GDCC::Core::GetOptionArgs())
-         DGE::FS::Dir::AddRoot(arg);
+         if(auto dir = DGE::FS::CreateDir(arg))
+            dirs.emplace_back(std::move(dir));
+
+      if(dirs.size() != 1)
+      {
+         RootDirs = {GDCC::Core::Move, dirs.rbegin(), dirs.rend()};
+
+         DGE::FS::Dir::Root = DGE::FS::CreateDir_Union(
+            {RootDirs.begin(), RootDirs.end(),
+               [](std::unique_ptr<DGE::FS::Dir> &d){return d.get();}});
+      }
+      else
+         DGE::FS::Dir::Root = std::move(dirs[0]);
    }
    else
-      DGE::FS::Dir::AddRoot(".");
+      DGE::FS::Dir::Root = DGE::FS::CreateDir(".");
 
    // Load TEXTDEFS.
    DGE::Code::LoadTextdefs();

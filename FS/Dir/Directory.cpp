@@ -34,11 +34,13 @@ namespace DGE::FS
    class Dir_Directory : public Dir
    {
    public:
-      virtual Dir *findDir(char const *name);
+      virtual DirPtr findDir(Core::HashedStr name);
 
-      virtual File *findFile(char const *name);
+      virtual FilePtr findFile(Core::HashedStr name);
 
-      virtual void forFile(ForFunc const &fn);
+      virtual IterData        iterEnd();
+      virtual IterRes         iterGet(IterData iter);
+      virtual Core::HashedStr iterGetName(IterData iter);
 
 
       friend std::unique_ptr<Dir> CreateDir_Directory(char const *name);
@@ -61,7 +63,7 @@ namespace DGE::FS
    class File_Directory : public File
    {
    public:
-      bool readFile();
+      bool findFile();
 
       std::unique_ptr<GDCC::Core::FileBlock> file;
       std::unique_ptr<char[]>                fileName;
@@ -123,24 +125,24 @@ namespace DGE::FS
       // Sort the lists for binary search.
       std::sort(files.begin(), files.end(),
          [](File_Directory const &l, File_Directory const &r)
-            {return std::strcmp(l.name, r.name) < 0;});
+            {return l.name < r.name;});
 
       std::sort(dirs.begin(), dirs.end(),
          [](Dir_Directory const &l, Dir_Directory const &r)
-            {return std::strcmp(l.name, r.name) < 0;});
+            {return l.name < r.name;});
    }
 
    //
    // Dir_Directory::findDir
    //
-   Dir *Dir_Directory::findDir(char const *dirname)
+   Dir::DirPtr Dir_Directory::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchStr(dirs.begin(), dirs.end(), dirname))
+      if(auto dir = Core::BSearchKey(dirs.begin(), dirs.end(), dirname))
       {
          if(dir->files.empty() && dir->dirs.empty())
             dir->buildTables(dir->dirName.get());
 
-         return dir;
+         return {dir, false};
       }
 
       return Dir::findDir(dirname);
@@ -149,30 +151,67 @@ namespace DGE::FS
    //
    // Dir_Directory::findFile
    //
-   File *Dir_Directory::findFile(char const *filename)
+   Dir::FilePtr Dir_Directory::findFile(Core::HashedStr filename)
    {
-      if(auto file = Core::BSearchStr(files.begin(), files.end(), filename))
-         return file->readFile() ? file : nullptr;
+      if(auto file = Core::BSearchKey(files.begin(), files.end(), filename))
+         return file->findFile() ? file : nullptr;
 
       return nullptr;
    }
 
    //
-   // Dir_Directory::forFile
+   // Dir_Directory::iterEnd
    //
-   void Dir_Directory::forFile(ForFunc const &fn)
+   Dir::IterData Dir_Directory::iterEnd()
    {
-      for(auto &dir : dirs)
-         dir.forFile(fn);
-
-      for(auto &file : files)
-         if(file.readFile()) fn(&file);
+      return dirs.size() + files.size();
    }
 
    //
-   // File_Directory::readFile
+   // Dir_Directory::iterGet
    //
-   bool File_Directory::readFile()
+   Dir::IterRes Dir_Directory::iterGet(IterData iter)
+   {
+      if(iter < dirs.size())
+      {
+         auto &dir = dirs[iter];
+
+         if(dir.files.empty() && dir.dirs.empty())
+            dir.buildTables(dir.dirName.get());
+
+         return {{&dir, false}};
+      }
+
+      if((iter -= dirs.size()) < files.size())
+      {
+         auto &file = files[iter];
+
+         if(!file.findFile()) return {};
+
+         return {{file.findDir(), false}, &file};
+      }
+
+      return {};
+   }
+
+   //
+   // Dir_Directory::iterGetName
+   //
+   Core::HashedStr Dir_Directory::iterGetName(IterData iter)
+   {
+      if(iter < dirs.size())
+         return dirs[iter].name;
+
+      if((iter -= dirs.size()) < files.size())
+         return files[iter].name;
+
+      return nullptr;
+   }
+
+   //
+   // File_Directory::findFile
+   //
+   bool File_Directory::findFile()
    {
       if(file)
          return true;

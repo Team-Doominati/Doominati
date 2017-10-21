@@ -43,11 +43,12 @@ namespace DGE::FS
    class Dir_PakBase : public Dir
    {
    public:
-      virtual Dir *findDir(char const *dirname);
+      virtual DirPtr findDir(Core::HashedStr dirname);
 
-      virtual File *findFile(char const *filename);
+      virtual FilePtr findFile(Core::HashedStr filename);
 
-      virtual void forFile(ForFunc const &fn);
+      virtual IterData iterEnd();
+      virtual IterRes  iterGet(IterData iter);
 
    protected:
       Dir_PakBase() : files{nullptr}, fileC{0}, dirs{nullptr}, dirC{0} {}
@@ -143,10 +144,10 @@ namespace DGE::FS
    //
    // Dir_PakBase::findDir
    //
-   Dir *Dir_PakBase::findDir(char const *dirname)
+   Dir::DirPtr Dir_PakBase::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchStr(dirs, dirs + dirC, dirname))
-         return dir;
+      if(auto dir = Core::BSearchKey(dirs, dirs + dirC, dirname))
+         return {dir, false};
 
       return Dir::findDir(dirname);
    }
@@ -154,26 +155,31 @@ namespace DGE::FS
    //
    // Dir_PakBase::findFile
    //
-   File *Dir_PakBase::findFile(char const *filename)
+   Dir::FilePtr Dir_PakBase::findFile(Core::HashedStr filename)
    {
-      return Core::BSearchStr(files, files + fileC, filename);
+      return Core::BSearchKey(files, files + fileC, filename);
    }
 
    //
-   // Dir_PakBase::forFile
+   // Dir_PakBase::iterEnd
    //
-   void Dir_PakBase::forFile(ForFunc const &fn)
+   Dir::IterData Dir_PakBase::iterEnd()
    {
-      for(auto file = files, end = file + fileC; file != end; ++file)
-      {
-         if(auto dir = file->findDir())
-            dir->forFile(fn);
-         else
-            fn(file);
-      }
+      return dirC + fileC;
+   }
 
-      for(auto dir = dirs, end = dir + dirC; dir != end; ++dir)
-         dir->forFile(fn);
+   //
+   // Dir_PakBase::iterGet
+   //
+   Dir::IterRes Dir_PakBase::iterGet(IterData iter)
+   {
+      if(iter < dirC)
+         return {{&dirs[iter], false}};
+
+      if((iter -= dirC) < fileC)
+         return {{files[iter].findDir(), false}, &files[iter]};
+
+      return {};
    }
 
    //
@@ -201,7 +207,7 @@ namespace DGE::FS
 
       // Finish lump names.
       for(auto i = dir->files, e = i + dirSize; i != e; ++i)
-         if(auto s = std::strrchr(i->name, '/')) i->name = s + 1;
+         if(auto s = std::strrchr(i->name.str, '/')) i->name = s + 1;
    }
 
    //
@@ -247,7 +253,7 @@ namespace DGE::FS
       // Sort the files by name. This allows sub-dirs to point into this array.
       std::sort(dir->files, dir->files + dirSize,
          [](File_Pak const &l, File_Pak const &r)
-            {return PathCompare(l.name, r.name) < 0;});
+            {return PathCompare(l.name.str, r.name.str) < 0;});
    }
 
    //

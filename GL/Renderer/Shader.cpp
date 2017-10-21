@@ -177,8 +177,8 @@ namespace DGE::GL
       auto fragD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
       auto vertD = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[2]});
 
-      auto fragF = FS::Dir::FindFile(fragD.get());
-      auto vertF = FS::Dir::FindFile(vertD.get());
+      auto fragF = FS::Dir::Root->findFilePath(fragD.get());
+      auto vertF = FS::Dir::Root->findFilePath(vertD.get());
 
       task->dataStk.push(Renderer::GetCurrent()->shaderAdd(str, fragF, vertF));
 

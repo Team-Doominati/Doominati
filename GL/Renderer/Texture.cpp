@@ -61,7 +61,7 @@ namespace DGE::GL
       Core::ResourceSaver<TextureData> texSave{texMan, texBound};
 
       if(name[0] == '@')
-         return textureGet_File(name, FS::Dir::FindFile(name.data() + 1));
+         return textureGet_File(name, FS::Dir::Root->findFilePath(name.data() + 1));
 
       std::cerr << "unknown texture: " << name << std::endl;
       return textureGet_NoFi(name);
@@ -141,7 +141,7 @@ namespace DGE::GL
       GDCC::Core::String str{argv[0]};
 
       auto fname = Code::MemStrDup(Code::MemPtr<Code::Byte const>{&task->prog->memory, argv[1]});
-      auto fp = FS::Dir::FindFile(fname.get());
+      auto fp = FS::Dir::Root->findFilePath(fname.get());
 
       task->dataStk.push(Renderer::GetCurrent()->textureAdd(str, fp));
 

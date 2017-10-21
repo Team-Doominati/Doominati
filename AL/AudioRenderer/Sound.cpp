@@ -46,7 +46,7 @@ namespace DGE::AL
    AudioRenderer::Sound *AudioRenderer::soundGet_File(GDCC::Core::String name)
    {
       auto filename = name.data() + 1;
-      auto file = FS::Dir::FindFile(filename);
+      auto file = FS::Dir::Root->findFilePath(filename);
 
       if(!file)
       {

@@ -45,11 +45,13 @@ namespace DGE::FS
    class Dir_ZipBase : public Dir
    {
    public:
-      virtual Dir *findDir(char const *dirname);
+      virtual DirPtr findDir(Core::HashedStr dirname);
 
-      virtual File *findFile(char const *filename);
+      virtual FilePtr findFile(Core::HashedStr filename);
 
-      virtual void forFile(ForFunc const &fn);
+      virtual IterData        iterEnd();
+      virtual IterRes         iterGet(IterData iter);
+      virtual Core::HashedStr iterGetName(IterData iter);
 
    protected:
       Dir_ZipBase() : files{nullptr}, fileC{0}, dirs{nullptr}, dirC{0} {}
@@ -202,10 +204,10 @@ namespace DGE::FS
    //
    // Dir_ZipBase::findDir
    //
-   Dir *Dir_ZipBase::findDir(char const *dirname)
+   Dir::DirPtr Dir_ZipBase::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchStr(dirs, dirs + dirC, dirname))
-         return dir;
+      if(auto dir = Core::BSearchKey(dirs, dirs + dirC, dirname))
+         return {dir, false};
 
       return Dir::findDir(dirname);
    }
@@ -213,32 +215,54 @@ namespace DGE::FS
    //
    // Dir_ZipBase::findFile
    //
-   File *Dir_ZipBase::findFile(char const *filename)
+   Dir::FilePtr Dir_ZipBase::findFile(Core::HashedStr filename)
    {
-      if(auto file = Core::BSearchStr(files, files + fileC, filename))
+      if(auto file = Core::BSearchKey(files, files + fileC, filename))
          return file->findFile();
 
       return nullptr;
    }
 
    //
-   // Dir_ZipBase::forFile
+   // Dir_ZipBase::idxEnd
    //
-   void Dir_ZipBase::forFile(ForFunc const &fn)
+   Dir::IterData Dir_ZipBase::iterEnd()
    {
-      for(auto &file : GDCC::Core::MakeRange(files, files + fileC))
-      {
-         // Skip files that fail to load.
-         if(!file.findFile()) continue;
+      return dirC + fileC;
+   }
 
-         if(auto dir = file.findDir())
-            dir->forFile(fn);
-         else
-            fn(&file);
+   //
+   // Dir_ZipBase::iterGet
+   //
+   Dir::IterRes Dir_ZipBase::iterGet(IterData iter)
+   {
+      if(iter < dirC)
+         return {{&dirs[iter], false}};
+
+      if((iter -= dirC) < fileC)
+      {
+         auto &file = files[iter];
+
+         if(!file.findFile()) return {};
+
+         return {{file.findDir(), false}, &file};
       }
 
-      for(auto &dir : GDCC::Core::MakeRange(dirs, dirs + dirC))
-         dir.forFile(fn);
+      return {};
+   }
+
+   //
+   // Dir_ZipBase::iterGetName
+   //
+   Core::HashedStr Dir_ZipBase::iterGetName(IterData iter)
+   {
+      if(iter < dirC)
+         return dirs[iter].name;
+
+      if((iter -= dirC) < fileC)
+         return files[iter].name;
+
+      return nullptr;
    }
 
    //
