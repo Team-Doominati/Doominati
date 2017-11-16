@@ -366,9 +366,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_PhysicsThinker_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) PhysicsThinker)->id);
+      task->dataStk.push(PhysicsThinker::Create(argv[0])->id);
       return false;
    }
 

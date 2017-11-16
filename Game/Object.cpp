@@ -70,9 +70,10 @@ namespace DGE::Game
    //
    // Object constructor
    //
-   Object::Object() :
-      id{GetObjectVec().alloc(this)}
+   Object::Object(Code::Word *emv_, std::size_t emc_) :
+      emv{emv_}, emc{static_cast<Code::Word>(emc_)}, id{GetObjectVec().alloc(this)}
    {
+      std::uninitialized_value_construct_n(emv, emc);
    }
 
    //
@@ -90,19 +91,6 @@ namespace DGE::Game
    {
       static Core::IDAllocator<Object, Code::Word> vec{1};
       return vec;
-   }
-
-   //
-   // Object::New
-   //
-   void *Object::New(std::size_t size, std::size_t emc)
-   {
-      void *p   = ::operator new(size + emc * sizeof(Code::Word));
-      auto  emv = reinterpret_cast<Code::Word *>(static_cast<char *>(p) + size);
-
-      std::uninitialized_value_construct_n(emv, emc);
-
-      return p;
    }
 
    //
@@ -217,7 +205,7 @@ namespace DGE::Game
       }
       else
       {
-         auto em = obj->extMember() + (mem - ObjectMember::MAX);
+         auto em = obj->emv + (mem - ObjectMember::MAX);
          while(len--) task->dataStk.push(*em++);
       }
 
@@ -239,7 +227,7 @@ namespace DGE::Game
       }
       else
       {
-         auto em = obj->extMember() + (mem - ObjectMember::MAX);
+         auto em = obj->emv + (mem - ObjectMember::MAX);
          auto va = argv + 2;
          while(len--) *em++ = *va++;
       }

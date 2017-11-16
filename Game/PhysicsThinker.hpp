@@ -13,9 +13,9 @@
 #ifndef DGE__Game__PhysicsThinker_H__
 #define DGE__Game__PhysicsThinker_H__
 
-#include "Game/RenderThinker.hpp"
+#include "../Game/RenderThinker.hpp"
 
-#include "Core/ListLinkVector.hpp"
+#include "../Core/ListLinkVector.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -85,7 +85,8 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(PhysicsThinker, RenderThinker);
 
    public:
-      PhysicsThinker() :
+      PhysicsThinker(Code::Word *emv_, std::size_t emc_) :
+         RenderThinker{emv_, emc_},
          blockLinks{this},
          bvx{0}, bvy{0}, bvz{0},
          friction{0},
@@ -124,6 +125,8 @@ namespace DGE::Game
 
 
       static bool Collide(PhysicsThinker *th, Fixed &x, Fixed &y, Fixed &z, Fract &friction);
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
 
       static bool TryMoveX(PhysicsThinker *th, Fixed x, Fract &friction);
       static bool TryMoveY(PhysicsThinker *th, Fixed y, Fract &friction);

@@ -15,10 +15,11 @@
 
 #include "../Game/Types.hpp"
 
-#include "Core/IDAllocator.hpp"
-#include "Core/String.hpp"
+#include "../Core/Alloc.hpp"
+#include "../Core/IDAllocator.hpp"
+#include "../Core/String.hpp"
 
-#include "Code/ExtMem.hpp"
+#include "../Code/ExtMem.hpp"
 
 #include <GDCC/Core/Counter.hpp>
 
@@ -31,13 +32,15 @@
 // DGE_Game_Object_GetMemberCases
 //
 #define DGE_Game_Object_GetMemberCases() \
-   case ObjectMember::id: return id
+   case ObjectMember::emc: return emc; \
+   case ObjectMember::id:  return id
 
 //
 // DGE_Game_Object_SetMemberCases
 //
 #define DGE_Game_Object_SetMemberCases() \
-   case ObjectMember::id: (void)val; break
+   case ObjectMember::emc: (void)val; break; \
+   case ObjectMember::id:  (void)val; break
 
 //
 // DGE_Game_ObjectImplement
@@ -73,17 +76,6 @@
 //
 #define DGE_Game_ObjectPreambleCommon(name) \
 public: \
-   void operator delete(void *ptr) \
-      {return ::operator delete(ptr);} \
-   void operator delete(void *ptr, std::size_t, std::size_t) \
-      {return ::operator delete(ptr);} \
-   \
-   void *operator new(std::size_t size, std::size_t ext = 0) \
-      {return New(size, ExtMem.max() + ext);} \
-   void *operator new(std::size_t, void *ptr) {return ptr;} \
-   \
-   virtual Code::Word *extMember() \
-      {return reinterpret_cast<Code::Word *>(this + 1);} \
    virtual Code::Word getMember(ObjectMember mem); \
    virtual void setMember(ObjectMember mem, Code::Word val); \
    \
@@ -137,14 +129,31 @@ namespace DGE::Game
 
       void refSub() {if(!--refCount) delete this;}
 
-      Code::Word const id;
+      Code::Word *const emv;
+      Code::Word  const emc;
+      Code::Word  const id;
+
+
+      //
+      // CreateT
+      //
+      template<typename T>
+      static T *CreateT(Code::Word ext)
+      {
+         std::size_t emc = T::ExtMem.max() + ext;
+
+         // Memory layout: [T] [extension members]
+         auto emo = Core::AlignOffset<Code::Word>(sizeof(T));
+         auto buf = static_cast<char *>(::operator new(emo + emc * sizeof(Code::Word)));
+         auto emv = reinterpret_cast<Code::Word *>(buf + emo);
+
+         return new(buf) T{emv, emc};
+      }
 
    protected:
-      Object();
+      Object(Code::Word *emv, std::size_t emc);
       virtual ~Object();
 
-
-      static void *New(std::size_t size, std::size_t emc);
 
       static Core::IDAllocator<Object, Code::Word> &GetObjectVec();
 

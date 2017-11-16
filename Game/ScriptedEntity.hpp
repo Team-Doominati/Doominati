@@ -55,6 +55,8 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(ScriptedEntity, Entity);
 
    public:
+      ScriptedEntity(Code::Word *emv_, std::size_t emc_) : Entity{emv_, emc_} {}
+
       virtual bool collideFrom(PhysicsThinker *th);
       virtual bool collideInto(PhysicsThinker *th);
       virtual bool collideInto(Sector *sec);
@@ -63,6 +65,9 @@ namespace DGE::Game
       Code::FuncPtr<Code::Word(Code::Word, Code::Word)> cbCollideI;
 
       Code::FuncPtr<void(Code::Word)> cbThink;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
 
    protected:
       virtual void think();

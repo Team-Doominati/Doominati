@@ -102,7 +102,7 @@ namespace DGE::Game
       static Sector *Create(std::size_t pc, std::size_t ext);
 
    private:
-      Sector(std::size_t pc, Point2X *pv);
+      Sector(Code::Word *emv, std::size_t emc, Point2X *pv, std::size_t pc);
    };
 }
 

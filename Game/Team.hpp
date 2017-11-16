@@ -64,7 +64,7 @@ namespace DGE::Game
       DGE_Game_ObjectPreamble(Team, Object);
 
    public:
-      Team() : teamLink{this} {}
+      Team(Code::Word *emv_, std::size_t emc_) : Object{emv_, emc_}, teamLink{this} {}
 
       Team const *getOwnerTop() const;
 
@@ -77,6 +77,9 @@ namespace DGE::Game
       Core::ListLink<Team>   teamLink;
 
       Ptr owner;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
    };
 }
 

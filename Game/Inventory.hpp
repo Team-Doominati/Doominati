@@ -71,6 +71,12 @@ namespace DGE::Game
    class ItemData : public Object
    {
       DGE_Game_ObjectPreamble(ItemData, Object);
+
+   public:
+      ItemData(Code::Word *emv_, std::size_t emc_) : Object{emv_, emc_} {}
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
    };
 
    //
@@ -79,6 +85,12 @@ namespace DGE::Game
    class ItemType : public Object
    {
       DGE_Game_ObjectPreamble(ItemType, Object);
+
+   public:
+      ItemType(Code::Word *emv_, std::size_t emc_) : Object{emv_, emc_} {}
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
    };
 
    //
@@ -98,7 +110,8 @@ namespace DGE::Game
       static Inventory *Create(std::size_t ic, std::size_t ext);
 
    private:
-      Inventory(std::size_t ic, ItemData::Ptr *idv, ItemType::Ptr *itv, Code::Word *isv);
+      Inventory(Code::Word *emv, std::size_t emc, std::size_t ic,
+         ItemData::Ptr *idv, ItemType::Ptr *itv, Code::Word *isv);
       virtual ~Inventory();
    };
 }

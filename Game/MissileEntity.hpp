@@ -15,7 +15,7 @@
 
 #include "../Game/Entity.hpp"
 
-#include "Game/BlockMap.hpp"
+#include "../Game/BlockMap.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -53,7 +53,7 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(MissileEntity, Entity);
 
    public:
-      MissileEntity() {}
+      MissileEntity(Code::Word *emv_, std::size_t emc_) : Entity{emv_, emc_} {}
 
       virtual bool collideFrom(PhysicsThinker *th);
       virtual bool collideInto(PhysicsThinker *th);
@@ -61,6 +61,9 @@ namespace DGE::Game
 
       Entity::Ptr  owner;
       std::int32_t damage;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
 
    protected:
       virtual void think();

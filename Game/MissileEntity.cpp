@@ -89,9 +89,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_MissileEntity_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) MissileEntity)->id);
+      task->dataStk.push(MissileEntity::Create(argv[0])->id);
       return false;
    }
 }

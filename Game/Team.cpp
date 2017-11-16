@@ -67,9 +67,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_Team_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) Team)->id);
+      task->dataStk.push(Team::Create(argv[0])->id);
       return false;
    }
 }

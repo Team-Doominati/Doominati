@@ -37,9 +37,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_RenderThinker_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) RenderThinker)->id);
+      task->dataStk.push(RenderThinker::Create(argv[0])->id);
       return false;
    }
 }

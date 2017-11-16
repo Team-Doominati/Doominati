@@ -13,7 +13,7 @@
 #ifndef DGE__Game__Thinker_H__
 #define DGE__Game__Thinker_H__
 
-#include "Game/Object.hpp"
+#include "../Game/Object.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -102,7 +102,7 @@ namespace DGE::Game
       static Thinker ThinkerCap;
 
    protected:
-      Thinker();
+      Thinker(Code::Word *emv, std::size_t emc);
       virtual ~Thinker();
 
       virtual void think() {}

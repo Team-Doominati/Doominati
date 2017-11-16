@@ -13,9 +13,9 @@
 #ifndef DGE__Game__Entity_H__
 #define DGE__Game__Entity_H__
 
-#include "Game/PhysicsThinker.hpp"
+#include "../Game/PhysicsThinker.hpp"
 
-#include "Game/Team.hpp"
+#include "../Game/Team.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -57,7 +57,8 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(Entity, PhysicsThinker);
 
    public:
-      Entity() : teamLink{this}, health{0} {}
+      Entity(Code::Word *emv_, std::size_t emc_) :
+         PhysicsThinker{emv_, emc_}, teamLink{this}, health{0} {}
 
       void setTeam(Code::Word id);
 
@@ -66,6 +67,9 @@ namespace DGE::Game
       Team::Ptr team;
 
       std::int32_t health;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
 
    protected:
       virtual void think();

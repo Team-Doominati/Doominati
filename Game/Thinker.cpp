@@ -39,7 +39,8 @@ namespace DGE::Game
    //
    // Thinker constructor
    //
-   Thinker::Thinker() :
+   Thinker::Thinker(Code::Word *emv_, std::size_t emc_) :
+      Object{emv_, emc_},
       next{ThinkerCap.next},
       prev{&ThinkerCap}
    {
@@ -50,6 +51,7 @@ namespace DGE::Game
    // ThinkerCap constructor
    //
    Thinker::Thinker(int) :
+      Object{nullptr, 0},
       next{this},
       prev{this}
    {

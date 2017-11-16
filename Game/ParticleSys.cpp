@@ -29,7 +29,8 @@ namespace DGE::Game
    //
    // ParticleSys constructor
    //
-   ParticleSys::ParticleSys(std::size_t npr) :
+   ParticleSys::ParticleSys(Code::Word *emv_, std::size_t emc_, std::size_t npr) :
+      Thinker{emv_, emc_},
       x{0}, y{0},
       tex{0},
       particles(npr),
@@ -103,6 +104,21 @@ namespace DGE::Game
          prev = cur;
       }
    }
+
+   //
+   // ParticleSys::Create
+   //
+   ParticleSys *ParticleSys::Create(std::size_t npr, Code::Word ext)
+   {
+      std::size_t emc = ExtMem.max() + ext;
+
+      // Memory layout: [T] [extension members]
+      auto emo = Core::AlignOffset<Code::Word>(sizeof(ParticleSys));
+      auto buf = static_cast<char *>(::operator new(emo + emc * sizeof(Code::Word)));
+      auto emv = reinterpret_cast<Code::Word *>(buf + emo);
+
+      return new(buf) ParticleSys{emv, emc, npr};
+   }
 }
 
 //----------------------------------------------------------------------------|
@@ -146,7 +162,7 @@ namespace DGE::Game
       std::size_t ext = argv[0];
       std::size_t npr = argv[1];
 
-      task->dataStk.push((new(ext) ParticleSys(npr))->id);
+      task->dataStk.push(ParticleSys::Create(npr, ext)->id);
       return false;
    }
 }

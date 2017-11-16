@@ -13,14 +13,13 @@
 #ifndef DGE__Game__ParticleSys_H__
 #define DGE__Game__ParticleSys_H__
 
-#include "Game/Thinker.hpp"
-#include "Game/Types.hpp"
+#include "../Game/Thinker.hpp"
 
-#include "Code/Convert.hpp"
+#include "../Code/Convert.hpp"
 
-#include "Core/Color.hpp"
-#include "Core/Math.hpp"
-#include "Core/Vector2.hpp"
+#include "../Core/Color.hpp"
+#include "../Core/Math.hpp"
+#include "../Core/Vector2.hpp"
 
 #include <GDCC/Core/Array.hpp>
 
@@ -90,13 +89,16 @@ namespace DGE::Game
 
    public:
       ParticleSys() = delete;
-      ParticleSys(std::size_t npr);
+      ParticleSys(Code::Word *emv, std::size_t emc, std::size_t npr);
 
       Particle *add();
 
       Fixed x, y;
       std::size_t tex;
       GDCC::Core::Array<Particle> particles;
+
+
+      static ParticleSys *Create(std::size_t npr, Code::Word ext);
 
    protected:
       virtual void think();

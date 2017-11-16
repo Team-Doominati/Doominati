@@ -13,8 +13,8 @@
 #ifndef DGE__Game__PointThinker_H__
 #define DGE__Game__PointThinker_H__
 
-#include "Game/Thinker.hpp"
-#include "Game/Types.hpp"
+#include "../Game/Thinker.hpp"
+#include "../Game/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -58,10 +58,14 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(PointThinker, Thinker);
 
    public:
-      PointThinker() : pitch{0}, yaw{0}, x{0}, y{0}, z{0} {}
+      PointThinker(Code::Word *emv_, std::size_t emc_) :
+         Thinker{emv_, emc_}, pitch{0}, yaw{0}, x{0}, y{0}, z{0} {}
 
       Angle pitch, yaw;
       Fixed x, y, z;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
    };
 }
 

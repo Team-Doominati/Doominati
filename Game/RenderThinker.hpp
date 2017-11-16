@@ -13,9 +13,9 @@
 #ifndef DGE__Game__RenderThinker_H__
 #define DGE__Game__RenderThinker_H__
 
-#include "Game/PointThinker.hpp"
+#include "../Game/PointThinker.hpp"
 
-#include "Code/Convert.hpp"
+#include "../Code/Convert.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -65,14 +65,23 @@ namespace DGE::Game
       DGE_Game_ThinkerPreamble(RenderThinker, PointThinker);
 
    public:
-      RenderThinker() : cr{1}, cg{1}, cb{1}, ca{1}, shader{0}, sprite{0},
-         rsx{0}, rsy{0} {}
+      RenderThinker(Code::Word *emv_, std::size_t emc_) :
+         PointThinker{emv_, emc_},
+         cr{1}, cg{1}, cb{1}, ca{1},
+         shader{0},
+         sprite{0},
+         rsx{0}, rsy{0}
+      {
+      }
 
       std::float_t cr, cg, cb, ca;
 
       Code::Word shader, sprite;
 
       std::float_t rsx, rsy;
+
+
+      static This *Create(Code::Word ext) {return CreateT<This>(ext);}
    };
 }
 

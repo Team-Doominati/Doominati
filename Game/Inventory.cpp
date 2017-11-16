@@ -32,8 +32,9 @@ namespace DGE::Game
    //
    // Inventory constructor
    //
-   Inventory::Inventory(std::size_t ic_, ItemData::Ptr *idv_, ItemType::Ptr *itv_, Code::Word *isv_) :
-      ic{ic_}, idv{idv_}, itv{itv_}, isv{isv_}
+   Inventory::Inventory(Code::Word *emv_, std::size_t emc_, std::size_t ic_,
+      ItemData::Ptr *idv_, ItemType::Ptr *itv_, Code::Word *isv_) :
+      Object{emv_, emc_}, ic{ic_}, idv{idv_}, itv{itv_}, isv{isv_}
    {
       std::uninitialized_value_construct_n(idv, ic);
       std::uninitialized_value_construct_n(itv, ic);
@@ -57,24 +58,21 @@ namespace DGE::Game
    {
       std::size_t emc = ExtMem.max() + ext;
 
-      // Calculate storage offsets.
       // Memory layout: [Inventory] [extension members] [size] [data] [type]
-      std::size_t emo = sizeof(Inventory); // TODO: Alignment.
-      std::size_t iso = Core::AlignOffset<Code::Word>(emo + emc * sizeof(Code::Word));
-      std::size_t ido = Core::AlignOffset<ItemData>(iso + ic * sizeof(Code::Word));
-      std::size_t ito = Core::AlignOffset<ItemType>(ido + ic * sizeof(ItemData::Ptr));
 
-      // Allocate storage.
+      std::size_t emo = Core::AlignOffset<Code::Word>(sizeof(Inventory));
+      std::size_t iso = Core::AlignOffset<Code::Word>(emo + emc * sizeof(Code::Word));
+      std::size_t ido = Core::AlignOffset<ItemData  >(iso + ic * sizeof(Code::Word));
+      std::size_t ito = Core::AlignOffset<ItemType  >(ido + ic * sizeof(ItemData::Ptr));
+
       auto buf = static_cast<char *>(::operator new(ito + ic * sizeof(ItemType::Ptr)));
 
-      auto emv = reinterpret_cast<Code::Word *>(buf + emo);
-      auto isv = reinterpret_cast<Code::Word *>(buf + iso);
+      auto emv = reinterpret_cast<Code::Word    *>(buf + emo);
+      auto isv = reinterpret_cast<Code::Word    *>(buf + iso);
       auto idv = reinterpret_cast<ItemData::Ptr *>(buf + ido);
       auto itv = reinterpret_cast<ItemType::Ptr *>(buf + ito);
 
-      std::uninitialized_value_construct_n(emv, emc);
-
-      return new(buf) Inventory{ic, idv, itv, isv};
+      return new(buf) Inventory{emv, emc, ic, idv, itv, isv};
    }
 }
 
@@ -130,9 +128,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_ItemData_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) ItemData)->id);
+      task->dataStk.push(ItemData::Create(argv[0])->id);
       return false;
    }
 
@@ -141,9 +137,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_ItemType_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) ItemType)->id);
+      task->dataStk.push(ItemType::Create(argv[0])->id);
       return false;
    }
 }

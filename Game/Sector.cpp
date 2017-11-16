@@ -35,7 +35,8 @@ namespace DGE::Game
    //
    // Sector constructor
    //
-   Sector::Sector(std::size_t pc_, Point2X *pv_) :
+   Sector::Sector(Code::Word *emv_, std::size_t emc_, Point2X *pv_, std::size_t pc_) :
+      Object{emv_, emc_},
       blockLinks{this},
       pc{pc_}, pv{pv_},
       texc{0}, texf{0},
@@ -46,6 +47,7 @@ namespace DGE::Game
       zl{0}, zu{0},
       rect{false}
    {
+      std::uninitialized_value_construct_n(pv, pc);
    }
 
    //
@@ -83,18 +85,17 @@ namespace DGE::Game
    {
       std::size_t emc = ExtMem.max() + ext;
 
-      // Allocate storage.
       // Memory layout: [Sector] [extension members] [points]
-      // This requires Code::Word having equal or stricter alignment to Point2.
-      Sector *sec = static_cast<Sector *>(::operator new(
-         sizeof(Sector) + emc * sizeof(Code::Word) + (pc + 1) * sizeof(Point2X)));
-      auto    emv = reinterpret_cast<Code::Word *>(sec + 1);
-      auto    pv  = reinterpret_cast<Point2X    *>(emv + emc);
 
-      std::uninitialized_value_construct_n(emv, emc);
-      std::uninitialized_value_construct_n(pv,  pc + 1);
+      std::size_t emo = Core::AlignOffset<Code::Word>(sizeof(Sector));
+      std::size_t po  = Core::AlignOffset<Point2X>(emo + emc * sizeof(Code::Word));
 
-      return new(sec) Sector{pc, pv};
+      auto buf = static_cast<char *>(::operator new(po + pc * sizeof(Point2X)));
+
+      auto emv = reinterpret_cast<Code::Word *>(buf + emo);
+      auto pv  = reinterpret_cast<Point2X    *>(buf + po);
+
+      return new(buf) Sector{emv, emc, pv, pc};
    }
 }
 

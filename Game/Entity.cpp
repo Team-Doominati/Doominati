@@ -64,9 +64,7 @@ namespace DGE::Game
    //
    DGE_Code_NativeDefn(DGE_Entity_Create)
    {
-      std::size_t ext = argv[0];
-
-      task->dataStk.push((new(ext) Entity)->id);
+      task->dataStk.push(Entity::Create(argv[0])->id);
       return false;
    }
 }
