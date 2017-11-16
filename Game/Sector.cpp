@@ -90,7 +90,7 @@ namespace DGE::Game
       std::size_t emo = Core::AlignOffset<Code::Word>(sizeof(Sector));
       std::size_t po  = Core::AlignOffset<Point2X>(emo + emc * sizeof(Code::Word));
 
-      auto buf = static_cast<char *>(::operator new(po + pc * sizeof(Point2X)));
+      auto buf = static_cast<char *>(::operator new(po + (pc + 1) * sizeof(Point2X)));
 
       auto emv = reinterpret_cast<Code::Word *>(buf + emo);
       auto pv  = reinterpret_cast<Point2X    *>(buf + po);
