@@ -124,6 +124,89 @@ Returns:
   The created Entity's id.
 
 ===========================================================
+Inventory Functions
+===========================================================
+
+Synopsis:
+  unsigned DGE_Inventory_Create(unsigned ic, unsigned ext);
+  DGE_Item DGE_Inventory_ItemGet(unsigned id, unsigned i);
+  void DGE_Inventory_ItemSet(unsigned id, unsigned i, DGE_Item val);
+
+  unsigned DGE_ItemData_Create(unsigned ext);
+
+  unsigned DGE_ItemType_Create(unsigned ext);
+
+-----------------------------------------------------------
+DGE_Inventory_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_Inventory_Create(unsigned ic, unsigned ext);
+
+Description:
+  Creates a new Inventory with ic items and ext instance extension members.
+
+  The created Inventory has no references.
+
+Returns:
+  The created Inventory's id.
+
+-----------------------------------------------------------
+DGE_Inventory_ItemGet
+-----------------------------------------------------------
+
+Synopsis:
+  DGE_Item DGE_Inventory_ItemGet(unsigned id, unsigned i);
+
+Description:
+  Reads an item of the Inventory. If i is out of range, the behavior is
+  undefined.
+
+Returns:
+  The item's value.
+
+-----------------------------------------------------------
+DGE_Inventory_ItemSet
+-----------------------------------------------------------
+
+Synopsis:
+  void DGE_Inventory_ItemSet(unsigned id, unsigned i, DGE_Item val);
+
+Description:
+  Sets an item of the Inventory. If i is out of range, the behavior is
+  undefined.
+
+-----------------------------------------------------------
+DGE_ItemData_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_ItemData_Create(unsigned ext);
+
+Description:
+  Creates a new ItemData with ext instance extension members.
+
+  The created ItemData has no references.
+
+Returns:
+  The created ItemData's id.
+
+-----------------------------------------------------------
+DGE_ItemType_Create
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned DGE_ItemType_Create(unsigned ext);
+
+Description:
+  Creates a new ItemType with ext instance extension members.
+
+  The created ItemType has no references.
+
+Returns:
+  The created ItemType's id.
+
+===========================================================
 MissileEntity Functions
 ===========================================================
 

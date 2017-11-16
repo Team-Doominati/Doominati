@@ -24,6 +24,9 @@
 namespace DGE::Game
 {
    class Entity;
+   class Inventory;
+   class ItemData;
+   class ItemType;
    class Object;
    class Team;
    class Thinker;

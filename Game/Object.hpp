@@ -13,6 +13,8 @@
 #ifndef DGE__Game__Object_H__
 #define DGE__Game__Object_H__
 
+#include "../Game/Types.hpp"
+
 #include "Core/IDAllocator.hpp"
 #include "Core/String.hpp"
 

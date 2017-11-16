@@ -27,6 +27,8 @@ add_library(dge-game-lib ${DGE_SHARED_DECL}
    Event.hpp
    Input.cpp
    Input.hpp
+   Inventory.cpp
+   Inventory.hpp
    MemInfo.hpp
    MissileEntity.cpp
    MissileEntity.hpp
