@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,25 +10,24 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__Core__Types_H__
-#define DGE__Core__Types_H__
+#ifndef DGE__Defs__Types_H__
+#define DGE__Defs__Types_H__
 
-#include <cstdint>
+#include "../Core/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace DGE::Core
+namespace DGE::Defs
 {
-   using Byte = unsigned char;
-
-   class NTSArray;
-   class NTSStream;
-   template<typename ResourceData>
-   class Resource;
+   class Gamedefs;
+   class GamedefsGroup;
+   class GamedefsParserBlock;
+   class GamedefsParserData;
+   class GamedefsParserValue;
 }
 
-#endif//DGE__Core__Types_H__
+#endif//DGE__Defs__Types_H__
 

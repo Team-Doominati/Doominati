@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2017 Team Doominati
+## Copyright (C) 2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for doominati.
+## CMake file for dge-defs.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,24 +16,20 @@
 ##
 
 ##
-## doominati
+## dge-defs-lib
 ##
+add_library(dge-defs-lib ${DGE_SHARED_DECL}
+   Gamedefs.cpp
+   Gamedefs.hpp
+   Types.hpp
+)
 
-add_executable(doominati ${DGE_MAIN_ENTRY} main_doominati.cpp)
-
-target_link_libraries(doominati
-   dge-al-lib
-   dge-code-lib
+target_link_libraries(dge-defs-lib
    dge-core-lib
-   dge-defs-lib
    dge-fs-lib
-   dge-game-lib
-   dge-gl-lib
-   ${DGE_MAIN_LIBRARIES})
+   ${GDCC_LIBRARIES})
 
-if(DGE_INSTALL_EXE)
-   install(TARGETS doominati RUNTIME DESTINATION bin)
-endif()
+DGE_INSTALL_PART(defs FALSE TRUE)
 
 ## EOF
 

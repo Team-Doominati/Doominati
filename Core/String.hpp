@@ -45,7 +45,9 @@ namespace DGE::Core
          str{s.data()}, len{s.size()}, hash{s.getHash()} {}
 
       explicit operator bool () const {return str;}
-      operator std::string () const {return std::string{str, len};}
+      operator char const * () const {return str;}
+      operator std::string () const {return {str, len};}
+      operator GDCC::Core::String () const {return {str, len, hash};}
 
       bool operator < (HashedStr const &r) const
          {return std::lexicographical_compare(str, end(), r.str, r.end());}

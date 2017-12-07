@@ -274,13 +274,14 @@ endif()
 add_subdirectory(AL)
 add_subdirectory(Code)
 add_subdirectory(Core)
+add_subdirectory(Defs)
 add_subdirectory(doominati)
 add_subdirectory(FS)
 add_subdirectory(GL)
 add_subdirectory(Game)
 
 if(DGE_INSTALL_API)
-   install(DIRECTORY AL Code Core FS GL Game
+   install(DIRECTORY AL Code Core Defs FS GL Game
       DESTINATION include/DGE
       FILES_MATCHING PATTERN "*.hpp")
 endif()

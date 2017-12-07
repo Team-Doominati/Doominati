@@ -26,7 +26,10 @@
 #include "Code/Textdefs.hpp"
 #include "Code/Thread.hpp"
 
+#include "Core/NTS.hpp"
 #include "Core/Time.hpp"
+
+#include "Defs/Gamedefs.hpp"
 
 #include "FS/Dir.hpp"
 
@@ -51,6 +54,34 @@
 //
 
 static GDCC::Core::Array<std::unique_ptr<DGE::FS::Dir>> RootDirs;
+
+static char const *WindowTitle = nullptr;
+static int WindowSizeX = 640;
+static int WindowSizeY = 480;
+
+static DGE::Defs::GamedefsGroup WindowDefs{&DGE::Defs::Gamedefs::GetRoot(), "Window"};
+
+static DGE::Defs::GamedefsCall WindowTitleDef{&WindowDefs, "Title",
+   [](DGE::Defs::GamedefsParserValue const *value)
+   {
+      if(value->data.size() != 1)
+         std::cerr << "Window::Title takes 1 value\n", throw EXIT_FAILURE;
+
+      WindowTitle = value->data[0];
+   }
+};
+
+static DGE::Defs::GamedefsCall WindowSizeDef{&WindowDefs, "Size",
+   [](DGE::Defs::GamedefsParserValue const *value)
+   {
+      if(value->data.size() != 2)
+         std::cerr << "Window::Size takes 2 values\n", throw EXIT_FAILURE;
+
+      // TODO: Replace with shared number parser in DGE::Defs.
+      WindowSizeX = std::strtoul(value->data[0], nullptr, 16);
+      WindowSizeY = std::strtoul(value->data[1], nullptr, 16);
+   }
+};
 
 
 //----------------------------------------------------------------------------|
@@ -105,6 +136,26 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 }
 
 //
+// LoadGamedefs
+//
+static void LoadGamedefs()
+{
+   // Load GAMEDEFS files.
+   DGE::FS::Dir::Root->forFilePath("gamedefs", [](DGE::FS::File *file)
+   {
+      if(file->format != DGE::FS::Format::DGE_NTS)
+         return;
+
+      DGE::Core::NTSArray       arr{file->data, file->size};
+      DGE::Core::NTSStream      str{arr};
+      DGE::Defs::GamedefsParser in {str};
+
+      while(auto data = in.get())
+         DGE::Defs::Gamedefs::Root.process(data.get());
+   });
+}
+
+//
 // Main
 //
 static int Main()
@@ -152,15 +203,21 @@ static int Main()
    else
       DGE::FS::Dir::Root = DGE::FS::CreateDir(".");
 
+   // Load GAMEDEFS.
+   LoadGamedefs();
+
    // Load TEXTDEFS.
    DGE::Code::LoadTextdefs();
 
    // Initialize rendering.
-   DGE::GL::Window window{640, 480};
+   DGE::GL::Window window{WindowSizeX, WindowSizeY};
    DGE::GL::Renderer renderer{window};
 
    DGE::GL::Window::SetCurrent(&window);
    DGE::GL::Renderer::SetCurrent(&renderer);
+
+   if(WindowTitle)
+      window.setTitle(WindowTitle);
 
    // Initialize audio.
    DGE::AL::AudioRenderer audio;
