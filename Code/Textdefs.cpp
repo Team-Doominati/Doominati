@@ -17,17 +17,9 @@
 #include "Code/Program.hpp"
 #include "Code/Task.hpp"
 
-#include "Core/HashMapFixed.hpp"
-#include "Core/NTS.hpp"
-#include "Core/String.hpp"
+#include "Defs/Gamedefs.hpp"
 
-#include "FS/Dir.hpp"
-
-#include <GDCC/Core/Exception.hpp>
 #include <GDCC/Core/Option.hpp>
-
-#include <iostream>
-#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -47,16 +39,18 @@ namespace DGE::Code
 
       1
    };
-}
 
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace DGE::Code
-{
-   using TextLang = Core::HashMapFixed<Core::HashedStr, Core::HashedStr>;
+   //
+   // Textdefs::Fallback
+   //
+   static Defs::GamedefsCall TextdefsFallbackDef
+   {
+      &GetTextdefsDefs(), "Fallback",
+      [](Defs::GamedefsParserValue const *value)
+      {
+         TextdefsFallbacks = {value->data.begin(), value->data.end()};
+      }
+   };
 }
 
 
@@ -66,9 +60,8 @@ namespace DGE::Code
 
 namespace DGE::Code
 {
-   GDCC::Core::Array<GDCC::Core::String>         TextFallbacks{"eng"};
-   Core::HashMapFixed<Core::HashedStr, TextLang> TextLangs;
-   GDCC::Core::Array<TextLang *>                 TextPrefs;
+   Defs::Textdefs                        Textdefs;
+   GDCC::Core::Array<GDCC::Core::String> TextdefsFallbacks{"eng"};
 }
 
 
@@ -79,71 +72,24 @@ namespace DGE::Code
 namespace DGE::Code
 {
    //
-   // LoadTextdefs
+   // GetTextdefsDefs
    //
-   void LoadTextdefs()
+   Defs::GamedefsGroup &GetTextdefsDefs()
    {
-      std::unordered_map<Core::HashedStr, std::unordered_map<Core::HashedStr, Core::HashedStr>> langs;
+      static Defs::GamedefsGroup defs{&Defs::Gamedefs::GetRoot(), "Textdefs"};
+      return defs;
+   }
 
-      FS::Dir::Root->forFilePath("textdefs", [&](FS::File *file)
-      {
-         if(file->format != FS::Format::DGE_NTS)
-            return;
-
-         // The contents of this file are used as-is, so hold a reference.
-         ++file->refs;
-
-         Core::NTSArray  arr{file->data, file->size};
-         Core::NTSStream in {arr};
-
-         try
-         {
-            while(in)
-            {
-               in.expect("language");
-               Core::HashedStr langName = in.get();
-               auto           &lang     = langs[langName];
-
-               in.expect("{");
-
-               while(!in.peek("}"))
-               {
-                  Core::HashedStr name = in.get(); in.expect("=");
-                  Core::HashedStr text = in.get(); in.expect(";");
-
-                  lang[name] = text;
-               }
-
-               in.expect("}");
-            }
-         }
-         catch(GDCC::Core::ParseException const &e)
-         {
-            std::cerr << "TEXTDEFS error in '" << file->name << "': " << e.what() << '\n';
-         }
-      });
-
-      auto langsItr = langs.begin();
-      TextLangs.reset(langs.size(), [&](auto lang)
-      {
-         auto langItr = langsItr->second.begin();
-
-         new(&lang->key) Core::HashedStr{langsItr->first};
-         new(&lang->val) TextLang{langsItr->second.size(), [&](auto text)
-         {
-            new(&text->key) Core::HashedStr{langItr->first};
-            new(&text->val) Core::HashedStr{langItr->second};
-            ++langItr;
-         }};
-
-         ++langsItr;
-      });
-
+   //
+   // TextdefsFinish
+   //
+   void TextdefsFinish()
+   {
       // Set up locale preferences.
-      TextPrefs = {TextLocales.size() + TextFallbacks.size(), nullptr};
-      auto prefItr = TextPrefs.begin();
-      for(auto const &pref : TextLocales)   *prefItr++ = TextLangs.find(pref);
-      for(auto const &pref : TextFallbacks) *prefItr++ = TextLangs.find(pref);
+      Textdefs.prefs = {TextLocales.size() + TextdefsFallbacks.size(), nullptr};
+      auto prefItr = Textdefs.prefs.begin();
+      for(auto const &pref : TextLocales)       *prefItr++ = Textdefs.langs.find(pref);
+      for(auto const &pref : TextdefsFallbacks) *prefItr++ = Textdefs.langs.find(pref);
    }
 }
 
@@ -164,7 +110,7 @@ namespace DGE::Code
       Code::Word               len{argv[2]};
 
       Core::HashedStr *text = nullptr;
-      for(auto const &pref : TextPrefs)
+      for(auto const &pref : Textdefs.prefs)
       {
          if(pref && (text = pref->find(name)))
             break;

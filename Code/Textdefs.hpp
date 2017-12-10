@@ -13,7 +13,20 @@
 #ifndef DGE__Code__Textdefs_H__
 #define DGE__Code__Textdefs_H__
 
-#include "Types.hpp"
+#include "../Code/Types.hpp"
+
+#include "../Defs/Textdefs.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace DGE::Code
+{
+   extern Defs::Textdefs                        Textdefs;
+   extern GDCC::Core::Array<GDCC::Core::String> TextdefsFallbacks;
+}
 
 
 //----------------------------------------------------------------------------|
@@ -22,7 +35,8 @@
 
 namespace DGE::Code
 {
-   void LoadTextdefs();
+   Defs::GamedefsGroup &GetTextdefsDefs();
+   void TextdefsFinish();
 }
 
 #endif//DGE__Code__Textdefs_H__

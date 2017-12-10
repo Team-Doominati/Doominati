@@ -39,6 +39,7 @@
 #include "Game/Input.hpp"
 #include "Game/Thinker.hpp"
 
+#include <GDCC/Core/Exception.hpp>
 #include <GDCC/Core/Option.hpp>
 
 #include <GDCC/Option/Bool.hpp>
@@ -150,9 +151,54 @@ static void LoadGamedefs()
       DGE::Core::NTSStream      str{arr};
       DGE::Defs::GamedefsParser in {str};
 
-      while(auto data = in.get())
-         DGE::Defs::Gamedefs::Root.process(data.get());
+      try
+      {
+         while(auto data = in.get())
+            DGE::Defs::Gamedefs::Root.process(data.get());
+      }
+      catch(GDCC::Core::ParseException const &e)
+      {
+         std::cerr << "GAMEDEFS error in '" << file->name << "': " << e.what() << '\n';
+      }
    });
+}
+
+//
+// LoadTextdefs
+//
+static void LoadTextdefs()
+{
+   DGE::Defs::TextdefsCompiler comp;
+
+   // Load TEXTDEFS files.
+   DGE::FS::Dir::Root->forFilePath("textdefs", [&comp](DGE::FS::File *file)
+   {
+      if(file->format != DGE::FS::Format::DGE_NTS)
+         return;
+
+      // The contents of this file are used as-is, so hold a reference.
+      ++file->refs;
+
+      DGE::Core::NTSArray       arr{file->data, file->size};
+      DGE::Core::NTSStream      str{arr};
+      DGE::Defs::TextdefsParser in {str};
+
+      try
+      {
+         while(in)
+            comp.add(in.getLang());
+      }
+      catch(GDCC::Core::ParseException const &e)
+      {
+         std::cerr << "TEXTDEFS error in '" << file->name << "': " << e.what() << '\n';
+      }
+   });
+
+   // Compile TEXTDEFS.
+   comp.finish(DGE::Code::Textdefs);
+
+   // Finish TEXTDEFS.
+   DGE::Code::TextdefsFinish();
 }
 
 //
@@ -207,7 +253,7 @@ static int Main()
    LoadGamedefs();
 
    // Load TEXTDEFS.
-   DGE::Code::LoadTextdefs();
+   LoadTextdefs();
 
    // Initialize rendering.
    DGE::GL::Window window{WindowSizeX, WindowSizeY};

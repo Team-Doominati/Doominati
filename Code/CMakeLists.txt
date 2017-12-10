@@ -63,6 +63,7 @@ add_library(dge-code-lib ${DGE_SHARED_DECL}
 
 target_link_libraries(dge-code-lib
    dge-core-lib
+   dge-defs-lib
    dge-fs-lib
    ${GDCC_LIBRARIES})
 

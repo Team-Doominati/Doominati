@@ -21,6 +21,8 @@
 add_library(dge-defs-lib ${DGE_SHARED_DECL}
    Gamedefs.cpp
    Gamedefs.hpp
+   Textdefs.cpp
+   Textdefs.hpp
    Types.hpp
 )
 

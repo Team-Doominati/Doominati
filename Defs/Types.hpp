@@ -27,6 +27,8 @@ namespace DGE::Defs
    class GamedefsParserBlock;
    class GamedefsParserData;
    class GamedefsParserValue;
+   class TextdefsParserLang;
+   class TextdefsParserText;
 }
 
 #endif//DGE__Defs__Types_H__
