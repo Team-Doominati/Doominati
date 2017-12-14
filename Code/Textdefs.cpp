@@ -12,6 +12,7 @@
 
 #include "Code/Textdefs.hpp"
 
+#include "Code/Defs.hpp"
 #include "Code/MemStr.hpp"
 #include "Code/Native.hpp"
 #include "Code/Program.hpp"
@@ -41,7 +42,7 @@ namespace DGE::Code
    };
 
    //
-   // Textdefs::Fallback
+   // Code::Textdefs::Fallback
    //
    static Defs::GamedefsCall TextdefsFallbackDef
    {
@@ -76,7 +77,7 @@ namespace DGE::Code
    //
    Defs::GamedefsGroup &GetTextdefsDefs()
    {
-      static Defs::GamedefsGroup defs{&Defs::Gamedefs::GetRoot(), "Textdefs"};
+      static Defs::GamedefsGroup defs{&GetDefs(), "Textdefs"};
       return defs;
    }
 

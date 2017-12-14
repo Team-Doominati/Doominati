@@ -13,6 +13,8 @@
 #ifndef DGE__Code__Types_H__
 #define DGE__Code__Types_H__
 
+#include "../Defs/Types.hpp"
+
 #include <cstdint>
 
 

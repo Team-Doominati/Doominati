@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2017 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef DGE__GL__Window_H__
 #define DGE__GL__Window_H__
+
+#include "GL/Types.hpp"
 
 #include "SDL.h"
 
@@ -49,6 +51,16 @@ namespace DGE::GL
       SDL_Window   *window;
       SDL_GLContext gl;
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace DGE::GL
+{
+   Defs::GamedefsGroup &GetWindowDefs();
 }
 
 #endif//DGE__GL__Window_H__

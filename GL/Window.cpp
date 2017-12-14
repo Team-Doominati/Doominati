@@ -12,6 +12,7 @@
 
 #include "GL/Window.hpp"
 
+#include "GL/Defs.hpp"
 #include "GL/OpenGL2.1.h"
 
 #include "Code/Callback.hpp"
@@ -19,6 +20,8 @@
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
+
+#include "Defs/Gamedefs.hpp"
 
 #include "Game/Event.hpp"
 
@@ -134,6 +137,15 @@ namespace DGE::GL
    {
       CurrentWindow = window;
       SDL_GL_MakeCurrent(window->window, window->gl);
+   }
+
+   //
+   // GetWindowDefs
+   //
+   Defs::GamedefsGroup &GetWindowDefs()
+   {
+      static Defs::GamedefsGroup defs{&GetDefs(), "Window"};
+      return defs;
    }
 }
 

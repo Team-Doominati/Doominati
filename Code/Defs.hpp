@@ -6,27 +6,24 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Alias types.
+// Module-specific *DEFS handling.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__GL__Types_H__
-#define DGE__GL__Types_H__
-
-#include "../GL/OpenGL2.1.h"
+#ifndef DGE__Code__Defs_H__
+#define DGE__Code__Defs_H__
 
 #include "../Code/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
+// Extern Functions                                                           |
 //
 
-namespace DGE::GL
+namespace DGE::Code
 {
-   using TexturePixel = GLfloat[4];
-   using TextureDim   = GLsizei;
+   Defs::GamedefsGroup &GetDefs();
 }
 
-#endif//DGE__GL__Types_H__
+#endif//DGE__Code__Defs_H__
 

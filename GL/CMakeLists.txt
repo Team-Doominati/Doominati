@@ -19,11 +19,12 @@
 ## dge-gl-lib
 ##
 add_library(dge-gl-lib ${DGE_SHARED_DECL}
+   Defs.cpp
+   Defs.hpp
    DynamicBuffer.cpp
    DynamicBuffer.hpp
    Font.cpp
    Font.hpp
-   Native.cpp
    OpenGL2.1.c
    OpenGL2.1.h
    Renderer.cpp

@@ -6,33 +6,25 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Scripting native adder.
+// Module-specific *DEFS handling.
 //
 //-----------------------------------------------------------------------------
 
-#include "Code/Native.hpp"
+#ifndef DGE__Game__Defs_H__
+#define DGE__Game__Defs_H__
+
+#include "../Game/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
-namespace DGE::GL
+namespace DGE::Game
 {
-   DGE_Code_NativeLoaderDecl(Renderer_Draw);
-   DGE_Code_NativeLoaderDecl(Renderer_DrawText);
-   DGE_Code_NativeLoaderDecl(Renderer_Font);
-
-   //
-   // NativeAdd
-   //
-   void NativeAdd()
-   {
-      DGE_Code_NativeLoaderCall(Renderer_Draw);
-      DGE_Code_NativeLoaderCall(Renderer_DrawText);
-      DGE_Code_NativeLoaderCall(Renderer_Font);
-   }
+   Defs::GamedefsGroup &GetDefs();
+   void NativeAdd();
 }
 
-// EOF
+#endif//DGE__Game__Defs_H__
 

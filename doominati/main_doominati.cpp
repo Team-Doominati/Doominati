@@ -33,9 +33,11 @@
 
 #include "FS/Dir.hpp"
 
-#include "GL/Window.hpp"
+#include "GL/Defs.hpp"
 #include "GL/Renderer.hpp"
+#include "GL/Window.hpp"
 
+#include "Game/Defs.hpp"
 #include "Game/Input.hpp"
 #include "Game/Thinker.hpp"
 
@@ -60,37 +62,35 @@ static char const *WindowTitle = nullptr;
 static int WindowSizeX = 640;
 static int WindowSizeY = 480;
 
-static DGE::Defs::GamedefsGroup WindowDefs{&DGE::Defs::Gamedefs::GetRoot(), "Window"};
-
-static DGE::Defs::GamedefsCall WindowTitleDef{&WindowDefs, "Title",
+//
+// GL::Window::Title
+//
+static DGE::Defs::GamedefsCall WindowTitleDef{
+   &DGE::GL::GetWindowDefs(), "Title",
    [](DGE::Defs::GamedefsParserValue const *value)
    {
       if(value->data.size() != 1)
-         std::cerr << "Window::Title takes 1 value\n", throw EXIT_FAILURE;
+         std::cerr << "GL::Window::Title takes 1 value\n", throw EXIT_FAILURE;
 
       WindowTitle = value->data[0];
    }
 };
 
-static DGE::Defs::GamedefsCall WindowSizeDef{&WindowDefs, "Size",
+//
+// GL::Window::Size
+//
+static DGE::Defs::GamedefsCall WindowSizeDef{
+   &DGE::GL::GetWindowDefs(), "Size",
    [](DGE::Defs::GamedefsParserValue const *value)
    {
       if(value->data.size() != 2)
-         std::cerr << "Window::Size takes 2 values\n", throw EXIT_FAILURE;
+         std::cerr << "GL::Window::Size takes 2 values\n", throw EXIT_FAILURE;
 
       // TODO: Replace with shared number parser in DGE::Defs.
       WindowSizeX = std::strtoul(value->data[0], nullptr, 16);
       WindowSizeY = std::strtoul(value->data[1], nullptr, 16);
    }
 };
-
-
-//----------------------------------------------------------------------------|
-// Extern Functions                                                           |
-//
-
-namespace DGE::Game {void NativeAdd();}
-namespace DGE::GL   {void NativeAdd();}
 
 
 //----------------------------------------------------------------------------|

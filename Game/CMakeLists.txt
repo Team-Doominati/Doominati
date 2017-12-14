@@ -21,6 +21,8 @@
 add_library(dge-game-lib ${DGE_SHARED_DECL}
    BlockMap.cpp
    BlockMap.hpp
+   Defs.cpp
+   Defs.hpp
    Entity.cpp
    Entity.hpp
    Event.cpp
@@ -32,7 +34,6 @@ add_library(dge-game-lib ${DGE_SHARED_DECL}
    MemInfo.hpp
    MissileEntity.cpp
    MissileEntity.hpp
-   Native.cpp
    Object.cpp
    Object.hpp
    ObjectMemberList.hpp
@@ -58,6 +59,7 @@ add_library(dge-game-lib ${DGE_SHARED_DECL}
 target_link_libraries(dge-game-lib
    dge-code-lib
    dge-core-lib
+   dge-defs-lib
    ${GDCC_LIBRARIES}
    ${SDL2_LIBRARIES})
 

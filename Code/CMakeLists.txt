@@ -25,6 +25,8 @@ add_library(dge-code-lib ${DGE_SHARED_DECL}
    Codedefs.hpp
    Convert.hpp
    ConvertStruct.hpp
+   Defs.cpp
+   Defs.hpp
    ExtMem.cpp
    ExtMem.hpp
    FuncPtr.hpp
