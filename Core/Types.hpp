@@ -24,8 +24,12 @@ namespace DGE::Core
 {
    using Byte = unsigned char;
 
+   template<typename I, unsigned FB>
+   class Fixed;
    class NTSArray;
    class NTSStream;
+   template<typename T, unsigned I>
+   class Point;
    template<typename ResourceData>
    class Resource;
 }

@@ -13,6 +13,8 @@
 #ifndef DGE__Core__Point_H__
 #define DGE__Core__Point_H__
 
+#include "../Core/Types.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |

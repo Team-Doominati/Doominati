@@ -13,7 +13,8 @@
 #ifndef DGE__Core__Fixed_H__
 #define DGE__Core__Fixed_H__
 
-#include <cstdint>
+#include "../Core/Types.hpp"
+
 #include <cstdlib>
 #include <limits>
 #include <type_traits>

@@ -18,7 +18,9 @@
 
 #include "Code/Types.hpp"
 
+#include "Core/Fixed.hpp"
 #include "Core/ListLinkVector.hpp"
+#include "Core/Point.hpp"
 
 
 //----------------------------------------------------------------------------|

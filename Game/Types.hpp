@@ -13,10 +13,7 @@
 #ifndef DGE__Game__Types_H__
 #define DGE__Game__Types_H__
 
-#include "Code/Types.hpp"
-
-#include "Core/Fixed.hpp"
-#include "Core/Point.hpp"
+#include "../Code/Types.hpp"
 
 
 //----------------------------------------------------------------------------|

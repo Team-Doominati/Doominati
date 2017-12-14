@@ -18,6 +18,7 @@
 #include "../Code/Convert.hpp"
 
 #include "../Core/Color.hpp"
+#include "../Core/Fixed.hpp"
 #include "../Core/Math.hpp"
 #include "../Core/Vector2.hpp"
 

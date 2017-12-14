@@ -16,6 +16,8 @@
 #include "../Game/Thinker.hpp"
 #include "../Game/Types.hpp"
 
+#include "../Core/Fixed.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
