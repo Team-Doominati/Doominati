@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2017 Team Doominati
+## Copyright (C) 2017 Team Doominati
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for doominati.
+## CMake file for dge-sh.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,25 +16,29 @@
 ##
 
 ##
-## doominati
+## dge-sh-lib
 ##
+add_library(dge-sh-lib ${DGE_SHARED_DECL}
+   Command.cpp
+   Command.hpp
+   Command/Misc.cpp
+   Option.cpp
+   Option.hpp
+   Shell.cpp
+   Shell.hpp
+   StdIn.cpp
+   StdIn.hpp
+   Types.hpp
+)
 
-add_executable(doominati ${DGE_MAIN_ENTRY} main_doominati.cpp)
-
-target_link_libraries(doominati
-   dge-al-lib
+target_link_libraries(dge-sh-lib
    dge-code-lib
    dge-core-lib
    dge-defs-lib
    dge-fs-lib
-   dge-game-lib
-   dge-gl-lib
-   dge-sh-lib
-   ${DGE_MAIN_LIBRARIES})
+   ${GDCC_LIBRARIES})
 
-if(DGE_INSTALL_EXE)
-   install(TARGETS doominati RUNTIME DESTINATION bin)
-endif()
+DGE_INSTALL_PART(sh FALSE TRUE)
 
 ## EOF
 

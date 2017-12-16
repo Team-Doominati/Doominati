@@ -13,6 +13,8 @@
 #ifndef DGE__Core__HashMapFixed_H__
 #define DGE__Core__HashMapFixed_H__
 
+#include "../Core/Types.hpp"
+
 #include <functional>
 #include <new>
 
@@ -29,7 +31,7 @@ namespace DGE::Core
    // Non-resizable hash map.
    // Also acts as an array for element access by index.
    //
-   template<typename Key, typename T, typename Hash = std::hash<Key>>
+   template<typename Key, typename T, typename Hash>
    class HashMapFixed
    {
    public:

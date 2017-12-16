@@ -20,12 +20,21 @@
 // Types                                                                      |
 //
 
+namespace std
+{
+   template<typename T>
+   struct hash;
+}
+
 namespace DGE::Core
 {
    using Byte = unsigned char;
 
    template<typename I, unsigned FB>
    class Fixed;
+   template<typename Key, typename T, typename Hash = std::hash<Key>>
+   class HashMapFixed;
+   class HashedStr;
    class NTSArray;
    class NTSStream;
    template<typename T, unsigned I>

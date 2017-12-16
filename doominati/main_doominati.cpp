@@ -41,6 +41,10 @@
 #include "Game/Input.hpp"
 #include "Game/Thinker.hpp"
 
+#include "Sh/Command.hpp"
+#include "Sh/Shell.hpp"
+#include "Sh/StdIn.hpp"
+
 #include <GDCC/Core/Exception.hpp>
 #include <GDCC/Core/Option.hpp>
 
@@ -255,6 +259,11 @@ static int Main()
    // Load TEXTDEFS.
    LoadTextdefs();
 
+   // Initialize shell.
+   DGE::Sh::StdIn_Init();
+   DGE::Sh::CommandAdder::Finish();
+   DGE::Sh::Shell shell;
+
    // Initialize rendering.
    DGE::GL::Window window{WindowSizeX, WindowSizeY};
    DGE::GL::Renderer renderer{window};
@@ -307,6 +316,7 @@ static int Main()
       {
          while(timeDelta--)
          {
+            shell.exec();
             input.poll();
             DGE::Game::Thinker::ThinkAll();
             proc.exec();

@@ -106,6 +106,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    Try_CXX_Compiler_Flag(-Wextra     FLAG_CXX_Wextra)
    Try_CXX_Compiler_Flag(-ffast-math FLAG_CXX_ffast_math)
 
+   Try_CXX_Compiler_Flag(-Wno-implicit-fallthrough FLAG_CXX_Wno_implicit_fallthrough)
+
    Try_CXX_Compiler_Flag(-std=c++1z FLAG_CXX_STD_CXX17)
 endif()
 
@@ -279,9 +281,10 @@ add_subdirectory(doominati)
 add_subdirectory(FS)
 add_subdirectory(GL)
 add_subdirectory(Game)
+add_subdirectory(Sh)
 
 if(DGE_INSTALL_API)
-   install(DIRECTORY AL Code Core Defs FS GL Game
+   install(DIRECTORY AL Code Core Defs FS GL Game Sh
       DESTINATION include/DGE
       FILES_MATCHING PATTERN "*.hpp")
 endif()
