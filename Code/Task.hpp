@@ -13,11 +13,11 @@
 #ifndef DGE__Code__Task_H__
 #define DGE__Code__Task_H__
 
-#include "Code/Types.hpp"
+#include "../Code/Types.hpp"
 
-#include "Core/List.hpp"
-#include "Core/Stack.hpp"
-#include "Core/Store.hpp"
+#include "../Core/List.hpp"
+#include "../Core/Stack.hpp"
+#include "../Core/Store.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -77,6 +77,7 @@ namespace DGE::Code
       TaskState     state;
       Word          delay;
       Word const    id;
+      Word          join;
       Word          jumpbuf;
       Word          vaaRegC;
 

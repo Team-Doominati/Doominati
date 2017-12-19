@@ -13,12 +13,14 @@
 #ifndef DGE__Code__Callback_H__
 #define DGE__Code__Callback_H__
 
-#include "Code/Types.hpp"
+#include "../Code/Types.hpp"
 
-#include "Core/String.hpp"
+#include "../Code/FuncPtr.hpp"
 
-#include <array>
-#include <vector>
+#include "../Core/String.hpp"
+
+#include <set>
+#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -35,27 +37,87 @@ namespace DGE::Code
    public:
       Callback(Core::HashedStr name);
 
-      // operator ()
-      void operator () () {call(nullptr, 0);}
-      template<typename ...Args>
-      void operator () (Args &&...args)
+      virtual void erase(Program *prog, Word func) = 0;
+
+      virtual void insert(Program *prog, Word func) = 0;
+   };
+
+   //
+   // CallbackMap
+   //
+   template<typename Ret, typename... Args>
+   class CallbackMap<Ret(Args...)> : public Callback
+   {
+   public:
+      CallbackMap(Core::HashedStr name) : Callback{name} {}
+
+      //
+      // erase
+      //
+      virtual void erase(Program *prog, Word func)
       {
-         Word argV[] = {static_cast<Word>(args)...};
-         call(argV, sizeof(argV) / sizeof(*argV));
+         funcs.erase(prog->funcs.data(func).key);
       }
 
-      // call
-      void call(Word const *argV, Word argC);
-      template<Word ArgC>
-      void call(std::array<Word, ArgC> const &args)
-         {call(args.data(), args.size());}
+      //
+      // find
+      //
+      FuncPtr<Ret(Args...)> find(Core::HashedStr name)
+      {
+         if(auto func = funcs.find(name); func != funcs.end())
+            return func->second;
 
-      void erase(Function *func);
+         return 0;
+      }
 
-      void insert(Function *func);
+      //
+      // insert
+      //
+      virtual void insert(Program *prog, Word func)
+      {
+         funcs.insert({prog->funcs.data(func).key, func});
+      }
 
    private:
-      std::vector<Function *> funcs;
+      std::unordered_map<Core::HashedStr, FuncPtr<Ret(Args...)>> funcs;
+   };
+
+   //
+   // CallbackSet
+   //
+   template<typename Ret, typename... Args>
+   class CallbackSet<Ret(Args...)> : public Callback
+   {
+   public:
+      CallbackSet(Core::HashedStr name) : Callback{name} {}
+
+      //
+      // operator ()
+      //
+      void operator () (Args const &...args)
+      {
+         for(auto const &func : funcs)
+            func(args...);
+      }
+
+      //
+      // erase
+      //
+      virtual void erase(Program *, Word func)
+      {
+         funcs.erase(func);
+      }
+
+      //
+      // insert
+      //
+      virtual void insert(Program *, Word func)
+      {
+         funcs.insert(func);
+      }
+
+   private:
+      std::set<FuncPtr<Ret(Args...)>> funcs;
    };
 }
 

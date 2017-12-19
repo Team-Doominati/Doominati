@@ -100,6 +100,7 @@ namespace DGE::Code
       task->link.insert(&thrd->tasks);
 
       task->delay   = 0;
+      task->join    = 0;
       task->jumpbuf = 0;
 
       return task;

@@ -13,7 +13,7 @@
 #ifndef DGE__Code__MemPtr_H__
 #define DGE__Code__MemPtr_H__
 
-#include "Code/Memory.hpp"
+#include "../Code/Memory.hpp"
 
 #include <iterator>
 
@@ -24,12 +24,6 @@
 
 namespace DGE::Code
 {
-   //
-   // MemInfo
-   //
-   template<typename T>
-   struct MemInfo;
-
    //
    // MemInfo<void>
    //
@@ -86,6 +80,28 @@ namespace DGE::Code
    };
 
    //
+   // MemInfo<SWord>
+   //
+   template<>
+   struct MemInfo<SWord const>
+   {
+      static SWord Get(Memory *mem, Word idx) {return mem->getW(idx);}
+
+      static SWord Get(Word const *mem) {return *mem;}
+
+      constexpr static unsigned int Shift = 2;
+      constexpr static unsigned int Step  = 1;
+   };
+
+   template<>
+   struct MemInfo<SWord> : MemInfo<SWord const>
+   {
+      static void Set(Memory *mem, Word idx, SWord val) {mem->setW(idx, val);}
+
+      static void Set(Word *mem, SWord val) {*mem = val;}
+   };
+
+   //
    // MemInfo<Word>
    //
    template<>
@@ -124,9 +140,9 @@ namespace DGE::Code
    template<typename T>
    struct MemInfo<MemPtr<T>> : MemInfo<MemPtr<T> const>
    {
-      static void Set(Memory *mem, Word idx, Word val) {mem->setW(idx, static_cast<Word>(val));}
+      static void Set(Memory *mem, Word idx, MemPtr<T> val) {mem->setW(idx, static_cast<Word>(val));}
 
-      static void Set(Word *mem, Word val) {*mem = static_cast<Word>(val);}
+      static void Set(Word *mem, MemPtr<T> val) {*mem = static_cast<Word>(val);}
    };
 
    //

@@ -33,41 +33,6 @@ namespace DGE::Code
    {
       NativeAdder::Add(name, this);
    }
-
-   //
-   // Callback::call
-   //
-   void Callback::call(Word const *argV, Word argC)
-   {
-      auto proc = Process::GetMain();
-      for(auto func : funcs)
-         proc->call(func, argV, argC, nullptr, 0);
-   }
-
-   //
-   // Callback::erase
-   //
-   void Callback::erase(Function *func)
-   {
-      for(auto itr = funcs.begin(), end = funcs.end(); itr != end;)
-      {
-         if(*itr == func)
-            itr = funcs.erase(itr);
-         else
-            ++itr;
-      }
-   }
-
-   //
-   // Callback::insert
-   //
-   void Callback::insert(Function *func)
-   {
-      for(auto f : funcs)
-         if(f == func) return;
-
-      funcs.push_back(func);
-   }
 }
 
 
@@ -101,7 +66,7 @@ namespace DGE::Code
    //
    DGE_Code_NativeDefn(DGE_Callback_Register)
    {
-      Callbacks[argv[0]]->insert(&Code::Process::GetMain()->prog->funcs[argv[1]]);
+      Callbacks[argv[0]]->insert(task->prog, argv[1]);
       return false;
    }
 
@@ -110,7 +75,7 @@ namespace DGE::Code
    //
    DGE_Code_NativeDefn(DGE_Callback_Unregister)
    {
-      Callbacks[argv[0]]->erase(&Code::Process::GetMain()->prog->funcs[argv[1]]);
+      Callbacks[argv[0]]->erase(task->prog, argv[1]);
       return false;
    }
 }

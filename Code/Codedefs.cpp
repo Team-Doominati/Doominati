@@ -574,7 +574,7 @@ namespace DGE::Code
 
       // Register callbacks.
       for(auto &call : calls)
-         call.first->insert(&prog->funcs[call.second]);
+         call.first->insert(prog, call.second);
    }
 
    //

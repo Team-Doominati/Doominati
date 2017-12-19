@@ -52,9 +52,11 @@ namespace DGE::Code
       for(auto itr = tasks.begin(), end = tasks.end(); itr != end;)
       {
          Task *task = &*itr++;
-         task->exec();
 
-         if(task->state == TaskState::Stop)
+         if(task->state == TaskState::Exec)
+            task->exec();
+
+         if(task->state == TaskState::Stop && !task->join)
             task->stop();
       }
    }

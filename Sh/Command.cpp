@@ -12,6 +12,7 @@
 
 #include "Sh/Command.hpp"
 
+#include "Code/Callback.hpp"
 #include "Code/Native.hpp"
 
 #include "Core/HashMapFixed.hpp"
@@ -44,6 +45,8 @@ namespace DGE::Sh
 namespace DGE::Sh
 {
    Core::HashMapFixed<Core::HashedStr, Command> Commands;
+
+   Code::CallbackMap<Code::SWord(Shell *)> VMCommands{"ShellCommand"};
 }
 
 

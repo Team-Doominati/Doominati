@@ -23,19 +23,25 @@
 namespace DGE::Code
 {
    class Callback;
+   template<typename T>
+   class CallbackMap;
+   template<typename T>
+   class CallbackSet;
    class ExtensionMembers;
+   template<typename T>
+   class FuncPtr;
    class Function;
    class Loader;
+   template<typename T>
+   struct MemInfo;
+   template<typename T>
+   class MemPtr;
    class OpCode;
    class Process;
    class Program;
    class Task;
    class Thread;
 
-   template<typename T>
-   class FuncPtr;
-   template<typename T>
-   class MemPtr;
 
    using Byte  = std::uint8_t;
    using DWord = std::uint64_t;

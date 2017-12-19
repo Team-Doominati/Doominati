@@ -35,7 +35,7 @@
 namespace DGE::GL
 {
    static Window *CurrentWindow;
-   static Code::Callback CallbackResize{"Resize"};
+   static Code::CallbackSet<void(Code::Word, Code::Word)> CallbackResize{"Resize"};
 }
 
 

@@ -96,6 +96,10 @@ namespace DGE::Core
       iterator       begin()       {return elemV;}
       const_iterator begin() const {return elemV;}
 
+      // data
+      Elem       &data(std::size_t i)       {return elemV[i];}
+      Elem const &data(std::size_t i) const {return elemV[i];}
+
       // empty
       bool empty() const {return !elemC;}
 

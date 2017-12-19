@@ -54,10 +54,16 @@ namespace DGE::Code
       }
 
       explicit operator bool () const {return idx != 0;}
+      operator Function * () const {return &Process::GetMain()->prog->funcs[idx];}
       explicit operator Word () const {return idx;}
 
       bool operator == (FuncPtr const &r) const {return idx == r.idx;}
       bool operator != (FuncPtr const &r) const {return idx != r.idx;}
+
+      bool operator <  (FuncPtr const &r) const {return idx <  r.idx;}
+      bool operator <= (FuncPtr const &r) const {return idx <= r.idx;}
+      bool operator >  (FuncPtr const &r) const {return idx >  r.idx;}
+      bool operator >= (FuncPtr const &r) const {return idx >= r.idx;}
 
    private:
       Word idx;
@@ -88,6 +94,19 @@ namespace DGE::Code
          {mem->setW(idx, static_cast<Word>(val));}
 
       static void Set(Word *mem, Word val) {*mem = static_cast<Word>(val);}
+   };
+}
+
+namespace std
+{
+   //
+   // hash<::DGE::Code::FuncPtr>
+   //
+   template<typename T>
+   struct hash<::DGE::Code::FuncPtr<T>>
+   {
+      std::size_t operator () (::DGE::Code::FuncPtr<T> f) const
+         {return static_cast<::DGE::Code::Word>(f);}
    };
 }
 

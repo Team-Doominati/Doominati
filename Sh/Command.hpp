@@ -50,10 +50,10 @@ namespace DGE::Sh
    class CommandAdder
    {
    public:
-      CommandAdder(Core::HashedStr name, Command native);
+      CommandAdder(Core::HashedStr name, Command cmd);
 
 
-      static void Add(Core::HashedStr name, Command native);
+      static void Add(Core::HashedStr name, Command cmd);
 
       static void Finish();
    };
@@ -67,6 +67,8 @@ namespace DGE::Sh
 namespace DGE::Sh
 {
    extern Core::HashMapFixed<Core::HashedStr, Command> Commands;
+
+   extern Code::CallbackMap<Code::SWord(Shell *)> VMCommands;
 }
 
 #endif//DGE__Sh__Command_H__

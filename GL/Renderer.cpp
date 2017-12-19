@@ -65,9 +65,9 @@ namespace DGE::GL
 
 namespace DGE::GL
 {
-   static Code::Callback CallbackDrawPre{"DrawPre"};
-   static Code::Callback CallbackDraw{"Draw"};
-   static Code::Callback CallbackDrawPost{"DrawPost"};
+   static Code::CallbackSet<void(Code::Word)> CallbackDrawPre{"DrawPre"};
+   static Code::CallbackSet<void(Code::Word)> CallbackDraw{"Draw"};
+   static Code::CallbackSet<void(Code::Word)> CallbackDrawPost{"DrawPost"};
 
    static Renderer *CurrentRenderer;
 }

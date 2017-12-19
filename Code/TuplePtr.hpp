@@ -13,7 +13,9 @@
 #ifndef DGE__Code__TuplePtr_H__
 #define DGE__Code__TuplePtr_H__
 
-#include "Code/MemPtr.hpp"
+#include "../Code/MemPtr.hpp"
+
+#include <tuple>
 
 
 //----------------------------------------------------------------------------|
