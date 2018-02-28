@@ -156,6 +156,8 @@ namespace DGE::Code
 
       operator T () const {return MemInfo<T>::Get(mem, idx);}
 
+      MemPtr<T> operator & () const {return {mem, idx};}
+
       MemRef &operator = (MemRef const &) = delete;
       MemRef const &operator = (T val) const
          {MemInfo<T>::Set(mem, idx, val); return *this;}
@@ -186,6 +188,8 @@ namespace DGE::Code
       MemPtr  operator -- (int) {auto p = *this; return --*this, p;}
 
       MemRef<T> operator * () const {return {mem, idx};}
+
+      MemRef<T> operator [] (Word off) const {return {mem, idx + off * MemInfo<T>::Step};}
 
       MemPtr operator + (Word off) const {return {mem, idx + off * MemInfo<T>::Step};}
       Word operator - (MemPtr const &r) const {return (idx - r.idx) / MemInfo<T>::Step;}
