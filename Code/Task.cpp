@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -104,6 +104,31 @@ namespace DGE::Code
       task->jumpbuf = 0;
 
       return task;
+   }
+
+   //
+   // PrintCallFrame
+   //
+   void PrintCallFrame(std::ostream &out, Task const *task, CallFrame const &call)
+   {
+      auto orig = task->prog->getOrigin(call.codePtr);
+
+      out << "  " << orig.func;
+      if(orig.file)
+         out << " (" << orig.file << ")";
+      out << " [" << call.locRegC << '/' << call.vaaRegC<< "]\n";
+   }
+
+   //
+   // PrintCallStack
+   //
+   void PrintCallStack(std::ostream &out, Task const *task)
+   {
+      out << task->callStk.data() << '+' << task->callStk.size() << '\n';
+      PrintCallFrame(out, task,
+         {task->codePtr, (Word)task->locReg.size(), task->vaaRegC});
+      for(auto i = task->callStk.rbegin(), e = task->callStk.rend(); i != e;)
+         PrintCallFrame(out, task, *i++);
    }
 }
 

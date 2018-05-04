@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,8 @@
 #include "../Core/List.hpp"
 #include "../Core/Stack.hpp"
 #include "../Core/Store.hpp"
+
+#include <ostream>
 
 
 //----------------------------------------------------------------------------|
@@ -87,6 +89,17 @@ namespace DGE::Code
       static constexpr std::size_t CallStkSize =   8;
       static constexpr std::size_t DataStkSize = 256;
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace DGE::Code
+{
+   void PrintCallFrame(std::ostream &out, Task const *task, CallFrame const &call);
+   void PrintCallStack(std::ostream &out, Task const *task);
 }
 
 #endif//DGE__Code__Task_H__

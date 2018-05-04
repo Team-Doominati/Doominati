@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -28,28 +28,11 @@ namespace DGE::Code
    DGE_Code_NativeLoaderDefn(Native_Debug);
 
    //
-   // PrintCallFrame
-   //
-   void PrintCallFrame(std::ostream &out, CallFrame const &call, Task const *task)
-   {
-      auto orig = task->prog->getOrigin(call.codePtr);
-
-      out << "  " << orig.func;
-      if(orig.file)
-         out << " (" << orig.file << ")";
-      out << " [" << call.locRegC << '/' << call.vaaRegC<< "]\n";
-   }
-
-   //
    // void DGE_DebugCallStk(void)
    //
    DGE_Code_NativeDefn(DGE_DebugCallStk)
    {
-      std::cerr << task->callStk.data() << '+' << task->callStk.size() << '\n';
-      PrintCallFrame(std::cerr,
-         {task->codePtr, (Word)task->locReg.size(), task->vaaRegC}, task);
-      for(auto i = task->callStk.rbegin(), e = task->callStk.rend(); i != e;)
-         PrintCallFrame(std::cerr, *i++, task);
+      PrintCallStack(std::cerr, task);
       return false;
    }
 

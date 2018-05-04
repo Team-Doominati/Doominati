@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,9 @@
 #include "Code/Native.hpp"
 #include "Code/OpCode.hpp"
 #include "Code/Program.hpp"
+
+#include <GDCC/Core/Option.hpp>
+#include <GDCC/Option/Int.hpp>
 
 #include <iostream>
 
@@ -96,6 +99,29 @@
 #define ShLU(l, r) ((l) <<= (r))
 #define ShRU(l, r) ((l) >>= (r))
 #define SubU(l, r) ((l) -= (r))
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace DGE::Code
+{
+   #ifndef NDEBUG
+   //
+   // --code-max-call
+   //
+   static unsigned MaxCall;
+   GDCC::Option::Int<unsigned> MaxCallOpt
+   {
+      &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+         .setName("code-max-call")
+         .setDescS("Sets a max call depth. (Default: None)"),
+
+      &MaxCall
+   };
+   #endif
+}
 
 
 //----------------------------------------------------------------------------|
@@ -274,6 +300,7 @@ namespace DGE::Code
       ThisCase();
       #else
       next_case: switch(codePtr->op)
+         case OpCode::NumOpCodes: // Quiet.
       #endif
       {
       DeclCase(Nop):
@@ -364,6 +391,11 @@ namespace DGE::Code
          // Apply function data.
          codePtr = func->entry;
          vaaRegC = vaaC;
+
+         #ifndef NDEBUG
+         if(MaxCall && callStk.size() >= MaxCall)
+            PrintCallStack(std::cerr << "Max call depth reached:\n", this), throw 1;
+         #endif
       }
          ThisCase();
 
