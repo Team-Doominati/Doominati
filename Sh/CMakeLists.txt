@@ -36,6 +36,7 @@ target_link_libraries(dge-sh-lib
    dge-core-lib
    dge-defs-lib
    dge-fs-lib
+   ${CMAKE_THREAD_LIBS_INIT}
    ${GDCC_LIBRARIES})
 
 DGE_INSTALL_PART(sh FALSE TRUE)
