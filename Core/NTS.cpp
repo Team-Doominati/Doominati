@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -67,7 +67,7 @@ namespace DGE::Core
    void NTSStream::expect(char const *tok)
    {
       if(!drop(tok))
-         throw GDCC::Core::ParseExceptExpect{tok, peek(), true};
+         GDCC::Core::ErrorExpect({}, tok, peek(), true);
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -310,12 +310,12 @@ namespace DGE::Code
    {
       auto code = CodeTransTab.find(GDCC::Core::String::Find(codeStr));
       if(code == CodeTransTab.end())
-         throw GDCC::Core::ParseExceptExpect{"code", codeStr, false};
+         GDCC::Core::ErrorExpect({}, "code", codeStr);
 
       // TODO: Better error message.
       if(code->second.argc != static_cast<std::size_t>(-1) &&
          argv.size() != code->second.argc)
-         throw GDCC::Core::ParseExceptStr{{}, "invalid argument count"};
+         GDCC::Core::Error({}, "invalid argument count");
 
       codes.push_back({orig, origFunc, code->first, std::move(argv)});
       codeCount += code->second.count;
@@ -424,7 +424,7 @@ namespace DGE::Code
          Word res = std::strtoul(val, &valEnd, 16);
 
          if(!valEnd || *valEnd)
-            throw GDCC::Core::ParseExceptExpect{"number", val, false};
+            GDCC::Core::ErrorExpect({}, "number", val);
 
          return res;
       }
@@ -434,11 +434,11 @@ namespace DGE::Code
       {
          auto close = std::strchr(val + 1, '}');
          if(!close)
-            throw GDCC::Core::ParseExceptExpect{"glyph type", val, false};
+            GDCC::Core::ErrorExpect({}, "glyph type", val);
 
          auto type = GlyphType::Find({val + 1, close});
          if(!type)
-            throw GDCC::Core::ParseExceptExpect{"known glyph type", val, false};
+            GDCC::Core::ErrorExpect({}, "known glyph type", val);
 
          return type->resolve(*this, close + 1);
       }
@@ -463,10 +463,10 @@ namespace DGE::Code
          if(auto fn = findFunction(glyph))
             return fn->index;
 
-         throw GDCC::Core::ParseExceptExpect{"glyph", val, false};
+         GDCC::Core::ErrorExpect({}, "glyph", val);
       }
 
-      throw GDCC::Core::ParseExceptExpect{"val", val, false};
+      GDCC::Core::ErrorExpect({}, "val", val);
    }
 
    //
@@ -647,7 +647,7 @@ namespace DGE::Code
          while(in) loadKeyword(in);
          ++loadPASS;
       }
-      catch(GDCC::Core::ParseException const &e)
+      catch(GDCC::Core::Exception const &e)
       {
          std::cerr << "parse error in '" << file->name << "': " << e.what() << '\n';
          ++loadFAIL;
@@ -693,7 +693,7 @@ namespace DGE::Code
       default:
          if(tlk == STR_extmem) {loadKeywordExtMem(in); break;}
 
-         throw GDCC::Core::ParseExceptExpect{"top-level keyword", tlk, false};
+         GDCC::Core::ErrorExpect({}, "top-level keyword", tlk);
       }
    }
 
@@ -767,7 +767,7 @@ namespace DGE::Code
       auto em = ExtMems.findVal(type);
 
       if(!em)
-         throw GDCC::Core::ParseExceptExpect{"Object Type", type, false};
+         GDCC::Core::ErrorExpect({}, "Object Type", type);
 
       em->add(mem, words);
    }
@@ -814,11 +814,11 @@ namespace DGE::Code
             if(auto cb = Callbacks.findVal(key = loadVal(in)))
                calls.emplace_back(cb, 0);
             else
-               throw GDCC::Core::ParseExceptExpect{"callback", key, false};
+               GDCC::Core::ErrorExpect({}, "callback", key);
             break;
 
          default:
-            throw GDCC::Core::ParseExceptExpect{"function keyword", key, false};
+            GDCC::Core::ErrorExpect({}, "function keyword", key);
          }
       }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -22,15 +22,14 @@
 namespace DGE::Code
 {
    //
-   // GlyphError::genMsg
+   // GlyphError::whatGen
    //
-   void GlyphError::genMsg() const
+   char const *GlyphError::whatGen() const noexcept
    {
       std::ostringstream oss;
-      if(pos.file) oss << pos << ": ";
+      putOrigin(oss);
       oss << "unknown {" << type << "}: '" << name << '\'';
-      auto const &tmp = oss.str();
-      msg = GDCC::Core::StrDup(tmp.data(), tmp.size());
+      return whatSet(oss.str());
    }
 
    //

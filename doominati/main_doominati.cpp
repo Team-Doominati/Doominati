@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -160,7 +160,7 @@ static void LoadGamedefs()
          while(auto data = in.get())
             DGE::Defs::Gamedefs::Root.process(data.get());
       }
-      catch(GDCC::Core::ParseException const &e)
+      catch(GDCC::Core::Exception const &e)
       {
          std::cerr << "GAMEDEFS error in '" << file->name << "': " << e.what() << '\n';
       }
@@ -192,7 +192,7 @@ static void LoadTextdefs()
          while(in)
             comp.add(in.getLang());
       }
-      catch(GDCC::Core::ParseException const &e)
+      catch(GDCC::Core::Exception const &e)
       {
          std::cerr << "TEXTDEFS error in '" << file->name << "': " << e.what() << '\n';
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -60,14 +60,14 @@ namespace DGE::Code
    //
    // Thrown to indicate glyph resolution error.
    //
-   class GlyphError : public GDCC::Core::ParseException
+   class GlyphError : public GDCC::Core::Exception
    {
    public:
       GlyphError(char const *type_, Core::HashedStr name_) :
          type{type_}, name{name_} {}
 
    private:
-      virtual void genMsg() const;
+      virtual char const *whatGen() const noexcept;
 
       char            const *type;
       Core::HashedStr const  name;

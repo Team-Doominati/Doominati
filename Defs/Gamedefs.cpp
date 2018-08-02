@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2018 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -119,7 +119,7 @@ namespace DGE::Defs
    {
       auto def = defs.find(data->name);
       if(!def)
-         throw GDCC::Core::ParseExceptExpect{"GAMEDEFS name", data->name, false};
+         GDCC::Core::ErrorExpect({}, "GAMEDEFS name", data->name);
 
       if(auto block = dynamic_cast<GamedefsParserBlock const *>(data))
       {
@@ -143,7 +143,7 @@ namespace DGE::Defs
       if(in.drop("=")) return getValue(name);
       if(in.drop("{")) return getBlock(name);
 
-      throw GDCC::Core::ParseExceptExpect{"GAMEDEFS data", in.peek(), false};
+      GDCC::Core::ErrorExpect({}, "GAMEDEFS data", in.peek());
    }
 
    //
@@ -156,7 +156,7 @@ namespace DGE::Defs
       while(!in.drop("}"))
       {
          if(!in)
-            throw GDCC::Core::ParseExceptExpect{"}", "EOF", true, false};
+            GDCC::Core::ErrorExpect({}, "}", "EOF", true, false);
 
          buf.push_back(get());
       }
@@ -175,7 +175,7 @@ namespace DGE::Defs
       while(!in.drop(";"))
       {
          if(!in)
-            throw GDCC::Core::ParseExceptExpect{";", "EOF", true, false};
+            GDCC::Core::ErrorExpect({}, ";", "EOF", true, false);
 
          buf.push_back(in.get());
       }

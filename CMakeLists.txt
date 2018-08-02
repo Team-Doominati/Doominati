@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2017 Team Doominati
+## Copyright (C) 2016-2018 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -11,6 +11,8 @@
 ##-----------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.4)
+
+cmake_policy(VERSION 3.11)
 
 project(doominati)
 
