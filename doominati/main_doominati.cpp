@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -19,6 +19,7 @@
 
 #include "AL/AudioRenderer.hpp"
 
+#include "Code/Callback.hpp"
 #include "Code/Codedefs.hpp"
 #include "Code/Native.hpp"
 #include "Code/Process.hpp"
@@ -60,6 +61,8 @@
 // Static Objects                                                             |
 //
 
+static DGE::Code::CallbackSet<void()> InitCB{"Init"};
+
 static GDCC::Core::Array<std::unique_ptr<DGE::FS::Dir>> RootDirs;
 
 static char const *WindowTitle = nullptr;
@@ -69,7 +72,8 @@ static int WindowSizeY = 480;
 //
 // GL::Window::Title
 //
-static DGE::Defs::GamedefsCall WindowTitleDef{
+static DGE::Defs::GamedefsCall WindowTitleDef
+{
    &DGE::GL::GetWindowDefs(), "Title",
    [](DGE::Defs::GamedefsParserValue const *value)
    {
@@ -83,7 +87,8 @@ static DGE::Defs::GamedefsCall WindowTitleDef{
 //
 // GL::Window::Size
 //
-static DGE::Defs::GamedefsCall WindowSizeDef{
+static DGE::Defs::GamedefsCall WindowSizeDef
+{
    &DGE::GL::GetWindowDefs(), "Size",
    [](DGE::Defs::GamedefsParserValue const *value)
    {
@@ -288,11 +293,15 @@ static int Main()
    DGE::Game::InputSource_Local::SetCurrent(&input);
    DGE::Game::InputSource::Set(0, &input);
 
-   // Initialize scripting and call main.
+   // Initialize scripting.
    DGE::Code::Program prog;
    LoadCodedefs(&prog);
    DGE::Code::Process proc{&prog};
 
+   // Call Init functions.
+   InitCB();
+
+   // Call main.
    if(auto func = prog.funcs.find("main"))
       proc.mainThread()->startTask(func, nullptr, 0);
 
