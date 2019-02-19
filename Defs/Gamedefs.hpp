@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -113,8 +113,10 @@ namespace DGE::Defs
    public:
       GamedefsParser(Core::NTSStream &in_) : in{in_} {}
 
-
       std::unique_ptr<GamedefsParserData> get();
+
+
+      static bool GetBool(char const *value);
 
    private:
       std::unique_ptr<GamedefsParserBlock> getBlock(Core::HashedStr name);

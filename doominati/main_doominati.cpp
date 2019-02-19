@@ -65,9 +65,25 @@ static DGE::Code::CallbackSet<void()> InitCB{"Init"};
 
 static GDCC::Core::Array<std::unique_ptr<DGE::FS::Dir>> RootDirs;
 
+static bool WindowEnable = true;
 static char const *WindowTitle = nullptr;
 static int WindowSizeX = 640;
 static int WindowSizeY = 480;
+
+//
+// GL::Window::Enable
+//
+static DGE::Defs::GamedefsCall WindowEnableDef
+{
+   &DGE::GL::GetWindowDefs(), "Enable",
+   [](DGE::Defs::GamedefsParserValue const *value)
+   {
+      if(value->data.size() != 1)
+         std::cerr << "GL::Window::Enable takes 1 value\n", throw EXIT_FAILURE;
+
+      WindowEnable = DGE::Defs::GamedefsParser::GetBool(value->data[0]);
+   }
+};
 
 //
 // GL::Window::Title
@@ -270,14 +286,19 @@ static int Main()
    DGE::Sh::Shell shell;
 
    // Initialize rendering.
-   DGE::GL::Window window{WindowSizeX, WindowSizeY};
-   DGE::GL::Renderer renderer{window};
+   std::unique_ptr<DGE::GL::Window>   window;
+   std::unique_ptr<DGE::GL::Renderer> renderer;
+   if(WindowEnable)
+   {
+      window.reset(new DGE::GL::Window{WindowSizeX, WindowSizeY});
+      renderer.reset(new DGE::GL::Renderer{*window});
 
-   DGE::GL::Window::SetCurrent(&window);
-   DGE::GL::Renderer::SetCurrent(&renderer);
+      DGE::GL::Window::SetCurrent(window.get());
+      DGE::GL::Renderer::SetCurrent(renderer.get());
 
-   if(WindowTitle)
-      window.setTitle(WindowTitle);
+      if(WindowTitle)
+         window->setTitle(WindowTitle);
+   }
 
    // Initialize audio.
    DGE::AL::AudioRenderer audio;
@@ -336,9 +357,12 @@ static int Main()
          SDL_Delay(1);
 
       // Rendering actions.
-      renderer.renderBegin();
-      renderer.render();
-      renderer.renderEnd();
+      if(renderer)
+      {
+         renderer->renderBegin();
+         renderer->render();
+         renderer->renderEnd();
+      }
    }
 
    return EXIT_SUCCESS;
@@ -377,7 +401,7 @@ int main(int argc, char **argv)
 
       std::cout <<
          " Doominati " << opts.list.version <<
-         " Copyright (C) 2017 Team Doominati\n"
+         " Copyright (C) 2017-2019 Team Doominati\n"
          "      See COPYING for license information.\n\n";
 
       return Main();

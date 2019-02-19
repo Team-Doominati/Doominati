@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017-2018 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -182,6 +182,20 @@ namespace DGE::Defs
 
       return std::unique_ptr<GamedefsParserValue>{
          new GamedefsParserValue{name, {GDCC::Core::Move, buf.begin(), buf.end()}}};
+   }
+
+   //
+   // GamedefsParser::GetBool
+   //
+   bool GamedefsParser::GetBool(char const *value)
+   {
+      if(!std::strcmp(value, "false") || !std::strcmp(value, "0"))
+         return false;
+
+      if(!std::strcmp(value, "true") || !std::strcmp(value, "1"))
+         return true;
+
+      GDCC::Core::ErrorExpect({}, "boolean", value);
    }
 }
 
