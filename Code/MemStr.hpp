@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -24,10 +24,14 @@
 
 namespace DGE::Code
 {
-   void MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL);
+   char *MemMemCpy(char *out, MemPtr<Byte const> in, std::size_t len);
+
+   MemPtr<Byte> MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL);
 
    std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str);
    std::unique_ptr<char[]> MemStrDup(MemPtr<Byte const> str, std::size_t len);
+
+   std::pair<std::unique_ptr<char[]>, std::size_t> MemStrDupLen(MemPtr<Byte const> str);
 
    std::size_t MemStrLen(MemPtr<Byte const> str);
 }

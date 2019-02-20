@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017-2019 Team Doominati
+// Copyright (C) 2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,26 +10,21 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef DGE__Defs__Types_H__
-#define DGE__Defs__Types_H__
+#ifndef DGE__FS__Types_H__
+#define DGE__FS__Types_H__
 
-#include "../FS/Types.hpp"
+#include "../Core/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace DGE::Defs
+namespace DGE::FS
 {
-   class Gamedefs;
-   class GamedefsGroup;
-   class GamedefsParserBlock;
-   class GamedefsParserData;
-   class GamedefsParserValue;
-   class TextdefsParserLang;
-   class TextdefsParserText;
+   class Dir;
+   class File;
 }
 
-#endif//DGE__Defs__Types_H__
+#endif//DGE__FS__Types_H__
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -20,20 +20,35 @@
 namespace DGE::Code
 {
    //
+   // MemMemCpy
+   //
+   char *MemMemCpy(char *out, MemPtr<Byte const> in, std::size_t len)
+   {
+      for(auto itr = out; len--;)
+         *itr++ = *in++;
+
+      return out;
+   }
+
+   //
    // MemStrNCpy
    //
-   void MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL)
+   MemPtr<Byte> MemStrNCpy(MemPtr<Byte> out, Word outL, char const *in, std::size_t inL)
    {
       if(outL)
       {
          if(outL > inL)
             outL = inL + 1;
 
-         for(auto end = in + outL - 1; in != end;)
-            *out++ = *in++;
+         auto itr = out;
 
-         *out++ = '\0';
+         for(auto end = in + outL - 1; in != end;)
+            *itr++ = *in++;
+
+         *itr++ = '\0';
       }
+
+      return out;
    }
 
    //
@@ -51,11 +66,19 @@ namespace DGE::Code
    {
       std::unique_ptr<char[]> dup{new char[len+1]};
 
-      for(char *itr = dup.get(), *end = itr + len; itr != end; ++itr, ++str)
-         *itr = *str;
+      MemMemCpy(dup.get(), str, len);
       dup[len] = '\0';
 
       return dup;
+   }
+
+   //
+   // MemStrDupLen
+   //
+   std::pair<std::unique_ptr<char[]>, std::size_t> MemStrDupLen(MemPtr<Byte const> str)
+   {
+      std::size_t len = MemStrLen(str);
+      return {MemStrDup(str, len), len};
    }
 
    //

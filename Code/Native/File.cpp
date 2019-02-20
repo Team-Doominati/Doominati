@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "Code/Convert.hpp"
 #include "Code/MemStr.hpp"
+#include "Code/Process.hpp"
 #include "Code/Program.hpp"
 #include "Code/Task.hpp"
 
@@ -160,6 +161,19 @@ namespace DGE::Code
    }
 
    //
+   // unsigned DGE_Dir_GetWork(char *buf, unsigned len)
+   //
+   DGE_Code_NativeDefn(DGE_Dir_GetWork)
+   {
+      auto work = task->proc->workDir;
+
+      MemStrNCpy({&task->prog->memory, argv[0]}, argv[1], work.str, work.len);
+
+      task->dataStk.push(work.len);
+      return false;
+   }
+
+   //
    // unsigned DGE_Dir_Name(int fd, char *buf, unsigned len)
    //
    DGE_Code_NativeDefn(DGE_Dir_Name)
@@ -178,8 +192,13 @@ namespace DGE::Code
    DGE_Code_NativeDefn(DGE_Dir_Open)
    {
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      FS::Dir::DirPtr    dir  = {nullptr, false};
 
-      auto dir = FS::Dir::Root->findDirPath(MemStrDup(name).get());
+      if(*name == '/')
+         dir = FS::Dir::Root->findDirPath(MemStrDup(name + 1).get());
+      else
+         dir = task->proc->getWorkDir()->findDirPath(MemStrDup(name).get());
+
       if(!dir) {task->dataStk.push(-1); return false;}
 
       task->dataStk.push(OpenDir::Open(std::move(dir)));
@@ -242,6 +261,44 @@ namespace DGE::Code
    }
 
    //
+   // int DGE_Dir_SetWork(char *path)
+   //
+   DGE_Code_NativeDefn(DGE_Dir_SetWork)
+   {
+      MemPtr<Byte const> path = {&task->prog->memory, argv[0]};
+
+      std::size_t             workLen;
+      std::unique_ptr<char[]> workStr;
+
+      if(*path == '/')
+      {
+         std::tie(workStr, workLen) = MemStrDupLen(path + 1);
+      }
+      else
+      {
+         auto work    = task->proc->workDir;
+         auto pathLen = MemStrLen(path);
+
+         workLen = work.len + 1 + pathLen;
+         workStr.reset(new char[workLen]);
+
+         std::memcpy(&workStr[0], work.str, work.len);
+         workStr[work.len] = '/';
+         MemMemCpy(&workStr[work.len + 1], path, pathLen);
+      }
+
+      if(FS::Dir::Root->findDirPath({workStr.get(), workLen}))
+      {
+         task->proc->setWorkDir(std::move(workStr), workLen);
+         task->dataStk.push(0);
+      }
+      else
+         task->dataStk.push(-1);
+
+      return false;
+   }
+
+   //
    // void DGE_File_Close(int fd)
    //
    DGE_Code_NativeDefn(DGE_File_Close)
@@ -285,8 +342,13 @@ namespace DGE::Code
    DGE_Code_NativeDefn(DGE_File_Open)
    {
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      FS::Dir::FilePtr   file;
 
-      auto file = FS::Dir::Root->findFilePath(MemStrDup(name).get());
+      if(*name == '/')
+         file = FS::Dir::Root->findFilePath(MemStrDup(name + 1).get());
+      else
+         file = task->proc->getWorkDir()->findFilePath(MemStrDup(name).get());
+
       if(!file) {task->dataStk.push(-1); return false;}
 
       task->dataStk.push(OpenFile::Open(file));

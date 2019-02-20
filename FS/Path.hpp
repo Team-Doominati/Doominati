@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef DGE__FS__Path_H__
 #define DGE__FS__Path_H__
+
+#include "Types.hpp"
 
 #include <algorithm>
 #include <cstring>

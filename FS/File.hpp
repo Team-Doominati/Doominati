@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef DGE__FS__File_H__
 #define DGE__FS__File_H__
+
+#include "Types.hpp"
 
 #include "../Core/String.hpp"
 
@@ -25,8 +27,6 @@
 
 namespace DGE::FS
 {
-   class Dir;
-
    enum class Format
    {
       None,

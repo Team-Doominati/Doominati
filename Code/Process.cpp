@@ -15,6 +15,8 @@
 #include "Code/Task.hpp"
 #include "Code/Thread.hpp"
 
+#include "FS/Dir.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
@@ -36,7 +38,9 @@ namespace DGE::Code
    // Process constructor
    //
    Process::Process(Program *prog_) :
-      prog{prog_}
+      prog{prog_},
+
+      workDir{nullptr}
    {
       if(!MainProcess) MainProcess = this;
    }
@@ -74,6 +78,14 @@ namespace DGE::Code
          thread.exec();
    }
 
+   FS::Dir::DirPtr Process::getWorkDir()
+   {
+      if(auto dir = FS::Dir::Root->findDirPath(workDir))
+         return dir;
+
+      return {FS::Dir::Root.get(), false};
+   }
+
    //
    // Process::mainThread
    //
@@ -83,6 +95,15 @@ namespace DGE::Code
          (new Thread(this))->link.insert(&threads);
 
       return threads.next->obj;
+   }
+
+   //
+   // Process::setWorkDir
+   //
+   void Process::setWorkDir(std::unique_ptr<char[]> &&str, std::size_t len)
+   {
+      workDirData = std::move(str);
+      workDir     = {workDirData.get(), len};
    }
 
    //

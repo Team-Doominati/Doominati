@@ -29,6 +29,7 @@ add_library(dge-fs-lib ${DGE_SHARED_DECL}
    File.hpp
    Path.cpp
    Path.hpp
+   Types.hpp
 )
 
 target_link_libraries(dge-fs-lib

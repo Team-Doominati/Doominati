@@ -16,8 +16,12 @@
 #include "Code/Types.hpp"
 
 #include "Core/List.hpp"
+#include "Core/String.hpp"
+
+#include <GDCC/Core/Deleter.hpp>
 
 #include <array>
+#include <memory>
 
 
 //----------------------------------------------------------------------------|
@@ -53,14 +57,23 @@ namespace DGE::Code
 
       void exec();
 
+      std::unique_ptr<FS::Dir, GDCC::Core::ConditionalDeleter<FS::Dir>> getWorkDir();
+
       Thread *mainThread();
+
+      void setWorkDir(std::unique_ptr<char[]> &&str, std::size_t len);
 
       Core::ListLink<Thread> threads;
 
       Program *const prog;
 
+      Core::HashedStr workDir;
+
 
       static Process *GetMain();
+
+   private:
+      std::unique_ptr<char[]> workDirData;
    };
 }
 
