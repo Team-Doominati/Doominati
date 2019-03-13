@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -37,6 +37,8 @@ namespace DGE::Defs
    public:
       using Lang = Core::HashMapFixed<Core::HashedStr, Core::HashedStr>;
 
+
+      Core::HashedStr find(Core::HashedStr name);
 
       Core::HashMapFixed<Core::HashedStr, Lang> langs;
       GDCC::Core::Array<Lang *>                 prefs;

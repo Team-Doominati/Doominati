@@ -112,19 +112,14 @@ namespace DGE::Code
       Code::MemPtr<Code::Byte> buf{&task->prog->memory, argv[1]};
       Code::Word               len{argv[2]};
 
-      Core::HashedStr *text = nullptr;
-      for(auto const &pref : Textdefs.prefs)
-      {
-         if(pref && (text = pref->find(name)))
-            break;
-      }
+      Core::HashedStr text = Textdefs.find(name);
 
       if(!text)
          return task->dataStk.push(0), false;
 
-      MemStrNCpy(buf, len, text->str, text->len);
+      MemStrNCpy(buf, len, text.str, text.len);
 
-      task->dataStk.push(text->len);
+      task->dataStk.push(text.len);
       return false;
    }
 }

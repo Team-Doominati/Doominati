@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -50,6 +50,10 @@ namespace DGE::Code
    {
    public:
       CallbackMap(Core::HashedStr name) : Callback{name} {}
+
+      auto begin() const {return funcs.begin();}
+
+      auto end() const {return funcs.end();}
 
       //
       // erase

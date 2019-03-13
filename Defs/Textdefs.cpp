@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -25,6 +25,20 @@
 
 namespace DGE::Defs
 {
+   //
+   // Textdefs::find
+   //
+   Core::HashedStr Textdefs::find(Core::HashedStr name)
+   {
+      for(auto const &pref : prefs) if(pref)
+      {
+         if(auto text = pref->find(name))
+            return *text;
+      }
+
+      return nullptr;
+   }
+
    //
    // TextdefsParser::operator bool
    //
