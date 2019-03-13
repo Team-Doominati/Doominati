@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -64,6 +64,17 @@ namespace DGE::Game
    }
 
    //
+   // InputSource_Local constructor
+   //
+   InputSource_Local::InputSource_Local() :
+      frameLast{},
+      frameNext{},
+      bindsKey(NumBind)
+   {
+      for(auto &bind : bindsMouse) bind = ~0u;
+   }
+
+   //
    // InputSource_Local::poll
    //
    void InputSource_Local::poll()
@@ -80,21 +91,23 @@ namespace DGE::Game
       switch(event.type)
       {
       case Event::KeyDown:
-         if(auto it = keys.find(event.data.key); it != keys.end())
-            frameNext.bind[it->second.num] = true;
+         if(auto it = bindsKey.find(event.data.key); it != bindsKey.end())
+            frameNext.bind[it->second] = true;
          break;
 
       case Event::KeyUp:
-         if(auto it = keys.find(event.data.key); it != keys.end())
-            frameNext.bind[it->second.num] = false;
+         if(auto it = bindsKey.find(event.data.key); it != bindsKey.end())
+            frameNext.bind[it->second] = false;
          break;
 
       case Event::MouseDown:
-         // TODO
+         if(auto btn = bindsMouse[static_cast<std::size_t>(event.data.mb)]; btn != ~0u)
+            frameNext.bind[btn] = true;
          break;
 
       case Event::MouseUp:
-         // TODO
+         if(auto btn = bindsMouse[static_cast<std::size_t>(event.data.mb)]; btn != ~0u)
+            frameNext.bind[btn] = false;
          break;
 
       case Event::MouseMove:
@@ -125,10 +138,16 @@ namespace DGE::Game
    //
    void InputSource_Local::bindKey(unsigned btn, char32_t ch)
    {
-      for(auto it = keys.cbegin(); it != keys.cend(); ++it)
-         if(it->second.num == btn) {keys.erase(it); break;}
+      bindsKey.insert_or_assign(ch, btn);
+   }
 
-      keys.emplace(ch, btn);
+   //
+   // InputSource_Local::bindMouse
+   //
+   void InputSource_Local::bindMouse(unsigned btn, MouseButton mb)
+   {
+      if(mb < MouseButton::Max)
+         bindsMouse[static_cast<std::size_t>(mb)] = btn;
    }
 
    //
@@ -214,6 +233,16 @@ namespace DGE::Game
    DGE_Code_NativeDefn(DGE_Input_SetBindKey)
    {
       InputSource_Local::GetCurrent()->bindKey(argv[0], argv[1]);
+      return false;
+   }
+
+   //
+   // void DGE_Input_SetBindMouse(unsigned btn, int mb)
+   //
+   DGE_Code_NativeDefn(DGE_Input_SetBindMouse)
+   {
+      InputSource_Local::GetCurrent()->bindMouse(
+         argv[0], static_cast<MouseButton>(argv[1]));
       return false;
    }
 }

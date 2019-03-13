@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -110,7 +110,15 @@ namespace DGE::Game
       Event evt{sevt.button.state == SDL_PRESSED ?
          Event::MouseDown : Event::MouseUp};
 
-      evt.data.mb = MouseButton(sevt.button.button);
+      switch(sevt.button.button)
+      {
+      case SDL_BUTTON_LEFT:   evt.data.mb = MouseButton::Left;   break;
+      case SDL_BUTTON_MIDDLE: evt.data.mb = MouseButton::Middle; break;
+      case SDL_BUTTON_RIGHT:  evt.data.mb = MouseButton::Right;  break;
+      case SDL_BUTTON_X1:     evt.data.mb = MouseButton::Extra1; break;
+      case SDL_BUTTON_X2:     evt.data.mb = MouseButton::Extra2; break;
+      default: return;
+      }
 
       PushEvent(evt);
    }

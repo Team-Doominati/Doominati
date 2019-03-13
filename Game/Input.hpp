@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -87,7 +87,7 @@ namespace DGE::Game
    class InputSource_Local : public InputSource, EventSink
    {
    public:
-      InputSource_Local() : frameLast{}, frameNext{}, keys(NumBind) {}
+      InputSource_Local();
 
       virtual ~InputSource_Local() {}
 
@@ -98,26 +98,19 @@ namespace DGE::Game
       virtual void sink(Event const &event);
 
       void bindKey(unsigned btn, char32_t ch);
+      void bindMouse(unsigned btn, MouseButton mb);
 
 
       static InputSource_Local *GetCurrent();
       static void SetCurrent(InputSource_Local *input);
 
    private:
-      //
-      // Key
-      //
-      struct Key
-      {
-         Key(unsigned num_) : num{num_} {}
-
-         unsigned num;
-      };
-
       InputFrame frameLast;
       InputFrame frameNext;
 
-      std::unordered_map<char32_t, Key> keys;
+      std::unordered_map<char32_t, unsigned> bindsKey;
+
+      unsigned bindsMouse[static_cast<std::size_t>(MouseButton::Max)];
    };
 }
 

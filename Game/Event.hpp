@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -69,14 +69,15 @@ namespace DGE::Game
    //
    enum class MouseButton
    {
-      Invalid,
       Left,
       Middle,
       Right,
       Extra1,
       Extra2,
       Extra3,
-      Extra4
+      Extra4,
+
+      Max
    };
 
    //
