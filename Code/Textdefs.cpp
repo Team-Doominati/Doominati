@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -49,7 +49,9 @@ namespace DGE::Code
       &GetTextdefsDefs(), "Fallback",
       [](Defs::GamedefsParserValue const *value)
       {
-         TextdefsFallbacks = {value->data.begin(), value->data.end()};
+         TextdefsFallbacks = {value->data.begin(), value->data.end(),
+            [](Core::HashedStr const &s) -> GDCC::Core::String
+               {return {s.str, s.len, s.hash};}};
       }
    };
 }

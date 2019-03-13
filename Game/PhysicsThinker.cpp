@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,7 @@ namespace DGE::Game
 
       if(mass)
       {
-         auto getf = [f, this](Fixed v) -> Fixed
+         auto getf = [f](Fixed v) -> Fixed
          {
             auto vf = Fixed::MulFB(v, f);
             return vf ? vf : v < 0

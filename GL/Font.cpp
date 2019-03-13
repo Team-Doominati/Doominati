@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -214,7 +214,7 @@ namespace DGE::GL
    {
       if(FT_Load_Char(face, FT_ULong(ch), FT_LOAD_RENDER))
       {
-         gly = {0, 0, 0, 0, 0, texMan.resNone->idx, ch};
+         gly = {{0, 0, 0, 0, 0}, texMan.resNone->idx, ch};
          return;
       }
 
@@ -239,9 +239,8 @@ namespace DGE::GL
       if(DebugFontInfo)
          std::cout << "Glyph " << ch << ": W " << w << " H " << h << std::endl;
 
-      gly = {w, h, glyph->advance.x / 64.0f, glyph->bitmap_left,
-             -glyph->bitmap_top, texMan.add({w, h, buf.get()}, nullptr)->idx,
-             ch};
+      gly = {{w, h, glyph->advance.x / 64.0f, glyph->bitmap_left, -glyph->bitmap_top},
+             texMan.add({w, h, buf.get()}, nullptr)->idx, ch};
    }
 }
 
