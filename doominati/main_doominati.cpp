@@ -136,7 +136,7 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 
    // Load CODEDEFS files.
    DGE::Code::Loader loader;
-   DGE::FS::Dir::Root->forFilePath("codedefs",
+   DGE::FS::Dir::Root->forFilePath("boot/codedefs",
       std::bind(&DGE::Code::Loader::loadCodedefs, &loader, std::placeholders::_1));
 
    // Print status.
@@ -167,7 +167,7 @@ static void LoadCodedefs(DGE::Code::Program *prog)
 static void LoadGamedefs()
 {
    // Load GAMEDEFS files.
-   DGE::FS::Dir::Root->forFilePath("gamedefs", [](DGE::FS::File *file)
+   DGE::FS::Dir::Root->forFilePath("boot/gamedefs", [](DGE::FS::File *file)
    {
       if(file->format != DGE::FS::Format::DGE_NTS)
          return;
@@ -196,7 +196,7 @@ static void LoadTextdefs()
    DGE::Defs::TextdefsCompiler comp;
 
    // Load TEXTDEFS files.
-   DGE::FS::Dir::Root->forFilePath("textdefs", [&comp](DGE::FS::File *file)
+   DGE::FS::Dir::Root->forFilePath("boot/textdefs", [&comp](DGE::FS::File *file)
    {
       if(file->format != DGE::FS::Format::DGE_NTS)
          return;
