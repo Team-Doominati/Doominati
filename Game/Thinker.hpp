@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -87,6 +87,8 @@ namespace DGE::Game
 
       void insert();
 
+      virtual void think() {}
+
       void unlink();
 
       Ptr      next;
@@ -97,18 +99,14 @@ namespace DGE::Game
 
       template<typename T> static T *Next(T *th);
 
-      static void ThinkAll();
-
-      static Thinker ThinkerCap;
+      static Ref const Head;
 
    protected:
       Thinker(Code::Word *emv, std::size_t emc);
       virtual ~Thinker();
 
-      virtual void think() {}
-
    private:
-      explicit Thinker(int); // ThinkerCap constructor.
+      Thinker(); // Head constructor.
    };
 
    //
@@ -162,7 +160,7 @@ namespace DGE::Game
    template<typename T>
    T *Thinker::Begin()
    {
-      for(Thinker *it = ThinkerCap.next; it != &ThinkerCap; it = it->next)
+      for(Thinker *it = Head->next; it != Head; it = it->next)
       {
          if(T *th = dynamic_cast<T *>(it))
             return th;
@@ -177,7 +175,7 @@ namespace DGE::Game
    template<typename T>
    T *Thinker::Next(T *th)
    {
-      for(Thinker *it = th->next; it != &ThinkerCap; it = it->next)
+      for(Thinker *it = th->next; it != Head; it = it->next)
       {
          if((th = dynamic_cast<T *>(it)))
             return th;

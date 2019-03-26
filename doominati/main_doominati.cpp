@@ -348,7 +348,6 @@ static int Main()
          {
             shell.exec();
             input.poll();
-            DGE::Game::Thinker::ThinkAll();
             proc.exec();
             DGE::Game::EventFrame();
          }
