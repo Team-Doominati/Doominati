@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2018 Team Doominati
+## Copyright (C) 2016-2019 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -39,8 +39,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DGE_OUT_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake)
 
 if(NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE "Release")
+   set(CMAKE_BUILD_TYPE "release")
 endif()
+
+set(CMAKE_CXX_STANDARD 17)
 
 
 ##----------------------------------------------------------------------------|
@@ -109,8 +111,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
    Try_CXX_Compiler_Flag(-ffast-math FLAG_CXX_ffast_math)
 
    Try_CXX_Compiler_Flag(-Wno-implicit-fallthrough FLAG_CXX_Wno_implicit_fallthrough)
-
-   Try_CXX_Compiler_Flag(-std=c++1z FLAG_CXX_STD_CXX17)
 endif()
 
 if(MSVC)
@@ -254,6 +254,11 @@ Add_Optional_Library(DGE_AL_LIBRARIES DGE_AL_Use_Vorbis
 ## Optional defs for target GL
 Add_Optional_Library(DGE_GL_LIBRARIES DGE_GL_Use_JPEG
    "${JPEG_FOUND}" "${JPEG_LIBRARIES}" "${JPEG_INCLUDE_DIR}")
+
+##
+## Non-package libraries
+##
+find_library(STDCXXFS stdc++fs)
 
 ##
 ## Entry point

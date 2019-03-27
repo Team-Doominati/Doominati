@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2017 Team Doominati
+## Copyright (C) 2016-2019 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -35,6 +35,10 @@ add_library(dge-fs-lib ${DGE_SHARED_DECL}
 target_link_libraries(dge-fs-lib
    dge-core-lib
    ${GDCC_LIBRARIES})
+
+if(STDCXXFS)
+   target_link_libraries(dge-fs-lib ${STDCXXFS})
+endif()
 
 DGE_INSTALL_PART(fs FALSE TRUE)
 
