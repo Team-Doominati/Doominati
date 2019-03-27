@@ -351,12 +351,11 @@ namespace DGE::GL
       float rx, ry;
       std::tie(rx, ry) = getFocus();
 
-      drawColorSet(1.0f, 1.0f, 1.0f);
-
       TextureSaver texSave{*this, texBound};
       ShaderSaver  shdSave{*this, shdBound};
 
       // Render floors.
+      drawColorSet(1.0f, 1.0f, 1.0f);
       for(auto &sec : Game::BlockMap::Root.listSec)
          if(sec.texf)
       {
@@ -388,7 +387,18 @@ namespace DGE::GL
             static_cast<double>(th.yaw) * Core::Tau);
       }
 
-      // TODO: Render ceilings.
+      // Render ceilings.
+      drawColorSet(1.0f, 1.0f, 1.0f);
+      for(auto &sec : Game::BlockMap::Root.listSec)
+         if(sec.texc)
+      {
+         // TODO: Non-rectangular sector rendering.
+
+         float sxl = sec.xl - rx, sxu = sec.xu - rx;
+         float syl = sec.yl - ry, syu = sec.yu - ry;
+         textureBind(textureGet(sec.texc));
+         drawRectangle(sxl, syl, sxu, syu);
+      }
    }
 
    //
