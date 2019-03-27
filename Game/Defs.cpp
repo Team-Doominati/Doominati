@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 
 #include "Code/Native.hpp"
 
+#include "Defs/Gamedefs.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -26,6 +28,15 @@ namespace DGE::Game
    DGE_Code_NativeLoaderDecl(ParticleSys);
    DGE_Code_NativeLoaderDecl(Sector);
    DGE_Code_NativeLoaderDecl(ScriptedEntity);
+
+   //
+   // GetDefs
+   //
+   Defs::GamedefsGroup &GetDefs()
+   {
+      static Defs::GamedefsGroup defs{&Defs::Gamedefs::GetRoot(), "Game"};
+      return defs;
+   }
 
    //
    // NativeAdd

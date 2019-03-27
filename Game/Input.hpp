@@ -48,8 +48,8 @@ namespace DGE::Game
       static InputSource *Get(unsigned player);
       static void Set(unsigned player, InputSource *input);
 
-      static inline std::size_t NumAxis;
-      static inline std::size_t NumBind;
+      static std::size_t NumAxis;
+      static std::size_t NumBind;
    };
 
    //
@@ -112,6 +112,16 @@ namespace DGE::Game
 
       unsigned bindsMouse[static_cast<std::size_t>(MouseButton::Max)];
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace DGE::Game
+{
+   Defs::GamedefsGroup &GetInputDefs();
 }
 
 #endif//DGE__Game__Input_H__

@@ -12,10 +12,14 @@
 
 #include "Game/Input.hpp"
 
+#include "Game/Defs.hpp"
+
 #include "Code/Convert.hpp"
 #include "Code/Program.hpp"
 #include "Code/Native.hpp"
 #include "Code/Task.hpp"
+
+#include "Defs/Gamedefs.hpp"
 
 #include <GDCC/Core/Option.hpp>
 
@@ -33,8 +37,51 @@
 
 namespace DGE::Game
 {
+   //
+   // Game::Input::NumAxis
+   //
+   static DGE::Defs::GamedefsCall InputNumAxisDef
+   {
+      &GetInputDefs(), "NumAxis",
+      [](Defs::GamedefsParserValue const *value)
+      {
+         if(value->data.size() != 1)
+            std::cerr << "Game::Input::NumAxis takes 1 value\n", throw EXIT_FAILURE;
+
+         // TODO: Replace with shared number parser in DGE::Defs.
+         InputSource::NumAxis = std::strtoul(value->data[0], nullptr, 16);
+      }
+   };
+
+   //
+   // Game::Input::NumBind
+   //
+   static DGE::Defs::GamedefsCall InputNumBindDef
+   {
+      &GetInputDefs(), "NumBind",
+      [](Defs::GamedefsParserValue const *value)
+      {
+         if(value->data.size() != 1)
+            std::cerr << "Game::Input::NumBind takes 1 value\n", throw EXIT_FAILURE;
+
+         // TODO: Replace with shared number parser in DGE::Defs.
+         InputSource::NumBind = std::strtoul(value->data[0], nullptr, 16);
+      }
+   };
+
    static std::unordered_map<unsigned, InputSource *> InputSources;
    static InputSource_Local *LocalInput;
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace DGE::Game
+{
+   std::size_t InputSource::NumAxis = 8;
+   std::size_t InputSource::NumBind = 8;
 }
 
 
@@ -165,6 +212,15 @@ namespace DGE::Game
    {
       LocalInput = input;
    }
+
+   //
+   // GetInputDefs
+   //
+   Defs::GamedefsGroup &GetInputDefs()
+   {
+      static Defs::GamedefsGroup defs{&GetDefs(), "Input"};
+      return defs;
+   }
 }
 
 
@@ -212,6 +268,8 @@ namespace DGE::Game
          unsigned prev = framePrev.bind[argv[1]];
          task->dataStk.push((next << 0) | (prev << 1));
       }
+      else
+         task->dataStk.push(0);
 
       return false;
    }

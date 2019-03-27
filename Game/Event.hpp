@@ -13,6 +13,8 @@
 #ifndef DGE__Game__Event_H__
 #define DGE__Game__Event_H__
 
+#include "Game/Types.hpp"
+
 #include "Core/Vector2.hpp"
 
 #include <cstdint>
