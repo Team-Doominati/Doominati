@@ -256,11 +256,6 @@ Add_Optional_Library(DGE_GL_LIBRARIES DGE_GL_Use_JPEG
    "${JPEG_FOUND}" "${JPEG_LIBRARIES}" "${JPEG_INCLUDE_DIR}")
 
 ##
-## Non-package libraries
-##
-find_library(STDCXXFS stdc++fs)
-
-##
 ## Entry point
 ##
 if(NOT DGE_CONSOLE_APPLICATION AND NOT SDL2_MAIN_FOUND)

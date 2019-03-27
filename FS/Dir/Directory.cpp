@@ -19,8 +19,6 @@
 #include <GDCC/Core/File.hpp>
 #include <GDCC/Core/String.hpp>
 
-#include <filesystem>
-
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -86,12 +84,14 @@ namespace DGE::FS
    {
       // Count files and dirs.
       std::size_t dirC = 0, fileC = 0;
-      for(auto &dir : std::filesystem::directory_iterator(dirname))
+      for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
       {
-         if(dir.is_directory())
-            ++dirC;
-         else if(dir.is_regular_file())
-            ++fileC;
+         switch(dir->getStat().type)
+         {
+         case GDCC::Core::Stat::Type::Dir:  ++dirC;  break;
+         case GDCC::Core::Stat::Type::File: ++fileC; break;
+         default: break;
+         }
       }
 
       dirs  = GDCC::Core::Array<Dir_Directory>{dirC};
@@ -101,22 +101,24 @@ namespace DGE::FS
       File_Directory *fileItr = files.begin();
 
       // Set names. Load them as-needed.
-      for(auto &dir : std::filesystem::directory_iterator(dirname))
+      for(auto dir = GDCC::Core::DirOpenStream(dirname); dir->next();)
       {
-         auto const &path    = dir.path().native();
-         auto const &nameLen = dir.path().filename().native().size();
-
-         if(dir.is_directory())
+         switch(dir->getStat().type)
          {
-            dirItr->dirName = GDCC::Core::StrDup(path.data(), path.size());
-            dirItr->name    = &dirItr->dirName[path.size() - nameLen];
+         case GDCC::Core::Stat::Type::Dir:
+            dirItr->dirName = GDCC::Core::StrDup(dir->getStrFull(), dir->getLenFull());
+            dirItr->name    = &dirItr->dirName[dir->getLenBase()];
             ++dirItr;
-         }
-         else if(dir.is_regular_file())
-         {
-            fileItr->fileName = GDCC::Core::StrDup(path.data(), path.size());
-            fileItr->name     = &fileItr->fileName[path.size() - nameLen];
+            break;
+
+         case GDCC::Core::Stat::Type::File:
+            fileItr->fileName = GDCC::Core::StrDup(dir->getStrFull(), dir->getLenFull());
+            fileItr->name     = &fileItr->fileName[dir->getLenBase()];
             ++fileItr;
+            break;
+
+         default:
+            break;
          }
       }
 

@@ -36,10 +36,6 @@ target_link_libraries(dge-fs-lib
    dge-core-lib
    ${GDCC_LIBRARIES})
 
-if(STDCXXFS)
-   target_link_libraries(dge-fs-lib ${STDCXXFS})
-endif()
-
 DGE_INSTALL_PART(fs FALSE TRUE)
 
 ## EOF
