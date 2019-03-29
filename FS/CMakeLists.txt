@@ -23,6 +23,7 @@ add_library(dge-fs-lib ${DGE_SHARED_DECL}
    Dir.hpp
    Dir/Directory.cpp
    Dir/Pak.cpp
+   Dir/Store.cpp
    Dir/Union.cpp
    Dir/Zip.cpp
    File.cpp

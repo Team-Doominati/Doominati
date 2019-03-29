@@ -58,6 +58,7 @@ namespace DGE::FS
       File(File const &) = delete;
       File(File &&) = default;
       File(char const *data, std::size_t size);
+      File(Core::HashedStr name);
       ~File();
 
       File &operator = (File const &) = delete;

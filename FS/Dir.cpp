@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -27,6 +27,8 @@
 
 namespace DGE::FS
 {
+   bool Dir::Extra = true;
+
    std::unique_ptr<Dir> Dir::Root;
 }
 
@@ -37,6 +39,55 @@ namespace DGE::FS
 
 namespace DGE::FS
 {
+   //
+   // Dir::createDir
+   //
+   bool Dir::createDir(Core::HashedStr)
+   {
+      return false;
+   }
+
+   //
+   // Dir::createDirPath
+   //
+   bool Dir::createDirPath(Core::HashedStr path)
+   {
+      if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
+      {
+         if(auto dir = findDir({path.str, sep}))
+            return dir->createDirPath({sep+1, path.end()});
+
+         return false;
+      }
+      else
+         return createDir(path);
+   }
+
+   //
+   // Dir::createFile
+   //
+   bool Dir::createFile(Core::HashedStr, std::unique_ptr<char[]> &&, std::size_t)
+   {
+      return false;
+   }
+
+   //
+   // Dir::createFilePath
+   //
+   bool Dir::createFilePath(Core::HashedStr path,
+      std::unique_ptr<char[]> &&data, std::size_t size)
+   {
+      if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
+      {
+         if(auto dir = findDir({path.str, sep}))
+            return dir->createFile({sep+1, path.end()}, std::move(data), size);
+
+         return false;
+      }
+      else
+         return createFile(path, std::move(data), size);
+   }
+
    //
    // Dir::findDir
    //
@@ -76,6 +127,13 @@ namespace DGE::FS
       }
       else
          return findFile(path);
+   }
+
+   //
+   // Dir::flush
+   //
+   void Dir::flush()
+   {
    }
 
    //

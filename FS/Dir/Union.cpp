@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -39,11 +39,21 @@ namespace DGE::FS
       {
       }
 
+      virtual bool createDir(Core::HashedStr name);
+      virtual bool createDirPath(Core::HashedStr path);
+
+      virtual bool createFile(Core::HashedStr name,
+         std::unique_ptr<char[]> &&data, std::size_t size);
+      virtual bool createFilePath(Core::HashedStr path,
+         std::unique_ptr<char[]> &&data, std::size_t size);
+
       virtual DirPtr findDir(Core::HashedStr name);
       virtual DirPtr findDirPath(Core::HashedStr path);
 
       virtual FilePtr findFile(Core::HashedStr name);
       virtual FilePtr findFilePath(Core::HashedStr path);
+
+      virtual void flush();
 
       virtual bool hasName(Core::HashedStr name);
 
@@ -69,6 +79,52 @@ namespace DGE::FS
 
 namespace DGE::FS
 {
+   //
+   // Dir_Union::createDir
+   //
+   bool Dir_Union::createDir(Core::HashedStr dirname)
+   {
+      for(auto &dir : dirs)
+         if(dir->createDir(dirname)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::createDirPath
+   //
+   bool Dir_Union::createDirPath(Core::HashedStr path)
+   {
+      for(auto &dir : dirs)
+         if(dir->createDirPath(path)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::createFile
+   //
+   bool Dir_Union::createFile(Core::HashedStr filename,
+      std::unique_ptr<char[]> &&data, std::size_t size)
+   {
+      for(auto &dir : dirs)
+         if(dir->createFile(filename, std::move(data), size)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::createFilePath
+   //
+   bool Dir_Union::createFilePath(Core::HashedStr path,
+      std::unique_ptr<char[]> &&data, std::size_t size)
+   {
+      for(auto &dir : dirs)
+         if(dir->createFilePath(path, std::move(data), size)) return true;
+
+      return false;
+   }
+
    //
    // Dir_Union::findDir
    //
@@ -121,6 +177,15 @@ namespace DGE::FS
          if(auto *file = dir->findFilePath(path)) return file;
 
       return nullptr;
+   }
+
+   //
+   // Dir_Union::flush
+   //
+   void Dir_Union::flush()
+   {
+      for(auto &dir : dirs)
+         dir->flush();
    }
 
    //

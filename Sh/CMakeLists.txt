@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2017 Team Doominati
+## Copyright (C) 2017-2019 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -21,6 +21,7 @@
 add_library(dge-sh-lib ${DGE_SHARED_DECL}
    Command.cpp
    Command.hpp
+   Command/File.cpp
    Command/Misc.cpp
    Option.cpp
    Option.hpp

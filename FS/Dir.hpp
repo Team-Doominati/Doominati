@@ -93,6 +93,14 @@ namespace DGE::FS
 
       Iter begin() {return {this, 0};}
 
+      virtual bool createDir(Core::HashedStr name);
+      virtual bool createDirPath(Core::HashedStr path);
+
+      virtual bool createFile(Core::HashedStr name,
+         std::unique_ptr<char[]> &&data, std::size_t size);
+      virtual bool createFilePath(Core::HashedStr path,
+         std::unique_ptr<char[]> &&data, std::size_t size);
+
       Iter end() {return {this, iterEnd()};}
 
       virtual DirPtr findDir(Core::HashedStr name);
@@ -100,6 +108,8 @@ namespace DGE::FS
 
       virtual FilePtr findFile(Core::HashedStr name) = 0;
       virtual FilePtr findFilePath(Core::HashedStr path);
+
+      virtual void flush();
 
       void forFile(FileFunc const &fn);
       void forFilePath(Core::HashedStr path, FileFunc const &fn);
@@ -119,6 +129,8 @@ namespace DGE::FS
 
       Core::HashedStr name;
 
+
+      static bool Extra;
 
       static std::unique_ptr<Dir> Root;
    };
@@ -157,7 +169,8 @@ namespace DGE::FS
 namespace DGE::FS
 {
    std::unique_ptr<Dir> CreateDir(char const *filename);
-   std::unique_ptr<Dir> CreateDir_Directory(char const *name);
+   std::unique_ptr<Dir> CreateDir_Directory(char const *dirname);
+   std::unique_ptr<Dir> CreateDir_Extra();
    std::unique_ptr<Dir> CreateDir_Pak(DirData &&dd);
    std::unique_ptr<Dir> CreateDir_Union(GDCC::Core::Array<Dir *> &&dirs);
    std::unique_ptr<Dir> CreateDir_Wad(DirData &&dd);

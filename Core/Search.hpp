@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -36,6 +36,24 @@ namespace DGE::Core
       end = std::upper_bound(itr, end, key, cmpU);
 
       return itr == end ? nullptr : itr;
+   }
+
+   //
+   // BSearchKey
+   //
+   template<typename Itr, typename Key, typename KeyGet>
+   typename std::iterator_traits<Itr>::pointer
+   BSearchKey(Itr itr, Itr end, Key key, KeyGet keyGet)
+   {
+      using T = typename std::iterator_traits<Itr>::value_type;
+
+      auto cmpL = [&keyGet](T const &i, Key const &k) {return keyGet(i) < k;};
+      auto cmpU = [&keyGet](Key const &k, T const &i) {return k < keyGet(i);};
+
+      itr = std::lower_bound(itr, end, key, cmpL);
+      end = std::upper_bound(itr, end, key, cmpU);
+
+      return itr == end ? nullptr : &*itr;
    }
 
    //

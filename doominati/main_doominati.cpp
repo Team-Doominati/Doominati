@@ -260,6 +260,9 @@ static int Main()
          if(auto dir = DGE::FS::CreateDir(arg))
             dirs.emplace_back(std::move(dir));
 
+      if(DGE::FS::Dir::Extra)
+         dirs.emplace_back(DGE::FS::CreateDir_Extra());
+
       if(dirs.size() != 1)
       {
          RootDirs = {GDCC::Core::Move, dirs.rbegin(), dirs.rend()};

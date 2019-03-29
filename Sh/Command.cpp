@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -56,6 +56,7 @@ namespace DGE::Sh
 
 namespace DGE::Sh
 {
+   DGE_Code_NativeLoaderDecl(Command_File);
    DGE_Code_NativeLoaderDecl(Command_Misc);
 
    //
@@ -79,6 +80,7 @@ namespace DGE::Sh
    //
    void CommandAdder::Finish()
    {
+      DGE_Code_NativeLoaderCall(Command_File);
       DGE_Code_NativeLoaderCall(Command_Misc);
 
       // Commands.

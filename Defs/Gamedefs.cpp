@@ -89,6 +89,24 @@ namespace DGE::Defs
    }
 
    //
+   // Gamedefs::GetRootCore
+   //
+   GamedefsGroup &Gamedefs::GetRootCore()
+   {
+      static GamedefsGroup rootCore{&GetRoot(), "Core"};
+      return rootCore;
+   }
+
+   //
+   // Gamedefs::GetRootFS
+   //
+   GamedefsGroup &Gamedefs::GetRootFS()
+   {
+      static GamedefsGroup rootFS{&GetRoot(), "FS"};
+      return rootFS;
+   }
+
+   //
    // GamedefsCall::process
    //
    void GamedefsCall::process(GamedefsParserData const *data)

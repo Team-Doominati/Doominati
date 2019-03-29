@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -43,6 +43,18 @@ namespace DGE::FS
       name{""},
       refs{0},
       size{size_},
+      format{Format::None}
+   {
+   }
+
+   //
+   // File constructor
+   //
+   File::File(Core::HashedStr name_) :
+      data{nullptr},
+      name{name_},
+      refs{0},
+      size{0},
       format{Format::None}
    {
    }

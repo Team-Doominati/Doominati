@@ -161,6 +161,23 @@ namespace DGE::Code
    }
 
    //
+   // int DGE_Dir_Create(char const *name)
+   //
+   DGE_Code_NativeDefn(DGE_Dir_Create)
+   {
+      MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      bool               dir;
+
+      if(*name == '/')
+         dir = FS::Dir::Root->createDirPath(MemStrDup(name + 1).get());
+      else
+         dir = task->proc->getWorkDir()->createDirPath(MemStrDup(name).get());
+
+      task->dataStk.push(dir ? 0 : -1);
+      return false;
+   }
+
+   //
    // unsigned DGE_Dir_GetWork(char *buf, unsigned len)
    //
    DGE_Code_NativeDefn(DGE_Dir_GetWork)
@@ -304,6 +321,27 @@ namespace DGE::Code
    DGE_Code_NativeDefn(DGE_File_Close)
    {
       OpenFile::Files[argv[0]].close();
+      return false;
+   }
+
+   //
+   // int DGE_File_Create(char const *name, char const *data, unsigned size)
+   //
+   DGE_Code_NativeDefn(DGE_File_Create)
+   {
+      MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      MemPtr<Byte const> data = {&task->prog->memory, argv[1]};
+      Word               size = argv[2];
+      bool               file;
+
+      if(*name == '/')
+         file = FS::Dir::Root->createFilePath(
+            MemStrDup(name + 1).get(), MemStrDup(data, size), size);
+      else
+         file = task->proc->getWorkDir()->createFilePath(
+            MemStrDup(name).get(), MemStrDup(data, size), size);
+
+      task->dataStk.push(file ? 0 : -1);
       return false;
    }
 

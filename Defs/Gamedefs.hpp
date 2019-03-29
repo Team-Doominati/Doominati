@@ -51,6 +51,8 @@ namespace DGE::Defs
       friend class GamedefsGroup;
 
       static GamedefsGroup &GetRoot();
+      static GamedefsGroup &GetRootCore();
+      static GamedefsGroup &GetRootFS();
 
       static GamedefsGroup &Root;
 
