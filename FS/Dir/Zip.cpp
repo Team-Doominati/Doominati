@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -206,7 +206,8 @@ namespace DGE::FS
    //
    Dir::DirPtr Dir_ZipBase::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchKey(dirs, dirs + dirC, dirname))
+      if(auto dir = Core::BSearchMemPtr(dirs, dirs + dirC, dirname,
+         [](Dir_ZipSub const &i) {return i.name;}))
          return {dir, false};
 
       return Dir::findDir(dirname);
@@ -217,7 +218,8 @@ namespace DGE::FS
    //
    Dir::FilePtr Dir_ZipBase::findFile(Core::HashedStr filename)
    {
-      if(auto file = Core::BSearchKey(files, files + fileC, filename))
+      if(auto file = Core::BSearchMemPtr(files, files + fileC, filename,
+         [](File_Zip const &i) {return i.name;}))
          return file->findFile();
 
       return nullptr;

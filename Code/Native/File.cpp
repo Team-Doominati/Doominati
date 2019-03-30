@@ -117,7 +117,7 @@ namespace DGE::Code
          for(auto &of : Files)
             if(!of.file) return &of;
 
-         return Files.emplace_back(), &Files.back();
+         return &Files.emplace_back();
       }
 
       static std::size_t Open(FS::Dir::FilePtr file)
@@ -166,14 +166,14 @@ namespace DGE::Code
    DGE_Code_NativeDefn(DGE_Dir_Create)
    {
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
-      bool               dir;
+      bool               res;
 
       if(*name == '/')
-         dir = FS::Dir::Root->createDirPath(MemStrDup(name + 1).get());
+         res = FS::Dir::Root->createDirPath(MemStrDup(name + 1).get());
       else
-         dir = task->proc->getWorkDir()->createDirPath(MemStrDup(name).get());
+         res = task->proc->getWorkDir()->createDirPath(MemStrDup(name).get());
 
-      task->dataStk.push(dir ? 0 : -1);
+      task->dataStk.push(res ? 0 : -1);
       return false;
    }
 
@@ -269,6 +269,23 @@ namespace DGE::Code
    }
 
    //
+   // int DGE_Dir_Remove(char const *name)
+   //
+   DGE_Code_NativeDefn(DGE_Dir_Remove)
+   {
+      MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      bool               res;
+
+      if(*name == '/')
+         res = FS::Dir::Root->removeDirPath(MemStrDup(name + 1).get());
+      else
+         res = task->proc->getWorkDir()->removeDirPath(MemStrDup(name).get());
+
+      task->dataStk.push(res ? 0 : -1);
+      return false;
+   }
+
+   //
    // void DGE_Dir_Rewind(int fd)
    //
    DGE_Code_NativeDefn(DGE_Dir_Rewind)
@@ -278,7 +295,7 @@ namespace DGE::Code
    }
 
    //
-   // int DGE_Dir_SetWork(char *path)
+   // int DGE_Dir_SetWork(char const *path)
    //
    DGE_Code_NativeDefn(DGE_Dir_SetWork)
    {
@@ -332,16 +349,16 @@ namespace DGE::Code
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
       MemPtr<Byte const> data = {&task->prog->memory, argv[1]};
       Word               size = argv[2];
-      bool               file;
+      bool               res;
 
       if(*name == '/')
-         file = FS::Dir::Root->createFilePath(
+         res = FS::Dir::Root->createFilePath(
             MemStrDup(name + 1).get(), MemStrDup(data, size), size);
       else
-         file = task->proc->getWorkDir()->createFilePath(
+         res = task->proc->getWorkDir()->createFilePath(
             MemStrDup(name).get(), MemStrDup(data, size), size);
 
-      task->dataStk.push(file ? 0 : -1);
+      task->dataStk.push(res ? 0 : -1);
       return false;
    }
 
@@ -414,6 +431,23 @@ namespace DGE::Code
 
       task->dataStk.push(len);
 
+      return false;
+   }
+
+   //
+   // int DGE_File_Remove(char const *name)
+   //
+   DGE_Code_NativeDefn(DGE_File_Remove)
+   {
+      MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
+      bool               res;
+
+      if(*name == '/')
+         res = FS::Dir::Root->removeFilePath(MemStrDup(name + 1).get());
+      else
+         res = task->proc->getWorkDir()->removeFilePath(MemStrDup(name).get());
+
+      task->dataStk.push(res ? 0 : -1);
       return false;
    }
 

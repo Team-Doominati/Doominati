@@ -24,26 +24,10 @@
 namespace DGE::Core
 {
    //
-   // BSearchKey
-   //
-   template<typename T, typename Key>
-   T *BSearchKey(T *itr, T *end, Key key)
-   {
-      auto cmpL = [](T const &i, Key const &k) {return i.name < k;};
-      auto cmpU = [](Key const &k, T const &i) {return k < i.name;};
-
-      itr = std::lower_bound(itr, end, key, cmpL);
-      end = std::upper_bound(itr, end, key, cmpU);
-
-      return itr == end ? nullptr : itr;
-   }
-
-   //
-   // BSearchKey
+   // BSearchMem
    //
    template<typename Itr, typename Key, typename KeyGet>
-   typename std::iterator_traits<Itr>::pointer
-   BSearchKey(Itr itr, Itr end, Key key, KeyGet keyGet)
+   Itr BSearchMem(Itr itr, Itr end, Key key, KeyGet keyGet)
    {
       using T = typename std::iterator_traits<Itr>::value_type;
 
@@ -53,21 +37,18 @@ namespace DGE::Core
       itr = std::lower_bound(itr, end, key, cmpL);
       end = std::upper_bound(itr, end, key, cmpU);
 
-      return itr == end ? nullptr : &*itr;
+      return itr;
    }
 
    //
-   // BSearchStr
+   // BSearchMemPtr
    //
-   template<typename T> T *BSearchStr(T *itr, T *end, char const *key)
+   template<typename Itr, typename Key, typename KeyGet>
+   typename std::iterator_traits<Itr>::pointer
+   BSearchMemPtr(Itr itr, Itr end, Key key, KeyGet keyGet)
    {
-      auto cmpL = [](T const &i, char const *k) {return std::strcmp(i.name, k) < 0;};
-      auto cmpU = [](char const *k, T const &i) {return std::strcmp(k, i.name) < 0;};
-
-      itr = std::lower_bound(itr, end, key, cmpL);
-      end = std::upper_bound(itr, end, key, cmpU);
-
-      return itr == end ? nullptr : itr;
+      itr = BSearchMem(itr, end, std::move(key), std::move(keyGet));
+      return itr == end ? nullptr : &*itr;
    }
 }
 

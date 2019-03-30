@@ -137,7 +137,8 @@ namespace DGE::FS
    //
    Dir::DirPtr Dir_Directory::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchKey(dirs.begin(), dirs.end(), dirname))
+      if(auto dir = Core::BSearchMemPtr(dirs.begin(), dirs.end(), dirname,
+         [](Dir_Directory const &i) {return i.name;}))
       {
          if(dir->files.empty() && dir->dirs.empty())
             dir->buildTables(dir->dirName.get());
@@ -153,7 +154,8 @@ namespace DGE::FS
    //
    Dir::FilePtr Dir_Directory::findFile(Core::HashedStr filename)
    {
-      if(auto file = Core::BSearchKey(files.begin(), files.end(), filename))
+      if(auto file = Core::BSearchMemPtr(files.begin(), files.end(), filename,
+         [](File_Directory const &i) {return i.name;}))
          return file->findFile() ? file : nullptr;
 
       return nullptr;

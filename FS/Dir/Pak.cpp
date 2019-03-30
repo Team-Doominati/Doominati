@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -146,7 +146,8 @@ namespace DGE::FS
    //
    Dir::DirPtr Dir_PakBase::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchKey(dirs, dirs + dirC, dirname))
+      if(auto dir = Core::BSearchMemPtr(dirs, dirs + dirC, dirname,
+         [](Dir_PakSub const &i) {return i.name;}))
          return {dir, false};
 
       return Dir::findDir(dirname);
@@ -157,7 +158,8 @@ namespace DGE::FS
    //
    Dir::FilePtr Dir_PakBase::findFile(Core::HashedStr filename)
    {
-      return Core::BSearchKey(files, files + fileC, filename);
+      return Core::BSearchMemPtr(files, files + fileC, filename,
+         [](File_Pak const &i) {return i.name;});
    }
 
    //

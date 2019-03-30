@@ -65,6 +65,10 @@ namespace DGE::FS
       virtual IterRes         iterGet(IterData iter);
       virtual Core::HashedStr iterGetName(IterData iter);
 
+      virtual bool removeDir(Core::HashedStr name);
+
+      virtual bool removeFile(Core::HashedStr name);
+
    protected:
       std::vector<std::unique_ptr<Dir_Store>>  dirs;
       std::vector<std::unique_ptr<File_Store>> files;
@@ -250,11 +254,9 @@ namespace DGE::FS
    //
    Dir::DirPtr Dir_Store::findDir(Core::HashedStr dirname)
    {
-      if(auto dir = Core::BSearchKey(dirs.begin(), dirs.end(), dirname,
+      if(auto dir = Core::BSearchMemPtr(dirs.begin(), dirs.end(), dirname,
          [](std::unique_ptr<Dir_Store> const &d){return d->name;}))
-      {
          return {dir->get(), false};
-      }
 
       return Dir::findDir(dirname);
    }
@@ -264,7 +266,7 @@ namespace DGE::FS
    //
    Dir::FilePtr Dir_Store::findFile(Core::HashedStr filename)
    {
-      if(auto file = Core::BSearchKey(files.begin(), files.end(), filename,
+      if(auto file = Core::BSearchMemPtr(files.begin(), files.end(), filename,
          [](std::unique_ptr<File_Store> const &f){return f->name;}))
          return file->get();
 
@@ -305,6 +307,38 @@ namespace DGE::FS
          return files[iter]->name;
 
       return nullptr;
+   }
+
+   //
+   // Dir_Store::removeDir
+   //
+   bool Dir_Store::removeDir(Core::HashedStr dirname)
+   {
+      auto itr = Core::BSearchMem(dirs.begin(), dirs.end(), dirname,
+         [](std::unique_ptr<Dir_Store> const &i){return i->name;});
+
+      // Don't remove non-empty directories.
+      if(itr == dirs.end() || !(*itr)->dirs.empty() || !(*itr)->files.empty())
+         return false;
+
+      dirs.erase(itr);
+      return true;
+   }
+
+   //
+   // Dir_Store::removeFile
+   //
+   bool Dir_Store::removeFile(Core::HashedStr filename)
+   {
+      auto itr = Core::BSearchMem(files.begin(), files.end(), filename,
+         [](std::unique_ptr<File_Store> const &i){return i->name;});
+
+      // Don't remove files with refs.
+      if(itr == files.end() || (*itr)->refs)
+         return false;
+
+      files.erase(itr);
+      return true;
    }
 
    //

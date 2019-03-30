@@ -64,6 +64,12 @@ namespace DGE::FS
 
       virtual void prune();
 
+      virtual bool removeDir(Core::HashedStr name);
+      virtual bool removeDirPath(Core::HashedStr path);
+
+      virtual bool removeFile(Core::HashedStr name);
+      virtual bool removeFilePath(Core::HashedStr path);
+
    protected:
       GDCC::Core::Array<Dir *>  dirs;
       GDCC::Core::Array<DirPtr> ptrs;
@@ -320,6 +326,50 @@ namespace DGE::FS
    {
       for(auto &dir : dirs)
          dir->prune();
+   }
+
+   //
+   // Dir_Union::removeDir
+   //
+   bool Dir_Union::removeDir(Core::HashedStr dirname)
+   {
+      for(auto &dir : dirs)
+         if(dir->removeDir(dirname)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::removeDirPath
+   //
+   bool Dir_Union::removeDirPath(Core::HashedStr path)
+   {
+      for(auto &dir : dirs)
+         if(dir->removeDirPath(path)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::removeFile
+   //
+   bool Dir_Union::removeFile(Core::HashedStr filename)
+   {
+      for(auto &dir : dirs)
+         if(dir->removeFile(filename)) return true;
+
+      return false;
+   }
+
+   //
+   // Dir_Union::removeFilePath
+   //
+   bool Dir_Union::removeFilePath(Core::HashedStr path)
+   {
+      for(auto &dir : dirs)
+         if(dir->removeFilePath(path)) return true;
+
+      return false;
    }
 
    //

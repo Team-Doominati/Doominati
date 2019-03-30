@@ -127,6 +127,12 @@ namespace DGE::FS
       // Frees unused file allocations.
       virtual void prune();
 
+      virtual bool removeDir(Core::HashedStr name);
+      virtual bool removeDirPath(Core::HashedStr path);
+
+      virtual bool removeFile(Core::HashedStr name);
+      virtual bool removeFilePath(Core::HashedStr path);
+
       Core::HashedStr name;
 
 

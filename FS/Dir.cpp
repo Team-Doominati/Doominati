@@ -80,7 +80,7 @@ namespace DGE::FS
       if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
       {
          if(auto dir = findDir({path.str, sep}))
-            return dir->createFile({sep+1, path.end()}, std::move(data), size);
+            return dir->createFilePath({sep+1, path.end()}, std::move(data), size);
 
          return false;
       }
@@ -209,6 +209,54 @@ namespace DGE::FS
    //
    void Dir::prune()
    {
+   }
+
+   //
+   // Dir::removeDir
+   //
+   bool Dir::removeDir(Core::HashedStr)
+   {
+      return false;
+   }
+
+   //
+   // Dir::removeDirPath
+   //
+   bool Dir::removeDirPath(Core::HashedStr path)
+   {
+      if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
+      {
+         if(auto dir = findDir({path.str, sep}))
+            return dir->removeDirPath({sep+1, path.end()});
+
+         return false;
+      }
+      else
+         return removeDir(path);
+   }
+
+   //
+   // Dir::removeFile
+   //
+   bool Dir::removeFile(Core::HashedStr)
+   {
+      return false;
+   }
+
+   //
+   // Dir::removeFilePath
+   //
+   bool Dir::removeFilePath(Core::HashedStr path)
+   {
+      if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
+      {
+         if(auto dir = findDir({path.str, sep}))
+            return dir->removeFilePath({sep+1, path.end()});
+
+         return false;
+      }
+      else
+         return removeFile(path);
    }
 
    //
