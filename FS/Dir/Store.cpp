@@ -81,6 +81,7 @@ namespace DGE::FS
    {
    public:
       Dir_Extra();
+      virtual ~Dir_Extra();
 
       virtual DirPtr findDir(Core::HashedStr name);
 
@@ -350,9 +351,17 @@ namespace DGE::FS
       if(VarArchive.data())
       {
          std::ifstream in{VarArchive.data(), std::ios_base::in | std::ios_base::binary};
-         if(in)
+         if(in && !std::memcmp(Core::ReadData<8>(in).data(), "DGE_FS\0\0", 8))
             var.archive(in);
       }
+   }
+
+   //
+   // Dir_Extra destructor
+   //
+   Dir_Extra::~Dir_Extra()
+   {
+      try {flush();} catch(...) {}
    }
 
    //
@@ -382,7 +391,10 @@ namespace DGE::FS
       {
          std::ofstream out{VarArchive.data(), std::ios_base::out | std::ios_base::binary};
          if(out)
+         {
+            out.write("DGE_FS\0\0", 8);
             var.archive(out);
+         }
          else
             std::cerr << "Failed to open '" << VarArchive.data() << "' for writing.\n";
       }

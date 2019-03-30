@@ -15,6 +15,7 @@
 
 #include "Types.hpp"
 
+#include <array>
 #include <climits>
 #include <istream>
 #include <ostream>
@@ -29,6 +30,9 @@ namespace DGE::Core
    std::uint_fast8_t  ReadLE1(char const *data);
    std::uint_fast16_t ReadLE2(char const *data);
    std::uint_fast32_t ReadLE4(char const *data);
+
+   template<std::size_t N>
+   std::array<char, N> ReadData(std::istream &in);
 
    template<typename T>
    T ReadVLN(std::istream &in);
@@ -64,6 +68,17 @@ namespace DGE::Core
          (static_cast<std::uint_fast32_t>(static_cast<Byte>(data[1])) <<  8) |
          (static_cast<std::uint_fast32_t>(static_cast<Byte>(data[2])) << 16) |
          (static_cast<std::uint_fast32_t>(static_cast<Byte>(data[3])) << 24);
+   }
+
+   //
+   // ReadData
+   //
+   template<std::size_t N>
+   std::array<char, N> ReadData(std::istream &in)
+   {
+      std::array<char, N> data;
+      in.read(data.data(), N);
+      return data;
    }
 
    //
