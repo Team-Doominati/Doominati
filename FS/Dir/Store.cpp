@@ -237,9 +237,10 @@ namespace DGE::FS
       if(file->refs)
          return false;
 
+      delete[] file->data;
       file->data   = data.release();
       file->size   = size;
-      file->format = Format::None;
+      file->format = DetectFormat(file->data, file->size);
 
       return true;
    }

@@ -219,7 +219,11 @@ namespace DGE::FS
    //
    // DirData move constructor
    //
-   DirData::DirData(DirData &&dd) = default;
+   DirData::DirData(DirData &&dd) :
+      fileFS{dd.fileFS}, fileBlock{std::move(dd.fileBlock)}
+   {
+      dd.fileFS = nullptr;
+   }
 
    //
    // DirData constructor
@@ -248,7 +252,13 @@ namespace DGE::FS
    //
    // DirData::operator = DirData
    //
-   DirData &DirData::operator = (DirData &&dd) = default;
+   DirData &DirData::operator = (DirData &&dd)
+   {
+      std::swap(fileFS, dd.fileFS);
+      fileBlock = std::move(dd.fileBlock);
+
+      return *this;
+   }
 
    //
    // DirData::data
