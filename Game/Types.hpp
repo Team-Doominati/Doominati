@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -27,6 +27,7 @@ namespace DGE::Game
    class ItemData;
    class ItemType;
    class Object;
+   class PointThinker;
    class Team;
    class Thinker;
 

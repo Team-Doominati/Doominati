@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,15 +13,15 @@
 #ifndef DGE__GL__Renderer_H__
 #define DGE__GL__Renderer_H__
 
-#include "Game/ParticleSys.hpp"
+#include "../GL/DynamicBuffer.hpp"
+#include "../GL/Font.hpp"
+#include "../GL/ShaderData.hpp"
+#include "../GL/Texture.hpp"
 
-#include "GL/DynamicBuffer.hpp"
-#include "GL/Font.hpp"
-#include "GL/ShaderData.hpp"
-#include "GL/Texture.hpp"
+#include "../Game/ParticleSys.hpp"
 
-#include "Core/ResourceManager.hpp"
-#include "Core/Types.hpp"
+#include "../Core/ResourceManager.hpp"
+#include "../Core/Types.hpp"
 
 #include <GDCC/Core/Counter.hpp>
 
@@ -30,20 +30,8 @@
 // Types                                                                      |
 //
 
-namespace GDCC::Core
-{
-   class String;
-}
-
-namespace DGE::Game
-{
-   class PointThinker;
-}
-
 namespace DGE::GL
 {
-   class Window;
-
    //
    // AlignHorz
    //
@@ -77,7 +65,7 @@ namespace DGE::GL
       Renderer() = delete;
       Renderer(Window &win_);
       Renderer(Renderer const &) = delete;
-      Renderer(Renderer &&) = default;
+      Renderer(Renderer &&) = delete;
       ~Renderer();
 
       // circle

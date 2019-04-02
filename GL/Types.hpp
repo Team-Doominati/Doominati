@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// Alias types.
+// Common typedefs.
 //
 //-----------------------------------------------------------------------------
 
@@ -24,6 +24,10 @@
 
 namespace DGE::GL
 {
+   class FontFace;
+   class TextureData;
+   class Window;
+
    using TexturePixel = GLfloat[4];
    using TextureDim   = GLsizei;
 }

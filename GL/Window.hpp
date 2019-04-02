@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef DGE__GL__Window_H__
 #define DGE__GL__Window_H__
 
-#include "GL/Types.hpp"
+#include "../GL/Types.hpp"
 
 #include "SDL.h"
 

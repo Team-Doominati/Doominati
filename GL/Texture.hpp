@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,10 +13,9 @@
 #ifndef DGE__GL__Texture_H__
 #define DGE__GL__Texture_H__
 
-#include "GL/OpenGL2.1.h"
-#include "GL/Types.hpp"
+#include "../GL/Types.hpp"
 
-#include "Core/Types.hpp"
+#include "../Core/Types.hpp"
 
 #include <exception>
 #include <stdexcept>
@@ -27,15 +26,8 @@
 // Types                                                                      |
 //
 
-namespace DGE::FS
-{
-   class File;
-}
-
 namespace DGE::GL
 {
-   class TextureData;
-
    using Texture = Core::Resource<TextureData>;
 
    //

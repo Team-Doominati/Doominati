@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,12 +13,11 @@
 #ifndef DGE__GL__Font_H__
 #define DGE__GL__Font_H__
 
-#include "GL/Texture.hpp"
-#include "GL/Types.hpp"
+#include "../GL/Texture.hpp"
 
-#include "Core/HashMap.hpp"
-#include "Core/List.hpp"
-#include "Core/ResourceManager.hpp"
+#include "../Core/HashMap.hpp"
+#include "../Core/List.hpp"
+#include "../Core/ResourceManager.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -30,15 +29,8 @@
 
 struct FT_FaceRec_;
 
-namespace DGE::FS
-{
-   class File;
-}
-
 namespace DGE::GL
 {
-   class FontFace;
-
    using Font = Core::Resource<FontFace>;
 
    //

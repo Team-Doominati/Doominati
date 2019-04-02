@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef DGE__GL__DynamicBuffer_H__
 #define DGE__GL__DynamicBuffer_H__
 
-#include "GL/OpenGL2.1.h"
+#include "../GL/Types.hpp"
 
 #include <cstddef>
 
