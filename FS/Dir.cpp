@@ -14,6 +14,7 @@
 
 #include <GDCC/Core/Dir.hpp>
 #include <GDCC/Core/File.hpp>
+#include <GDCC/Core/Option.hpp>
 #include <GDCC/Core/String.hpp>
 
 #include <vector>
@@ -22,13 +23,42 @@
 
 
 //----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace DGE::FS
+{
+   //
+   // --fs-extra
+   //
+   GDCC::Option::Bool Dir::Extra
+   {
+      &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+         .setName("fs-extra")
+         .setGroup("filesystem")
+         .setDescS("Enables extra filesystem features."),
+      true
+   };
+
+   //
+   // --fs-varchive
+   //
+   GDCC::Option::CStr Dir::VarArchive
+   {
+      &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+         .setName("fs-varchive")
+         .setGroup("filesystem")
+         .setDescS("Sets archive to store writeable filesystem.")
+   };
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Objects                                                             |
 //
 
 namespace DGE::FS
 {
-   bool Dir::Extra = true;
-
    std::unique_ptr<Dir> Dir::Root;
 }
 

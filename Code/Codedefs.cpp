@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -42,27 +42,25 @@ namespace DGE::Code
    //
    // --codedefs-debug-code
    //
-   static bool DebugOpCode = false;
-   static GDCC::Option::Bool CodedefsDebugOpCodeOpt
+   static GDCC::Option::Bool DebugOpCode
    {
       &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
          .setName("codedefs-debug-opcode")
          .setDescS("Enables OpCode debug output."),
 
-      &DebugOpCode
+      false
    };
 
    //
    // --codedefs-debug-function
    //
-   static bool DebugFunction = false;
-   static GDCC::Option::Bool CodedesfDebugFunctionOpt
+   static GDCC::Option::Bool DebugFunction
    {
       &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
          .setName("codedefs-debug-function")
          .setDescS("Enables Function debug output."),
 
-      &DebugFunction
+      false
    };
 }
 

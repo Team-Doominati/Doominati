@@ -34,13 +34,12 @@ namespace DGE::GL
    //
    // --font-debug-info
    //
-   static bool DebugFontInfo = false;
-   static GDCC::Option::Bool FontDebugInfoOpt{
+   static GDCC::Option::Bool DebugFontInfo{
       &GDCC::Core::GetOptionList(),
       GDCC::Option::Base::Info()
          .setName("font-debug-info")
          .setDescS("Enables FontFace debug output."),
-      &DebugFontInfo
+      false
    };
 }
 

@@ -15,11 +15,6 @@
 #include "Core/BinaryIO.hpp"
 #include "Core/Search.hpp"
 
-#include <GDCC/Core/Option.hpp>
-
-#include <GDCC/Option/Bool.hpp>
-#include <GDCC/Option/CStr.hpp>
-
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -116,37 +111,6 @@ namespace DGE::FS
 
       void archive(std::istream &in);
       void archive(std::ostream &out);
-   };
-}
-
-
-//----------------------------------------------------------------------------|
-// Options                                                                    |
-//
-
-namespace DGE::FS
-{
-   //
-   // --fs-extra
-   //
-   static GDCC::Option::Bool DirExtraOpt
-   {
-      &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-         .setName("fs-extra")
-         .setGroup("filesystem")
-         .setDescS("Enables extra filesystem features."),
-      &Dir::Extra
-   };
-
-   //
-   // --fs-varchive
-   //
-   static GDCC::Option::CStr VarArchive
-   {
-      &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-         .setName("fs-varchive")
-         .setGroup("filesystem")
-         .setDescS("Sets archive to store writeable filesystem.")
    };
 }
 

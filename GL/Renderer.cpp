@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2017 Team Doominati
+// Copyright (C) 2016-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -48,13 +48,12 @@
 //
 namespace DGE::GL
 {
-   static bool FpsCounterOn = false;
-   static GDCC::Option::Bool FpsCounterOpt{
+   static GDCC::Option::Bool FpsCounterOn{
       &GDCC::Core::GetOptionList(),
       GDCC::Option::Base::Info()
          .setName("fps-counter")
          .setDescS("Enables a simple frames per second counter."),
-      &FpsCounterOn
+      false
    };
 }
 

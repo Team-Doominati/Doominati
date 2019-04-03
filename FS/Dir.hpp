@@ -18,6 +18,9 @@
 #include <GDCC/Core/Array.hpp>
 #include <GDCC/Core/Deleter.hpp>
 
+#include <GDCC/Option/Bool.hpp>
+#include <GDCC/Option/CStr.hpp>
+
 #include <functional>
 
 
@@ -136,9 +139,11 @@ namespace DGE::FS
       Core::HashedStr name;
 
 
-      static bool Extra;
+      static GDCC::Option::Bool Extra;
 
       static std::unique_ptr<Dir> Root;
+
+      static GDCC::Option::CStr VarArchive;
    };
 
    //
