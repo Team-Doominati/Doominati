@@ -31,13 +31,10 @@ namespace DGE::Core
    {
       using T = typename std::iterator_traits<Itr>::value_type;
 
-      auto cmpL = [&keyGet](T const &i, Key const &k) {return keyGet(i) < k;};
-      auto cmpU = [&keyGet](Key const &k, T const &i) {return k < keyGet(i);};
+      itr = std::lower_bound(itr, end, key,
+         [&keyGet](T const &i, Key const &k) {return keyGet(i) < k;});
 
-      itr = std::lower_bound(itr, end, key, cmpL);
-      end = std::upper_bound(itr, end, key, cmpU);
-
-      return itr;
+      return itr != end && !(key < keyGet(*itr)) ? itr : end;
    }
 
    //
