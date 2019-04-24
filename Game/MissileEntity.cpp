@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,10 @@ namespace DGE::Game
    //
    bool MissileEntity::collideInto(PhysicsThinker *th)
    {
+      // Don't collide if dead.
+      if(health <= 0)
+         return false;
+
       // Don't collide with owner.
       if(th == owner)
          return false;
