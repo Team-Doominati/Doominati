@@ -156,10 +156,10 @@ namespace DGE::Game
 
       std::size_t count = 1;
 
-      if(xl < cx && yl < cy) count += subs[0].countNode(xl, yl, xu, yu);
-      if(xl < cx && yu > cy) count += subs[2].countNode(xl, yl, xu, yu);
-      if(xu > cx && yl < cy) count += subs[1].countNode(xl, yl, xu, yu);
-      if(xu > cx && yu > cy) count += subs[3].countNode(xl, yl, xu, yu);
+      if(xl <  cx && yl <  cy) count += subs[0].countNode(xl, yl, xu, yu);
+      if(xl <  cx && yu >= cy) count += subs[2].countNode(xl, yl, xu, yu);
+      if(xu >= cx && yl <  cy) count += subs[1].countNode(xl, yl, xu, yu);
+      if(xu >= cx && yu >= cy) count += subs[3].countNode(xl, yl, xu, yu);
 
       return count;
    }
@@ -205,7 +205,7 @@ namespace DGE::Game
    //
    BlockMap *BlockMap::getNode(Fixed x, Fixed y)
    {
-      return subs ? subs[(x > cx) | ((y > cy) << 1)].getNode(x, y) : this;
+      return subs ? subs[(x >= cx) | ((y >= cy) << 1)].getNode(x, y) : this;
    }
 
    //
