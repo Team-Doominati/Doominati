@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -144,10 +144,10 @@ namespace DGE::Game
       if(xl <= cx - size && xu >= cx + size && yl <= cy - size && yu >= cy + size)
          return (void)iter(this);
 
-      if(xl < cx && yl < cy) subs[0].forNode(xl, yl, xu, yu, iter);
-      if(xl < cx && yu > cy) subs[2].forNode(xl, yl, xu, yu, iter);
-      if(xu > cx && yl < cy) subs[1].forNode(xl, yl, xu, yu, iter);
-      if(xu > cx && yu > cy) subs[3].forNode(xl, yl, xu, yu, iter);
+      if(xl <  cx && yl <  cy) subs[0].forNode(xl, yl, xu, yu, iter);
+      if(xl <  cx && yu >= cy) subs[2].forNode(xl, yl, xu, yu, iter);
+      if(xu >= cx && yl <  cy) subs[1].forNode(xl, yl, xu, yu, iter);
+      if(xu >= cx && yu >= cy) subs[3].forNode(xl, yl, xu, yu, iter);
    }
 
    //
@@ -161,10 +161,10 @@ namespace DGE::Game
       if(!subs)
          return;
 
-      if(xl < cx && yl < cy) subs[0].insertNode(xl, yl, xu, yu, iter);
-      if(xl < cx && yu > cy) subs[2].insertNode(xl, yl, xu, yu, iter);
-      if(xu > cx && yl < cy) subs[1].insertNode(xl, yl, xu, yu, iter);
-      if(xu > cx && yu > cy) subs[3].insertNode(xl, yl, xu, yu, iter);
+      if(xl <  cx && yl <  cy) subs[0].insertNode(xl, yl, xu, yu, iter);
+      if(xl <  cx && yu >= cy) subs[2].insertNode(xl, yl, xu, yu, iter);
+      if(xu >= cx && yl <  cy) subs[1].insertNode(xl, yl, xu, yu, iter);
+      if(xu >= cx && yu >= cy) subs[3].insertNode(xl, yl, xu, yu, iter);
    }
 
    //
