@@ -71,10 +71,19 @@ namespace DGE::GL
          int ptsize);
       FontFace(FontFace const &) = delete;
       FontFace(FontFace &&fnt) :
-         face{fnt.face}, texMan{fnt.texMan}, planes{fnt.planes},
-         hasKerning{fnt.hasKerning}, kernCh{fnt.kernCh}, kernAmt{fnt.kernAmt},
-         height{fnt.height}
-         {fnt.planes = nullptr; fnt.face = nullptr;}
+         face   {fnt.face},
+         file   {fnt.file},
+         texMan {fnt.texMan},
+         planes {fnt.planes},
+         kernCh {fnt.kernCh},
+         kernAmt{fnt.kernAmt},
+         height {fnt.height},
+         hasKern{fnt.hasKern}
+      {
+         fnt.face   = nullptr;
+         fnt.file   = nullptr;
+         fnt.planes = nullptr;
+      }
       ~FontFace();
 
       FontGlyph const &getChar(char32_t ch);
@@ -97,16 +106,18 @@ namespace DGE::GL
       void loadChar(FontGlyph &gly, char32_t ch);
 
       FT_FaceRec_ *face;
+      FS::File    *file;
 
       Core::ResourceManager<TextureData> &texMan;
 
       PlaneData *planes;
 
-      bool     hasKerning : 1;
       char32_t kernCh;
       float    kernAmt;
 
       float height;
+
+      bool hasKern : 1;
    };
 }
 

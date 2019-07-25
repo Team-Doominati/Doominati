@@ -123,25 +123,28 @@ namespace DGE::GL
    //
    FontFace::FontFace(Core::ResourceManager<TextureData> &man, FS::File *fp, int ptsize) :
       face{nullptr},
+      file{fp},
       texMan{man},
       planes{nullptr},
       kernCh{},
       kernAmt{}
    {
-      if(!fp) throw FontLoadError("no file");
+      if(!file) throw FontLoadError("no file");
 
       FT_Open_Args arg;
 
       arg.flags       = FT_OPEN_MEMORY;
-      arg.memory_base = reinterpret_cast<FT_Byte const *>(fp->data);
-      arg.memory_size = fp->size;
+      arg.memory_base = reinterpret_cast<FT_Byte const *>(file->data);
+      arg.memory_size = file->size;
 
       if(FT_Error err = FT_Open_Face(FTLib, &arg, 0, &face))
          throw FontLoadError(FTError.at(err));
 
+      ++file->refs;
+
       FT_Set_Pixel_Sizes(face, 0, ptsize);
-      hasKerning = FT_HAS_KERNING(face);
-      height     = face->size->metrics.height / 64.0f;
+      hasKern = FT_HAS_KERNING(face);
+      height  = face->size->metrics.height / 64.0f;
 
       if(DebugFontInfo)
       {
@@ -165,6 +168,7 @@ namespace DGE::GL
    {
       if(face) FT_Done_Face(face);
       FreeData(planes);
+      if(file) --file->refs;
    }
 
    //
@@ -172,7 +176,7 @@ namespace DGE::GL
    //
    FontGlyph const &FontFace::getChar(char32_t ch)
    {
-      if(hasKerning)
+      if(hasKern)
       {
          if(kernCh)
          {
