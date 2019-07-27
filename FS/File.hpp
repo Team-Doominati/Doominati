@@ -59,12 +59,16 @@ namespace DGE::FS
       File(File &&) = default;
       File(char const *data, std::size_t size);
       File(Core::HashedStr name);
-      ~File();
+      virtual ~File();
 
       File &operator = (File const &) = delete;
       File &operator = (File &&) = default;
 
       Dir *findDir();
+
+      virtual bool trunc(std::size_t len);
+
+      virtual std::size_t write(std::size_t pos, char const *buf, std::size_t len);
 
       std::unique_ptr<Dir> dir;
       char const          *data;

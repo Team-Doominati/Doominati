@@ -42,10 +42,8 @@ namespace DGE::FS
       virtual bool createDir(Core::HashedStr name);
       virtual bool createDirPath(Core::HashedStr path);
 
-      virtual bool createFile(Core::HashedStr name,
-         std::unique_ptr<char[]> &&data, std::size_t size);
-      virtual bool createFilePath(Core::HashedStr path,
-         std::unique_ptr<char[]> &&data, std::size_t size);
+      virtual FilePtr createFile(Core::HashedStr name);
+      virtual FilePtr createFilePath(Core::HashedStr path);
 
       virtual DirPtr findDir(Core::HashedStr name);
       virtual DirPtr findDirPath(Core::HashedStr path);
@@ -110,25 +108,23 @@ namespace DGE::FS
    //
    // Dir_Union::createFile
    //
-   bool Dir_Union::createFile(Core::HashedStr filename,
-      std::unique_ptr<char[]> &&data, std::size_t size)
+   Dir::FilePtr Dir_Union::createFile(Core::HashedStr filename)
    {
       for(auto &dir : dirs)
-         if(dir->createFile(filename, std::move(data), size)) return true;
+         if(auto file = dir->createFile(filename)) return file;
 
-      return false;
+      return nullptr;
    }
 
    //
    // Dir_Union::createFilePath
    //
-   bool Dir_Union::createFilePath(Core::HashedStr path,
-      std::unique_ptr<char[]> &&data, std::size_t size)
+   Dir::FilePtr Dir_Union::createFilePath(Core::HashedStr path)
    {
       for(auto &dir : dirs)
-         if(dir->createFilePath(path, std::move(data), size)) return true;
+         if(auto file = dir->createFilePath(path)) return file;
 
-      return false;
+      return nullptr;
    }
 
    //

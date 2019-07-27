@@ -342,23 +342,21 @@ namespace DGE::Code
    }
 
    //
-   // int DGE_File_Create(char const *name, char const *data, unsigned size)
+   // int DGE_File_Create(char const *name)
    //
    DGE_Code_NativeDefn(DGE_File_Create)
    {
       MemPtr<Byte const> name = {&task->prog->memory, argv[0]};
-      MemPtr<Byte const> data = {&task->prog->memory, argv[1]};
-      Word               size = argv[2];
-      bool               res;
+      FS::Dir::FilePtr   file;
 
       if(*name == '/')
-         res = FS::Dir::Root->createFilePath(
-            MemStrDup(name + 1).get(), MemStrDup(data, size), size);
+         file = FS::Dir::Root->createFilePath(MemStrDup(name + 1).get());
       else
-         res = task->proc->getWorkDir()->createFilePath(
-            MemStrDup(name).get(), MemStrDup(data, size), size);
+         file = task->proc->getWorkDir()->createFilePath(MemStrDup(name).get());
 
-      task->dataStk.push(res ? 0 : -1);
+      if(!file) {task->dataStk.push(-1); return false;}
+
+      task->dataStk.push(OpenFile::Open(file));
       return false;
    }
 
@@ -459,6 +457,36 @@ namespace DGE::Code
       DWord size = OpenFile::Files[argv[0]].file->size;
       task->dataStk.push(static_cast<Word>(size >>  0));
       task->dataStk.push(static_cast<Word>(size >> 32));
+      return false;
+   }
+
+   //
+   // int DGE_File_Trunc(int fd, unsigned long len)
+   //
+   DGE_Code_NativeDefn(DGE_File_Trunc)
+   {
+      auto &file = OpenFile::Files[argv[0]].file;
+      DWord len  = WordToDWord(argv+1);
+
+      auto res = file->trunc(len);
+
+      task->dataStk.push(res ? 0 : -1);
+      return false;
+   }
+
+   //
+   // int DGE_File_Write(int fd, unsigned long idx, char const *buf, unsigned len)
+   //
+   DGE_Code_NativeDefn(DGE_File_Write)
+   {
+      auto              &file = OpenFile::Files[argv[0]].file;
+      DWord              idx  = WordToDWord(argv+1);
+      MemPtr<Byte const> buf  = {&task->prog->memory, argv[3]};
+      Word               len  = argv[4];
+
+      auto res = file->write(idx, MemStrDup(buf, len).get(), len);
+
+      task->dataStk.push(res);
       return false;
    }
 }

@@ -99,10 +99,8 @@ namespace DGE::FS
       virtual bool createDir(Core::HashedStr name);
       virtual bool createDirPath(Core::HashedStr path);
 
-      virtual bool createFile(Core::HashedStr name,
-         std::unique_ptr<char[]> &&data, std::size_t size);
-      virtual bool createFilePath(Core::HashedStr path,
-         std::unique_ptr<char[]> &&data, std::size_t size);
+      virtual FilePtr createFile(Core::HashedStr name);
+      virtual FilePtr createFilePath(Core::HashedStr path);
 
       Iter end() {return {this, iterEnd()};}
 

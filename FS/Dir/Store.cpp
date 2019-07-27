@@ -15,6 +15,7 @@
 #include "Core/BinaryIO.hpp"
 #include "Core/Search.hpp"
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -49,8 +50,7 @@ namespace DGE::FS
 
       virtual bool createDir(Core::HashedStr name);
 
-      virtual bool createFile(Core::HashedStr name,
-         std::unique_ptr<char[]> &&data, std::size_t size);
+      virtual FilePtr createFile(Core::HashedStr name);
 
       virtual DirPtr findDir(Core::HashedStr name);
 
@@ -98,19 +98,25 @@ namespace DGE::FS
    class File_Store : public File
    {
    public:
-      File_Store(Core::HashedStr filename) : File{filename}
+      File_Store(Core::HashedStr filename) : File{filename}, alloc{0}
       {
          name.str = GDCC::Core::StrDup(name.str, name.len).release();
       }
 
       ~File_Store()
       {
-         delete[] data;
+         std::free(const_cast<char *>(data));
          delete[] name.str;
       }
 
       void archive(std::istream &in);
       void archive(std::ostream &out);
+
+      virtual bool trunc(std::size_t len);
+
+      virtual std::size_t write(std::size_t pos, char const *buf, std::size_t len);
+
+      std::size_t alloc;
    };
 }
 
@@ -189,8 +195,7 @@ namespace DGE::FS
    //
    // Dir_Store::createFile
    //
-   bool Dir_Store::createFile(Core::HashedStr filename,
-      std::unique_ptr<char[]> &&data, std::size_t size)
+   Dir::FilePtr Dir_Store::createFile(Core::HashedStr filename)
    {
       auto file = static_cast<File_Store *>(findFile(filename));
 
@@ -202,16 +207,7 @@ namespace DGE::FS
                {return l->name < r->name;});
       }
 
-      // Do not overwrite files with refs.
-      if(file->refs)
-         return false;
-
-      delete[] file->data;
-      file->data   = data.release();
-      file->size   = size;
-      file->format = DetectFormat(file->data, file->size);
-
-      return true;
+      return file;
    }
 
    //
@@ -397,6 +393,51 @@ namespace DGE::FS
    {
       Core::WriteVLN(out, size);
       out.write(data, size);
+   }
+
+   //
+   // File_Store::trunc
+   //
+   bool File_Store::trunc(std::size_t len)
+   {
+      if(alloc < len)
+      {
+         void *dataNew = std::realloc(const_cast<char *>(data), len);
+         if(!dataNew) return false;
+         data  = static_cast<char *>(dataNew);
+         alloc = len;
+      }
+
+      if(size < len)
+         std::memset(const_cast<char *>(data) + size, 0, len - size);
+
+      size = len;
+      return true;
+   }
+
+   //
+   // File_Store::write
+   //
+   std::size_t File_Store::write(std::size_t pos, char const *buf, std::size_t len)
+   {
+      if(len > SIZE_MAX - pos)
+         len = SIZE_MAX - pos;
+
+      std::size_t sizeNew = pos + len;
+
+      if(alloc < sizeNew)
+      {
+         void *dataNew = std::realloc(const_cast<char *>(data), sizeNew);
+         if(!dataNew) return 0;
+         data  = static_cast<char *>(dataNew);
+         alloc = sizeNew;
+      }
+
+      size = sizeNew;
+      std::memcpy(const_cast<char *>(data) + pos, buf, len);
+      format = DetectFormat(data, size);
+
+      return len;
    }
 
    //

@@ -96,26 +96,25 @@ namespace DGE::FS
    //
    // Dir::createFile
    //
-   bool Dir::createFile(Core::HashedStr, std::unique_ptr<char[]> &&, std::size_t)
+   Dir::FilePtr Dir::createFile(Core::HashedStr)
    {
-      return false;
+      return nullptr;
    }
 
    //
    // Dir::createFilePath
    //
-   bool Dir::createFilePath(Core::HashedStr path,
-      std::unique_ptr<char[]> &&data, std::size_t size)
+   Dir::FilePtr Dir::createFilePath(Core::HashedStr path)
    {
       if(auto sep = static_cast<char const *>(std::memchr(path.str, '/', path.len)))
       {
          if(auto dir = findDir({path.str, sep}))
-            return dir->createFilePath({sep+1, path.end()}, std::move(data), size);
+            return dir->createFilePath({sep+1, path.end()});
 
-         return false;
+         return nullptr;
       }
       else
-         return createFile(path, std::move(data), size);
+         return createFile(path);
    }
 
    //

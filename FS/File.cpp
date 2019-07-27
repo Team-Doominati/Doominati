@@ -86,6 +86,22 @@ namespace DGE::FS
    }
 
    //
+   // File::trunc
+   //
+   bool File::trunc(std::size_t)
+   {
+      return false;
+   }
+
+   //
+   // File::write
+   //
+   std::size_t File::write(std::size_t, char const *, std::size_t)
+   {
+      return 0;
+   }
+
+   //
    // DetectFormat
    //
    Format DetectFormat(char const *data, std::size_t size)
