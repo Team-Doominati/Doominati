@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef DGE__AL__Sound_H__
 #define DGE__AL__Sound_H__
 
-#include "AL/OpenAL.hpp"
+#include "../AL/Types.hpp"
 
 #include <GDCC/Core/Array.hpp>
 
@@ -26,15 +26,8 @@
 // Types                                                                      |
 //
 
-namespace DGE::FS
-{
-   class File;
-}
-
 namespace DGE::AL
 {
-   using SoundSample = ALshort;
-
    //
    // SoundData
    //

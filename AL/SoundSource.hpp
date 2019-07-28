@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef DGE__AL__SoundSource_H__
 #define DGE__AL__SoundSource_H__
 
-#include "AL/OpenAL.hpp"
+#include "../AL/Types.hpp"
 
 #include "Core/List.hpp"
 
@@ -26,8 +26,6 @@
 
 namespace DGE::AL
 {
-   class SoundData;
-
    //
    // SoundChannel
    //

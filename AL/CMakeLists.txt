@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2017 Team Doominati
+## Copyright (C) 2017-2019 Team Doominati
 ##
 ## See COPYING for license information.
 ##
@@ -19,10 +19,10 @@
 ## dge-al-lib
 ##
 add_library(dge-al-lib STATIC
-   AudioRenderer.cpp
-   AudioRenderer.hpp
-   AudioRenderer/Sound.cpp
    OpenAL.hpp
+   Renderer.cpp
+   Renderer.hpp
+   Renderer/Sound.cpp
    Sound.cpp
    Sound.hpp
    Sound/FLAC.cpp
@@ -33,6 +33,7 @@ add_library(dge-al-lib STATIC
    SoundSource.hpp
    SoundSourceDynamic.hpp
    SoundSourceFixed.hpp
+   Types.hpp
 )
 
 target_link_libraries(dge-al-lib

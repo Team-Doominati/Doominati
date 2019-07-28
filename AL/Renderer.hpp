@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -13,12 +13,11 @@
 #ifndef DGE__AL__AudioRenderer_H__
 #define DGE__AL__AudioRenderer_H__
 
-#include "AL/Sound.hpp"
-#include "AL/SoundSource.hpp"
-#include "AL/SoundSourceDynamic.hpp"
-#include "AL/OpenAL.hpp"
+#include "../AL/Sound.hpp"
+#include "../AL/SoundSource.hpp"
+#include "../AL/SoundSourceDynamic.hpp"
 
-#include "Core/ResourceManager.hpp"
+#include "../Core/ResourceManager.hpp"
 
 #include <stdexcept>
 #include <forward_list>
@@ -42,23 +41,20 @@ namespace DGE::AL
    };
 
    //
-   // AudioRenderer
+   // Renderer
    //
-   class AudioRenderer
+   class Renderer
    {
    public:
-      AudioRenderer();
-      ~AudioRenderer();
+      Renderer();
+      ~Renderer();
 
       void listenerPos(float x, float y, float z);
       void listenerVel(float x, float y, float z);
       void listenerAng(float ang);
 
-      auto soundGet(GDCC::Core::String name) {return &soundGetRaw(name)->data;}
-      auto soundGet(char const *name)        {return &soundGetRaw(name)->data;}
-      auto soundGet(std::size_t idx)         {return &sndMan .get(idx) ->data;}
-
-      auto soundGetIdx(GDCC::Core::String name) {return soundGetRaw(name)->idx;}
+      Sound *soundGet(GDCC::Core::String name);
+      Sound *soundGet(std::size_t idx) {return sndMan.get(idx);}
 
       SoundSource *soundSrcCreate(float x, float y, float z);
       void soundSrcDestroy(unsigned id);
@@ -67,16 +63,12 @@ namespace DGE::AL
       void dopplerSpeed(float speed);
 
 
-      static AudioRenderer *GetCurrent();
-      static void SetCurrent(AudioRenderer *audio);
+      static Renderer *GetCurrent();
+      static void SetCurrent(Renderer *audio);
 
    private:
-      using Sound = Core::Resource<SoundData>;
-
       using SoundSourceMap = Core::HashMapKeyMem<unsigned, SoundSource,
          &SoundSource::id, &SoundSource::link>;
-
-      Sound *soundGetRaw(GDCC::Core::String name);
 
       Sound *soundGet_File(GDCC::Core::String name);
       Sound *soundGet_None(GDCC::Core::String name);

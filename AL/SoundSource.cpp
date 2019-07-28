@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "AL/SoundSource.hpp"
 
-#include "AL/AudioRenderer.hpp"
+#include "AL/Renderer.hpp"
 #include "AL/Sound.hpp"
 
 #include "Code/Convert.hpp"
@@ -190,7 +190,7 @@ namespace DGE::AL
    static auto SrcBind(unsigned srcId, unsigned sndIdx, unsigned channel,
       bool play)
    {
-      auto *audio = AudioRenderer::GetCurrent();
+      auto *audio = Renderer::GetCurrent();
       auto *src   = audio->soundSrcGet(srcId);
       auto *snd   = audio->soundGet(sndIdx);
 
@@ -200,7 +200,7 @@ namespace DGE::AL
       if(!channel && !(channel = src->getFreeChannel()))
          return 0u;
 
-               src->bind(channel, snd);
+               src->bind(channel, &snd->data);
       if(play) src->play(channel);
 
       return channel;
@@ -211,7 +211,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrc_Create)
    {
-      auto *audio = AudioRenderer::GetCurrent();
+      auto *audio = Renderer::GetCurrent();
 
       auto x = Code::SAccumToHost(argv[0]);
       auto y = Code::SAccumToHost(argv[1]);
@@ -248,12 +248,12 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_SoundSrc_Destroy)
    {
-      AudioRenderer::GetCurrent()->soundSrcDestroy(argv[0]);
+      Renderer::GetCurrent()->soundSrcDestroy(argv[0]);
       return false;
    }
 
    #define IfSrc() \
-      if(auto *src = AudioRenderer::GetCurrent()->soundSrcGet(argv[0]))
+      if(auto *src = Renderer::GetCurrent()->soundSrcGet(argv[0]))
 
    //
    // void DGE_SoundSrc_SetPos(src, short _Accum x, y, z)

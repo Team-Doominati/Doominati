@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AL/AudioRenderer.hpp"
+#include "AL/Renderer.hpp"
 
 #include "AL/Sound.hpp"
 #include "AL/SoundSourceFixed.hpp"
@@ -28,7 +28,7 @@
 
 namespace DGE::AL
 {
-   static AudioRenderer *CurrentAudioRenderer;
+   static Renderer *CurrentRenderer;
 }
 
 
@@ -39,9 +39,9 @@ namespace DGE::AL
 namespace DGE::AL
 {
    //
-   // AudioRenderer::AudioRenderer
+   // Renderer::Renderer
    //
-   AudioRenderer::AudioRenderer() :
+   Renderer::Renderer() :
       sndMan{},
 
       sndSrcGbl{DGE_AL_GlobalSound},
@@ -56,7 +56,7 @@ namespace DGE::AL
 
       // We have to have a device, but any other errors can be ignored.
       if(!device)
-         throw AudioInitError("AudioRenderer: Couldn't open device.");
+         throw AudioInitError("AL::Renderer: Couldn't open device.");
 
       context = alcCreateContext(device, nullptr);
       alcMakeContextCurrent(context);
@@ -66,11 +66,11 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::~AudioRenderer
+   // Renderer::~Renderer
    //
-   AudioRenderer::~AudioRenderer()
+   Renderer::~Renderer()
    {
-      if(CurrentAudioRenderer == this)
+      if(CurrentRenderer == this)
          alcMakeContextCurrent(nullptr);
 
       alcDestroyContext(context);
@@ -78,34 +78,34 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::listenerPos
+   // Renderer::listenerPos
    //
-   void AudioRenderer::listenerPos(float x, float y, float z)
+   void Renderer::listenerPos(float x, float y, float z)
    {
       alListener3f(AL_POSITION, x, y, z);
    }
 
    //
-   // AudioRenderer::listenerVel
+   // Renderer::listenerVel
    //
-   void AudioRenderer::listenerVel(float x, float y, float z)
+   void Renderer::listenerVel(float x, float y, float z)
    {
       alListener3f(AL_VELOCITY, x, y, z);
    }
 
    //
-   // AudioRenderer::listenerAng
+   // Renderer::listenerAng
    //
-   void AudioRenderer::listenerAng(float ang)
+   void Renderer::listenerAng(float ang)
    {
       ALfloat orientation[6] = {std::cos(ang), 0, -std::sin(ang), 0, 1, 0};
       alListenerfv(AL_ORIENTATION, orientation);
    }
 
    //
-   // AudioRenderer::soundSrcCreate
+   // Renderer::soundSrcCreate
    //
-   SoundSource *AudioRenderer::soundSrcCreate(float x, float y, float z)
+   SoundSource *Renderer::soundSrcCreate(float x, float y, float z)
    {
       auto src = new SoundSourceFixed<8>(sndSrcId++);
       src->setPos(x, y, z);
@@ -114,9 +114,9 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::soundSrcDestroy
+   // Renderer::soundSrcDestroy
    //
-   void AudioRenderer::soundSrcDestroy(unsigned id)
+   void Renderer::soundSrcDestroy(unsigned id)
    {
       if(auto *src = sndSrcMap.find(id))
       {
@@ -126,36 +126,36 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::soundSrcGet
+   // Renderer::soundSrcGet
    //
-   SoundSource *AudioRenderer::soundSrcGet(unsigned id)
+   SoundSource *Renderer::soundSrcGet(unsigned id)
    {
       if(id == DGE_AL_GlobalSound) return &sndSrcGbl;
       else                         return sndSrcMap.find(id);
    }
 
    //
-   // AudioRenderer::dopplerSpeed
+   // Renderer::dopplerSpeed
    //
-   void AudioRenderer::dopplerSpeed(float speed)
+   void Renderer::dopplerSpeed(float speed)
    {
       alSpeedOfSound(speed);
    }
 
    //
-   // AudioRenderer::GetCurrent
+   // Renderer::GetCurrent
    //
-   AudioRenderer *AudioRenderer::GetCurrent()
+   Renderer *Renderer::GetCurrent()
    {
-      return CurrentAudioRenderer;
+      return CurrentRenderer;
    }
 
    //
-   // AudioRenderer::SetCurrent
+   // Renderer::SetCurrent
    //
-   void AudioRenderer::SetCurrent(AudioRenderer *audio)
+   void Renderer::SetCurrent(Renderer *audio)
    {
-      CurrentAudioRenderer = audio;
+      CurrentRenderer = audio;
    }
 }
 
@@ -175,7 +175,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_Audio_SetDopplerSpeed)
    {
-      AudioRenderer::GetCurrent()->dopplerSpeed(Code::SAccumToHost(argv[0]));
+      Renderer::GetCurrent()->dopplerSpeed(Code::SAccumToHost(argv[0]));
       return false;
    }
 
@@ -184,7 +184,7 @@ namespace DGE::AL
    //
    DGE_Code_NativeDefn(DGE_Audio_SetListener)
    {
-      auto *audio = AudioRenderer::GetCurrent();
+      auto *audio = Renderer::GetCurrent();
 
       auto x = Code::SAccumToHost(argv[0]);
       auto y = Code::SAccumToHost(argv[1]);
@@ -213,7 +213,7 @@ namespace DGE::AL
    DGE_Code_NativeDefn(DGE_Sound_Get)
    {
       GDCC::Core::String str{argv[0]};
-      task->dataStk.push(AudioRenderer::GetCurrent()->soundGetIdx(str));
+      task->dataStk.push(Renderer::GetCurrent()->soundGet(str)->idx);
       return false;
    }
 }

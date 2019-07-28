@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2017 Team Doominati
+// Copyright (C) 2017-2019 Team Doominati
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AL/AudioRenderer.hpp"
+#include "AL/Renderer.hpp"
 
 #include "AL/Sound.hpp"
 
@@ -26,9 +26,9 @@
 namespace DGE::AL
 {
    //
-   // AudioRenderer::soundGetRaw
+   // Renderer::soundGet
    //
-   AudioRenderer::Sound *AudioRenderer::soundGetRaw(GDCC::Core::String name)
+   Sound *Renderer::soundGet(GDCC::Core::String name)
    {
       if(auto snd = sndMan.resMap.find(name))
          return snd;
@@ -41,9 +41,9 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::soundGet_File
+   // Renderer::soundGet_File
    //
-   AudioRenderer::Sound *AudioRenderer::soundGet_File(GDCC::Core::String name)
+   Sound *Renderer::soundGet_File(GDCC::Core::String name)
    {
       auto filename = name.data() + 1;
       auto file = FS::Dir::Root->findFilePath(filename);
@@ -71,9 +71,9 @@ namespace DGE::AL
    }
 
    //
-   // AudioRenderer::soundGet_None
+   // Renderer::soundGet_None
    //
-   AudioRenderer::Sound *AudioRenderer::soundGet_None(GDCC::Core::String name)
+   Sound *Renderer::soundGet_None(GDCC::Core::String name)
    {
       return sndMan.add({}, name);
    }
